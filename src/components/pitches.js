@@ -35,15 +35,15 @@ import { testCommonModuleImport, resetCurrentActivity, resetAllProgress, showRes
   from './pitches/common.js';
 import { extractAnimalName } from './shared/ui-helpers.js';
 
-import { setupHighOrLowMode_1_1, reset_1_1_HighOrLow_Progress, currentHighOrLowStage } 
+import { setupHighOrLowMode_1_1, reset_1_1_HighOrLow_Progress, currentHighOrLowStage, get_1_1_level } 
   from "./pitches/1_1_high_or_low.js";
 import { testMatchSoundsModuleImport, reset_1_2_MatchSounds_Progress } 
   from "./pitches/1_2_match_sounds.js";
-import { testDrawMelodyModuleImport, reset_1_3_DrawMelody_Progress } 
+import { testDrawMelodyModuleImport, reset_1_3_DrawMelody_Progress, get_1_3_level } 
   from "./pitches/1_3_draw_melody.js";
 import { testSoundJudgmentModuleImport, reset_1_4_SoundJudgment_Progress } 
   from "./pitches/1_4_sound_judgment.js";
-import { testMemoryGameModuleImport, reset_1_5_MemoryGame_Progress } 
+import { testMemoryGameModuleImport, reset_1_5_MemoryGame_Progress, get_1_5_level } 
   from "./pitches/1_5_memory_game.js";
 
 // Importiere High or Low Funktionen direkt aus dem Modul
@@ -86,7 +86,7 @@ export function pitches() {
     
     // Progress tracking
     progress: {
-      '1_1_pitches_high_or_low': 0,
+      '1_1': 0,
       match: 0,
       draw: 0,
       'does-it-sound-right': 0,
@@ -95,7 +95,8 @@ export function pitches() {
     
     // ************ for 1.1 *****************
     // High or Low activity state variables
-    highOrLowProgress: 0, // Number of correct answers in High or Low activity - initialized properly in afterInit
+    // Note: highOrLowProgress is DEPRECATED - use this.progress['1_1'] instead
+    // Kept for backward compatibility during transition
     currentHighOrLowTone: null, // Current tone type (high/low)
     highOrLowSecondTone: null, // For comparison stages
     highOrLowPlayed: false, // Whether the tone has been played
@@ -108,7 +109,8 @@ export function pitches() {
     
     // ************ for 1.3 *****************
     // Draw melody activity progression
-    drawMelodyLevel: 0, // User level in draw melody activity (determines number of notes)
+    // Note: drawMelodyLevel and levelSuccessCounter are DEPRECATED - use this.progress['1_3'] instead
+    // Kept for backward compatibility during transition
     
     // ************ for 1.4 *****************
     // Does It Sound Right activity progression
@@ -319,19 +321,15 @@ export function pitches() {
             if (!this.progress['1_4']) this.progress['1_4'] = 0;
             if (!this.progress['1_5']) this.progress['1_5'] = 0;
             
-            console.log('Loaded progress data with new IDs:', this.progress);
-            
-            // Initialize highOrLowProgress from saved data
-            this.highOrLowProgress = this.progress['1_1_pitches_high_or_low'] || 0;
-            console.log('Initialized highOrLowProgress from localStorage:', this.highOrLowProgress);
+            console.log('Loaded progress data with unified IDs:', this.progress);
           } else {
-            // Initialize with empty progress object using new IDs
+            // Initialize with empty progress object using unified IDs
             this.progress = {
-              '1_1_pitches_high_or_low': 0,
-              '1_2_pitches_match-sounds': 0,
-              '1_3_pitches_draw-melody': 0,
-              '1_4_pitches_does-it-sound-right': 0,
-              '1_5_pitches_memory-game': 0
+              '1_1': 0,
+              '1_2': 0,
+              '1_3': 0,
+              '1_4': 0,
+              '1_5': 0
             };
           }
           
@@ -644,9 +642,8 @@ export function pitches() {
       } 
       // New ID format handlers
       else if (newMode === '1_1_pitches_high_or_low') {
-        // For high or low mode, initialize the highOrLowProgress from saved progress
-        this.highOrLowProgress = this.progress['1_1_pitches_high_or_low'] || 0;
-        console.log('High or Low mode activated with progress:', this.highOrLowProgress);
+        // For high or low mode, use unified progress tracking
+        console.log('High or Low mode activated with progress:', this.progress['1_1'] || 0);
         // Load current stage based on progress
         setupHighOrLowMode_1_1(this);
       } else if (newMode === '1_2_pitches_match-sounds') {
@@ -676,13 +673,13 @@ export function pitches() {
      * @used-by all activities
      */
     updateProgressPitches() {
-      // Get progress values from the new activity IDs
+      // Get progress values from the unified activity IDs
       const progressValues = [
-        this.progress['1_1_pitches_high_or_low'] || 0,
-        this.progress['1_2_pitches_match-sounds'] || 0,
-        this.progress['1_3_pitches_draw-melody'] || 0,
-        this.progress['1_4_pitches_does-it-sound-right'] || 0,
-        this.progress['1_5_pitches_memory-game'] || 0
+        this.progress['1_1'] || 0,
+        this.progress['1_2'] || 0,
+        this.progress['1_3'] || 0,
+        this.progress['1_4'] || 0,
+        this.progress['1_5'] || 0
       ];
       
       // Calculate total progress (0-100%)
@@ -772,8 +769,8 @@ export function pitches() {
      */
     saveProgress_1_1() {
       try {
-        // Make sure highOrLowProgress is synced to the progress object before saving
-        this.progress['1_1_pitches_high_or_low'] = this.highOrLowProgress;
+        // Use unified progress tracking - progress is already stored correctly
+        // No need to sync from deprecated highOrLowProgress variable
         
         // Save the progress object to localStorage
         localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
@@ -1152,13 +1149,13 @@ export function pitches() {
       
       // Handle feedback
       if (isCorrect) {
-        // Correct answer: increment progress
-        this.highOrLowProgress = (this.highOrLowProgress || 0) + 1;
+        // Correct answer: increment progress using unified tracking
+        if (!this.progress['1_1']) this.progress['1_1'] = 0;
+        this.progress['1_1'] += 1;
         
-        // Update stored progress
-        this.progress['1_1_pitches_high_or_low'] = this.highOrLowProgress;
+        // Save progress
         this.saveProgress_1_1();
-        console.log('Updated progress in localStorage:', this.highOrLowProgress);
+        console.log('Updated progress in localStorage:', this.progress['1_1']);
         
         // Play success sound
         audioEngine.playNote('success', 1, undefined, 0.4);
@@ -2536,33 +2533,13 @@ export function pitches() {
       this.drawPath = [];
       this.isDrawing = false;
       
-      // Load saved level and success counter values from localStorage
-      try {
-        const savedLevel = localStorage.getItem('lalumo_draw_melody_level');
-        if (savedLevel !== null) {
-          this.drawMelodyLevel = parseInt(savedLevel, 10);
-          console.log('MELODY_SETUP: Loaded saved level:', this.drawMelodyLevel);
-        } else if (this.drawMelodyLevel === undefined) {
-          // If no level is saved and none has been set yet
-          this.drawMelodyLevel = 0;
-          console.log('MELODY_SETUP: Initialized default level to 0');
-        }
-        
-        const savedCounter = localStorage.getItem('lalumo_draw_melody_success_counter');
-        if (savedCounter !== null) {
-          this.levelSuccessCounter = parseInt(savedCounter, 10);
-          console.log('MELODY_SETUP: Loaded saved success counter:', this.levelSuccessCounter);
-        } else if (this.levelSuccessCounter === undefined) {
-          // If no counter is saved and none has been set yet
-          this.levelSuccessCounter = 0;
-          console.log('MELODY_SETUP: Initialized default success counter to 0');
-        }
-      } catch (e) {
-        console.warn('MELODY_SETUP: Error loading saved level data', e);
-        // Fallback to default values
-        if (this.drawMelodyLevel === undefined) this.drawMelodyLevel = 0;
-        if (this.levelSuccessCounter === undefined) this.levelSuccessCounter = 0;
-      }
+    setupDrawingMode_1_3() {
+      this.drawPath = [];
+      this.isDrawing = false;
+      
+      // Use unified progress tracking - no need to load from separate localStorage
+      // Level and progress are calculated from this.progress['1_3']
+      console.log('MELODY_SETUP: Using unified progress tracking, current progress:', this.progress['1_3'] || 0);
       
       // Not in challenge mode by default
       this.melodyChallengeMode = false;
@@ -2763,15 +2740,16 @@ export function pitches() {
         // Use shared progress bar utility
         const isGerman = document.documentElement.lang === "de";
         const activityName = isGerman ? "Melodien" : "melodies";
-        const currentLevel = this.drawMelodyLevel + 3; // Level + 3 = Anzahl der Noten
+        const currentLevel = get_1_3_level(this);
+        const currentNoteCount = currentLevel + 3; // Level + 3 = Anzahl der Noten
         
         showActivityProgressBar({
           appendToContainer: ".drawing-container",
           progressClass: "melody-progress",
-          currentCount: this.levelSuccessCounter,
+          currentCount: (this.progress['1_3'] || 0) % 3, // Current progress within level
           totalCount: 3,
-          currentLevel: this.drawMelodyLevel + 1,
-          notesCount: currentLevel,
+          currentLevel: currentLevel + 1,
+          notesCount: currentNoteCount,
           activityName: activityName,
           positioning: {
             position: "fixed",
@@ -2867,12 +2845,13 @@ export function pitches() {
       const minNotes = 3;
       const maxNotes = 8;
       
-      // Berechne die Anzahl der Noten basierend auf dem Level
+      // Berechne die Anzahl der Noten basierend auf dem Level (calculated from progress)
       // Höheres Level = mehr Noten (bis zum Maximum)
-      let sequenceLength = minNotes + this.drawMelodyLevel;
+      const currentLevel = get_1_3_level(this);
+      let sequenceLength = minNotes + currentLevel;
       sequenceLength = Math.min(sequenceLength, maxNotes); // Auf maximal 8 Noten begrenzen
       
-      console.log(`Generating melody with ${sequenceLength} notes (user level: ${this.drawMelodyLevel})`);
+      console.log(`Generating melody with ${sequenceLength} notes (progress level: ${currentLevel})`);
       
       // Generiere eine zufällige Melodie mit einer einfachen musikalischen Struktur
       this.referenceSequence = [];
@@ -3311,83 +3290,38 @@ export function pitches() {
       const isGerman = document.documentElement.lang === 'de';
       let perfectMatch = matchPercentage === 100;
       
-      // Initialize success counter if not already initialized
-      if (this.levelSuccessCounter === undefined) {
-        // Try to load from localStorage first
-        try {
-          const savedCounter = localStorage.getItem('lalumo_draw_melody_success_counter');
-          if (savedCounter !== null) {
-            this.levelSuccessCounter = parseInt(savedCounter, 10);
-            console.log('MELODY_PROGRESSION: Loaded success counter from localStorage:', this.levelSuccessCounter);
-          } else {
-            this.levelSuccessCounter = 0;
-            console.log('MELODY_PROGRESSION: Initialized success counter to 0');
-          }
-        } catch (e) {
-          this.levelSuccessCounter = 0;
-          console.warn('Could not load success counter from localStorage', e);
-        }
-      }
-      
-      // Update the progress in the central progress object
-      // Convert level and success counter to a percentage value (0-100)
-      // Level 0 with 0 successful melodies = 0%, Level 5 with 10 successful melodies = 100%
-      const maxLevel = 5;
-      const melodiesPerLevel = 10;
-      const totalProgress = Math.min(100, Math.round((this.drawMelodyLevel * melodiesPerLevel + this.levelSuccessCounter) / 
-                                                   (maxLevel * melodiesPerLevel + 1) * 100));
-      
-      // Update the central progress object
-      this.progress['1_3_pitches_draw-melody'] = totalProgress;
-      console.log(`MELODY_PROGRESS: Updated central progress to ${totalProgress}% for draw-melody activity`);
-      
-      // Save to localStorage
-      try {
-        localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
-      } catch (e) {
-        console.warn('Could not update central progress in localStorage', e);
-      }
-      
       // Create feedback message
       if (matchPercentage >= 80) {
-        // Great match - count towards level increase
+        // Great match - increment progress using unified tracking
+        if (!this.progress['1_3']) this.progress['1_3'] = 0;
+        this.progress['1_3'] += 1;
         
-        // Increase success counter
-        this.levelSuccessCounter++;
-        console.log(`MELODY_PROGRESSION: Success count: ${this.levelSuccessCounter}/3 for level ${this.drawMelodyLevel}`);
+        const currentProgress = this.progress['1_3'];
+        const currentLevel = get_1_3_level(this);
         
-        // Save success counter to localStorage
+        console.log(`MELODY_PROGRESSION: Progress incremented to ${currentProgress} (level ${currentLevel})`);
+        
+        // Save progress to localStorage
         try {
-          localStorage.setItem('lalumo_draw_melody_success_counter', this.levelSuccessCounter);
+          localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
         } catch (e) {
-          console.warn('Could not save success counter to localStorage', e);
+          console.warn('Could not update progress in localStorage', e);
         }
         
-        // If counter reaches 10, increase level if not at max
-        if (this.levelSuccessCounter >= 3 && this.drawMelodyLevel < 5) { // Max level is 5 (gives 8 notes)
-          this.drawMelodyLevel++;
-          this.levelSuccessCounter = 0; // Reset counter for next level
-          console.log(`MELODY_PROGRESSION: User level increased to ${this.drawMelodyLevel}`);
-          
-          // Save level to localStorage for persistence
-          try {
-            localStorage.setItem('lalumo_draw_melody_level', this.drawMelodyLevel);
-            localStorage.setItem('lalumo_draw_melody_success_counter', 0); // Reset counter in storage
-          } catch (e) {
-            console.warn('Could not save draw melody level to localStorage', e);
-          }
+        // Check if we just leveled up (every 3 correct answers)
+        if (currentProgress % 3 === 0 && currentLevel < 5) { // Max level is 5 (gives 8 notes)
+          const noteCount = currentLevel + 3;
           
           // TODO: move translation to strings.xml
           feedback = isGerman ? 
-            `Super! Du hast 10 Melodien erfolgreich gespielt! Jetzt versuche längere Melodien mit ${this.drawMelodyLevel + 3} Tönen.` : 
-            `Great job! You've successfully played 10 melodies! Now try longer melodies with ${this.drawMelodyLevel + 3} notes.`;
+            `Super! Jetzt versuche längere Melodien mit ${noteCount} Tönen!` : 
+            `Great job! Now try longer melodies with ${noteCount} notes!`;
           
-          // Show rainbow effect for perfect match
+          // Show rainbow effect for level up
           if (perfectMatch) {
-            // Create and show rainbow success animation
             showRainbowSuccess();
           }
-        } else {
+        } else if (currentLevel >= 5) {
           // TODO: move translation to strings.xml
           feedback = isGerman ? 
             'Fantastisch! Du hast alle Melodien gemeistert!' : 
@@ -3397,7 +3331,7 @@ export function pitches() {
           setTimeout(() => {
             // Play success sound
             audioEngine.playNote('success');
-            debugLog('AUDIO', '[1_3] Playing success feedback sound with audio engine. level: ' + this.levelSuccessCounter);
+            debugLog('AUDIO', '[1_3] Playing success feedback sound with audio engine. progress: ' + currentProgress);
             
             // Always show rainbow for mastering all levels
             showRainbowSuccess();
@@ -3519,11 +3453,9 @@ export function pitches() {
       // Use the specific C, D, E, G, A notes for the memory game (skipping F and H/B)
       const fixedNotes = ['C4', 'D4', 'E4', 'G4', 'A4'];
       
-      // Initialize memory success count from localStorage or default to 0
-      if (this.memorySuccessCount === undefined) {
-        const savedLevel = localStorage.getItem('lalumo_memory_level');
-        this.memorySuccessCount = savedLevel ? parseInt(savedLevel, 10) : 0;
-      }
+      // Initialize memory progress from unified tracking
+      const currentProgress = this.progress['1_5'] || 0;
+      console.log('MEMORY_SETUP: Using unified progress tracking, current progress:', currentProgress);
       
       if (generateNew) {
         // Bei jeder neuen Sequenz auch neue Tierbilder anzeigen
@@ -3531,21 +3463,21 @@ export function pitches() {
         this.selectRandomAnimalImages();
         
         this.currentSequence = [];
-        // Determine sequence length based on success count
+        // Determine sequence length based on progress count
         let length;
-        if (this.memorySuccessCount < 3) {
+        if (currentProgress < 3) {
           length = 2; // First 3 successes: 2 notes
-        } else if (this.memorySuccessCount < 6) {
+        } else if (currentProgress < 6) {
           length = 3; // Next 3 successes: 3 notes
-        } else if (this.memorySuccessCount < 11) {
+        } else if (currentProgress < 11) {
           length = 4; // Next 5 successes: 4 notes
-        } else if (this.memorySuccessCount < 16) {
+        } else if (currentProgress < 16) {
           length = 5; // Next 5 successes: 5 notes
         } else {
           length = 6; // After 15 successes: 6 notes
         }
         
-        console.log(`Memory game: Level ${this.memorySuccessCount + 1}, using ${length} notes`);
+        console.log(`Memory game: Progress ${currentProgress}, using ${length} notes`);
         
         // First note is fully random
         let lastNote = fixedNotes[Math.floor(Math.random() * fixedNotes.length)];
@@ -3795,24 +3727,17 @@ export function pitches() {
         // Create and show rainbow success animation
         showRainbowSuccess();
         
-        // Increment and save memory game progress
-        this.memorySuccessCount = (this.memorySuccessCount || 0) + 1;
-        
-        // Update progress with new activity ID only
-        if (!this.progress['1_5_pitches_memory-game']) {
-          this.progress['1_5_pitches_memory-game'] = 0;
-        }
+        // Increment progress using unified tracking
+        if (!this.progress['1_5']) this.progress['1_5'] = 0;
+        this.progress['1_5'] += 1;
         
         // Reset to sound-only mode for the next sequence
         this.showMemoryHighlighting = false;
         debugLog("PIANO_DIRECT", "Success! Disabling highlighting for next sequence");
         
-        // Store the maximum success count as the progress value
-        this.progress['1_5_pitches_memory-game'] = Math.max(this.memorySuccessCount, this.progress['1_5_pitches_memory-game'] || 0);
+        console.log('Updated memory progress:', this.progress['1_5']);
         
-        console.log('Updated memory progress:', this.progress['1_5_pitches_memory-game']);
-        
-        localStorage.setItem('lalumo_memory_level', this.memorySuccessCount.toString());
+        // Save progress to localStorage
         localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
       } else {
         // Show shake animation on the last pressed key if available
