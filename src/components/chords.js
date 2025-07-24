@@ -190,15 +190,30 @@ export function chords() {
         if (savedProgress) {
           this.progress = JSON.parse(savedProgress);
           
+          // Migrate old progress keys to new format (v4.1 -> v4.2 migration)
+          let migrationHappened = false;
+          if (this.progress['2_5_chords_characters'] && this.progress['2_5'] === undefined) {
+            this.progress['2_5'] = this.progress['2_5_chords_characters'];
+            debugLog('CHORDS', `Migrated 2_5_chords_characters progress (${this.progress['2_5_chords_characters']}) to 2_5`);
+            migrationHappened = true;
+            // Keep the old key for compatibility, but don't delete it
+          }
+          
           // Ensure all activity progress fields exist
-          if (!this.progress['2_1_chords_color-matching']) this.progress['2_1_chords_color-matching'] = 0;
-          if (!this.progress['2_2_chords_stable_unstable']) this.progress['2_2_chords_stable_unstable'] = 0;
-          if (!this.progress['2_3_chords_chord-building']) this.progress['2_3_chords_chord-building'] = 0;
-          if (!this.progress['2_4_chords_missing-note']) this.progress['2_4_chords_missing-note'] = 0;
-          if (!this.progress['2_5_chords_characters']) this.progress['2_5_chords_characters'] = 0;
-          if (!this.progress['2_6_chords_harmony-gardens']) this.progress['2_6_chords_harmony-gardens'] = 0;
+          if (!this.progress['2_1']) this.progress['2_1'] = 0;
+          if (!this.progress['2_2']) this.progress['2_2'] = 0;
+          if (!this.progress['2_3']) this.progress['2_3'] = 0;
+          if (!this.progress['2_4']) this.progress['2_4'] = 0;
+          if (!this.progress['2_5']) this.progress['2_5'] = 0;
+          if (!this.progress['2_6']) this.progress['2_6'] = 0;
           
           debugLog('CHORDS', 'Loaded chords progress data:', this.progress);
+          
+          // Save migrated progress back to localStorage if migration happened
+          if (migrationHappened) {
+            localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
+            debugLog('CHORDS', 'Saved migrated progress data to localStorage');
+          }
           
           // Initialize activity progress from saved data
           this.totalQuestions = this.progress[this.mode] || 0;
@@ -299,7 +314,7 @@ export function chords() {
      */
     generateTranspose() {
       // Get the progress level
-      const progress = this?.progress?.['2_5_chords_characters'] || 0;
+      const progress = this?.progress?.['2_5'] || 0;
       
       // Default values
       let rootNote = 'C4';
@@ -359,7 +374,7 @@ export function chords() {
       
       // Debug information specifically for transpose
       if (this.mode === '2_5_chords_characters') {
-        const progress = this?.progress?.['2_5_chords_characters'] || 0;
+        const progress = this?.progress?.['2_5'] || 0;
         debugLog(['CHORDS', '2_5_TRANSPOSE'], `PlayChordByType - Current progress: ${progress}, Root note: ${rootNote}, TransposeAmount: ${this.currentTransposeAmount || 0}`);
       }
 
@@ -677,8 +692,8 @@ export function chords() {
       // Reset for 2_5_chords_characters activity
       else if (this.mode === '2_5_chords_color_matching') {
         // Reset progress to 0 for this activity
-        if (this.progress && this.progress['2_5_chords_characters']) {
-          this.progress['2_5_chords_characters'] = 0;
+        if (this.progress && this.progress['2_5']) {
+          this.progress['2_5'] = 0;
           
           // Save updated progress
           localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
@@ -701,9 +716,9 @@ export function chords() {
      * @activity 2_5_chords_characters
      */
     resetProgressToCurrentLevel() {
-      if (!this.progress || !this.progress['2_5_chords_characters']) return;
+      if (!this.progress || !this.progress['2_5']) return;
       
-      const currentProgress = this.progress['2_5_chords_characters'];
+      const currentProgress = this.progress['2_5'];
       
       // Calculate the start of the current level (floor to nearest multiple of LEVEL_STEP)
       const currentLevel = Math.floor(currentProgress / this.LEVEL_STEP);
@@ -712,7 +727,7 @@ export function chords() {
       debugLog('CHORDS', `Resetting progress from ${currentProgress} to ${newProgress} (level ${currentLevel})`);
       
       // Update progress
-      this.progress['2_5_chords_characters'] = newProgress;
+      this.progress['2_5'] = newProgress;
       
       // Save to localStorage
       localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
@@ -1052,8 +1067,8 @@ export function chords() {
       // Get the current progress for this activity
       const progressData = localStorage.getItem('lalumo_chords_progress');
       const progress = progressData ? 
-        JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
-        this?.progress?.['2_5_chords_characters'] || 0;
+        JSON.parse(progressData)['2_5'] || 0 : 
+        this?.progress?.['2_5'] || 0;
       
       // Available chord types based on progress
       let chordTypes;
@@ -1171,7 +1186,7 @@ export function chords() {
         // Play the complete chord
         setTimeout(() => {
           // Check for transposition
-          const progress = this?.progress?.['2_5_chords_characters'] || 0;
+          const progress = this?.progress?.['2_5'] || 0;
           const shouldTranspose = progress >= 30;
           let rootNote = 'C4';
           
@@ -1267,8 +1282,8 @@ export function chords() {
       // Get progress to determine if we should apply transposition
       const progressData = localStorage.getItem('lalumo_chords_progress');
       const progress = progressData ? 
-        JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
-        this?.progress?.['2_5_chords_characters'] || 0;
+        JSON.parse(progressData)['2_5'] || 0 : 
+        this?.progress?.['2_5'] || 0;
       
       // Apply transposition only if progress is 30 or higher (same as game mode)
       if (progress >= 30) {
@@ -1293,8 +1308,8 @@ export function chords() {
       // Get the progress to determine if we need to transpose
       const progressData = localStorage.getItem('lalumo_chords_progress');
       const progress = progressData ? 
-        JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
-        this?.progress?.['2_5_chords_characters'] || 0;
+        JSON.parse(progressData)['2_5'] || 0 : 
+        this?.progress?.['2_5'] || 0;
       
       if (!this.currentChordType) {
         // Need to generate a new chord type
@@ -1303,8 +1318,8 @@ export function chords() {
         // Get the current progress for this activity
         const progressData = localStorage.getItem('lalumo_chords_progress');
         const progress = progressData ? 
-          JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
-          this?.progress?.['2_5_chords_characters'] || 0;
+          JSON.parse(progressData)['2_5'] || 0 : 
+          this?.progress?.['2_5'] || 0;
         
         // Get previous progress to detect progress level changes
         const previousProgress = this.previousProgress || 0;

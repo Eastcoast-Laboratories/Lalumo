@@ -169,6 +169,7 @@ reset-button:
 
 1_3 Draw a Melody:
 - # bereit zur veröffentlichung
+- man kann in einen zustand kommen durch schnelles zeichnen im game mode, wo keine noten mehr auf den linien landen, auchnicht, wenn man wieder auf free stellt, es wird dann nur eine blaue linie gezeichnet und keine noten
 - Zeichnen geht nicht mehr auf den Handy, man schiebt den bildschirm hin und her, anstatt zu malen. könnte helfen: overflow hiddern
 - play sound and rainbow exact after the painted melody is played (in case it is a longer melody)
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
@@ -196,6 +197,9 @@ reset-button:
   - # bereit zur veröffentlichung
  
 2_5_chords_color_matching:
+- ✅ BEHOBEN: Wenn man die activity startet, wird oft gleich ein diminished oder augmented sound gespielt, obwohl man in level 0 ist und die buttons gar nicht drückbar sind
+  - Problem war Migration von v4.1 zu v4.2: Alte Progress-Daten unter '2_5_chords_characters' wurden nicht zu '2_5' migriert
+  - Lösung: Migration-Logik hinzugefügt, die beim Laden der App alte Progress-Daten von '2_5_chords_characters' zu '2_5' migriert
   - # bereit zur veröffentlichung
   - es soll der erfolgssound kommen
   - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte

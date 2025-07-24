@@ -128,8 +128,16 @@ export function resetCurrentActivity(currentMode) {
     }
   }
   
-  // Map modes to reset methods
+  // Map modes to reset methods (using unified short keys)
   const resetMethods = {
+    '1_1': () => reset_1_1_HighOrLow_Progress(window.pitchesComponent),
+    '1_2': () => reset_1_2_MatchSounds_Progress(window.pitchesComponent),
+    '1_3': () => reset_1_3_DrawMelody_Progress(window.pitchesComponent),
+    '1_4': () => reset_1_4_SoundJudgment_Progress(window.pitchesComponent),
+    '1_5': () => reset_1_5_MemoryGame_Progress(window.pitchesComponent),
+    '2_2': () => reset_2_2_Progress(window.chordsComponent),
+    '2_5': () => reset_2_5_Progress(window.chordsComponent),
+    // Legacy support for old keys (backward compatibility)
     '1_1_pitches_high_or_low': () => reset_1_1_HighOrLow_Progress(window.pitchesComponent),
     '1_2_pitches_match-sounds': () => reset_1_2_MatchSounds_Progress(window.pitchesComponent),
     '1_3_pitches_draw-melody': () => reset_1_3_DrawMelody_Progress(window.pitchesComponent),
