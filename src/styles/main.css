@@ -140,14 +140,14 @@
 }
 
 .activity-button-blocker:disabled {
-  opacity: 0.5 !important;
+  opacity: 0 !important;
   cursor: progress !important;
   transform: scale(0.98);
   user-select: none;
 }
 
 .activity-button-blocker.blocking {
-  opacity: 0.6 !important;
+  opacity: 0 !important;
   cursor: progress !important;
   transform: scale(0.98);
   user-select: none;
@@ -2690,9 +2690,9 @@ section h2 {
 /* Progress display for High or Low */
 .high-low-progress, .progress_2_5 {
   position: fixed;
-  bottom: 5px;
+  bottom: -37px;
   background: rgba(255, 255, 255, 0.5);
-  padding: 10px 15px;
+  padding: 5px 4px 61px 4px;
   border-radius: 15px;
   font-size: 14px;
   color: #333;
