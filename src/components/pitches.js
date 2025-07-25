@@ -247,10 +247,10 @@ export function pitches() {
       'haeschen-huepf': {
         en: 'Bunny Hop',
         de: 'Häschen Hüpf',
-        quarterNoteDuration: 550,
+        quarterNoteDuration: 333,
         notes: [
-          'C', 'D', 'E', 'F', 'G4:h','G4:h', // Häschen in der Grube
-          'A', 'F', 'C5', 'A', 'G:w', 'A', 'F', 'C5', 'A', 'G:w', // sass und schlief
+          'D', 'E', 'F#', 'G', 'A4:h','A4:h', // Häschen in der Grube
+          'B', 'G', 'D5', 'B', 'A:w', 'B', 'G', 'D5', 'B', 'A:w' // sass und schlief
           // 'G4', 'F4', 'F4', 'F4', 'F4', 'E4', 'E4:h', // Armes Häschen bist du krank
           // 'E4', 'D4', 'E4', 'D4', 'C4', 'E4', 'G4:h',   // dass du nicht mehr hüpfen kannst
           // 'C4', 'E', 'G4:h', 'C4', 'E', 'G4:h',        // Häschen hüpf, Häschen hüpf
