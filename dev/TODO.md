@@ -197,9 +197,6 @@ reset-button:
   - # bereit zur veröffentlichung
  
 2_5_chords_color_matching:
-- ✅ BEHOBEN: Wenn man die activity startet, wird oft gleich ein diminished oder augmented sound gespielt, obwohl man in level 0 ist und die buttons gar nicht drückbar sind
-  - Problem war Migration von v4.1 zu v4.2: Alte Progress-Daten unter '2_5_chords_characters' wurden nicht zu '2_5' migriert
-  - Lösung: Migration-Logik hinzugefügt, die beim Laden der App alte Progress-Daten von '2_5_chords_characters' zu '2_5' migriert
   - # bereit zur veröffentlichung
   - es soll der erfolgssound kommen
   - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte
@@ -220,5 +217,7 @@ reset-button:
 
 - Redeem refresh button einbauen
 - "Reset current" Button soll nur sichtbar sein, wenn der Progress der aktuellen activity größer 0
+
+- Bei Fehler: richtigen Button aufleuchten lassen als hilfe
 
 # most important

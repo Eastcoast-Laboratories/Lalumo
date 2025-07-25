@@ -2065,12 +2065,6 @@ export function app() {
       
       console.log('[REDEEM] Code format valid - normalized: ' + normalizedCode);
       
-      // Prüfen, ob der Benutzer seinen eigenen Code einlösen versucht
-      if (this.friendCode === this.referralCode) {
-        alert(this.$store.strings?.own_code_error || 'You cannot redeem your own referral code!');
-        return;
-      }
-      
       try {
         // API endpoint URL (relative to the app root)
         const apiUrl = `${config.API_BASE_URL}/referral.php`;
@@ -2090,17 +2084,10 @@ export function app() {
         // HTTP-Status prüfen
         if (!response.ok) {
           const data = await response.json();
-          if (response.status === 403) {
-            // 403 Forbidden - Benutzer versucht, eigenen Code einzulösen
-            const errorMessage = this.translateReferralMessage(data.error || 'you_cannot_redeem_your_own_referral_code');
-            alert(errorMessage);
-            return;
-          } else {
-            // Andere API-Fehler
-            const errorMessage = this.translateReferralMessage(data.error || 'redeem_failed');
-            alert(errorMessage);
-            return;
-          }
+          // Handle API errors
+          const errorMessage = this.translateReferralMessage(data.error || 'redeem_failed');
+          alert(errorMessage);
+          return;
         }
         
         // Erfolgreiche Antwort verarbeiten
