@@ -216,8 +216,10 @@ reset-button:
 - Webpack-Bundle-Analyzer verwenden um große Abhängigkeiten zu identifizieren
 
 - Redeem refresh button einbauen
-- "Reset current" Button soll nur sichtbar sein, wenn der Progress der aktuellen activity größer 0
 
 - Bei Fehler: richtigen Button aufleuchten lassen als hilfe
 
 # most important
+- im web zeigt er die landscape warnung an, dass man sein gerät drehen soll. die warnung darf nur auf android oder ios kommen, auch im browser auf den geräten
+
+- die hilfstexte sollen beim ersten mal öffnen jeder aktivity oben kommen

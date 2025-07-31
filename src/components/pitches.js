@@ -403,7 +403,7 @@ export function pitches() {
         this.setMode('main');
       });
       
-      // Show welcome message with the mascot based on language preference
+      // Show help message based on language preference
       setTimeout(() => {
         this.showContextMessage();
       }, 1000);
@@ -1788,7 +1788,7 @@ export function pitches() {
     },
     
     /**
-     * Shows context-specific messages based on current activity and stage
+     * Shows context-specific introMessages based on current activity and stage
      * Displays instructions and guidance to the user via the mascot
      * @activity common
      * @used-by all activities
@@ -2071,6 +2071,15 @@ export function pitches() {
           'en': 'Listen carefully and remember the melody! Can you play it back?',
           'de': 'Höre genau hin und merke dir die Melodie! Kannst du sie nachspielen?'
         },
+        '2_2_chords_stable_unstable': {
+          'en': 'Listen to the chord, does it sound stable or unstable? Click on the matching part of the forest',
+          'de': 'Höre dir den Akkord an, klingt er stabil oder instabil? Klicke auf die passende Seite im Wald'
+        },
+
+        '2_5_chords_characters': {
+          'en': 'Listen to the chord and match it to the right character!',
+          'de': 'Höre dir die Chordart an und wähle das passende Tier!'
+        }
       };
       
       // Find the right message for the activity and language
