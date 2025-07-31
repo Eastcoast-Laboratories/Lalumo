@@ -1788,30 +1788,28 @@ export function pitches() {
     },
     
     /**
-     * Shows context-specific introMessages based on current activity and stage
-     * Displays instructions and guidance to the user via the mascot
+     * Shows context-specific messages based on current activity and stage
+     * For complex context-dependent messages. Simple intro messages use showActivityIntroMessage()
      * @activity common
-     * @used-by all activities
+     * @used-by activities with complex context logic
      */
     showContextMessage() {
-      let message = '';
       const language = localStorage.getItem('lalumo_language') || 'english';
+      let message = '';
       
-      // Provide context-specific instructions based on current mode
+      // Handle activities with complex context-dependent logic
       if (this.mode === '1_1_pitches_high_or_low') {
         // For the High or Low activity, show different instructions based on the current stage
         const stage = currentHighOrLowStage(this);
-        console.log('Showing context message for High or Low stage:', stage);
+        console.log('LOG_CONTEXT_MESSAGE: Showing context message for High or Low stage:', stage);
         
         // Get the appropriate message based on stage and language
         if (this.$store.strings) {
-          // high_or_low_intro_stage1, high_or_low_intro_stage2, high_or_low_intro_stage3, high_or_low_intro_stage4, high_or_low_intro_stage5
           const stageKey = `high_or_low_intro_stage${stage}`;
           message = this.$store.strings[stageKey];
         }
         
-        // TODO: no Fallbacks if string is not found
-        // add this to strings.xml
+        // Fallback messages if strings.xml not available
         if (!message) {
           switch(stage) {
             case 1:
@@ -1831,8 +1829,13 @@ export function pitches() {
               break;
           }
         }
+        
+        // Show context-specific message
+        if (message) {
+          window.showMascotMessage(message, this.mode + '_stage' + stage, 0.5, this);
+        }
       } else if (this.mode === '1_2_pitches_match-sounds') {
-        // TODO: use match_sounds_practice from strings.xml
+        // Context-dependent message based on game mode
         if (!this.gameMode) {
           message = language === 'german' ? 
             'Klicke auf die Bilder zum Üben. Drücke ▶️ um das Spiel zu starten!' : 
@@ -1842,11 +1845,12 @@ export function pitches() {
             'Höre zu und wähle das richtige Bild!' : 
             'Listen and choose the right picture!';
         }
-      } else if (this.mode === '1_4_pitches_does-it-sound-right') {
-        message = language === 'german' ? 
-          'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?' : 
-          'Listen to the melody! Does it sound right? Or is there a wrong note?';
+        
+        if (message) {
+          window.showMascotMessage(message, this.mode + '_' + (this.gameMode ? 'game' : 'practice'), 0.5, this);
+        }
       } else if (this.mode === '1_5_pitches_memory-game') {
+        // Context-dependent message based on free play mode
         if (this.memoryFreePlay) {
           message = language === 'german' ? 
             'Drücke frei auf die Tasten zum Üben. Drücke ▶️ um das Spiel zu starten!' : 
@@ -1856,15 +1860,14 @@ export function pitches() {
             'Höre dir die Melodie an und tippe dann auf die farbigen Tasten in der gleichen Reihenfolge!' : 
             'Listen to the melody, then tap the colored keys in the same order!';
         }
-      } else if (this.mode === '2_5_chords_characters') {
-        message = language === 'german' ? 
-          'Jede Chordart hat ihre eigene Persönlichkeit! Höre dir die Chordart an und wähle das passende Bild!' : 
-          'Each chord type has its own personality! Listen to the chord and match it to the right character!';
-      }
-      
-      // Show the message using the existing function
-      if (message) {
-        window.showMascotMessage(message, this.mode, 0.5, this);
+        
+        if (message) {
+          window.showMascotMessage(message, this.mode + '_' + (this.memoryFreePlay ? 'freeplay' : 'game'), 0.5, this);
+        }
+      } else {
+        // For activities without complex context logic, use the central intro message function
+        console.log('LOG_CONTEXT_MESSAGE: Using central intro message for activity:', this.mode);
+        window.showActivityIntroMessage(this.mode, this, 2);
       }
     },
     
@@ -2043,53 +2046,12 @@ export function pitches() {
     
     /**
      * Shows the appropriate introduction message for an activity
+     * @deprecated Use window.showActivityIntroMessage() from feedback.js instead
      * @param {string} activityMode - The identifier of the activity
      */
     showActivityIntroMessage(activityMode) {
-      // Get the current language
-      const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
-      
-      // Define all intro messages for different activities
-      const introMessages = {
-        '1_1_pitches_high_or_low': {
-          'en': 'Listen to the Note and choose if it is of a high or low pitch!',
-          'de': 'Höre dir die Note an und wähle, ob sie hoch oder tief ist!'
-        },
-        '1_2_pitches_match-sounds': {
-          'en': 'Listen to the Melody and choose if it is ascending or descending!',
-          'de': 'Höre dir die Melodie an und wähle, ob sie auf- oder absteigend ist!'
-        },
-        '1_3_pitches_draw': {
-          'en': 'Draw and listen – your line becomes music!',
-          'de': 'Male und hör zu – deine Linie wird zu Musik!'
-        },
-        '1_4_pitches_does-it-sound-right': {
-          'en': 'Listen to the melody! Does it sound right? Or is there a wrong note?',
-          'de': 'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?'
-        },
-        '1_5_pitches_memory': {
-          'en': 'Listen carefully and remember the melody! Can you play it back?',
-          'de': 'Höre genau hin und merke dir die Melodie! Kannst du sie nachspielen?'
-        },
-        '2_2_chords_stable_unstable': {
-          'en': 'Listen to the chord, does it sound stable or unstable? Click on the matching part of the forest',
-          'de': 'Höre dir den Akkord an, klingt er stabil oder instabil? Klicke auf die passende Seite im Wald'
-        },
-
-        '2_5_chords_characters': {
-          'en': 'Listen to the chord and match it to the right character!',
-          'de': 'Höre dir die Chordart an und wähle das passende Tier!'
-        }
-      };
-      
-      // Find the right message for the activity and language
-      const messages = introMessages[activityMode] || introMessages['1_1_pitches_high_or_low'];
-      const message = messages[language] || messages['en'];
-      
-      // Show the message with activity ID to prevent duplication
-      // Generate a unique ID for this activity using the current mode
-      const activityId = '1_' + this.mode;
-      window.showMascotMessage(message, activityId, 2, this);
+      console.warn('DEPRECATED: pitches.showActivityIntroMessage is deprecated. Use window.showActivityIntroMessage() instead');
+      window.showActivityIntroMessage(activityMode, this, 2);
     },
     
     /**

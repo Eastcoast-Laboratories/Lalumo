@@ -116,7 +116,7 @@ export function setupHighOrLowMode_1_1(component) {
   console.log('High or Low game reset, gameStarted:', component.gameStarted);
   
   // Show intro message immediately when entering the activity
-  component.showActivityIntroMessage('1_1_pitches_high_or_low');
+  window.showActivityIntroMessage('1_1_pitches_high_or_low', component, 3);
 }
 
 

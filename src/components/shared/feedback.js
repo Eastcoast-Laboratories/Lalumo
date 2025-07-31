@@ -58,6 +58,64 @@ export function showMascotMessage(message, activityId = null, delaySeconds = 2, 
   }
 }
 
+/**
+ * Show activity-specific introduction message
+ * Centralized function to handle all intro messages across activities
+ * @param {string} activityMode - The activity mode identifier (e.g., '1_1_pitches_high_or_low')
+ * @param {Object} component - The Alpine.js component instance (optional)
+ * @param {number} delaySeconds - Delay before hiding message (default: 3)
+ */
+export function showActivityIntroMessage(activityMode, component = null, delaySeconds = 3) {
+  console.log('LOG_INTRO_MESSAGE: Showing intro for activity:', activityMode);
+  
+  // Get the current language
+  const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+  
+  // Define all intro messages for different activities
+  const introMessages = {
+    '1_1_pitches_high_or_low': {
+      'en': 'Listen to the Note and choose if it is of a high or low pitch!',
+      'de': 'Höre dir die Note an und wähle, ob sie hoch oder tief ist!'
+    },
+    '1_2_pitches_match-sounds': {
+      'en': 'Listen to the Melody and choose if it is ascending or descending!',
+      'de': 'Höre dir die Melodie an und wähle, ob sie auf- oder absteigend ist!'
+    },
+    '1_3_pitches_draw': {
+      'en': 'Draw and listen – your line becomes music!',
+      'de': 'Male und hör zu – deine Linie wird zu Musik!'
+    },
+    '1_4_pitches_does-it-sound-right': {
+      'en': 'Listen to the melody! Does it sound right? Or is there a wrong note?',
+      'de': 'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?'
+    },
+    '1_5_pitches_memory': {
+      'en': 'Listen carefully and remember the melody! Can you play it back?',
+      'de': 'Höre genau hin und merke dir die Melodie! Kannst du sie nachspielen?'
+    },
+    '2_2_chords_stable_unstable': {
+      'en': 'Listen to the chord, does it sound stable or unstable? Click on the matching part of the forest',
+      'de': 'Höre dir den Akkord an, klingt er stabil oder instabil? Klicke auf die passende Seite im Wald'
+    },
+    '2_5_chords_characters': {
+      'en': 'Listen to the chord and match it to the right character!',
+      'de': 'Höre dir die Chordart an und wähle das passende Tier!'
+    }
+  };
+  
+  // Find the right message for the activity and language
+  const messages = introMessages[activityMode] || introMessages['1_1_pitches_high_or_low'];
+  const message = messages[language] || messages['en'];
+  
+  // Show the message using the existing showMascotMessage function
+  // This automatically respects the $store.mascotSettings.showHelpMessages setting
+  if (message) {
+    showMascotMessage(message, activityMode, delaySeconds, component);
+  } else {
+    console.warn('LOG_INTRO_MESSAGE: No intro message found for activity:', activityMode);
+  }
+}
+
 // Initialize the feedback functionality when Alpine is ready
 document.addEventListener('alpine:init', () => {
   // Initialize the feedback store if it doesn't exist
@@ -68,8 +126,9 @@ document.addEventListener('alpine:init', () => {
     });
   }
   
-  // Make showMascotMessage available globally
+  // Make feedback functions available globally
   window.showMascotMessage = showMascotMessage;
+  window.showActivityIntroMessage = showActivityIntroMessage;
 });
 
 /**
