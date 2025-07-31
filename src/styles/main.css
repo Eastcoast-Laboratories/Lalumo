@@ -265,20 +265,20 @@ html body.dev-mode .debug-element {
   background-color: #0277bd;
 }
 
-.mascot-welcome {
+.welcome-message {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 1rem 0;
 }
 
-.mascot-welcome .mascot {
+.welcome-message .intro-message {
   width: 100px;
   height: 100px;
   margin-bottom: 1rem;
 }
 
-.mascot-welcome p {
+.welcome-message p {
   font-size: 1.1rem;
   margin: 0.5rem 0;
 }
@@ -687,8 +687,8 @@ input {
   animation: fade-in 0.5s ease-out;
 }
 
-/* Mascot and speech bubble */
-.mascot-container {
+/* Help and speech bubble */
+.welcome-container {
   position: relative;
   display: flex;
   align-items: center;
@@ -699,12 +699,12 @@ input {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.mascot-wrapper {
+.welcome-wrapper {
   animation: bob 3s infinite alternate ease-in-out;
   margin-right: 1rem;
 }
 
-.mascot {
+.intro-message {
   width: 100px;
   height: auto; /* Let height adjust to maintain aspect ratio */
   cursor: pointer;
@@ -1744,7 +1744,7 @@ section h2 {
   max-width: 90%;
   font-weight: bold;
   animation: fade-in 0.3s ease;
-  z-index: 9999; /* well above mascot message */
+  z-index: 9999; /* well above intro-message message */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 

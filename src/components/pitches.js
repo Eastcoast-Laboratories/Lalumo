@@ -74,11 +74,11 @@ export function pitches() {
     showFeedback: false, // Controls visibility of the unified feedback message
     feedbackMessage: '', // The message to show in the unified feedback system
     helpMessage: '',
-    showMascot: false,
+    showHelp: false,
     melodyTimeouts: [], // Array für Timeout-IDs der Melodiesequenzen
-    mascotSettings: {
+    helpSettings: {
       showHelpMessages: true,     // Whether to show help messages
-      disableTTS: true,          // Whether to disable TTS for mascot messages
+      disableTTS: true,          // Whether to disable TTS for intro messages
       seenActivityMessages: {},   // Track which activities have shown the message
     },
     currentHighlightedNote: null, // For highlighting piano keys during playback
@@ -315,24 +315,24 @@ export function pitches() {
         // Fallback: Verzögerte Initialisierung der Web-Sprachsynthese für bessere Kompatibilität
         this.initSpeechSynthesis();
         
-        // Load mascot message settings from localStorage
+        // Load intro message settings from localStorage
         try {
-          const savedMascotSettings = localStorage.getItem('lalumo_mascot_settings');
-          if (savedMascotSettings) {
-            const loadedSettings = JSON.parse(savedMascotSettings);
+          const savedHelpSettings = localStorage.getItem('lalumo_help_settings');
+          if (savedHelpSettings) {
+            const loadedSettings = JSON.parse(savedHelpSettings);
             // Merge loaded settings with defaults to ensure new flags are set
-            this.mascotSettings = {
-              ...this.mascotSettings,  // Default values
+            this.helpSettings = {
+              ...this.helpSettings,  // Default values
               ...loadedSettings        // Saved values override defaults
             };
             // Reset seenActivityMessages on every app start
-            this.$store.mascotSettings.seenActivityMessages = {};
-            console.log('Loaded mascot settings and reset seen messages:', this.mascotSettings);
+            this.$store.helpSettings.seenActivityMessages = {};
+            console.log('Loaded help settings and reset seen messages:', this.helpSettings);
           }
           // Always save back to localStorage to persist any new default flags
-          localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
+          localStorage.setItem('lalumo_help_settings', JSON.stringify(this.helpSettings));
         } catch (error) {
-          console.error('Error loading mascot settings:', error);
+          console.error('Error loading help settings:', error);
           // Keep default settings
         }
         
@@ -523,7 +523,7 @@ export function pitches() {
         this.helpMessage = helpText;
         // Use debug logging instead of direct console.log
         import('../utils/debug').then(({ debugLog }) => {
-          debugLog('TOUCH', `Showing mascot message: ${helpText}`);
+          debugLog('TOUCH', `Showing intro message: ${helpText}`);
         });
         
         // Use TTS if available
@@ -595,7 +595,7 @@ export function pitches() {
         
         // Always set the message, even if a fallback is used
         this.helpMessage = helpText;
-        console.log('Mascot message set to:', helpText);
+        console.log('Help message set to:', helpText);
         
         // Use TTS if available
         try {
@@ -638,23 +638,23 @@ export function pitches() {
     setMode(newMode) {
       console.log('MODSWITCH: Changing mode from', this.mode, 'to', newMode);
   
-      // Clear any existing mascot timers and hide message when switching activities
-      if (this.mascotShowTimer) {
-        clearTimeout(this.mascotShowTimer);
-        this.mascotShowTimer = null;
-        console.log("MASCOT_CLEAR: Cleared show timer on mode switch");
+      // Clear any existing intro message timers and hide message when switching activities
+      if (this.helpShowTimer) {
+        clearTimeout(this.helpShowTimer);
+        this.helpShowTimer = null;
+        console.log("INTROMESSAGE_CLEAR: Cleared show timer on mode switch");
       }
-      if (this.mascotHideTimer) {
-        clearTimeout(this.mascotHideTimer);
-        this.mascotHideTimer = null;
-        console.log("MASCOT_CLEAR: Cleared hide timer on mode switch");
+      if (this.introMessageHideTimer) {
+        clearTimeout(this.introMessageHideTimer);
+        this.introMessageHideTimer = null;
+        console.log("INTROMESSAGE_CLEAR: Cleared hide timer on mode switch");
       }
       
       // Clear any active melody timeouts when changing modes
       this.clearMelodyTimeouts();
-      // Hide any currently visible mascot message
-      this.showMascot = false;
-      console.log("MASCOT_CLEAR: Hidden mascot on mode switch to:", newMode);
+      // Hide any currently visible intro message
+      this.showHelp = false;
+      console.log("INTROMESSAGE_CLEAR: Hidden intro message on mode switch to:", newMode);
       this.mode = newMode;
       this.resetState();
       
@@ -688,7 +688,7 @@ export function pitches() {
         this.setupMemoryMode_1_5(false); // Setup without playing sound
       }
       
-      // Always show the mascot message for the current mode
+      // Always show the intro message for the current mode
       this.showContextMessage(); // Use our context-aware message function
       
       // Update progress tracking
@@ -1265,23 +1265,34 @@ export function pitches() {
           this.playHighOrLowTone();
         }, 2000);
 
+        let feedbackMessage;
         if (stage >= 3) {
           // For comparison stages
-          this.feedback = (this.$store.strings?.high_or_low_wrong_comparison || 'Try again. The second tone was {0}.')
+          feedbackMessage = (this.$store.strings?.high_or_low_wrong_comparison || 'Try again. The second tone was {0}.')
             .replace('{0}', correctHiOrLowAnswer === 'high' ? 
               (this.$store.strings?.high_choice || 'higher') : 
               (this.$store.strings?.low_choice || 'lower'));
         } else {
           // For single tone stages
-          this.feedback = (this.$store.strings?.high_or_low_wrong_single || 'Try again. The tone was {0}.')
+          feedbackMessage = (this.$store.strings?.high_or_low_wrong_single || 'Try again. The tone was {0}.')
             .replace('{0}', correctHiOrLowAnswer === 'high' ? 
               (this.$store.strings?.high_choice || 'high') : 
               (this.$store.strings?.low_choice || 'low'));
         }
+        
+        // Show feedback using global system
+        console.log('HIGH_OR_LOW_FEEDBACK: Showing error message:', feedbackMessage);
+        const store = window.Alpine?.store;
+        if (store && store.feedback) {
+          store.feedback.isCorrect = false;
+        }
+        window.showFeedbackMessage(feedbackMessage, {
+      activityId: '1_1_pitches_high_or_low',
+      isIntroMessage: true,
+      delaySeconds: 3,
+      component: this
+    });
       }
-      
-      // Show feedback
-      this.showFeedback = true;
       
       // Clear any existing timer
       if (this.highOrLowFeedbackTimer) {
@@ -1290,7 +1301,7 @@ export function pitches() {
       
       // Hide feedback after a delay
       this.highOrLowFeedbackTimer = setTimeout(() => {
-        this.showFeedback = false;
+        // Local feedback removed - using global feedback system
         
         // Generate a new tone after feedback is hidden
         this.generateHighOrLowTone();
@@ -1729,8 +1740,13 @@ export function pitches() {
         this.correctAnswer = 'wave'; // PATTERN_FORCE_DEBUG: Force wave pattern next
         
         unlocked = true;
-        const message = window.Alpine?.store('strings')?.mascot_wave_unlocked || 'Great! You unlocked wavy melodies! :wave:';
-        window.showMascotMessage(message, null, 2, this);
+        const message = window.Alpine?.store('strings')?.feedback_wave_unlocked || 'Great! You unlocked wavy melodies! :wave:';
+        window.showFeedbackMessage(message, {
+      activityId: null,
+      isIntroMessage: true,
+      delaySeconds: 2,
+      component: this
+    });
       }
       
       // Unlock jump pattern at 20 correct answers  
@@ -1739,8 +1755,13 @@ export function pitches() {
         this.correctAnswer = 'jump'; // PATTERN_FORCE_DEBUG: Force jump pattern next
         
         unlocked = true;
-        const message = window.Alpine?.store('strings')?.mascot_jump_unlocked || 'Amazing! You unlocked random jump melodies! :frog:';
-        window.showMascotMessage(message, null, 2, this);
+        const message = window.Alpine?.store('strings')?.feedback_jump_unlocked || 'Amazing! You unlocked random jump melodies! :frog:';
+        window.showFeedbackMessage(message, {
+      activityId: null,
+      isIntroMessage: true,
+      delaySeconds: 2,
+      component: this
+    });
       }
       
       // Wenn ein neues Pattern freigeschaltet wurde und wir im Match-Sounds-Modus sind,
@@ -1832,7 +1853,12 @@ export function pitches() {
         
         // Show context-specific message
         if (message) {
-          window.showMascotMessage(message, this.mode + '_stage' + stage, 0.5, this);
+          window.showFeedbackMessage(message, {
+      activityId: this.mode + '_stage' + stage,
+      isIntroMessage: true,
+      delaySeconds: 0.5,
+      component: this
+    });
         }
       } else if (this.mode === '1_2_pitches_match-sounds') {
         // Context-dependent message based on game mode
@@ -1847,7 +1873,12 @@ export function pitches() {
         }
         
         if (message) {
-          window.showMascotMessage(message, this.mode + '_' + (this.gameMode ? 'game' : 'practice'), 0.5, this);
+          window.showFeedbackMessage(message, {
+      activityId: this.mode + '_' + (this.gameMode ? 'game' : 'practice'),
+      isIntroMessage: true,
+      delaySeconds: 0.5,
+      component: this
+    });
         }
       } else if (this.mode === '1_5_pitches_memory-game') {
         // Context-dependent message based on free play mode
@@ -1862,7 +1893,12 @@ export function pitches() {
         }
         
         if (message) {
-          window.showMascotMessage(message, this.mode + '_' + (this.memoryFreePlay ? 'freeplay' : 'game'), 0.5, this);
+          window.showFeedbackMessage(message, {
+      activityId: this.mode + '_' + (this.memoryFreePlay ? 'freeplay' : 'game'),
+      isIntroMessage: true,
+      delaySeconds: 0.5,
+      component: this
+    });
         }
       } else {
         // For activities without complex context logic, use the central intro message function
@@ -1986,23 +2022,23 @@ export function pitches() {
     },
     
     /**
-     * Hide mascot message and save preference to not show help messages
+     * Hide intro message and save preference to not show help messages
      * @activity common
      * @used-by all activities
      */
-    hideAndSaveMascotPreference() {
-      // Hide the mascot message
-      this.showMascot = false;
+    hideAndSaveHelpPreference() {
+      // Hide the intro message
+      this.showHelp = false;
       
       // Update settings to not show help messages
-      this.$store.mascotSettings.showHelpMessages = false;
+      this.$store.helpSettings.showHelpMessages = false;
       
       // Save the settings to localStorage
       try {
-        localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
-        console.log('Saved mascot settings, help messages disabled');
+        localStorage.setItem('lalumo_help_settings', JSON.stringify(this.helpSettings));
+        console.log('Saved help settings, help messages disabled');
       } catch (error) {
-        console.error('Error saving mascot settings:', error);
+        console.error('Error saving help settings:', error);
       }
     },
     
@@ -2014,34 +2050,39 @@ export function pitches() {
     toggleHelpMessages(show = null) {
       // If no value provided, toggle the current value
       if (show === null) {
-        this.$store.mascotSettings.showHelpMessages = !this.$store.mascotSettings.showHelpMessages;
+        this.$store.helpSettings.showHelpMessages = !this.$store.helpSettings.showHelpMessages;
       } else {
-        this.$store.mascotSettings.showHelpMessages = show;
+        this.$store.helpSettings.showHelpMessages = show;
       }
       
       // When enabling, clear the history of seen messages to allow them to appear again
-      if (this.$store.mascotSettings.showHelpMessages) {
-        this.$store.mascotSettings.seenActivityMessages = {};
+      if (this.$store.helpSettings.showHelpMessages) {
+        this.$store.helpSettings.seenActivityMessages = {};
       }
       
       // Save settings to localStorage
       try {
-        localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
-        console.log(`Help messages ${this.$store.mascotSettings.showHelpMessages ? 'enabled' : 'disabled'}`);
+        localStorage.setItem('lalumo_help_settings', JSON.stringify(this.helpSettings));
+        console.log(`Help messages ${this.$store.helpSettings.showHelpMessages ? 'enabled' : 'disabled'}`);
       } catch (error) {
-        console.error('Error saving mascot settings:', error);
+        console.error('Error saving help settings:', error);
       }
       
-      return this.$store.mascotSettings.showHelpMessages;
+      return this.$store.helpSettings.showHelpMessages;
     },
     
     /**
-     * @deprecated Use window.showMascotMessage() instead
+     * @deprecated Use window.showFeedbackMessage() instead
      * This method is kept for backward compatibility but now forwards to the global function
      */
-    showMascotMessage(message, activityId = null, delaySeconds = 2) {
-      console.warn('DEPRECATED: showMascotMessage is deprecated. Use window.showMascotMessage() instead');
-      window.showMascotMessage(message, activityId, delaySeconds, this);
+    showFeedbackMessage(message, activityId = null, delaySeconds = 2) {
+      console.warn('DEPRECATED: showFeedbackMessage is deprecated. Use window.showFeedbackMessage() instead');
+      window.showFeedbackMessage(message, {
+      activityId: activityId,
+      isIntroMessage: true,
+      delaySeconds: delaySeconds,
+      component: this
+    });
     },
     
     /**
@@ -3531,7 +3572,7 @@ export function pitches() {
       }
       
       // Display feedback to the user
-      this.showFeedbackMessage(feedback, 3000);
+      showFeedbackMessage(feedback, 3000);
       
       // Generate a new reference melody only if the match was perfect (100%)
       setTimeout(() => {
@@ -3548,33 +3589,6 @@ export function pitches() {
           this.updateDrawingModeUI();
         }
       }, 3500);
-    },
-    
-    /**
-     * Display feedback to the user
-     * @param {string} message - The feedback message
-     * @param {number} duration - How long to show the message (ms)
-     */
-    showFeedbackMessage(message, duration = 2000) {
-      // Create or update feedback element
-      let feedbackElement = document.querySelector('.melody-feedback');
-      
-      if (!feedbackElement) {
-        feedbackElement = document.createElement('div');
-        feedbackElement.className = 'melody-feedback';
-        const container = document.querySelector('.drawing-container');
-        if (container) {
-          container.parentNode.insertBefore(feedbackElement, container.nextSibling);
-        }
-      }
-      
-      feedbackElement.textContent = message;
-      feedbackElement.style.opacity = '1';
-      
-      // Hide the feedback after the specified duration
-      setTimeout(() => {
-        feedbackElement.style.opacity = '0';
-      }, duration);
     },
     
     /**
@@ -3829,8 +3843,15 @@ export function pitches() {
         // Play error sound using the central audio engine
         audioEngine.playNote('try_again', 1.0);
         
-        this.showFeedback = true;
-        this.feedback = (this.$store.strings?.memory_incorrect || 'Let\'s try again. Listen carefully!');
+        // Show feedback using global system
+        const errorMessage = this.$store.strings?.memory_incorrect || 'Let\'s try again. Listen carefully!';
+        console.log('MEMORY_GAME_FEEDBACK: Showing error message:', errorMessage);
+        window.showFeedbackMessage(errorMessage, {
+      activityId: '1_5_pitches_memory',
+      isIntroMessage: true,
+      delaySeconds: 3,
+      component: this
+    });
         
         // Enable highlighting for the next playback after an error
         this.showMemoryHighlighting = true;
@@ -3838,7 +3859,7 @@ export function pitches() {
         
         // Reset after a delay
         setTimeout(() => {
-          this.showFeedback = false;
+          // Local feedback removed - using global feedback system
           this.userSequence = [];
           this.playMemorySequence();
         }, 2000);
@@ -3880,10 +3901,23 @@ export function pitches() {
         }
       }
       
-      this.showFeedback = true;
-      this.feedback = isCorrect ? 
+      // Show feedback using global system
+      const feedbackMessage = isCorrect ? 
         (this.$store.strings?.memory_correct || 'Amazing memory! You got it right!') : 
         (this.$store.strings?.memory_incorrect || 'Let\'s try again. Listen carefully!');
+      console.log('MEMORY_GAME_FEEDBACK: Showing result message:', feedbackMessage, 'isCorrect:', isCorrect);
+      
+      // Set correct/incorrect state in global store
+      const store = window.Alpine?.store;
+      if (store && store.feedback) {
+        store.feedback.isCorrect = isCorrect;
+      }
+      window.showFeedbackMessage(feedbackMessage, {
+      activityId: '1_5_pitches_memory',
+      isIntroMessage: true,
+      delaySeconds: 3,
+      component: this
+    });
       
       // Play feedback sound using the central audio engine
       if (isCorrect) {
@@ -3927,7 +3961,7 @@ export function pitches() {
       
       // Reset after feedback
       setTimeout(() => {
-        this.showFeedback = false;
+        // Local feedback removed - using global feedback system
         
         if (isCorrect) {
           // Play the new melody automatically after 2 seconds
@@ -4105,8 +4139,13 @@ export function pitches() {
       // No need to load from separate localStorage anymore
       console.log(`SOUND JUDGMENT: Current level ${get_1_4_level(this)} (progress: ${this.progress['1_4'] || 0})`);
       
-      // Show mascot message first (moved from playback completion)
-      window.showMascotMessage(introMessage, null, 2, this);
+      // Show intro message first (moved from playback completion)
+      window.showFeedbackMessage(introMessage, {
+      activityId: null,
+      isIntroMessage: true,
+      delaySeconds: 2,
+      component: this
+    });
       
       // Generate a melody in preparation for game mode
       this.generateSoundHighOrLowMelody();
@@ -4155,7 +4194,12 @@ export function pitches() {
         // }
         
         // // Show the instrument-specific message
-        // window.showMascotMessage(instrumentMessage, null, 2, this);
+        // window.showFeedbackMessage(instrumentMessage, {
+        //   activityId: null,
+        //   isIntroMessage: true,
+        //   delaySeconds: 2,
+        //   component: this
+        // });
         
         // Generate a melody without wrong notes for practice mode
         this.generatePracticeMelody();
@@ -4176,7 +4220,12 @@ export function pitches() {
           : 'Listen to the melody! Does it sound right? Or is there a wrong note?';
         
         // Show the game mode message
-        window.showMascotMessage(gameMessage, null, 2, this);
+        window.showFeedbackMessage(gameMessage, {
+      activityId: null,
+      isIntroMessage: true,
+      delaySeconds: 2,
+      component: this
+    });
         
         // Update the progress display now that we're in game mode
         this.update_progress_display();
@@ -5152,8 +5201,13 @@ export function pitches() {
             levelUpMessage = `Great! You've reached level ${newLevel}!`;
           }
           
-          // Show mascot message for level up
-          window.showMascotMessage(levelUpMessage, null, 2, this);
+          // Show intro message for level up
+          window.showFeedbackMessage(levelUpMessage, {
+      activityId: null,
+      isIntroMessage: true,
+      delaySeconds: 2,
+      component: this
+    });
           
           // Special animation for level up (bigger rainbow)
           showBigRainbowSuccess();

@@ -128,9 +128,31 @@ export function checkColorAnswer(component, selectedColor) {
   
   if (isCorrect) {
     component.correctAnswers++;
-    component.feedbackMessage = 'Great job! That\'s the right color!';
+    const successMessage = 'Great job! That\'s the right color!';
+    console.log('CHORD_2_1_FEEDBACK: Showing success message:', successMessage);
+    const store = window.Alpine?.store;
+    if (store && store.feedback) {
+      store.feedback.isCorrect = true;
+    }
+    window.showFeedbackMessage(successMessage, {
+      activityId: '2_1_chords_color_matching',
+      isIntroMessage: true,
+      delaySeconds: 3,
+      component: component
+    });
   } else {
-    component.feedbackMessage = 'Not quite! Let\'s try another one.';
+    const errorMessage = 'Not quite! Let\'s try another one.';
+    console.log('CHORD_2_1_FEEDBACK: Showing error message:', errorMessage);
+    const store = window.Alpine?.store;
+    if (store && store.feedback) {
+      store.feedback.isCorrect = false;
+    }
+    window.showFeedbackMessage(errorMessage, {
+      activityId: '2_1_chords_color_matching',
+      isIntroMessage: true,
+      delaySeconds: 3,
+      component: component
+    });
   }
   
   // Save progress to localStorage
@@ -140,9 +162,8 @@ export function checkColorAnswer(component, selectedColor) {
     debugLog('CHORDS', `Saved progress for ${component.mode}: ${component.totalQuestions}`);
   }
   
-  component.showFeedback = true;
+  // Local feedback removed - using global feedback system
   setTimeout(() => {
-    component.showFeedback = false;
     newColorMatchingQuestion(component);
   }, 2000);
 }

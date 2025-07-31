@@ -57,17 +57,17 @@
     
     <h3 x-text="$store.strings?.help_messages || 'Help Messages'"></h3>
     <div class="help-messages-section">
-      <p x-text="$store.strings?.help_messages_desc || 'Control when mascot help messages appear:'"></p>
+      <p x-text="$store.strings?.help_messages_desc || 'Control when help messages appear:'"></p>
       <div class="help-options">
         <div class="toggle-container">
           <button 
             class="toggle-button" 
-            :class="{'active': $store.mascotSettings.showHelpMessages}" 
-            @click="$store.mascotSettings.showHelpMessages = !$store.mascotSettings.showHelpMessages" 
-            :aria-label="$store.mascotSettings.showHelpMessages ? 'Disable help messages' : 'Enable help messages'" 
-            aria-a11y="mascot_help_toggle">
-            <span class="toggle-slider" :class="{'active': $store.mascotSettings.showHelpMessages}"></span>
-            <span class="toggle-text" x-text="$store.mascotSettings.showHelpMessages ? ($store.strings?.help_messages_on || 'Show Help Messages') : ($store.strings?.help_messages_off || 'Help Messages Hidden')"></span>
+            :class="{'active': $store.helpSettings.showHelpMessages}" 
+            @click="$store.helpSettings.showHelpMessages = !$store.helpSettings.showHelpMessages" 
+            :aria-label="$store.helpSettings.showHelpMessages ? 'Disable help messages' : 'Enable help messages'" 
+            aria-a11y="help__toggle">
+            <span class="toggle-slider" :class="{'active': $store.helpSettings.showHelpMessages}"></span>
+            <span class="toggle-text" x-text="$store.helpSettings.showHelpMessages ? ($store.strings?.help_messages_on || 'Show Help Messages') : ($store.strings?.help_messages_off || 'Help Messages Hidden')"></span>
           </button>
         </div>
       </div>

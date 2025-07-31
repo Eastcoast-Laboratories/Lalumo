@@ -67,8 +67,8 @@ Alpine.store('feedback', {
   }
 });
 
-// Initialize global mascot settings store
-Alpine.store('mascotSettings', {
+// Initialize global help settings store
+Alpine.store('helpSettings', {
   showHelpMessages: true,
   seenActivityMessages: {},
   disableTTS: true,
@@ -76,7 +76,7 @@ Alpine.store('mascotSettings', {
   // Load settings from localStorage
   init() {
     try {
-      const savedSettings = localStorage.getItem('lalumo_mascot_settings');
+      const savedSettings = localStorage.getItem('lalumo_help_settings');
       if (savedSettings) {
         const loadedSettings = JSON.parse(savedSettings);
         // Merge with defaults to ensure new flags are set
@@ -88,25 +88,25 @@ Alpine.store('mascotSettings', {
         });
         // Reset seen messages on app start
         this.seenActivityMessages = {};
-        debugLog('MASCOT_STORE', 'Loaded settings and reset seen messages', this);
+        debugLog('INTROMESSAGE_STORE', 'Loaded settings and reset seen messages', this);
       }
       this.save();
     } catch (error) {
-      debugLog(['MASCOT_STORE', 'ERROR'], `Error loading settings: ${error.message || error}`);
+      debugLog(['INTROMESSAGE_STORE', 'ERROR'], `Error loading settings: ${error.message || error}`);
     }
   },
   
   // Save settings to localStorage
   save() {
     try {
-      localStorage.setItem('lalumo_mascot_settings', JSON.stringify({
+      localStorage.setItem('lalumo_help_settings', JSON.stringify({
         showHelpMessages: this.showHelpMessages,
         seenActivityMessages: this.seenActivityMessages,
         disableTTS: this.disableTTS
       }));
-      debugLog('MASCOT_STORE', 'Settings saved');
+      debugLog('INTROMESSAGE_STORE', 'Settings saved');
     } catch (error) {
-      debugLog(['MASCOT_STORE', 'ERROR'], `Error saving settings: ${error.message || error}`);
+      debugLog(['INTROMESSAGE_STORE', 'ERROR'], `Error saving settings: ${error.message || error}`);
     }
   },
   
@@ -114,14 +114,14 @@ Alpine.store('mascotSettings', {
   toggleHelpMessages() {
     this.showHelpMessages = !this.showHelpMessages;
     this.save();
-    debugLog('MASCOT_STORE', `Help messages toggled: ${this.showHelpMessages}`);
+    debugLog('INTROMESSAGE_STORE', `Help messages toggled: ${this.showHelpMessages}`);
   },
   
   // Hide help messages (called by close button)
   hideHelpMessages() {
     this.showHelpMessages = false;
     this.save();
-    debugLog('MASCOT_STORE', 'Help messages disabled via close button');
+    debugLog('INTROMESSAGE_STORE', 'Help messages disabled via close button');
   }
 });
 
@@ -160,7 +160,7 @@ if (!window._alpineInitialized) {
 // Load HTML partials after Alpine is initialized
 loadHtmlPartials();
 
-// Initialize mascot settings after Alpine starts
-Alpine.store('mascotSettings').init();
+// Initialize help settings after Alpine starts
+Alpine.store('helpSettings').init();
 
 debugLog('App', 'Application started successfully');

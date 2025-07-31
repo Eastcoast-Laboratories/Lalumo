@@ -90,7 +90,7 @@
     
     /* Activity elements */
     .activity-container { padding: 12px; }
-    .mascot-welcome { display: flex; align-items: center; margin: 10px 0; }
+    .welcome-message { display: flex; align-items: center; margin: 10px 0; }
   </style>
   <!-- Scripts and more styles will be injected by webpack -->
   <!-- Cache busting wird durch webpack erledigt -->
@@ -535,7 +535,7 @@
           </div>
           
           <!-- Feedback message -->
-          <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+          <!-- Local feedback removed - using unified global feedback -->
         </div>
                 
         <!-- Matching Mode -->
@@ -595,7 +595,7 @@
             <p x-show="correctAnswersCount >= 20" x-text="$store.strings?.all_patterns_unlocked || 'All patterns unlocked! :celebration:'"></p>
           </div>
           
-          <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+          <!-- Local feedback removed - using unified global feedback -->
         </div>
         
         <!-- Drawing Mode -->
@@ -681,7 +681,7 @@
           </div>
           
           <!-- Feedback message -->
-          <div id="feedback_message_1_4_pitches" x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+          <!-- Local feedback removed - using unified global feedback -->
           
         </div>
         
@@ -716,7 +716,7 @@
             </template>
           </div>
           
-          <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+          <!-- Local feedback removed - using unified global feedback -->
         </div>
       </div>
     </section>
@@ -870,7 +870,7 @@
               </div>
             </div>
             
-            <div class="feedback-message" x-show="showStableUnstableFeedback" x-text="stableUnstableFeedback" :class="{'correct': $data.stableUnstableCorrect !== undefined ? $data.stableUnstableCorrect : false, 'incorrect': $data.stableUnstableCorrect !== undefined ? !$data.stableUnstableCorrect : false}"></div>
+            <!-- Local feedback removed - using unified global feedback -->
           </div>
         </div>
         
@@ -1067,7 +1067,9 @@
                
 
     <!-- Unified Feedback Message Container -->
-    <div class="feedback-message" id="unified-feedback-message" x-show="$store.feedback.showFeedback">
+    <div class="feedback-message" id="unified-feedback-message" 
+         x-show="$store.feedback.showFeedback" 
+         :class="{'correct': $store.feedback.isCorrect === true, 'incorrect': $store.feedback.isCorrect === false}">
       <p x-text="$store.feedback.feedbackMessage"></p>
     </div>
     

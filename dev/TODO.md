@@ -109,11 +109,9 @@ unter chrome auf dem handy android 15:
     - Sektionenkommentare zur besseren Navigation
     - nicht benutzte stile entfernen
 
-# mascot message:
-    - die richtige zugehörige mascot message überall soll direkt wenn man die activity öffnet kommen. im moment kommt die alte message, wo man vorher war in dem mascot message container
-    - es soll niemals eine mascot message starten, wenn man in irgendeiner activity auf den play button drückt
-    - die einstellungen haben erst nach einem neuladen effekt, ohne bleibt die message bleibt verschwunden
-    - in preferences ein kleines mascot bild neben die einstellung zum hiden
+# intro messages:
+    - es soll niemals eine intro message starten, wenn man in irgendeiner activity auf den play button drückt
+    - die einstellungen haben erst nach einem neuladen effekt, ohne bleibt die message bleibt verschwunde
     - hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
 
 - there is already the hash redirect, when coming from a referral, erweitere so dass die seite reachable wird via a hash-anchor-link: make this link go directly to the 1_1_pitches_high_or_low activity: https://lalumo.z11.de/#1_1
@@ -223,6 +221,10 @@ reset-button:
 - im web zeigt er die landscape warnung an, dass man sein gerät drehen soll. die warnung darf nur auf android oder ios kommen, auch im browser auf den geräten
 
 - Intro-Messages System vollständig implementieren und zentralisieren
+
+es soll keine funktionien mehr geben, die nur für eine activity gedacht sind. lösche diese und benutze nur die in settings, ich habe mascot überall umbenannt in helpmessage, feedback oder introMessage und  die showMascotMessage in showFeedbackMessage umbenannt und am besten bekommt die eine option, ob die message eine introMessage ist, oder nicht, wenn ja, dann kann man sie disablen mit den settings für introMessage
+
+erstelle einen prompt was jetztz genau zu tun ist
 
 Hauptziele:
 

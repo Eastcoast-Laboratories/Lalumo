@@ -113,10 +113,10 @@
     <string name="chords_2_5_master">You are Chords Master! 🎉</string>
 
     
-    <!-- Mascot Messages for Unlocks -->
-    <string name="mascot_wave_unlocked">Great! You unlocked wavy melodies! 🌊</string>
-    <string name="mascot_jump_unlocked">Amazing! You unlocked random jump melodies! 🐸</string>
-    <string name="mascot_all_unlocked">Fantastic! All melody patterns are now available! 🎉</string>
+    <!-- Help Messages for Unlocks -->
+    <string name="feedback_wave_unlocked">Great! You unlocked wavy melodies! 🌊</string>
+    <string name="feedback_jump_unlocked">Amazing! You unlocked random jump melodies! 🐸</string>
+    <string name="feedback_all_unlocked">Fantastic! All melody patterns are now available! 🎉</string>
     
     <!-- Player Settings -->
     <string name="player_settings">Player Settings</string>
@@ -135,7 +135,7 @@
     <string name="username_created">Your name is {username}. You can change this in the settings.</string>
     <string name="username_updated">Your name is {username}. You can change this in the settings.</string>
     <string name="help_messages">Help Messages</string>
-    <string name="help_messages_desc">Control when mascot help messages appear:</string>
+    <string name="help_messages_desc">Control when help messages appear:</string>
     <string name="help_messages_off">Help Messages Hidden</string>
     <string name="help_messages_on">Show Help Messages</string>
     
@@ -296,9 +296,20 @@
     <string name="high_or_low_intro_stage5">Listen to both tones! Is the second one higher or lower?</string>
 
     <!-- Activity Introduction Messages -->
+    <!-- Pitch Activities -->
+    <string name="intro_1_1_pitches_high_or_low">Listen to the Note and choose if it is of a high or low pitch!</string>
+    <string name="intro_1_2_pitches_match_sounds">Listen to the Melody and choose if it is ascending or descending!</string>
+    <string name="intro_1_3_pitches_draw">Draw and listen – your line becomes music!</string>
+    <string name="intro_1_4_pitches_does_it_sound_right">Listen to the melody! Does it sound right? Or is there a wrong note?</string>
+    <string name="intro_1_5_pitches_memory">Listen carefully and remember the melody! Can you play it back?</string>
+    
+    <!-- Chord Activities -->
+    <string name="intro_2_2_chords_stable_unstable">Listen to the chord, does it sound stable or unstable? Click on the matching part of the forest</string>
+    <string name="intro_2_5_chords_characters">Listen to the chord and match it to the right character!</string>
+    
+    <!-- Context-specific messages -->
     <string name="match_sounds_practice">Click on pictures to practice. Press ▶️ for the game!</string>
     <string name="match_sounds_game">Listen and choose the right picture!</string>
-    <string name="does_it_sound_right_intro">Listen to the melody! Does it sound right? Or is there a wrong note?</string>
     <string name="memory_practice">Press keys freely to practice. Press ▶️ for the game!</string>
     <string name="memory_game_intro">Listen to the melody, then tap the colored buttons in the same order!</string>
 

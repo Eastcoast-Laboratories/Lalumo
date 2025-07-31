@@ -112,10 +112,10 @@
     <string name="stable_unstable_level6">Meisterstufe: Komplexe erweiterte Harmonien und raffinierte Dissonanzen! 🏆</string>
     <string name="chords_2_5_master">Du bist Akkordmeister! 🎉</string>
     
-    <!-- Mascot Messages for Unlocks -->
-    <string name="mascot_wave_unlocked">Toll! Du hast Wellen-Melodien freigeschaltet! 🌊</string>
-    <string name="mascot_jump_unlocked">Fantastisch! Du hast Zufalls-Sprung-Melodien freigeschaltet! 🐸</string>
-    <string name="mascot_all_unlocked">Großartig! Alle Melodie-Muster sind jetzt verfügbar! 🎉</string>
+    <!-- Help Messages for Unlocks -->
+    <string name="feedback_wave_unlocked">Toll! Du hast Wellen-Melodien freigeschaltet! 🌊</string>
+    <string name="feedback_jump_unlocked">Fantastisch! Du hast Zufalls-Sprung-Melodien freigeschaltet! 🐸</string>
+    <string name="feedback_all_unlocked">Großartig! Alle Melodie-Muster sind jetzt verfügbar! 🎉</string>
     
     <!-- Referrals Page Strings -->
     <string name="unlock_chords">Mehr Aktivitäten freischalten</string>
@@ -300,9 +300,20 @@
     <string name="high_or_low_intro_stage5">Höre beide Töne! Ist der zweite höher oder tiefer?</string>
 
     <!-- Activity Introduction Messages -->
+    <!-- Pitch Activities -->
+    <string name="intro_1_1_pitches_high_or_low">Höre dir die Note an und wähle, ob sie hoch oder tief ist!</string>
+    <string name="intro_1_2_pitches_match_sounds">Höre dir die Melodie an und wähle, ob sie auf- oder absteigend ist!</string>
+    <string name="intro_1_3_pitches_draw">Male und hör zu – deine Linie wird zu Musik!</string>
+    <string name="intro_1_4_pitches_does_it_sound_right">Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?</string>
+    <string name="intro_1_5_pitches_memory">Höre genau hin und merke dir die Melodie! Kannst du sie nachspielen?</string>
+    
+    <!-- Chord Activities -->
+    <string name="intro_2_2_chords_stable_unstable">Höre dir den Akkord an, klingt er stabil oder instabil? Klicke auf die passende Seite im Wald</string>
+    <string name="intro_2_5_chords_characters">Höre dir die Chordart an und wähle das passende Tier!</string>
+    
+    <!-- Context-specific messages -->
     <string name="match_sounds_practice">Klicke auf die Bilder zum Üben. Drücke ▶️ für das Spiel!</string>
     <string name="match_sounds_game">Höre zu und wähle das richtige Bild!</string>
-    <string name="does_it_sound_right_intro">Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?</string>
     <string name="memory_practice">Drücke frei auf die Tasten zum Üben. Drücke ▶️ für das Spiel!</string>
     <string name="memory_game_intro">Höre dir die Melodie an und tippe dann auf die farbigen Knöpfe in der gleichen Reihenfolge!</string>
     

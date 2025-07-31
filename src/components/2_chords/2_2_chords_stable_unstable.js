@@ -668,7 +668,12 @@ export function checkStableUnstableMatch(selectedType, component) {
       const translationKey = `feedback_${chordTypeKey}_chord`;
       const message = Alpine.store('strings')?.[translationKey] || 
                     `Incorrect. It was a ${chordTypeKey} chord.`;
-      window.showMascotMessage(message, '2_2', 2, component);
+      window.showFeedbackMessage(message, {
+      activityId: '2_2',
+      isIntroMessage: true,
+      delaySeconds: 2,
+      component: component
+    });
       
       // Save updated progress to localStorage
       localStorage.setItem('lalumo_chords_progress', JSON.stringify(progress));
