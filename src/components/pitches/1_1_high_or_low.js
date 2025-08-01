@@ -102,7 +102,7 @@ export function reset_1_1_HighOrLow_Progress(component) {
  * Setup for the High or Low activity
  * @activity 1_1_high_or_low
  */
-export function setupHighOrLowMode_1_1(component) {
+export function setup_1_1(component) {
   // Initialize the high or low activity
   console.log('High or Low mode ready with progress:', component.highOrLowProgress);
   

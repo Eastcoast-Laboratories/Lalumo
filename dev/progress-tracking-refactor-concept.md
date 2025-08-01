@@ -362,13 +362,13 @@ export function resetActivityProgress(component, id) {
 | ✅ | `resetProgress_2_5()` | `reset_2_5_Progress()` | `/src/components/2_chords/2_5_chord_characters.js` |
 
 ### Setup/Initialization Functions
-| Old Function Name | New Function Name | Location |
-|---|---|---|
-| `setupHighOrLowMode_1_1()` | `setup_1_1()` | `/src/components/pitches/1_1_high_or_low.js` |
-| `setupMatchingMode_1_2()` | `setup_1_2()` | `/src/components/pitches.js` |
-| `setupDrawingMode_1_3()` | `setup_1_3()` | `/src/components/pitches.js` |
-| `setupSoundHighOrLowMode_1_4()` | `setup_1_4()` | `/src/components/pitches.js` |
-| `setupMemoryMode_1_5()` | `setup_1_5()` | `/src/components/pitches.js` |
+| Status | Old Function Name | New Function Name | Location |
+|---|---|---|---|
+| ✅ | `setupHighOrLowMode_1_1()` | `setup_1_1()` | `/src/components/pitches/1_1_high_or_low.js` |
+| ✅ | `setupMatchingMode_1_2()` | `setup_1_2()` | `/src/components/pitches.js` |
+| ✅ | `setupDrawingMode_1_3()` | `setup_1_3()` | `/src/components/pitches.js` |
+| ✅ | `setupSoundHighOrLowMode_1_4()` | `setup_1_4()` | `/src/components/pitches.js` |
+| ✅ | `setupMemoryMode_1_5()` | `setup_1_5()` | `/src/components/pitches.js` |
 | (new function needed) | `setup_2_2()` | `/src/components/chords.js` |
 | (new function needed) | `setup_2_5()` | `/src/components/chords.js` |
 

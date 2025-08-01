@@ -35,7 +35,7 @@ import { testCommonModuleImport, resetCurrentActivity, resetAllProgress, showRes
   from './pitches/common.js';
 import { extractAnimalName } from './shared/ui-helpers.js';
 
-import { setupHighOrLowMode_1_1, reset_1_1_HighOrLow_Progress, currentHighOrLowStage, get_1_1_level } 
+import { setup_1_1, reset_1_1_HighOrLow_Progress, currentHighOrLowStage, get_1_1_level } 
   from "./pitches/1_1_high_or_low.js";
 import { testMatchSoundsModuleImport, reset_1_2_MatchSounds_Progress } 
   from "./pitches/1_2_match_sounds.js";
@@ -673,19 +673,19 @@ export function pitches() {
         // For high or low mode, use unified progress tracking
         debugLog('High or Low mode activated with progress:' + this.progress['1_1'] || 0);
         // Load current stage based on progress
-        setupHighOrLowMode_1_1(this);
+        setup_1_1(this);
       } else if (newMode === '1_2_pitches_match-sounds') {
         this.gameMode = false; // Start in free play mode
-        this.setupMatchingMode_1_2(false); // Setup without playing sound
+        this.setup_1_2(false); // Setup without playing sound
       } else if (newMode === '1_3_pitches_draw-melody') {
-        this.setupDrawingMode_1_3(); // Drawing doesn't play sound by default
+        this.setup_1_3(); // Drawing doesn't play sound by default
       } else if (newMode === '1_4_pitches_does-it-sound-right') {
         // Always generate a melody but don't play it yet (user will press play button)
-        this.setupSoundHighOrLowMode_1_4(false); // Setup without auto-playing sound
+        this.setup_1_4(false); // Setup without auto-playing sound
       } else if (newMode === '1_5_pitches_memory-game') {
         this.gameMode = false; // Start in free play mode
         this.memoryFreePlay = true; // Enable free play
-        this.setupMemoryMode_1_5(false); // Setup without playing sound
+        this.setup_1_5(false); // Setup without playing sound
       }
       
       // Always show the intro message for the current mode
@@ -1529,7 +1529,7 @@ export function pitches() {
      * Setup for the matching mode
      * @activity 1_2_match_sounds
      */
-    setupMatchingMode_1_2(playSound = false, generateNew = true) {
+    setup_1_2(playSound = false, generateNew = true) {
       this.animationInProgress = false;
       window.showActivityIntroMessage('match', this);
       this.updateMatchingBackground(); // Update background based on progress
@@ -1704,7 +1704,7 @@ export function pitches() {
         // If correct answer, automatically progress to next melody after feedback
         if (isCorrect) {
           // Setup a new match automatically
-          this.setupMatchingMode_1_2(true, true);
+          this.setup_1_2(true, true);
           console.log('Auto-progressed to next melody in match mode');
         }
         // For wrong answers, don't generate new melody so user can try the same one again
@@ -2723,7 +2723,7 @@ export function pitches() {
      * Set up the drawing mode for melody drawing activity
      * @activity 1_3_draw_melody
      */
-    setupDrawingMode_1_3() {
+    setup_1_3() {
       this.drawPath = [];
       this.isDrawing = false;
       
@@ -3629,7 +3629,7 @@ export function pitches() {
      * @activity 1_5_memory_game
      
      */
-    setupMemoryMode_1_5(playSound = false, generateNew = true) {
+    setup_1_5(playSound = false, generateNew = true) {
       // Use the specific C, D, E, G, A notes for the memory game (skipping F and H/B)
       const fixedNotes = ['C4', 'D4', 'E4', 'G4', 'A4'];
       
@@ -3955,7 +3955,7 @@ export function pitches() {
         
         if (isCorrect) {
           // Play the new melody automatically after 2 seconds
-          this.setupMemoryMode_1_5();
+          this.setup_1_5();
           
           // Play the new sequence automatically after another 2 seconds
           setTimeout(() => {
@@ -3983,7 +3983,7 @@ export function pitches() {
         if (!this.gameMode) {
           this.startMatchGame(); // Start game mode from free play
         } else {
-          this.setupMatchingMode_1_2(true, false); // Replay current melody in game mode
+          this.setup_1_2(true, false); // Replay current melody in game mode
         }
       } else if (this.mode === '1_4_pitches_does-it-sound-right') {
         // Pass false to indicate we want to replay the current melody, not generate a new one
@@ -4084,8 +4084,8 @@ export function pitches() {
      * Now includes practice mode and game mode separation
      * @param {boolean} playSound - Whether to play a melody right away
      */
-    setupSoundHighOrLowMode_1_4(playSound = false) {
-      console.log('Setting up Sound HighOrLow mode in practice mode');
+    setup_1_4(playSound = false) {
+      debugLog('setup_1_4', 'Setting up Sound HighOrLow mode in practice mode');
       
       // Initialize in practice mode
       this.gameMode = false;
@@ -4132,8 +4132,8 @@ export function pitches() {
       // Show intro message first (moved from playback completion)
       window.showFeedbackMessage(introMessage, {
       activityId: null,
-      isIntroMessage: false,
-      delaySeconds: 2,
+      isIntroMessage: true,
+      delaySeconds: 10,
       component: this
     });
       
@@ -5233,7 +5233,7 @@ export function pitches() {
     startMemoryGame() {
       this.gameMode = true;
       this.memoryFreePlay = false;
-      this.setupMemoryMode_1_5(true, true); // Play sound and generate new
+      this.setup_1_5(true, true); // Play sound and generate new
       this.showContextMessage(); // Update instructions
     },
 
@@ -5341,7 +5341,7 @@ export function pitches() {
     
     startMatchGame() {
       this.gameMode = true;
-      this.setupMatchingMode_1_2(true, true); // Play sound and generate new
+      this.setup_1_2(true, true); // Play sound and generate new
       this.showContextMessage(); // Update instructions
     }
   };
