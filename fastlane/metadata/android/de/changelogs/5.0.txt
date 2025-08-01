@@ -1,0 +1,4 @@
+- Neue Einführungsnachrichten am Beginn jeder Übung
+- "Häschen hüpf!" verbessert in "Klingt es richtig?"
+- "High or Low": Zufällige Instrumente spielen die Töne
+- "Draw a Melody": Animierte Wiedergabe entlang der gezeichneten Linie

@@ -1,0 +1,14 @@
+# Play Store Changelogs für Version 5.0
+
+<en-GB>
+- New introduction messages at the start of each exercise
+- "Bunny Hop" corrected in "Does it sound right?"
+- "High or Low": Random instruments play the tones
+- "Draw a Melody": Animated playback along the drawn line
+</en-GB>
+<de-DE>
+- Neue Einführungsnachrichten am Beginn jeder Übung
+- "Häschen hüpf!" verbessert in "Klingt es richtig?"
+- "High or Low": Zufällige Instrumente spielen die Töne
+- "Draw a Melody": Animierte Wiedergabe entlang der gezeichneten Linie
+</de-DE>

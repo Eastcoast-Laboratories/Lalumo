@@ -10,7 +10,7 @@ CHANGELOG_DE_MD="CHANGELOG_de.md"
 PLAYSTORE_DIR="fastlane/metadata/android/playstore"
 
 # Get version from build.gradle
-VERSION_NAME=4.2
+VERSION_NAME=5.0
 # Get current date
 CURRENT_DATE=$(date +"%Y-%m-%d")
 
@@ -41,15 +41,19 @@ check_length() {
 
 # German Changelog
 DE_CHANGES=$(cat << EOF
-- "Hoch oder Tief": Jetzt mit unterschiedlichen Instrumenten
-- Schnellklick-Schutz in Spielen verbessert das Spielerlebnis
+- Neue Einführungsnachrichten am Beginn jeder Übung
+- "Häschen hüpf!" verbessert in "Klingt es richtig?"
+- "High or Low": Zufällige Instrumente spielen die Töne
+- "Draw a Melody": Animierte Wiedergabe entlang der gezeichneten Linie
 EOF
 )
 
 # English Changelog
 EN_CHANGES=$(cat << EOF
-- "High or Low" now with different instruments
-- Fast click protection in games improved the player experience
+- New introduction messages at the start of each exercise
+- "Bunny Hop" corrected in "Does it sound right?"
+- "High or Low": Random instruments play the tones
+- "Draw a Melody": Animated playback along the drawn line
 EOF
 )
 

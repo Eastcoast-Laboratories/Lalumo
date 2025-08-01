@@ -2,6 +2,13 @@
 =========
 
 
+## Version 5.0 (2025-08-01)
+- New introduction messages at the start of each exercise
+- "Bunny Hop" corrected in "Does it sound right?"
+- "High or Low": Random instruments play the tones
+- "Draw a Melody": Animated playback along the drawn line
+
+
 ## Version 4.2 (2025-07-22)
 - "High or Low" now with different instruments
 - Fast click protection in games improved the player experience

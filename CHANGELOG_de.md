@@ -2,6 +2,13 @@
 =========
 
 
+## Version 5.0 (2025-08-01)
+- Neue Einführungsnachrichten am Beginn jeder Übung
+- "Häschen hüpf!" verbessert in "Klingt es richtig?"
+- "High or Low": Zufällige Instrumente spielen die Töne
+- "Draw a Melody": Animierte Wiedergabe entlang der gezeichneten Linie
+
+
 ## Version 4.2 (2025-07-22)
 - "Hoch oder Tief": Jetzt mit unterschiedlichen Instrumenten
 - Schnellklick-Schutz in Spielen verbessert das Spielerlebnis
