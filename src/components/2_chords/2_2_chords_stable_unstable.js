@@ -676,9 +676,9 @@ export function checkStableUnstableMatch(selectedType, component) {
       
       // Show feedback using translation system
       const chordTypeKey = currentChordType === 'stable' ? 'stable' : 'unstable';
-      const translationKey = `feedback_${chordTypeKey}_chord`;
+      const translationKey = `feedback_incorrect_${chordTypeKey}`;
       const message = Alpine.store('strings')?.[translationKey] || 
-                    `Incorrect. It was a ${chordTypeKey} chord.`;
+                    `Incorrect! It was a ${chordTypeKey} chord.`;
       window.showFeedbackMessage(message, {
       activityId: '2_2',
       isIntroMessage: false,
