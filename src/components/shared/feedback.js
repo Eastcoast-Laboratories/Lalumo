@@ -24,10 +24,11 @@ export function showFeedbackMessage(message, options = {}) {
     delaySeconds = isIntroMessage ? 10 : 3,
     component = null
   } = options;
+  debugLog('showFeedbackMessage', 'isIntroMessage: ' + isIntroMessage + ', activityId: ' + activityId + ', isCorrect: ' + isCorrect + ', delaySeconds: ' + delaySeconds);
   
   // Check for empty message
   if (!message || message.trim() === '' || message === 'undefined' || message === 'null') {
-    console.error('FEEDBACK: showFeedbackMessage called with empty message', new Error().stack);
+    debugLog('ERROR', 'showFeedbackMessage called with empty message' + new Error().stack);
     return;
   }
   
@@ -38,22 +39,22 @@ export function showFeedbackMessage(message, options = {}) {
   
   // Debug: Check if stores are available
   if (!window.Alpine?.store) {
-    console.error('FEEDBACK_MESSAGE: Alpine store function is not available');
+    debugLog('FEEDBACK_MESSAGE', 'Alpine store function is not available');
   } else if (!feedbackStore) {
-    console.error('FEEDBACK_MESSAGE: Feedback store is not available');
+    debugLog('FEEDBACK_MESSAGE', 'Feedback store is not available');
   } else {
-    console.log('FEEDBACK_MESSAGE: Feedback store available:', feedbackStore);
+    debugLog('FEEDBACK_MESSAGE', 'Feedback store available:' + feedbackStore);
   }
   
   // For intro messages, check if help messages are enabled in user settings
   if (isIntroMessage && helpSettingsStore?.showHelpMessages === false) {
-    console.log('HELP_MESSAGE: Skipping help message - user has disabled help messages');
+    debugLog('HELP_MESSAGE', 'Skipping help message - user has disabled help messages');
     return;
   }
   
   // Show the message using the global feedback store
   if (feedbackStore) {
-    console.log('FEEDBACK_MESSAGE: Before update, feedbackStore state:', 
+    debugLog('FEEDBACK_MESSAGE', 'Before update, feedbackStore state:' + 
       JSON.stringify({
         showFeedback: feedbackStore.showFeedback,
         feedbackMessage: feedbackStore.feedbackMessage,
@@ -71,42 +72,36 @@ export function showFeedbackMessage(message, options = {}) {
       feedbackStore.isCorrect = null;
     }
     
-    console.log('FEEDBACK_MESSAGE: After update, feedbackStore state:', 
+    debugLog('FEEDBACK_MESSAGE', 'After update, feedbackStore state:' + 
       JSON.stringify({
         showFeedback: feedbackStore.showFeedback,
         feedbackMessage: feedbackStore.feedbackMessage,
         isCorrect: feedbackStore.isCorrect
       }));
       
-    // Debug: Check if the feedback container exists in the DOM
-    setTimeout(() => {
-      const feedbackContainer = document.getElementById('unified-feedback-message');
-      console.log('FEEDBACK_MESSAGE: Feedback container exists:', feedbackContainer !== null);
-      if (feedbackContainer) {
-        console.log('FEEDBACK_MESSAGE: Container display style:', window.getComputedStyle(feedbackContainer).display);
-        console.log('FEEDBACK_MESSAGE: Container visibility style:', window.getComputedStyle(feedbackContainer).visibility);
-        console.log('FEEDBACK_MESSAGE: Container CSS classes:', feedbackContainer.className);
-      }
-    }, 100); // Small timeout to ensure DOM has updated
-    
     // Auto-hide after delay if specified
     if (delaySeconds > 0) {
+      let delay = delaySeconds;
+      if(delaySeconds < 10 && isIntroMessage) {
+        debugLog('showFeedbackMessage', 'WORKAROUND!!! Delay too short for intro message, setting from ' + delaySeconds + 's to 10s');
+        delay = 10;
+      }
       setTimeout(() => {
         const currentFeedbackStore = window.Alpine?.store ? window.Alpine.store('feedback') : null;
         if (currentFeedbackStore) {
           currentFeedbackStore.showFeedback = false;
-          console.log('FEEDBACK_DEBUG: Auto-hiding feedback message');
+          debugLog('showFeedbackMessage', 'Auto-hiding feedback message after ' + delay + ' seconds');
         }
-      }, delaySeconds * 1000);
+      }, delay * 1000);
     }
   }
   
   // Log the message with appropriate tag
-  const logPrefix = isIntroMessage ? 'HELP_MESSAGE' : 'GAME_FEEDBACK';
+  const logPrefix = isIntroMessage ? 'HELP_MESSAGE' : 'GAME_FEEDBACK_MESSAGE';
   if (isIntroMessage) {
-    console.log(`${logPrefix}: ${message}`);
+    debugLog(logPrefix, `${message}`);
   } else {
-    console.log(`${logPrefix}: [${activityId}] ${message} (isCorrect: ${isCorrect})`);
+    debugLog(logPrefix, `[${activityId}] ${message} (isCorrect: ${isCorrect})`);
   }
   
   // Only speak intro/help messages, not game feedback
@@ -124,23 +119,6 @@ export function showFeedbackMessage(message, options = {}) {
       window.speechSynthesis.speak(utterance);
     }
   }
-}
-
-/**
- * Legacy function for backward compatibility - shows game feedback (always active)
- * @param {string} message - The feedback message to display
- * @param {boolean} isCorrect - Whether the answer was correct (true/false/null for neutral)
- * @param {number} delaySeconds - Delay in seconds before hiding the message
- * @param {string} activityId - Activity identifier for logging
- */
-export function showGameFeedback(message, isCorrect = null, delaySeconds = 3, activityId = '') {
-  // Call unified function with isIntroMessage = false
-  showFeedbackMessage(message, {
-    activityId,
-    isIntroMessage: false,
-    isCorrect,
-    delaySeconds
-  });
 }
 
 // Track which intro messages have been shown in this session

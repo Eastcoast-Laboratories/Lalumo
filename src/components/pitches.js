@@ -636,25 +636,25 @@ export function pitches() {
      * @used-by all activities
      */
     setMode(newMode) {
-      console.log('MODSWITCH: Changing mode from', this.mode, 'to', newMode);
+      debugLog('MODSWITCH', 'Changing mode from' + this.mode + 'to' + newMode);
   
       // Clear any existing intro message timers and hide message when switching activities
       if (this.helpShowTimer) {
         clearTimeout(this.helpShowTimer);
         this.helpShowTimer = null;
-        console.log("INTROMESSAGE_CLEAR: Cleared show timer on mode switch");
+        debugLog('INTROMESSAGE_CLEAR', 'Cleared show timer on mode switch');
       }
       if (this.introMessageHideTimer) {
         clearTimeout(this.introMessageHideTimer);
         this.introMessageHideTimer = null;
-        console.log("INTROMESSAGE_CLEAR: Cleared hide timer on mode switch");
+        debugLog('INTROMESSAGE_CLEAR', 'Cleared hide timer on mode switch');
       }
       
       // Clear any active melody timeouts when changing modes
       this.clearMelodyTimeouts();
       // Hide any currently visible intro message
       this.showHelp = false;
-      console.log("INTROMESSAGE_CLEAR: Hidden intro message on mode switch to:", newMode);
+      debugLog('INTROMESSAGE_CLEAR', 'Hidden intro message on mode switch to:' + newMode);
       this.mode = newMode;
       this.resetState();
       
@@ -666,12 +666,12 @@ export function pitches() {
       // Setup the new mode without playing any sounds
       if (newMode === 'main') {
         // This is the landing page with clickable image, no additional setup needed
-        console.log('Showing main selection screen with clickable image');
+        debugLog('Showing main selection screen with clickable image');
       } 
       // New ID format handlers
       else if (newMode === '1_1_pitches_high_or_low') {
         // For high or low mode, use unified progress tracking
-        console.log('High or Low mode activated with progress:', this.progress['1_1'] || 0);
+        debugLog('High or Low mode activated with progress:' + this.progress['1_1'] || 0);
         // Load current stage based on progress
         setupHighOrLowMode_1_1(this);
       } else if (newMode === '1_2_pitches_match-sounds') {
