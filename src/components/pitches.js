@@ -650,6 +650,11 @@ export function pitches() {
         debugLog('INTROMESSAGE_CLEAR', 'Cleared hide timer on mode switch');
       }
       
+      // Clear global feedback timer when switching activities
+      if (window.clearFeedbackTimer) {
+        window.clearFeedbackTimer();
+        debugLog("FEEDBACK_TIMER", "Cleared global feedback timer on mode switch");
+      }
       // Clear any active melody timeouts when changing modes
       this.clearMelodyTimeouts();
       // Hide any currently visible intro message

@@ -87,12 +87,19 @@ export function showFeedbackMessage(message, options = {}) {
         debugLog('showFeedbackMessage', 'Enforcing 10s minimum for intro message, original: ' + delaySeconds + 's, message: ' + message);
         delay = 10;
       }
-      setTimeout(() => {
+      
+      // Clear any existing timer before setting a new one
+      clearFeedbackTimer();
+      
+      // Set new timer and store the reference
+      currentFeedbackTimer = setTimeout(() => {
         const currentFeedbackStore = window.Alpine?.store ? window.Alpine.store('feedback') : null;
         if (currentFeedbackStore) {
           currentFeedbackStore.showFeedback = false;
           debugLog('showFeedbackMessage', 'Auto-hiding feedback message after ' + delay + ' seconds');
         }
+        // Clear the reference once the timer completes
+        currentFeedbackTimer = null;
       }, delay * 1000);
     }
   }
@@ -124,6 +131,21 @@ export function showFeedbackMessage(message, options = {}) {
 
 // Track which intro messages have been shown in this session
 const shownIntroMessages = new Set();
+
+// Track the current feedback auto-hide timer
+let currentFeedbackTimer = null;
+
+/**
+ * Clear any pending feedback timer
+ * Called when switching activities or showing a new message
+ */
+export function clearFeedbackTimer() {
+  if (currentFeedbackTimer) {
+    debugLog('FEEDBACK_TIMER', 'Clearing previous feedback timer');
+    clearTimeout(currentFeedbackTimer);
+    currentFeedbackTimer = null;
+  }
+}
 
 /**
  * Show activity-specific introduction message
@@ -272,6 +294,7 @@ if (typeof window !== 'undefined') {
   window.showFeedbackMessage = showFeedbackMessage;
   window.showActivityIntroMessage = showActivityIntroMessage;
   window.resetShownIntroMessages = resetShownIntroMessages;
+  window.clearFeedbackTimer = clearFeedbackTimer;
 }
 
 /**
