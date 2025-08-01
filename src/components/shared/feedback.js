@@ -12,7 +12,7 @@
  * @param {string} [options.activityId] - Activity identifier for logging
  * @param {boolean} [options.isIntroMessage=true] - Whether this is an intro/help message (respects settings) or game feedback (always shown)
  * @param {boolean} [options.isCorrect=null] - For game feedback: correct (true), incorrect (false), or neutral (null)
- * @param {number} [options.delaySeconds=3] - Delay in seconds before hiding the message
+ * @param {number} [options.delaySeconds=10] - Delay in seconds before hiding the message
  * @param {Object} [options.component=null] - The Alpine.js component instance for speaking
  */
 export function showFeedbackMessage(message, options = {}) {
@@ -21,7 +21,7 @@ export function showFeedbackMessage(message, options = {}) {
     activityId = '', 
     isIntroMessage = true,
     isCorrect = null, 
-    delaySeconds = isIntroMessage ? 2 : 3,
+    delaySeconds = isIntroMessage ? 10 : 3,
     component = null
   } = options;
   
@@ -152,15 +152,15 @@ const shownIntroMessages = new Set();
  * Only shows each intro message once per session unless forced
  * @param {string} activityMode - The activity mode identifier (e.g., '1_1_pitches_high_or_low')
  * @param {Object} component - The Alpine.js component instance (optional)
- * @param {number} delaySeconds - Delay before hiding message (default: 3)
+ * @param {number} delaySeconds - Delay before hiding message (default: 10)
  * @param {boolean} force - Force showing message even if already shown (default: false)
  */
-export function showActivityIntroMessage(activityMode, component = null, delaySeconds = 3, force = true) {
-  console.log('LOG_INTRO_MESSAGE: Showing intro for activity:', activityMode);
+export function showActivityIntroMessage(activityMode, component = null, delaySeconds = 10, force = true /* TODO: should be false before release */) {
+  debugLog('LOG_INTRO_MESSAGE', 'Showing intro for activity:' + activityMode + ' for ' + delaySeconds + ' seconds with force:' + force);
   
   // Check if this intro message has already been shown in this session
   if (!force && shownIntroMessages.has(activityMode)) {
-    console.log('LOG_INTRO_MESSAGE: Skipping - already shown in this session:', activityMode);
+    debugLog('LOG_INTRO_MESSAGE', 'Skipping - already shown in this session:' + activityMode);
     return;
   }
   
@@ -184,7 +184,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
     const stringKey = stringKeyMap[activityMode];
     if (stringKey && store.strings[stringKey]) {
       message = store.strings[stringKey];
-      console.log('LOG_INTRO_MESSAGE: Loaded from Alpine store:', stringKey, '=', message);
+      debugLog('LOG_INTRO_MESSAGE', 'Loaded from Alpine store:' + stringKey + '=', message);
     }
   }
   
@@ -203,13 +203,13 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
     const stringKey = stringKeyMap[activityMode];
     if (stringKey && window.strings[stringKey]) {
       message = window.strings[stringKey];
-      console.log('LOG_INTRO_MESSAGE: Loaded from global strings:', stringKey, '=', message);
+      debugLog('LOG_INTRO_MESSAGE', 'Loaded from global strings:' + stringKey + '=', message);
     }
   }
   
   // Use the messages from strings.xml that we added
   if (!message) {
-    console.log('LOG_INTRO_MESSAGE: Using direct strings.xml messages for:', activityMode);
+    debugLog('LOG_INTRO_MESSAGE', 'Using direct strings.xml messages for:', activityMode);
     const messages = {
       '1_1_pitches_high_or_low': {
         'en': 'Listen to the Note and choose if it is of a high or low pitch!',
@@ -250,7 +250,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
   if (message) {
     // Mark this intro message as shown
     shownIntroMessages.add(activityMode);
-    console.log('LOG_INTRO_MESSAGE: Marked as shown:', activityMode);
+    debugLog('LOG_INTRO_MESSAGE', 'Marked as shown:' + activityMode);
     
     showFeedbackMessage(message, {
       activityId: activityMode,

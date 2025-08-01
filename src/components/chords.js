@@ -605,7 +605,7 @@ export function chords() {
         debugLog('CHORDS_2_2_DEBUG', 'Initializing Stable or Unstable activity');
         
         // Show intro message for this activity
-        window.showActivityIntroMessage('2_2_chords_stable_unstable', this, 3);
+        window.showActivityIntroMessage('2_2_chords_stable_unstable', this);
         
         this.currentStableUnstableChord = null;
         // Local feedback variables removed - using global feedback system
@@ -650,7 +650,7 @@ export function chords() {
         debugLog('CHORDS', 'Initializing character matching activity');
         
         // Show intro message for this activity
-        window.showActivityIntroMessage('2_5_chords_characters', this, 3);
+        window.showActivityIntroMessage('2_5_chords_characters', this);
         
         // Always ensure we start in free play mode when entering the activity
         this.is2_5FreePlayMode = true;

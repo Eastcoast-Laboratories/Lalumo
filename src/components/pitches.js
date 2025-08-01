@@ -1903,7 +1903,7 @@ export function pitches() {
       } else {
         // For activities without complex context logic, use the central intro message function
         console.log('LOG_CONTEXT_MESSAGE: Using central intro message for activity:', this.mode);
-        window.showActivityIntroMessage(this.mode, this, 2);
+        window.showActivityIntroMessage(this.mode, this);
       }
     },
     
@@ -2092,7 +2092,7 @@ export function pitches() {
      */
     showActivityIntroMessage(activityMode) {
       console.warn('DEPRECATED: pitches.showActivityIntroMessage is deprecated. Use window.showActivityIntroMessage() instead');
-      window.showActivityIntroMessage(activityMode, this, 2);
+      window.showActivityIntroMessage(activityMode, this);
     },
     
     /**

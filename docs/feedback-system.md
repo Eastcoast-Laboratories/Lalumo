@@ -75,7 +75,7 @@ window.showFeedbackMessage("That's not quite right. Try again!", {
 For showing intro messages for activities, use the dedicated helper function:
 
 ```javascript
-window.showActivityIntroMessage("1_1_pitches_high_or_low", this, 3, false);
+window.showActivityIntroMessage("1_1_pitches_high_or_low", this, 10);
 ```
 
 This will:
