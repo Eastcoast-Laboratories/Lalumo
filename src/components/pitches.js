@@ -5156,9 +5156,24 @@ export function pitches() {
         }
       }
       
-      // Display feedback message
-      this.feedback = feedbackMessage;
-      this.showFeedback = true;
+      // Display feedback message using global feedback system
+      debugLog(['SOUND_JUDGMENT', 'FEEDBACK'], `checkSoundHighOrLow called - isCorrect: ${isCorrect}`);
+      debugLog(['SOUND_JUDGMENT', 'FEEDBACK'], `Feedback message: ${feedbackMessage}`);
+      
+      if (typeof window.showFeedbackMessage === 'function') {
+        window.showFeedbackMessage(feedbackMessage, {
+          activityId: '1_4_pitches_sound_judgment',
+          isIntroMessage: false,
+          isCorrect: isCorrect,
+          delaySeconds: 3,
+          component: this
+        });
+      } else {
+        console.error('[SOUND_JUDGMENT_ERROR] showFeedbackMessage function not available');
+        // Fallback to old system if global feedback not available
+        this.feedback = feedbackMessage;
+        this.showFeedback = true;
+      }
       
       // Play feedback sound using the central audio engine
       audioEngine.playNote(isCorrect ? 'success' : 'try_again', 1.0);
@@ -5212,11 +5227,11 @@ export function pitches() {
           
           // Show intro message for level up
           window.showFeedbackMessage(levelUpMessage, {
-      activityId: null,
-      isIntroMessage: false,
-      delaySeconds: 2,
-      component: this
-    });
+		      activityId: null,
+		      isIntroMessage: false,
+		      delaySeconds: 2,
+		      component: this
+		  });
           
           // Special animation for level up (bigger rainbow)
           showBigRainbowSuccess();
@@ -5232,9 +5247,8 @@ export function pitches() {
       }
       
       // After a delay, reset and prepare for the next melody
+      // Reduced timeout since global feedback system handles message display timing
       setTimeout(() => {
-        this.showFeedback = false;
-        
         if (isCorrect) {
           // If the answer was correct, generate a new melody
           this.playMelody(true);
@@ -5243,7 +5257,7 @@ export function pitches() {
           // Pass false to indicate not to generate a new melody
           this.playMelody(false);
         }
-      }, 2000);
+      }, 3000); // Match the delaySeconds from global feedback system
     },
 
     /**
