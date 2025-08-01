@@ -598,8 +598,19 @@ export function checkStableUnstableMatch(selectedType, component) {
         
         component.showStableUnstableFeedback = true;
         const chordTypeKey = currentChordType === 'stable' ? 'stable' : 'unstable';
-        const chordTypeText = Alpine.store('strings')?.[`${chordTypeKey}_chord`] || `${currentChordType} chord`;
-        component.stableUnstableFeedback = Alpine.store('strings')?.feedback_correct_chord?.replace('{0}', chordTypeText) || `Correct! It was a ${chordTypeText}.`;
+        
+        // Debug language and string store for success feedback
+        const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+        debugLog(['CHORDS_2_2_DEBUG', 'LANGUAGE'], `Success feedback - Language detection: localStorage='${localStorage.getItem('lalumo_language')}', resolved='${language}'`);
+        debugLog(['CHORDS_2_2_DEBUG', 'STRINGS_STORE'], `Success feedback - Alpine.store('strings') available: ${!!Alpine.store('strings')}`);
+        
+        const feedbackKey = `feedback_correct_${chordTypeKey}`;
+        if (!Alpine.store('strings') || !Alpine.store('strings')[feedbackKey]) {
+          console.error(`[CHORDS_2_2_ERROR] Missing string resource: ${feedbackKey}`);
+          return true; // Continue processing even if feedback string is missing
+        }
+        component.stableUnstableFeedback = Alpine.store('strings')[feedbackKey];
+        debugLog(['CHORDS_2_2_DEBUG', 'STRINGS'], `Using success feedback string: ${feedbackKey} = ${component.stableUnstableFeedback}`);
         component.stableUnstableCorrect = true;
         
         // Auto-hide feedback after 3 seconds
@@ -703,8 +714,24 @@ export function checkStableUnstableMatch(selectedType, component) {
         
         component.showStableUnstableFeedback = true;
         const chordTypeKey = currentChordType === 'stable' ? 'stable' : 'unstable';
-        const chordTypeText = Alpine.store('strings')?.[`${chordTypeKey}_chord`] || `${currentChordType} chord`;
-        component.stableUnstableFeedback = Alpine.store('strings')?.feedback_incorrect_chord?.replace('{0}', chordTypeText) || `Incorrect. It was a ${chordTypeText}.`;
+        
+        // Get current language for proper fallback
+        const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+        debugLog(['CHORDS_2_2_DEBUG', 'LANGUAGE'], `Language detection: localStorage='${localStorage.getItem('lalumo_language')}', resolved='${language}'`);
+        debugLog(['CHORDS_2_2_DEBUG', 'STRINGS_STORE'], `Alpine.store('strings') available: ${!!Alpine.store('strings')}`);
+        if (Alpine.store('strings')) {
+          const availableKeys = Object.keys(Alpine.store('strings')).filter(key => key.includes('feedback') || key.includes('chord'));
+          debugLog(['CHORDS_2_2_DEBUG', 'STRINGS_STORE'], `Available chord/feedback strings: ${availableKeys.join(', ')}`);
+        }
+        
+        // Get localized feedback message from string resources
+        const feedbackKey = `feedback_incorrect_${chordTypeKey}`;
+        if (!Alpine.store('strings') || !Alpine.store('strings')[feedbackKey]) {
+          console.error(`[CHORDS_2_2_ERROR] Missing string resource: ${feedbackKey}`);
+          return false; // Prevent further processing if strings aren't available
+        }
+        component.stableUnstableFeedback = Alpine.store('strings')[feedbackKey];
+        debugLog(['CHORDS_2_2_DEBUG', 'STRINGS'], `Using feedback string: ${feedbackKey} = ${component.stableUnstableFeedback}`);
         component.stableUnstableCorrect = false;
         
         // Auto-hide feedback after 3 seconds

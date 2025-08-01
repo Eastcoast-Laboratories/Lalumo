@@ -314,8 +314,10 @@
     <string name="memory_game_intro">Listen to the melody, then tap the colored buttons in the same order!</string>
 
     <!-- Chord Feedback Messages -->
-    <string name="feedback_correct_chord">Correct! It was a {0}.</string>
-    <string name="feedback_incorrect_chord">Incorrect. It was a {0}.</string>
+    <string name="feedback_correct_stable">Correct! It was a stable chord.</string>
+    <string name="feedback_correct_unstable">Correct! It was an unstable chord.</string>
+    <string name="feedback_incorrect_stable">Incorrect. It was a stable chord.</string>
+    <string name="feedback_incorrect_unstable">Incorrect. It was an unstable chord.</string>
     <string name="stable_chord">stable chord</string>
     <string name="unstable_chord">unstable chord</string>
     

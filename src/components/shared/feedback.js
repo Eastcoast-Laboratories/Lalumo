@@ -220,7 +220,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
         'en': 'Listen to the Melody and choose if it is ascending or descending!',
         'de': 'Höre dir die Melodie an und wähle, ob sie auf- oder absteigend ist!'
       },
-      '1_3_pitches_draw': {
+      'draw': {
         'en': 'Draw and listen – your line becomes music!',
         'de': 'Male und hör zu – deine Linie wird zu Musik!'
       },
@@ -228,7 +228,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
         'en': 'Listen to the melody! Does it sound right? Or is there a wrong note?',
         'de': 'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?'
       },
-      '1_5_pitches_memory': {
+      '1_5_pitches_memory-game': {
         'en': 'Listen carefully and remember the melody! Can you play it back?',
         'de': 'Höre genau hin und merke dir die Melodie! Kannst du sie nachspielen?'
       },
@@ -242,7 +242,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       }
     };
     
-    const activityMessages = messages[activityMode] || messages['1_1_pitches_high_or_low'];
+    const activityMessages = messages[activityMode] || 'no such mode ' + activityMode;
     message = activityMessages[language] || activityMessages['en'];
   }
   

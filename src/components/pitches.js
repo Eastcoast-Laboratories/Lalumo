@@ -1893,8 +1893,8 @@ export function pitches() {
             'Press keys freely to practice. Press ▶️ to start the game!';
         } else {
           message = language === 'german' ? 
-            'Höre dir die Melodie an und tippe dann auf die farbigen Tasten in der gleichen Reihenfolge!' : 
-            'Listen to the melody, then tap the colored keys in the same order!';
+            'Höre dir die Melodie an und tippe dann auf die Tasten in der gleichen Reihenfolge!' : 
+            'Listen to the melody, then tap the keys in the same order!';
         }
         
         if (message) {
@@ -3897,22 +3897,36 @@ export function pitches() {
       }
       
       // Show feedback using global system
+      debugLog(['MEMORY_GAME', 'FEEDBACK'], `checkMemorySequence called - isCorrect: ${isCorrect}`);
+      debugLog(['MEMORY_GAME', 'STRINGS'], `Alpine.store('strings') available: ${!!this.$store.strings}`);
+      
       const feedbackMessage = isCorrect ? 
         (this.$store.strings?.memory_correct || 'Amazing memory! You got it right!') : 
         (this.$store.strings?.memory_incorrect || 'Let\'s try again. Listen carefully!');
-      console.log('MEMORY_GAME_FEEDBACK: Showing result message:', feedbackMessage, 'isCorrect:', isCorrect);
+      
+      debugLog(['MEMORY_GAME', 'FEEDBACK'], `Feedback message: ${feedbackMessage}`);
+      debugLog(['MEMORY_GAME', 'FEEDBACK'], `showFeedbackMessage function available: ${typeof window.showFeedbackMessage}`);
       
       // Set correct/incorrect state in global store
       const store = window.Alpine?.store;
       if (store && store.feedback) {
         store.feedback.isCorrect = isCorrect;
+        debugLog(['MEMORY_GAME', 'FEEDBACK'], `Set store.feedback.isCorrect to: ${isCorrect}`);
+      } else {
+        debugLog(['MEMORY_GAME', 'FEEDBACK'], `Alpine store or feedback not available`);
       }
-      window.showFeedbackMessage(feedbackMessage, {
-      activityId: '1_5_pitches_memory',
-      isIntroMessage: false,
-      delaySeconds: 3,
-      component: this
-    });
+      
+      if (typeof window.showFeedbackMessage === 'function') {
+        debugLog(['MEMORY_GAME', 'FEEDBACK'], `Calling showFeedbackMessage with: ${feedbackMessage}`);
+        window.showFeedbackMessage(feedbackMessage, {
+          activityId: '1_5_pitches_memory',
+          isIntroMessage: false,
+          delaySeconds: 3,
+          component: this
+        });
+      } else {
+        console.error('[MEMORY_GAME_ERROR] showFeedbackMessage function not available');
+      }
       
       // Play feedback sound using the central audio engine
       if (isCorrect) {

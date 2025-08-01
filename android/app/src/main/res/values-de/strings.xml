@@ -327,8 +327,10 @@
     <string name="start_game">Spiel starten</string>
     
     <!-- Chord Feedback Messages -->
-    <string name="feedback_correct_chord">Richtig! Es war ein {0}.</string>
-    <string name="feedback_incorrect_chord">Falsch. Es war ein {0}.</string>
+    <string name="feedback_correct_stable">Richtig! Es war ein stabiler Akkord.</string>
+    <string name="feedback_correct_unstable">Richtig! Es war ein instabiler Akkord.</string>
+    <string name="feedback_incorrect_stable">Falsch. Es war ein stabiler Akkord.</string>
+    <string name="feedback_incorrect_unstable">Falsch. Es war ein instabiler Akkord.</string>
     <string name="stable_chord">stabiler Akkord</string>
     <string name="unstable_chord">instabiler Akkord</string>
     
