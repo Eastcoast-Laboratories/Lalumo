@@ -5,7 +5,6 @@
 
 // Debug flag - set to false in production
 let isDebugMode = false;
-let debugModules = [];
 
 // Initialize app start time for detailed timing logs
 const appStartTime = Date.now();
@@ -92,7 +91,7 @@ const debugLog = (module, message = '', ...args) => {
       }
     }
     
-        // Get timestamp in milliseconds since app start
+    // Get timestamp in milliseconds since app start
     const timestamp = Date.now() - appStartTime;
     // Choose the appropriate console method based on isError flag
     const logMethod = isError ? console.error : console.log;

@@ -136,7 +136,7 @@ export function checkColorAnswer(component, selectedColor) {
     }
     window.showFeedbackMessage(successMessage, {
       activityId: '2_1_chords_color_matching',
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 3,
       component: component
     });
@@ -149,7 +149,7 @@ export function checkColorAnswer(component, selectedColor) {
     }
     window.showFeedbackMessage(errorMessage, {
       activityId: '2_1_chords_color_matching',
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 3,
       component: component
     });

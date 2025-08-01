@@ -848,7 +848,7 @@ export function chords() {
         console.log('CHORD_2_2_FEEDBACK: No current chord, showing error message');
         window.showFeedbackMessage('Please play a chord first', {
       activityId: '2_2_chords_stable_unstable',
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 3,
       component: this
     });
@@ -872,7 +872,7 @@ export function chords() {
           }
           window.showFeedbackMessage(feedback, {
       activityId: '2_2_chords_stable_unstable',
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 3,
       component: this
     });
@@ -1202,7 +1202,7 @@ export function chords() {
         }
         window.showFeedbackMessage(successMessage, {
       activityId: '2_5_chords_chord_characters',
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 3,
       component: this
     });
@@ -1254,7 +1254,7 @@ export function chords() {
         }
         window.showFeedbackMessage(errorMessage, {
       activityId: '2_5_chords_chord_characters',
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 3,
       component: this
     });
@@ -1562,7 +1562,7 @@ export function chords() {
         }
         window.showFeedbackMessage(successMessage, {
       activityId: '2_5_chords_chord_characters',
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 3,
       component: this
     });
@@ -1612,7 +1612,7 @@ export function chords() {
         }
         window.showFeedbackMessage(errorMessage, {
       activityId: '2_5_chords_chord_characters',
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 3,
       component: this
     });

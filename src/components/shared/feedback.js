@@ -19,7 +19,7 @@ export function showFeedbackMessage(message, options = {}) {
   // Default options
   const {
     activityId = '', 
-    isIntroMessage = true,
+    isIntroMessage = false,
     isCorrect = null, 
     delaySeconds = isIntroMessage ? 10 : 3,
     component = null
@@ -82,8 +82,9 @@ export function showFeedbackMessage(message, options = {}) {
     // Auto-hide after delay if specified
     if (delaySeconds > 0) {
       let delay = delaySeconds;
-      if(delaySeconds < 10 && isIntroMessage) {
-        debugLog('showFeedbackMessage', 'WORKAROUND!!! Delay too short for intro message, setting from ' + delaySeconds + 's to 10s');
+      // Only enforce 10-second minimum for intro/help messages
+      if (isIntroMessage === true && delaySeconds < 10) {
+        debugLog('showFeedbackMessage', 'Enforcing 10s minimum for intro message, original: ' + delaySeconds + 's, message: ' + message);
         delay = 10;
       }
       setTimeout(() => {
@@ -134,11 +135,11 @@ const shownIntroMessages = new Set();
  * @param {boolean} force - Force showing message even if already shown (default: false)
  */
 export function showActivityIntroMessage(activityMode, component = null, delaySeconds = 10, force = true /* TODO: should be false before release */) {
-  debugLog('LOG_INTRO_MESSAGE', 'Showing intro for activity:' + activityMode + ' for ' + delaySeconds + ' seconds with force:' + force);
+  debugLog('LOG_INTRO_MESSAGE', 'activity: \'' + activityMode + '\', delaySeconds: ' + delaySeconds + ', force: ' + force);
   
   // Check if this intro message has already been shown in this session
   if (!force && shownIntroMessages.has(activityMode)) {
-    debugLog('LOG_INTRO_MESSAGE', 'Skipping - already shown in this session:' + activityMode);
+    debugLog('LOG_INTRO_MESSAGE', 'Skipping - already shown in this session: ' + activityMode);
     return;
   }
   
@@ -232,7 +233,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
     
     showFeedbackMessage(message, {
       activityId: activityMode,
-      isIntroMessage: true,
+      isIntroMessage: true,  // This is an intro message
       delaySeconds,
       component
     });

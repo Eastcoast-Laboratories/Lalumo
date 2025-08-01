@@ -670,7 +670,7 @@ export function checkStableUnstableMatch(selectedType, component) {
                     `Incorrect. It was a ${chordTypeKey} chord.`;
       window.showFeedbackMessage(message, {
       activityId: '2_2',
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 2,
       component: component
     });

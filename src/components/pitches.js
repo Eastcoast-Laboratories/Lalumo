@@ -288,106 +288,106 @@ export function pitches() {
 	      }
     },
     
-      /**
-       * Initialize the component
-       * @activity common
-       * @used-by all activities
-       */
-      init() {
-        
-        // Register this component globally immediately
-        console.log("PITCHES_INIT: Registering pitches component globally");
-        window.pitchesComponent = this;
-        console.log("PITCHES_INIT: Registration completed. window.pitchesComponent is now:", !!window.pitchesComponent);
-        console.log("PITCHES_INIT: Component mode after registration:", this.mode);
-        
-        // Initialize audio engine asynchronously
-        this.initializeAudioEngine();
+    /**
+     * Initialize the component
+     * @activity common
+     * @used-by all activities
+     */
+    init() {
       
-        // Set up text-to-speech if available - with better debugging
-        this.speechSynthesis = null;
-        this.ttsAvailable = false;
-        this.usingNativeAndroidTTS = false;  // Flag für native Android TTS
-        
-        // Überprüfe zuerst, ob die native Android TTS-Brücke verfügbar ist
-        this.checkAndroidNativeTTS();
-        
-        // Fallback: Verzögerte Initialisierung der Web-Sprachsynthese für bessere Kompatibilität
-        this.initSpeechSynthesis();
-        
-        // Load intro message settings from localStorage
-        try {
-          const savedHelpSettings = localStorage.getItem('lalumo_help_settings');
-          if (savedHelpSettings) {
-            const loadedSettings = JSON.parse(savedHelpSettings);
-            // Merge loaded settings with defaults to ensure new flags are set
-            this.helpSettings = {
-              ...this.helpSettings,  // Default values
-              ...loadedSettings        // Saved values override defaults
-            };
-            // Reset seenActivityMessages on every app start
-            this.$store.helpSettings.seenActivityMessages = {};
-            console.log('Loaded help settings and reset seen messages:', this.helpSettings);
-          }
-          // Always save back to localStorage to persist any new default flags
-          localStorage.setItem('lalumo_help_settings', JSON.stringify(this.helpSettings));
-        } catch (error) {
-          console.error('Error loading help settings:', error);
-          // Keep default settings
+      // Register this component globally immediately
+      console.log("PITCHES_INIT: Registering pitches component globally");
+      window.pitchesComponent = this;
+      console.log("PITCHES_INIT: Registration completed. window.pitchesComponent is now:", !!window.pitchesComponent);
+      console.log("PITCHES_INIT: Component mode after registration:", this.mode);
+      
+      // Initialize audio engine asynchronously
+      this.initializeAudioEngine();
+    
+      // Set up text-to-speech if available - with better debugging
+      this.speechSynthesis = null;
+      this.ttsAvailable = false;
+      this.usingNativeAndroidTTS = false;  // Flag für native Android TTS
+      
+      // Überprüfe zuerst, ob die native Android TTS-Brücke verfügbar ist
+      this.checkAndroidNativeTTS();
+      
+      // Fallback: Verzögerte Initialisierung der Web-Sprachsynthese für bessere Kompatibilität
+      this.initSpeechSynthesis();
+      
+      // Load intro message settings from localStorage
+      try {
+        const savedHelpSettings = localStorage.getItem('lalumo_help_settings');
+        if (savedHelpSettings) {
+          const loadedSettings = JSON.parse(savedHelpSettings);
+          // Merge loaded settings with defaults to ensure new flags are set
+          this.helpSettings = {
+            ...this.helpSettings,  // Default values
+            ...loadedSettings        // Saved values override defaults
+          };
+          // Reset seenActivityMessages on every app start
+          this.$store.helpSettings.seenActivityMessages = {};
+          console.log('Loaded help settings and reset seen messages:', this.helpSettings);
+        }
+        // Always save back to localStorage to persist any new default flags
+        localStorage.setItem('lalumo_help_settings', JSON.stringify(this.helpSettings));
+      } catch (error) {
+        console.error('Error loading help settings:', error);
+        // Keep default settings
+      }
+      
+      // Try to load saved progress from localStorage
+      try {
+        const savedProgress = localStorage.getItem('lalumo_progress');
+        if (savedProgress) {
+          this.progress = JSON.parse(savedProgress);
+          
+          // Ensure all activity progress fields exist with simplified ID format
+          if (!this.progress['1_1']) this.progress['1_1'] = 0;
+          if (!this.progress['1_2']) this.progress['1_2'] = 0;
+          if (!this.progress['1_3']) this.progress['1_3'] = 0;
+          if (!this.progress['1_4']) this.progress['1_4'] = 0;
+          if (!this.progress['1_5']) this.progress['1_5'] = 0;
+          
+          console.log('Loaded progress data with unified IDs:', this.progress);
+        } else {
+          // Initialize with empty progress object using unified IDs
+          this.progress = {
+            '1_1': 0,
+            '1_2': 0,
+            '1_3': 0,
+            '1_4': 0,
+            '1_5': 0
+          };
         }
         
-        // Try to load saved progress from localStorage
-        try {
-          const savedProgress = localStorage.getItem('lalumo_progress');
-          if (savedProgress) {
-            this.progress = JSON.parse(savedProgress);
-            
-            // Ensure all activity progress fields exist with simplified ID format
-            if (!this.progress['1_1']) this.progress['1_1'] = 0;
-            if (!this.progress['1_2']) this.progress['1_2'] = 0;
-            if (!this.progress['1_3']) this.progress['1_3'] = 0;
-            if (!this.progress['1_4']) this.progress['1_4'] = 0;
-            if (!this.progress['1_5']) this.progress['1_5'] = 0;
-            
-            console.log('Loaded progress data with unified IDs:', this.progress);
-          } else {
-            // Initialize with empty progress object using unified IDs
-            this.progress = {
-              '1_1': 0,
-              '1_2': 0,
-              '1_3': 0,
-              '1_4': 0,
-              '1_5': 0
-            };
-          }
-          
-          // Load progressive difficulty data
-          const savedDifficulty = localStorage.getItem('lalumo_difficulty');
-          if (savedDifficulty) {
-            const difficultyData = JSON.parse(savedDifficulty);
-            this.correctAnswersCount = difficultyData.correctAnswersCount || 0;
-            this.unlockedPatterns = difficultyData.unlockedPatterns || ['up', 'down'];
-          }
-        } catch (e) {
-          console.log('Could not load saved progress');
+        // Load progressive difficulty data
+        const savedDifficulty = localStorage.getItem('lalumo_difficulty');
+        if (savedDifficulty) {
+          const difficultyData = JSON.parse(savedDifficulty);
+          this.correctAnswersCount = difficultyData.correctAnswersCount || 0;
+          this.unlockedPatterns = difficultyData.unlockedPatterns || ['up', 'down'];
         }
+      } catch (e) {
+        console.log('Could not load saved progress');
+      }
+      
+      // Listen for pitch mode changes from the menu
+      // Listen for the unified activity mode event
+      window.addEventListener('set-activity-mode', (event) => {
+        const { component, mode } = event.detail;
         
-        // Listen for pitch mode changes from the menu
-        // Listen for the unified activity mode event
-        window.addEventListener('set-activity-mode', (event) => {
-          const { component, mode } = event.detail;
+        // Only handle the event if it's for the pitches component
+        if (component === 'pitches') {
+          console.log('Received unified activity mode event for pitches:', mode);
+          this.setMode(mode);
           
-          // Only handle the event if it's for the pitches component
-          if (component === 'pitches') {
-            console.log('Received unified activity mode event for pitches:', mode);
-            this.setMode(mode);
-            
-            // Update the unified activity mode in the Alpine store
-            if (window.Alpine?.store) {
-              window.Alpine.store('currentActivityMode', { component: 'pitches', mode });
-            }
+          // Update the unified activity mode in the Alpine store
+          if (window.Alpine?.store) {
+            window.Alpine.store('currentActivityMode', { component: 'pitches', mode });
           }
-        });
+        }
+      });
         
       // Set initial mode based on Alpine store
       if (this.$store.pitchMode) {
@@ -1288,7 +1288,7 @@ export function pitches() {
         }
         window.showFeedbackMessage(feedbackMessage, {
       activityId: '1_1_pitches_high_or_low',
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 3,
       component: this
     });
@@ -1531,7 +1531,7 @@ export function pitches() {
      */
     setupMatchingMode_1_2(playSound = false, generateNew = true) {
       this.animationInProgress = false;
-      this.showActivityIntroMessage('match');
+      window.showActivityIntroMessage('match', this);
       this.updateMatchingBackground(); // Update background based on progress
       this.updateMatchSoundsPitchCardLayout(); // Aktualisiere Pitch-Card-Layout basierend auf Freischaltungsstatus
       
@@ -1743,7 +1743,7 @@ export function pitches() {
         const message = window.Alpine?.store('strings')?.feedback_wave_unlocked || 'Great! You unlocked wavy melodies! :wave:';
         window.showFeedbackMessage(message, {
       activityId: null,
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 2,
       component: this
     });
@@ -1758,7 +1758,7 @@ export function pitches() {
         const message = window.Alpine?.store('strings')?.feedback_jump_unlocked || 'Amazing! You unlocked random jump melodies! :frog:';
         window.showFeedbackMessage(message, {
       activityId: null,
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 2,
       component: this
     });
@@ -1854,11 +1854,11 @@ export function pitches() {
         // Show context-specific message
         if (message) {
           window.showFeedbackMessage(message, {
-      activityId: this.mode + '_stage' + stage,
-      isIntroMessage: true,
-      delaySeconds: 0.5,
-      component: this
-    });
+            activityId: this.mode + '_stage' + stage,
+            isIntroMessage: true,
+            delaySeconds: 10,
+            component: this
+          });
         }
       } else if (this.mode === '1_2_pitches_match-sounds') {
         // Context-dependent message based on game mode
@@ -1876,7 +1876,7 @@ export function pitches() {
           window.showFeedbackMessage(message, {
       activityId: this.mode + '_' + (this.gameMode ? 'game' : 'practice'),
       isIntroMessage: true,
-      delaySeconds: 0.5,
+      delaySeconds: 10,
       component: this
     });
         }
@@ -1894,11 +1894,11 @@ export function pitches() {
         
         if (message) {
           window.showFeedbackMessage(message, {
-      activityId: this.mode + '_' + (this.memoryFreePlay ? 'freeplay' : 'game'),
-      isIntroMessage: true,
-      delaySeconds: 0.5,
-      component: this
-    });
+            activityId: this.mode + '_' + (this.memoryFreePlay ? 'freeplay' : 'game'),
+            isIntroMessage: true,
+            delaySeconds: 10,
+            component: this
+          });
         }
       } else {
         // For activities without complex context logic, use the central intro message function
@@ -2076,23 +2076,13 @@ export function pitches() {
      * This method is kept for backward compatibility but now forwards to the global function
      */
     showFeedbackMessage(message, activityId = null, delaySeconds = 2) {
-      console.warn('DEPRECATED: showFeedbackMessage is deprecated. Use window.showFeedbackMessage() instead');
+      console.warn('DEPRECATED: showFeedbackMessage is deprecated. Use window.showFeedbackMessage() instead in activity ' + activityId + ' (' + this.mode + ')');
       window.showFeedbackMessage(message, {
       activityId: activityId,
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: delaySeconds,
       component: this
     });
-    },
-    
-    /**
-     * Shows the appropriate introduction message for an activity
-     * @deprecated Use window.showActivityIntroMessage() from feedback.js instead
-     * @param {string} activityMode - The identifier of the activity
-     */
-    showActivityIntroMessage(activityMode) {
-      console.warn('DEPRECATED: pitches.showActivityIntroMessage is deprecated. Use window.showActivityIntroMessage() instead');
-      window.showActivityIntroMessage(activityMode, this);
     },
     
     /**
@@ -2746,7 +2736,7 @@ export function pitches() {
       this.stopReferencePlayback(); this.referenceSequence = null;
       
       // Show intro message when entering the activity
-      this.showActivityIntroMessage('draw');
+      window.showActivityIntroMessage('draw', this);
       
       // Clear any existing drawing when switching to this mode
       this.clearDrawing();
@@ -3848,7 +3838,7 @@ export function pitches() {
         console.log('MEMORY_GAME_FEEDBACK: Showing error message:', errorMessage);
         window.showFeedbackMessage(errorMessage, {
       activityId: '1_5_pitches_memory',
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 3,
       component: this
     });
@@ -3914,7 +3904,7 @@ export function pitches() {
       }
       window.showFeedbackMessage(feedbackMessage, {
       activityId: '1_5_pitches_memory',
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 3,
       component: this
     });
@@ -4142,7 +4132,7 @@ export function pitches() {
       // Show intro message first (moved from playback completion)
       window.showFeedbackMessage(introMessage, {
       activityId: null,
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 2,
       component: this
     });
@@ -4196,7 +4186,7 @@ export function pitches() {
         // // Show the instrument-specific message
         // window.showFeedbackMessage(instrumentMessage, {
         //   activityId: null,
-        //   isIntroMessage: true,
+        //   isIntroMessage: false,
         //   delaySeconds: 2,
         //   component: this
         // });
@@ -4222,7 +4212,7 @@ export function pitches() {
         // Show the game mode message
         window.showFeedbackMessage(gameMessage, {
       activityId: null,
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 2,
       component: this
     });
@@ -5204,7 +5194,7 @@ export function pitches() {
           // Show intro message for level up
           window.showFeedbackMessage(levelUpMessage, {
       activityId: null,
-      isIntroMessage: true,
+      isIntroMessage: false,
       delaySeconds: 2,
       component: this
     });
