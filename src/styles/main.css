@@ -39,7 +39,7 @@
   background-color: #000 !important;
   opacity: 0.9 !important;
   color: white !important;
-  z-index: 999999 !important;
+  z-index: 3000 !important;
   flex-direction: column;
   justify-content: flex-start !important;
   align-items: center;
@@ -80,7 +80,7 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  z-index: 9999999 !important;
+  z-index: 3001 !important;
   transition: all 0.3s ease !important;
   pointer-events: auto !important;
   user-select: none !important;
@@ -182,7 +182,7 @@ html body.dev-mode .debug-element {
   color-scheme: light only;
 }
 
-/* Modal Overlay */
+/* Modal Overlay with welcome message */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -376,7 +376,7 @@ html body.dev-mode .debug-element {
   z-index: -1;
 }
 
-.settings-section {
+.partial-content {
   margin-bottom: 30px;
 }
 
@@ -539,7 +539,7 @@ html body.dev-mode .debug-element {
 }
 
 /* Settings */
-.settings-section {
+.partial-content {
   margin-top: 2rem;
   position: relative;
   z-index: 900; /* Higher z-index to ensure settings are visible */
@@ -888,7 +888,7 @@ body {
   margin-right: 0.75rem;
   margin-top: 60px;
   margin-left: 0.4rem;
-  z-index: 2500; /* Highest z-index to appear above absolutely everything */
+  z-index: 2500; /* above main menu but below landscape warning layer */
   transition: all 0.3s ease;
 }
 
@@ -1744,7 +1744,7 @@ section h2 {
   max-width: 90%;
   font-weight: bold;
   animation: fade-in 0.3s ease;
-  z-index: 9999; /* well above intro-message message */
+  z-index: 1400; /* below main menu */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 

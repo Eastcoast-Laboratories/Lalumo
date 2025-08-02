@@ -1,7 +1,7 @@
 <!-- Settings Page -->
 <section x-show="active === 'settings' && (window.innerWidth >= 1024 || !menuOpen)" x-transition class="settings-page">
   <h2 x-text="$store.strings?.player_settings || 'Player Settings'"></h2>
-  <div x-show="username" class="settings-section">
+  <div x-show="username" class="partial-content">
     <h3 x-text="$store.strings?.your_profile || 'Your Profile'"></h3>
     <div class="profile-section">
       <div class="profile-avatar">

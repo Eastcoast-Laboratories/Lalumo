@@ -4,7 +4,7 @@
          referrerUsername: localStorage.getItem('lalumo_referral') ? JSON.parse(localStorage.getItem('lalumo_referral'))?.referrerUsername || '' : ''
        }">
   <h2 x-text="$store.strings?.unlock_special_activities || 'Unlock more Activities'"></h2>
-  <div class="settings-section">
+  <div class="partial-content">
     <div class="referral-section">
       <p x-text="$store.strings?.referral_instruction || 'Share Lalumo with your friends to unlock more activities!'"></p>
       <div class="referral-info">
