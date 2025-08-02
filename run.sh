@@ -27,14 +27,20 @@ echo "Starting webpack development server..."
 # Starte webpack-Server im Hintergrund
 cd /var/www/Musici; npm run build:fast; npm run watch &
 
-echo "Starting nginx for admin interface..."
-# Enable nginx service and lalumo site
-sudo systemctl enable nginx
-sudo ln -sf /etc/nginx/sites-available/lalumo /etc/nginx/sites-enabled/lalumo
-# Test nginx configuration
-sudo nginx -t
-# Start nginx service for admin interface on port 8080
-sudo service nginx start
+echo "Checking nginx for admin interface..."
+# Check if nginx is already running
+if pgrep -x "nginx" > /dev/null; then
+    echo "nginx is already running"
+else
+    echo "Starting nginx for admin interface..."
+    # Enable nginx service and lalumo site
+    sudo systemctl enable nginx
+    sudo ln -sf /etc/nginx/sites-available/lalumo /etc/nginx/sites-enabled/lalumo
+    # Test nginx configuration
+    sudo nginx -t
+    # Start nginx service for admin interface on port 8080
+    sudo service nginx start
+fi
 
 # Alternative: PHP Built-in Server (commented out)
 # echo "Starting PHP server for admin interface..."
