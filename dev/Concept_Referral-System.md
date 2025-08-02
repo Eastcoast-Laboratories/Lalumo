@@ -165,20 +165,7 @@ Die PHP-Dateien (`referral.php`, `admin.php`) und die Datenbankdatei müssen auf
 - testen, das ist schon implementiert , aber ungetestet: 
    - wenn in der localStorage der username gelockt ist, aber auf dem server gelöscht, dann muss der wieder entlockt werden und die localStorage aktualisiert werden
 
+- wenn man einen redeem code eingelöst hat, soll das in der localstorage gespeichert werden und man kann keinen weiteren
+
 
 ----
-LALUMO ERROR: [REFERRAL] Error checking if username exists: SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data debug.js:48:27
-LALUMO ERROR: [REFERRAL] Error checking if username exists: SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data debug.js:48:27
-XHRGET
-https://lalumo.eu/app/referral.php?check_existing=1&username=GentleElephant99
-[HTTP/2 404  804ms]
-
-XHRGET
-https://lalumo.eu/app/referral.php?check_existing=1&username=GentleElephant99
-[HTTP/2 404  706ms]
-
-LALUMO ERROR: [REFERRAL] Error checking if username exists: SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data debug.js:48:27
-LALUMO ERROR: [REFERRAL] Error checking if username exists: SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data debug.js:48:27
-XHRGET
-https://lalumo.eu/api/referral.php?username=GentleElephant99
-[HTTP/2 200  537ms]

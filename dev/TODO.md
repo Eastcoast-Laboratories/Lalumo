@@ -146,7 +146,6 @@ reset-button:
 - "Images created with ChatGpt mindfull. Loving prompts" verbessern
 - Finanzierung durch unlock button mit link zu Crowd funding
 
-- referral count page aus den settings aufrufbar machen
 - das template in dem partial refferer.html funktioniert nichdt, ev. templates werden in partials nicht gaufgelöst? in commit 4d82fbca wurde ein äjhnliches problem gelöst
 
 - die meisten activities sollen einen free- und einen game-mode haben, in dem man die sounds ausprobieren kann (free) oder das game spielt, bei dem man die richtigen buttons drücken muss, der die richtigen effekte zeigt aus `feedback.js`

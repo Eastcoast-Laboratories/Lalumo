@@ -20,6 +20,7 @@
 - Info-Button wird jetzt immer angezeigt, auch wenn keine referral_details vorhanden sind; Popup zeigt dann eine Warnung und Debug-Info an.
 - referral_details-Tabelle ist leer, nächste Aufgabe: Backend-Fehleranalyse und Logging für Event-Speicherung.
 - Backend-Fix für referral_details-Speicherung bei redeemCode (POST) ist jetzt implementiert und getestet.
+- DRY-Refactoring für Datenbankmigrationen: Helper-Funktion für Spaltenprüfung/-migration eingeführt, Code-Duplikate für referrals/referral_details entfernt.
 
 ## Task List
 - [x] Fallback-Logik aus Feedback-Strings entfernen
@@ -36,6 +37,7 @@
 - [x] referral_details Backend: Einzelne Referral-Events speichern (Tabellenstruktur/Datenmodell anpassen)
 - [x] referral_details im Admin-Interface ausgeben
 - [x] referral_details Backend-Debugging: Speicherung und Logging der Events prüfen
+- [x] Backend: DRY-Refactoring für Spaltenprüfung/-migration (ensureTableColumns)
 
 ## Current Goal
 Admin-UI und referral_details Backend-Debugging/Fehleranalyse
