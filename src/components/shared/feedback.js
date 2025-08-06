@@ -238,7 +238,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       },
       '2_5_chords_characters': {
         'en': 'Listen to the chord and match it to the right character!',
-        'de': 'Höre dir die Chordart an und wähle das passende Tier!'
+        'de': 'Höre dir die Akkord-Art an und wähle das passende Tier!'
       }
     };
     

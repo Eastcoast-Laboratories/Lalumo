@@ -309,7 +309,7 @@
     
     <!-- Chord Activities -->
     <string name="intro_2_2_chords_stable_unstable">Höre dir den Akkord an, klingt er stabil oder instabil? Klicke auf die passende Seite im Wald</string>
-    <string name="intro_2_5_chords_characters">Höre dir die Chordart an und wähle das passende Tier!</string>
+    <string name="intro_2_5_chords_characters">Höre dir die Akkord-Art an und wähle das passende Tier!</string>
     
     <!-- Context-specific messages -->
     <string name="match_sounds_practice">Klicke auf die Bilder zum Üben. Berühre den Vogel für das Spiel!</string>

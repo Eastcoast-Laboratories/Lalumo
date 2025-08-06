@@ -197,6 +197,7 @@ reset-button:
   - # bereit zur veröffentlichung
   - es soll der erfolgssound kommen
   - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte
+  - die Eule macht die Augen auf, wenn man das Spiel startet 
 
 
 # mobile-build.sh:

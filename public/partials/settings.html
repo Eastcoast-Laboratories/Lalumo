@@ -1,8 +1,6 @@
 <!-- Settings Page -->
 <section x-show="active === 'settings' && (window.innerWidth >= 1024 || !menuOpen)" x-transition class="settings-page">
-  <h2 x-text="$store.strings?.player_settings || 'Player Settings'"></h2>
   <div x-show="username" class="partial-content">
-    <h3 x-text="$store.strings?.your_profile || 'Your Profile'"></h3>
     <div class="profile-section">
       <div class="profile-avatar">
         <span x-text="username ? username.charAt(0) : '?' "></span>
@@ -16,16 +14,8 @@
         <button class="secondary-button" @click="setUsername()" x-text="$store.strings?.button_generate_name || 'Generate Random Name'"></button>
       </div>
     </div>
-    <h3 x-text="$store.strings?.language_preference || 'Language Preference'"></h3>
-    <div class="language-section">
-      <p x-text="$store.strings?.select_language || 'Select your preferred language:'"></p>
-      <div class="language-options">
-        <button class="language-button" :class="{ 'active': preferredLanguage === 'english' }" @click="setLanguage('english')" x-text="$store.strings?.language_english || 'English'"></button>
-        <button style="opacity: 1;" class="language-button" :class="{ 'active': preferredLanguage === 'german' }" @click="setLanguage('german')" x-text="$store.strings?.language_german || 'Deutsch'"></button>
-      </div>
-    </div>
-    
-    <!-- Help Messages Settings -->
+
+    <hr>
     <!-- Referral Information -->
     <div x-show="referredBy" class="referral-section">
       <h3 x-text="$store.strings?.referral_info || 'Friend Connection'"></h3>
@@ -54,8 +44,17 @@
         </template>
       </div>
     </template>
+    <hr>
+
+    <div class="language-section">
+      <p x-text="$store.strings?.select_language || 'Select your preferred language:'"></p>
+      <div class="language-options">
+        <button class="language-button" :class="{ 'active': preferredLanguage === 'english' }" @click="setLanguage('english')" x-text="$store.strings?.language_english || 'English'"></button>
+        <button style="opacity: 1;" class="language-button" :class="{ 'active': preferredLanguage === 'german' }" @click="setLanguage('german')" x-text="$store.strings?.language_german || 'Deutsch'"></button>
+      </div>
+    </div>
     
-    <h3 x-text="$store.strings?.help_messages || 'Help Messages'"></h3>
+    <!-- Help Messages Settings -->
     <div class="help-messages-section">
       <p x-text="$store.strings?.help_messages_desc || 'Control when help messages appear:'"></p>
       <div class="help-options">
@@ -72,6 +71,7 @@
         </div>
       </div>
     </div>
+    <hr>
     
     <h3 x-text="$store.strings?.game_progress || 'Game Progress'"></h3>
     <div class="progress-section">
@@ -82,7 +82,7 @@
         <textarea x-model="exportedData" readonly></textarea>
         <button class="secondary-button" @click="copyExportedData()" x-text="$store.strings?.button_copy_progress || 'Copy Code'"></button>
       </div>
-      <hr>
+      <br>
       <p x-text="$store.strings?.import_progress || 'Import your progress from another device:'"></p>
       <div class="import-progress">
         <textarea x-model="importData" :placeholder="$store.strings?.paste_progress_code || 'Paste your progress code here'"></textarea>
@@ -102,5 +102,12 @@
         </div>
       </div>
     </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
   </div>
 </section>
