@@ -312,9 +312,9 @@
     <string name="intro_2_5_chords_characters">Höre dir die Chordart an und wähle das passende Tier!</string>
     
     <!-- Context-specific messages -->
-    <string name="match_sounds_practice">Klicke auf die Bilder zum Üben. Drücke ▶️ für das Spiel!</string>
+    <string name="match_sounds_practice">Klicke auf die Bilder zum Üben. Berühre den Vogel für das Spiel!</string>
     <string name="match_sounds_game">Höre zu und wähle das richtige Bild!</string>
-    <string name="memory_practice">Drücke frei auf die Tasten zum Üben. Drücke ▶️ für das Spiel!</string>
+    <string name="memory_practice">Drücke frei auf die Tasten zum Üben. Berühre den Vogel für das Spiel!</string>
     <string name="memory_game_intro">Höre dir die Melodie an und tippe dann auf die farbigen Knöpfe in der gleichen Reihenfolge!</string>
     
     <!-- Piano Key Labels -->

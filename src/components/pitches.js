@@ -1842,8 +1842,8 @@ export function pitches() {
             case 2:
               // Single tone stages
               message = language === 'german' ? 
-                'Höre den Ton! Ist er hoch oder tief? Drücke ▶️ um das Spiel zu starten!' : 
-                'Listen to the tone! Is it high or low? Press ▶️ for the game!';
+                'Höre den Ton! Ist er hoch oder tief? Berühre den Vogel um das Spiel zu starten!' : 
+                'Listen to the tone! Is it high or low? Touch the bird to start the game!';
               break;
             case 3:
             case 4:
@@ -1869,8 +1869,8 @@ export function pitches() {
         // Context-dependent message based on game mode
         if (!this.gameMode) {
           message = language === 'german' ? 
-            'Klicke auf die Bilder zum Üben. Drücke ▶️ um das Spiel zu starten!' : 
-            'Click on pictures to practice. Press ▶️ to start the game!';
+            'Klicke auf die Bilder zum Üben. Berühre den Vogel um das Spiel zu starten!' : 
+            'Click on pictures to practice. Touch the bird to start the game!';
         } else {
           message = language === 'german' ? 
             'Höre zu und wähle das richtige Bild!' : 
@@ -1889,8 +1889,8 @@ export function pitches() {
         // Context-dependent message based on free play mode
         if (this.memoryFreePlay) {
           message = language === 'german' ? 
-            'Drücke frei auf die Tasten zum Üben. Drücke ▶️ um das Spiel zu starten!' : 
-            'Press keys freely to practice. Press ▶️ to start the game!';
+            'Drücke frei auf die Tasten zum Üben. Berühre den Vogel um das Spiel zu starten!' : 
+            'Press keys freely to practice. Touch the bird to start the game!';
         } else {
           message = language === 'german' ? 
             'Höre dir die Melodie an und tippe dann auf die Tasten in der gleichen Reihenfolge!' : 

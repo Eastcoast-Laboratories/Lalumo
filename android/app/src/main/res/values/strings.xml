@@ -308,9 +308,9 @@
     <string name="intro_2_5_chords_characters">Listen to the chord and match it to the right character!</string>
     
     <!-- Context-specific messages -->
-    <string name="match_sounds_practice">Click on pictures to practice. Press ▶️ for the game!</string>
+    <string name="match_sounds_practice">Click on pictures to practice. Touch the bird to start the game!</string>
     <string name="match_sounds_game">Listen and choose the right picture!</string>
-    <string name="memory_practice">Press keys freely to practice. Press ▶️ for the game!</string>
+    <string name="memory_practice">Press keys freely to practice. Touch the bird to start the game!</string>
     <string name="memory_game_intro">Listen to the melody, then tap the colored buttons in the same order!</string>
 
     <!-- Chord Feedback Messages -->
