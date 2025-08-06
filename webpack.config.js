@@ -14,6 +14,12 @@ function minifyXML(content) {
     .trim();
 }
 
+// Helper function to minify HTML content
+function minifyHTML(content) {
+  // Remove all line breaks (but do not touch spaces)
+  return content.toString().replace(/\r?\n/g, '');
+}
+
 // Funktion zum Finden der Template-Dateien
 function findHomepageTemplates() {
   const templatesDir = path.join(__dirname, 'homepage');
@@ -177,7 +183,8 @@ module.exports = (env, argv) => {
           removeScriptTypeAttributes: true,
           removeStyleLinkTypeAttributes: true,
           useShortDoctype: true
-        }
+        },
+        postprocess: (html) => minifyHTML(html)
       }),
       
       // Homepage-Templates nur für Web-Build, nicht für Mobile-Build
@@ -225,15 +232,15 @@ module.exports = (env, argv) => {
             { from: 'src/config.js', to: 'api/config.js', transform: (content) => content },
           ]),
           
-          // App-Assets immer kopieren
+          // App-Assets always copy
           { from: 'homepage/icons', to: 'app/icons' },
-          { from: 'public/partials', to: 'app/partials' },
+          
           { from: 'src/api', to: 'app/api' },
           { from: 'src/config.js', to: 'app/config.js', transform: (content) => content },
           { from: 'src/config.js', to: 'app/api/config.js', transform: (content) => content },
           { from: 'public/images/backgrounds', to: 'app/images/backgrounds' },
           { from: 'public/images', to: 'app/images' },
-          // XML-Dateien für App immer kopieren
+          // XML-files always copy and minify
           {
             from: 'android/app/src/main/res/values/strings.xml',
             to: 'app/strings-en.xml',
@@ -245,7 +252,7 @@ module.exports = (env, argv) => {
             transform: minifyXML
           },
           
-          // XML-Dateien für Homepage nur bei Web-Build
+          // XML-files for Homepage only for Web-Build
           ...(isMobileBuild ? [] : [
             {
               from: 'android/app/src/main/res/values/strings.xml',
