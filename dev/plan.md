@@ -21,6 +21,7 @@
 - referral_details-Tabelle ist leer, nächste Aufgabe: Backend-Fehleranalyse und Logging für Event-Speicherung.
 - Backend-Fix für referral_details-Speicherung bei redeemCode (POST) ist jetzt implementiert und getestet.
 - DRY-Refactoring für Datenbankmigrationen: Helper-Funktion für Spaltenprüfung/-migration eingeführt, Code-Duplikate für referrals/referral_details entfernt.
+- Einschränkung auf Portrait-Modus in Android entfernt; Capacitor-Konfiguration für bessere Gerätekompatibilität angepasst.
 
 ## Task List
 - [x] Fallback-Logik aus Feedback-Strings entfernen
