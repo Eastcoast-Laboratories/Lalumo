@@ -657,6 +657,17 @@ export function pitches() {
       }
       // Clear any active melody timeouts when changing modes
       this.clearMelodyTimeouts();
+      
+      // Clean up audio resources to prevent audio state corruption between activities
+      if (window.cleanupAudioResources) {
+        try {
+          window.cleanupAudioResources();
+          debugLog(['AUDIO_CLEANUP', 'MODE_SWITCH'], `Audio resources cleaned up when switching from ${this.mode} to ${newMode}`);
+        } catch (error) {
+          debugLog(['AUDIO_CLEANUP', 'ERROR'], `Error cleaning up audio resources: ${error.message}`);
+        }
+      }
+      
       // Hide any currently visible intro message
       this.showHelp = false;
       debugLog('INTROMESSAGE_CLEAR', 'Hidden intro message on mode switch to:' + newMode);
@@ -3354,14 +3365,47 @@ export function pitches() {
       // Entferne die unterste Oktave aus dem Bereich
       const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5'];
       
-      const sequence = sampledPoints.map(point => {
+      const sequence = sampledPoints.map((point, idx) => {
         // Y-Koordinate invertieren (0 ist oben im Canvas)
         const relativeHeight = 1 - (point.y / height);
-        const noteIndex = Math.floor(relativeHeight * notes.length);
-        return notes[Math.min(noteIndex, notes.length - 1)];
+        let noteIndex = Math.floor(relativeHeight * notes.length);
+        
+        // Defensive checks and logging for out-of-bounds drawing
+        if (isNaN(relativeHeight) || relativeHeight < 0 || relativeHeight > 1) {
+          debugLog(['DRAW_MELODY_ERROR', 'Y_OUT_OF_BOUNDS'], `Point ${idx}: y=${point.y}, height=${height}, relativeHeight=${relativeHeight}`);
+        }
+        if (noteIndex < 0) {
+          debugLog(['DRAW_MELODY_ERROR', 'NEGATIVE_NOTE_INDEX'], `Point ${idx}: noteIndex clamped from ${noteIndex} to 0, y=${point.y}`);
+          noteIndex = 0;
+        } else if (noteIndex >= notes.length) {
+          debugLog(['DRAW_MELODY_ERROR', 'OVERSHOOT_NOTE_INDEX'], `Point ${idx}: noteIndex clamped from ${noteIndex} to ${notes.length-1}, y=${point.y}`);
+          noteIndex = notes.length - 1;
+        }
+        
+        const note = notes[noteIndex];
+        if (!note) {
+          debugLog(['DRAW_MELODY_ERROR', 'UNDEFINED_NOTE'], `Point ${idx}: noteIndex=${noteIndex}, y=${point.y}, relativeHeight=${relativeHeight}`);
+        }
+        return note;
       });
       
-      console.log('Playing drawn melody sequence:', sequence);
+      // Filter out any undefined notes and log them
+      const validSequence = sequence.filter((note, idx) => {
+        if (!note) {
+          debugLog(['DRAW_MELODY_ERROR', 'FILTERED_UNDEFINED_NOTE'], `Removed undefined note at index ${idx}`);
+          return false;
+        }
+        return true;
+      });
+      
+      // If all notes were filtered out, use a fallback sequence
+      const finalSequence = validSequence.length > 0 ? validSequence : ['C4', 'E4', 'G4'];
+      if (validSequence.length === 0) {
+        debugLog(['DRAW_MELODY_ERROR', 'FALLBACK_SEQUENCE'], 'All notes were undefined, using fallback sequence');
+      }
+      
+      console.log('Playing drawn melody sequence:', finalSequence);
+      debugLog(['DRAW_MELODY_DEBUG', 'SEQUENCE_STATS'], `Original: ${sequence.length}, Valid: ${validSequence.length}, Final: ${finalSequence.length}`);
       
       // Visuelle Darstellung verbessern - farbige Punkte für gesampelte Stellen
       if (this.ctx) {
@@ -3375,7 +3419,7 @@ export function pitches() {
           // Optional: Notennamen dazuschreiben
           this.ctx.fillStyle = this.drawMelodyColors.noteLabel;
           this.ctx.font = '10px Arial';
-          this.ctx.fillText(sequence[index], point.x + 8, point.y - 8);
+          this.ctx.fillText(finalSequence[index] || 'N/A', point.x + 8, point.y - 8);
         });
       }
       
@@ -3386,8 +3430,17 @@ export function pitches() {
       this.currentPlaybackIndex = -1;
       
       // Sequenz mit korrektem Timing abspielen und die gesampelten Punkte übergeben
+      // Apply toLowerCase safely to valid notes only
+      const lowerCaseSequence = finalSequence.map(note => {
+        if (!note || typeof note !== 'string') {
+          debugLog(['DRAW_MELODY_ERROR', 'INVALID_NOTE_FOR_LOWERCASE'], `Invalid note for toLowerCase: ${note}`);
+          return 'c4'; // fallback
+        }
+        return note.toLowerCase();
+      });
+      
       this.playDrawnNoteSequence(
-        sequence.map(note => note.toLowerCase()), 
+        lowerCaseSequence, 
         0, 
         sampledPoints
       );
@@ -3395,7 +3448,7 @@ export function pitches() {
       // Compare with reference melody if in challenge mode
       if (this.melodyChallengeMode && this.referenceSequence) {
         console.log(`[DRAW_MELODY_DEBUG] About to call compareWithReferenceSequence_1_3`);
-        this.compareWithReferenceSequence_1_3(sequence);
+        this.compareWithReferenceSequence_1_3(finalSequence);
       }
     },
     
