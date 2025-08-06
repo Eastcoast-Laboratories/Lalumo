@@ -1741,11 +1741,19 @@ section h2 {
   text-align: center;
   width: auto;
   min-width: 50%;
-  max-width: 90%;
+  max-width: min(90%, 400px);
   font-weight: bold;
   animation: fade-in 0.3s ease;
   z-index: 1400; /* below main menu */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* on wide screens, feedback must be positioned from the right border */
+@media (min-width: 1024px) {
+  .feedback-message {
+    left: auto;
+    right: -236px;
+  }
 }
 
 @keyframes fade-in {
@@ -1758,7 +1766,6 @@ section h2 {
   position: absolute;
   bottom: 0.5rem; /* Am oberen Rand statt am unteren */
   left: 50%;
-  transform: translateX(-50%);
   background-color: rgba(255, 255, 255, 0.5); /* Blauer Hintergrund für bessere Sichtbarkeit */
   color: rgb(0, 0, 0);
   border-radius: 1rem;
