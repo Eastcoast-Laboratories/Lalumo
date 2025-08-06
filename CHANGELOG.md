@@ -2,7 +2,7 @@
 =========
 
 
-## Version 5.0 (2025-08-01)
+## Version 5.1 (2025-08-06)
 - New introduction messages at the start of each exercise
 - "Bunny Hop" corrected in "Does it sound right?"
 - "High or Low": Random instruments play the tones
