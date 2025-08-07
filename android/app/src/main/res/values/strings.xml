@@ -36,6 +36,9 @@
     <string name="button_export_progress">Export Progress</string>
     <string name="button_import_progress">Import Progress</string>
     <string name="button_copy_clipboard">Copy to Clipboard</string>
+    <string name="copy_progress_code">Copy this code and save it:</string>
+    <string name="button_copy_progress">Copy Code</string>
+    <string name="progress_code_copied">Progress code copied to clipboard!</string>
     <string name="button_reset_progress">Reset All Progress</string>
     <string name="button_confirm_reset">Yes, Reset Everything</string>
     <string name="button_cancel">Cancel</string>

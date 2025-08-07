@@ -36,6 +36,9 @@
     <string name="button_export_progress">Fortschritt exportieren</string>
     <string name="button_import_progress">Fortschritt importieren</string>
     <string name="button_copy_clipboard">In die Zwischenablage kopieren</string>
+    <string name="copy_progress_code">Diesen Code kopieren und speichern:</string>
+    <string name="button_copy_progress">Code kopieren</string>
+    <string name="progress_code_copied">Code erfolgreich in die Zwischenablage kopiert!</string>
     <string name="button_reset_progress">Fortschritt zurücksetzen</string>
     <string name="button_confirm_reset">Ja, alles zurücksetzen</string>
     <string name="button_cancel">Abbrechen</string>

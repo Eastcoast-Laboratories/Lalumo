@@ -85,7 +85,7 @@
       <br>
       <p x-text="$store.strings?.import_progress || 'Import your progress from another device:'"></p>
       <div class="import-progress">
-        <textarea x-model="importData" :placeholder="$store.strings?.paste_progress_code || 'Paste your progress code here'"></textarea>
+        <textarea x-model="importData" :placeholder="$store.strings?.paste_progress || 'Paste your progress code here'"></textarea>
         <button class="primary-button" @click="importProgress()" x-text="$store.strings?.button_import_progress || 'Import Progress'"></button>
       </div>
       

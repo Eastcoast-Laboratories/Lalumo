@@ -14,10 +14,10 @@ RepoType: git
 Repo: https://github.com/Eastcoast-Laboratories/Lalumo
 
 Builds:
-  - versionName: '4.1'
-    versionCode: 28
+  - versionName: '5.1'
+    versionCode: 31
     disable: "['scanner']"
-    commit: ee73b372b5c0fa0014f744260c232e761377815e
+    commit: 51d046767eeb37368c967de4765996e38ca1c0ca
     subdir: android/app
     sudo:
       - echo "deb https://deb.debian.org/debian trixie main" > /etc/apt/sources.list.d/trixie.list
@@ -30,7 +30,6 @@ Builds:
     output: app/build/outputs/apk/release/app-release-unsigned.apk
     prebuild:
       - cd ../..
-      - find node_modules -name "*.tar.gz" -delete || true
       - npm install --build-from-source
       - mkdir -p app/images/backgrounds
       - cp -r public/images/backgrounds/* app/images/backgrounds/
@@ -39,12 +38,16 @@ Builds:
       - npm run build
       - npx cap telemetry off
       - npx cap sync android
+    scanignore:
+      - android/app/build.gradle
+    scandelete:
+      - node_modules
     build:
+      - cd ../..
       - chmod +x ./mobile-build.sh
-      - cd android && ./gradlew clean
-      - ./mobile-build.sh android
+      - ./mobile-build.sh
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: '4.1'
-CurrentVersionCode: 28
+CurrentVersion: '5.1'
+CurrentVersionCode: 31
