@@ -26,7 +26,6 @@ Builds:
       - update-alternatives --auto java
     gradle:
       - yes
-    output: build/outputs/apk/release/app-release-unsigned.apk
     prebuild:
       - cd ../..
       - npm install --build-from-source
@@ -34,7 +33,11 @@ Builds:
       - cp -r public/images/backgrounds/* app/images/backgrounds/
       - mkdir -p android/capacitor-cordova-android-plugins
       - echo "// Empty cordova variables" > android/capacitor-cordova-android-plugins/cordova.variables.gradle
-      - npm run build
+      - webpack --mode production --env mobile=true
+      - rsync -av --exclude='android/' --exclude='de/images/screenshots/' --exclude='images/screenshots/' public/ dist/
+      - cp package.json dist/
+      - cp -r dist/app/* dist/
+      - mkdir -p dist/app/
       - npx cap telemetry off
       - npx cap sync android
     scanignore:
@@ -42,10 +45,6 @@ Builds:
       - android/app/build.gradle
     scandelete:
       - node_modules
-    build:
-      - cd ../..
-      - chmod +x ./mobile-build.sh
-      - ./mobile-build.sh
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
