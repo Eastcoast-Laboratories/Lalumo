@@ -199,8 +199,9 @@ function getPositionOnPath(path, progress) {
  * @param {number} angle - Rotation angle in radians
  * @param {number} width - Segment width in pixels
  * @param {number} height - Segment height in pixels
+ * @param {boolean} flipX - If true, horizontally mirror the sprite (after rotation)
  */
-function drawSnakeSegment(ctx, image, x, y, angle, width = 30, height = 30) {
+function drawSnakeSegment(ctx, image, x, y, angle, width = 30, height = 30, flipX = false) {
   if (!image || !image.complete) return;
   
   ctx.save();
@@ -208,6 +209,9 @@ function drawSnakeSegment(ctx, image, x, y, angle, width = 30, height = 30) {
   ctx.globalAlpha = 1.0;
   ctx.translate(x, y);
   ctx.rotate(angle);
+  if (flipX) {
+    ctx.scale(1, -1);
+  }
   ctx.drawImage(image, -width/2, -height/2, width, height);
   ctx.restore();
 }
@@ -278,15 +282,21 @@ export function drawSnakeAnimation(canvas, path, progress, isPlaying = false) {
       image = (randomSeed % 2 === 0) ? snakeImages.segment1 : snakeImages.segment2;
     }
     
-    // Head needs 180° correction, tail and body use original angle
+    // Rotation and optional horizontal mirroring
+    // Head: add 180° (asset faces left by default). Tail: also add 180° per report (tail was inverted).
     let rotation = segment.angle;
     if (segment.isHead) {
-      rotation = segment.angle + Math.PI; // Head faces forward
+      rotation = segment.angle + Math.PI;
     } else if (segment.isTail) {
-      rotation = segment.angle; // Tail faces backward (original angle)
+      rotation = segment.angle + Math.PI;
     }
-    
-    drawSnakeSegment(ctx, image, segment.x, segment.y, rotation, segment.width, segment.height);
+
+    // When moving left -> right, horizontally mirror the head sprite to match visual expectation
+    // Use the base direction (segment.angle) to decide movement direction.
+    const movingRight = Math.cos(segment.angle) > 0;
+    const flipX = segment.isHead && movingRight;
+
+    drawSnakeSegment(ctx, image, segment.x, segment.y, rotation, segment.width, segment.height, flipX);
   });
   
   debugLog('SNAKE_ANIMATION', `Drew snake with ${segments.length} segments at progress ${progress.toFixed(2)}`);
