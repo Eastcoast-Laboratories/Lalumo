@@ -2564,7 +2564,8 @@ export function pitches() {
                           this.activeNoteHighlight.x === point.x && 
                           this.activeNoteHighlight.y === point.y;
           
-          // Draw the note markers - use lighter red for active note
+          // Draw the note markers - use lighter red for active note, semi-transparent
+          this.ctx.globalAlpha = 0.3; // Make note markers semi-transparent
           this.ctx.fillStyle = isActive ? this.drawMelodyColors.activeNoteMarker : this.drawMelodyColors.noteMarker;
           this.ctx.beginPath();
           this.ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
@@ -2578,6 +2579,9 @@ export function pitches() {
           this.ctx.fillStyle = this.drawMelodyColors.noteLabel;
           this.ctx.font = '10px Arial';
           this.ctx.fillText(noteName, point.x + 8, point.y - 8);
+          
+          // Reset alpha for other drawing operations
+          this.ctx.globalAlpha = 1.0;
         });
       }
     },
@@ -2612,7 +2616,8 @@ export function pitches() {
           this.currentMelodyPoints.forEach((point, index) => {
             if (!point) return;
             
-            // Draw the note markers (no active highlighting for completed path)
+            // Draw the note markers (no active highlighting for completed path), semi-transparent
+            this.ctx.globalAlpha = 0.5; // Make note markers semi-transparent
             this.ctx.fillStyle = this.drawMelodyColors.noteMarker;
             this.ctx.beginPath();
             this.ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
@@ -2626,6 +2631,9 @@ export function pitches() {
             this.ctx.fillStyle = this.drawMelodyColors.noteLabel;
             this.ctx.font = '10px Arial';
             this.ctx.fillText(noteName, point.x + 8, point.y - 8);
+            
+            // Reset alpha for other drawing operations
+            this.ctx.globalAlpha = 1.0;
           });
         }
       }
@@ -3277,8 +3285,8 @@ export function pitches() {
         this.ctx.closePath();
       }
       
-      // Redraw the completed path with the correct static color
-      this.redrawCompletedPath();
+      // Snake animation replaces the need for redrawing the completed path
+      // this.redrawCompletedPath(); // Removed - snake handles visualization
       
       // Melodie aus der Zeichnung generieren und abspielen
       this.playDrawnMelody();
@@ -3434,8 +3442,8 @@ export function pitches() {
         if (this.activeNoteHighlight) {
           this.activeNoteHighlight = null;
           this.currentPlaybackIndex = -1;
-          // Redraw with static color after playback ends
-          this.redrawCompletedPath();
+          // Snake animation replaces the need for redrawing
+          // this.redrawCompletedPath(); // Removed - snake handles visualization
         }
         return;
       }

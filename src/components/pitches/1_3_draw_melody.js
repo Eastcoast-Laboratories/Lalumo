@@ -191,21 +191,24 @@ function getPositionOnPath(path, progress) {
 }
 
 /**
- * Draw snake segment with rotation
+ * Draw snake segment with rotation and stretching
  * @param {CanvasRenderingContext2D} ctx - Canvas context
  * @param {Image} image - Snake segment image
  * @param {number} x - X position
  * @param {number} y - Y position
  * @param {number} angle - Rotation angle in radians
- * @param {number} size - Segment size in pixels
+ * @param {number} width - Segment width in pixels
+ * @param {number} height - Segment height in pixels
  */
-function drawSnakeSegment(ctx, image, x, y, angle, size = 30) {
+function drawSnakeSegment(ctx, image, x, y, angle, width = 30, height = 30) {
   if (!image || !image.complete) return;
   
   ctx.save();
+  // Ensure snake is fully opaque (not affected by note marker transparency)
+  ctx.globalAlpha = 1.0;
   ctx.translate(x, y);
   ctx.rotate(angle);
-  ctx.drawImage(image, -size/2, -size/2, size, size);
+  ctx.drawImage(image, -width/2, -height/2, width, height);
   ctx.restore();
 }
 
@@ -230,29 +233,35 @@ export function drawSnakeAnimation(canvas, path, progress, isPlaying = false) {
     lastAnimationTime = currentTime;
   }
   
-  // Calculate snake length based on progress
-  const maxSegments = 8; // Maximum snake length
-  const currentSegments = Math.floor(progress * maxSegments) + 1;
+  // Calculate snake segments that fill the played path
+  const totalPathLength = calculatePathLength(path);
+  const playedLength = totalPathLength * progress;
+  const segmentSize = 25; // Base segment size in pixels
+  const numSegments = Math.max(1, Math.floor(playedLength / segmentSize) + 1);
   
-  // Generate segment positions
+  // Generate segment positions that stretch to fill the path
   const segments = [];
-  const segmentSpacing = 0.8 / maxSegments; // Spacing between segments
   
-  for (let i = 0; i < currentSegments; i++) {
-    const segmentProgress = Math.max(0, progress - (i * segmentSpacing));
-    if (segmentProgress > 0) {
-      const position = getPositionOnPath(path, segmentProgress);
-      segments.push({
-        ...position,
-        isHead: i === 0,
-        isTail: i === currentSegments - 1 && currentSegments > 3,
-        segmentIndex: i
-      });
-    }
+  for (let i = 0; i < numSegments; i++) {
+    // Distribute segments evenly along the played portion
+    const segmentProgress = progress * (i / (numSegments - 1 || 1));
+    const position = getPositionOnPath(path, segmentProgress);
+    
+    // Calculate stretch factor based on path density - increased for overlap
+    const stretchFactor = Math.min(3, Math.max(1.2, playedLength / (numSegments * segmentSize * 0.7)));
+    
+    segments.push({
+      ...position,
+      isHead: i === numSegments - 1, // Head is at the front (highest progress)
+      isTail: i === 0 && numSegments > 3, // Tail is at the back
+      segmentIndex: i,
+      width: segmentSize * stretchFactor,
+      height: segmentSize
+    });
   }
   
   // Draw segments from tail to head
-  segments.reverse().forEach((segment, index) => {
+  segments.forEach((segment, index) => {
     let image;
     
     if (segment.isHead) {
@@ -269,7 +278,15 @@ export function drawSnakeAnimation(canvas, path, progress, isPlaying = false) {
       image = (randomSeed % 2 === 0) ? snakeImages.segment1 : snakeImages.segment2;
     }
     
-    drawSnakeSegment(ctx, image, segment.x, segment.y, segment.angle);
+    // Head needs 180° correction, tail and body use original angle
+    let rotation = segment.angle;
+    if (segment.isHead) {
+      rotation = segment.angle + Math.PI; // Head faces forward
+    } else if (segment.isTail) {
+      rotation = segment.angle; // Tail faces backward (original angle)
+    }
+    
+    drawSnakeSegment(ctx, image, segment.x, segment.y, rotation, segment.width, segment.height);
   });
   
   debugLog('SNAKE_ANIMATION', `Drew snake with ${segments.length} segments at progress ${progress.toFixed(2)}`);
