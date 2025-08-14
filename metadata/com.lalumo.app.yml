@@ -33,13 +33,7 @@ Builds:
       - cp -r public/images/backgrounds/* app/images/backgrounds/
       - mkdir -p android/capacitor-cordova-android-plugins
       - echo "// Empty cordova variables" > android/capacitor-cordova-android-plugins/cordova.variables.gradle
-      - webpack --mode production --env mobile=true
-      - rsync -av --exclude='android/' --exclude='de/images/screenshots/' --exclude='images/screenshots/' public/ dist/
-      - cp package.json dist/
-      - cp -r dist/app/* dist/
-      - mkdir -p dist/app/
-      - npx cap telemetry off
-      - npx cap sync android
+      - bash mobile-build.sh
     scanignore:
       - node_modules/@capacitor/cli/assets/capacitor-cordova-android-plugins.tar.gz
       - android/app/build.gradle
