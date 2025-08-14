@@ -13,6 +13,7 @@ import { debugLog } from '../utils/debug.js';
 
 // Import activity-specific helper functions
 import { get_1_4_level } from './pitches/1_4_sound_judgment.js';
+import { drawSnakeAnimation, initSnakeAnimation } from './pitches/1_3_draw_melody.js';
 
 // Import shared feedback utilities
 import { 
@@ -303,6 +304,9 @@ export function pitches() {
       
       // Initialize audio engine asynchronously
       this.initializeAudioEngine();
+      
+      // Initialize snake animation for draw melody activity
+      initSnakeAnimation();
     
       // Set up text-to-speech if available - with better debugging
       this.speechSynthesis = null;
@@ -2542,42 +2546,10 @@ export function pitches() {
           }
         }
         
-        // Draw the played part of the path (darker/played color)
-        if (playedPathLength > 0) {
-          this.ctx.beginPath();
-          this.ctx.moveTo(this.drawPath[0].x, this.drawPath[0].y);
-          
-          for (let i = 1; i < Math.min(playedPathLength, this.drawPath.length); i++) {
-            if (this.drawPath[i]) {
-              this.ctx.lineTo(this.drawPath[i].x, this.drawPath[i].y);
-            }
-          }
-          
-          this.ctx.strokeStyle = this.drawMelodyColors.playedPath;
-          this.ctx.lineWidth = 4;
-          this.ctx.stroke();
-        }
-        
-        // Draw the unplayed part of the path (lighter/unplayed color)
-        if (playedPathLength < this.drawPath.length) {
-          this.ctx.beginPath();
-          
-          // Start from the played position or beginning
-          const startIndex = Math.max(0, playedPathLength - 1);
-          if (startIndex < this.drawPath.length && this.drawPath[startIndex]) {
-            this.ctx.moveTo(this.drawPath[startIndex].x, this.drawPath[startIndex].y);
-          }
-          
-          for (let i = startIndex + 1; i < this.drawPath.length; i++) {
-            if (this.drawPath[i]) {
-              this.ctx.lineTo(this.drawPath[i].x, this.drawPath[i].y);
-            }
-          }
-          
-          this.ctx.strokeStyle = this.drawMelodyColors.unplayedPath;
-          this.ctx.lineWidth = 4;
-          this.ctx.stroke();
-        }
+        // Draw snake animation instead of blue line
+        const progress = this.drawPath.length > 0 ? playedPathLength / this.drawPath.length : 0;
+        const isPlaying = this.currentPlaybackIndex >= 0;
+        drawSnakeAnimation(canvas, this.drawPath, progress, isPlaying);
       }
       
       // Only draw note markers if we have them
