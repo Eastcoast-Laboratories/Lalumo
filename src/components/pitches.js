@@ -2549,9 +2549,27 @@ export function pitches() {
           }
         }
         
-        // Draw snake animation instead of blue line
+        // Draw the full path as a subtle sand track while playing
         const progress = this.drawPath.length > 0 ? playedPathLength / this.drawPath.length : 0;
         const isPlaying = this.currentPlaybackIndex >= 0;
+        if (isPlaying) {
+          this.ctx.save();
+          this.ctx.strokeStyle = this.drawMelodyColors.previousPath;
+          this.ctx.globalAlpha = 1.0;
+          this.ctx.lineWidth = 4;
+          this.ctx.lineCap = 'round';
+          this.ctx.lineJoin = 'round';
+          this.ctx.beginPath();
+          const fp = this.drawPath[0];
+          this.ctx.moveTo(fp.x, fp.y);
+          for (let i = 1; i < this.drawPath.length; i++) {
+            const p = this.drawPath[i];
+            this.ctx.lineTo(p.x, p.y);
+          }
+          this.ctx.stroke();
+          this.ctx.restore();
+        }
+        // Draw snake animation on top
         drawSnakeAnimation(canvas, this.drawPath, progress, isPlaying);
       }
       
