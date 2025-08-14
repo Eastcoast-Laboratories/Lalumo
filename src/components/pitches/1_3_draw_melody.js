@@ -260,7 +260,8 @@ export function drawSnakeAnimation(canvas, path, progress, isPlaying = false) {
       isTail: i === 0 && numSegments > 3, // Tail is at the back
       segmentIndex: i,
       width: segmentSize * stretchFactor,
-      height: segmentSize
+      height: segmentSize,
+      progress: segmentProgress
     });
   }
   
@@ -281,22 +282,33 @@ export function drawSnakeAnimation(canvas, path, progress, isPlaying = false) {
       const randomSeed = segment.segmentIndex + Math.floor(currentTime / 1000);
       image = (randomSeed % 2 === 0) ? snakeImages.segment1 : snakeImages.segment2;
     }
-    
-    // Rotation and optional horizontal mirroring
-    // Head: add 180° (asset faces left by default). Tail: also add 180° per report (tail was inverted).
-    let rotation = segment.angle;
-    if (segment.isHead) {
-      rotation = segment.angle + Math.PI;
-    } else if (segment.isTail) {
-      rotation = segment.angle + Math.PI;
+
+    // Rotation and optional mirroring for head/tail
+    if (segment.isHead || segment.isTail) {
+      let rotation = segment.angle + Math.PI; // head and tail rotated by 180° per asset orientation
+      const movingRight = Math.cos(segment.angle) > 0;
+      const flipX = segment.isHead && movingRight;
+      drawSnakeSegment(ctx, image, segment.x, segment.y, rotation, segment.width, segment.height, flipX);
+      return; // done with head/tail
     }
 
-    // When moving left -> right, horizontally mirror the head sprite to match visual expectation
-    // Use the base direction (segment.angle) to decide movement direction.
-    const movingRight = Math.cos(segment.angle) > 0;
-    const flipX = segment.isHead && movingRight;
+    // Curved body approximation (Option A): split into k micro-segments sampled along path
+    const CURVED_K = 3; // as per rollout plan
+    const EPS_PX = 12; // local window in pixels for curvature sampling
+    const epsProgress = totalPathLength > 0 ? (EPS_PX / totalPathLength) : 0.0;
+    const startT = Math.max(0, segment.progress - epsProgress);
+    const endT = Math.min(progress, segment.progress + epsProgress);
+    const denom = CURVED_K - 1 || 1;
 
-    drawSnakeSegment(ctx, image, segment.x, segment.y, rotation, segment.width, segment.height, flipX);
+    // Slight width overlap to avoid gaps between micro-segments
+    const microWidth = (segment.width / CURVED_K) * 1.3;
+
+    for (let j = 0; j < CURVED_K; j++) {
+      const t = startT + ((endT - startT) * (j / denom));
+      const pos = getPositionOnPath(path, t);
+      const rotation = pos.angle; // body faces along tangent without the 180° correction
+      drawSnakeSegment(ctx, image, pos.x, pos.y, rotation, microWidth, segment.height, false);
+    }
   });
   
   debugLog('SNAKE_ANIMATION', `Drew snake with ${segments.length} segments at progress ${progress.toFixed(2)}`);

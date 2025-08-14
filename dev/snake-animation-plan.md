@@ -82,7 +82,5 @@ Goal: Make body segments visually follow bends (curvature) of the drawn path mor
 - __Assets__: If adopting B/Hybrid, add files under `public/images/snake/` like `green_curve_30_l.png`, `green_curve_60_r.png`.
 
 ### Rollout Plan
-1) Implement A with k=3 for body segments only, behind a flag `enableCurvedBodyApprox` (default off).
-2) Collect performance/visuals feedback on devices.
-3) If needed, add 2–4 curved assets (±30°, ±60°) and enable Hybrid for |Δθ|>35°.
-4) Tune thresholds, overlaps, and k.
+1) Implement Option A with k=3 for body segments only. no flag no legacy support no fallbacks
+2) Tune thresholds, overlaps, and k.
