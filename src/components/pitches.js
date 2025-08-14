@@ -3177,6 +3177,17 @@ export function pitches() {
       this.canvas = canvas; // Store canvas reference for use in other methods
       this.ctx = canvas.getContext('2d');
       
+      // Stop any ongoing playback immediately when a new drawing starts
+      // This cancels both the drawn melody playback and the reference melody playback
+      if (typeof this.stopDrawnMelodyPlayback === 'function') {
+        console.log('[DRAW_MELODY_STOP] startDrawing(): stopping drawn melody playback');
+        this.stopDrawnMelodyPlayback();
+      }
+      if (typeof this.stopReferencePlayback === 'function') {
+        console.log('[REFERENCE_SEQ_STOP] startDrawing(): stopping reference playback');
+        this.stopReferencePlayback();
+      }
+      
       // Clear the canvas
       this.ctx.clearRect(0, 0, canvas.width, canvas.height);
       
@@ -3469,6 +3480,11 @@ export function pitches() {
       // Initialize playback index
       this.currentPlaybackIndex = -1;
       
+      // Prepare cancellation and timeout tracking for drawn melody playback
+      if (!this.drawnPlaybackTimeouts) this.drawnPlaybackTimeouts = [];
+      this.drawnPlaybackToken = (this.drawnPlaybackToken || 0) + 1;
+      this.isDrawnPlaybackActive = true;
+      
       // Sequenz mit korrektem Timing abspielen und die gesampelten Punkte übergeben
       // Apply toLowerCase safely to valid notes only
       const lowerCaseSequence = finalSequence.map(note => {
@@ -3482,7 +3498,8 @@ export function pitches() {
       this.playDrawnNoteSequence(
         lowerCaseSequence, 
         0, 
-        sampledPoints
+        sampledPoints,
+        this.drawnPlaybackToken
       );
       
       // Compare with reference melody if in challenge mode
@@ -3496,7 +3513,16 @@ export function pitches() {
      * Spielt eine Sequenz von Noten nacheinander ab
      * Verwendet die zentrale Audio-Engine für konsistente Audiowiedergabe auf allen Plattformen
      */
-    playDrawnNoteSequence(notes, index = 0, sampledPoints = null) {
+    playDrawnNoteSequence(notes, index = 0, sampledPoints = null, token = null) {
+      // Abort if playback has been cancelled or token mismatches
+      if (token != null && token !== this.drawnPlaybackToken) {
+        console.log('[DRAW_MELODY_STOP] playDrawnNoteSequence(): token mismatch, aborting step');
+        return;
+      }
+      if (!this.isDrawnPlaybackActive) {
+        return;
+      }
+      
       if (index >= notes.length) {
         // Clear active highlight and reset playback index when playback is complete
         if (this.activeNoteHighlight) {
@@ -3505,6 +3531,7 @@ export function pitches() {
           // Snake animation replaces the need for redrawing
           // this.redrawCompletedPath(); // Removed - snake handles visualization
         }
+        this.isDrawnPlaybackActive = false;
         return;
       }
       
@@ -3554,7 +3581,51 @@ export function pitches() {
         // Continue with next note even if there was an error
       } finally {
         // Play next note with delay
-        setTimeout(() => this.playDrawnNoteSequence(notes, index + 1, sampledPoints), 300);
+        const tId = setTimeout(() => this.playDrawnNoteSequence(notes, index + 1, sampledPoints, token), 300);
+        if (Array.isArray(this.drawnPlaybackTimeouts)) this.drawnPlaybackTimeouts.push(tId);
+      }
+    },
+
+    /**
+     * Stop playback of the drawn melody immediately
+     * Clears scheduled timeouts, resets flags and highlights
+     */
+    stopDrawnMelodyPlayback() {
+      try {
+        this.isDrawnPlaybackActive = false;
+        this.drawnPlaybackToken = (this.drawnPlaybackToken || 0) + 1; // invalidate existing callbacks
+        if (Array.isArray(this.drawnPlaybackTimeouts)) {
+          this.drawnPlaybackTimeouts.forEach(id => {
+            try { clearTimeout(id); } catch (_) {}
+          });
+          this.drawnPlaybackTimeouts = [];
+        }
+        this.currentPlaybackIndex = -1;
+        this.activeNoteHighlight = null;
+        if (typeof this.redrawMelody === 'function') {
+          this.redrawMelody();
+        }
+        console.log('[DRAW_MELODY_STOP] stopDrawnMelodyPlayback(): playback cancelled');
+      } catch (e) {
+        console.error('[DRAW_MELODY_STOP_ERROR] Failed to stop drawn melody playback', e);
+      }
+    },
+
+    /**
+     * Stop playback of the reference melody (challenge mode)
+     * Clears any scheduled timeouts
+     */
+    stopReferencePlayback() {
+      try {
+        if (Array.isArray(this.referencePlaybackTimeouts)) {
+          this.referencePlaybackTimeouts.forEach(id => {
+            try { clearTimeout(id); } catch (_) {}
+          });
+          this.referencePlaybackTimeouts = [];
+        }
+        console.log('[REFERENCE_SEQ_STOP] stopReferencePlayback(): playback cancelled');
+      } catch (e) {
+        console.error('[REFERENCE_SEQ_STOP_ERROR] Failed to stop reference playback', e);
       }
     },
     
