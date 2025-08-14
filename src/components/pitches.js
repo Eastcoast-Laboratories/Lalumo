@@ -90,8 +90,11 @@ export function pitches() {
       staticPath: '#3498db',           // Blue for static completed path
       unplayedPath: '#2c3e50',         // Darker Blue for unplayed part during playback
       playedPath: '#3498db',           // blue for played part during playback
-      currentDrawing: '#3498db',       // Blue stroke for current drawing
-      previousPath: 'rgba(52, 152, 219, 0.3)', // Semi-transparent blue for previous path
+      currentDrawing: 'rgba(234, 188, 52, 1)',       // Sand stroke for current drawing
+      currentDrawingDark: 'rgba(139, 125, 90, 1)',   // Darker sand for inner edge (rgba)
+      currentDrawingShadow: 'rgba(50, 48, 32, 0.22)',// Subtle warm inner shadow color
+      currentDrawingHighlight: 'rgba(255, 239, 188, 0.65)', // Light sand highlight
+      previousPath: 'rgba(117, 94, 26, 0.3)', // Semi-transparent sand for previous path
       
       // Note marker colors
       noteMarker: '#e74c3c',          // Red dots for note positions
@@ -3207,10 +3210,41 @@ export function pitches() {
       // Füge den aktuellen Punkt hinzu
       this.addPointToPath(e);
       
-      // Zeichne den aktuellen Pfad
+      // Zeichne den aktuellen Pfad mit "in den Sand gedrückt"-Effekt
       const lastPoint = this.drawPath[this.drawPath.length - 1];
       this.ctx.lineTo(lastPoint.x, lastPoint.y);
+
+      // Unterstrich (dunkler, leicht weicher Schatten) – tieferer Graben
+      this.ctx.save();
+      const baseWidth = this.ctx.lineWidth;
+      this.ctx.strokeStyle = this.drawMelodyColors.currentDrawingDark; // dark sand for inner edge
+      this.ctx.lineWidth = baseWidth + 4;
+      this.ctx.globalAlpha = 0.55;
+      this.ctx.shadowColor = this.drawMelodyColors.currentDrawingShadow;
+      this.ctx.shadowBlur = 3;
+      this.ctx.shadowOffsetX = 0;
+      this.ctx.shadowOffsetY = 1; // leichte Kante nach unten
       this.ctx.stroke();
+      this.ctx.restore();
+
+      // Highlight-Kante (heller Sand), leichte Verschiebung nach oben für Relief
+      this.ctx.save();
+      this.ctx.translate(0, -0.6);
+      this.ctx.strokeStyle = this.drawMelodyColors.currentDrawingHighlight;
+      this.ctx.lineWidth = Math.max(1, baseWidth - 1);
+      this.ctx.globalAlpha = 0.7;
+      this.ctx.shadowColor = 'transparent';
+      this.ctx.stroke();
+      this.ctx.restore();
+
+      // Oberstrich (Hauptfarbe Sand)
+      this.ctx.save();
+      this.ctx.strokeStyle = this.drawMelodyColors.currentDrawing; // #C2B280
+      this.ctx.lineWidth = baseWidth;
+      this.ctx.globalAlpha = 1.0;
+      this.ctx.shadowColor = 'transparent';
+      this.ctx.stroke();
+      this.ctx.restore();
     },
     
     /**
