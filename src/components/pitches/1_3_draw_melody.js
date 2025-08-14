@@ -93,6 +93,8 @@ const snakeImages = {
 // Animation state
 let snakeAnimationFrame = 0;
 let lastAnimationTime = 0;
+// Persist head orientation for final pose
+let lastHeadAngle = null;
 
 /**
  * Preload snake images
@@ -231,6 +233,11 @@ export function drawSnakeAnimation(canvas, path, progress, isPlaying = false) {
   const ctx = canvas.getContext('2d');
   const currentTime = Date.now();
   
+  // Reset stored angle at start
+  if (progress <= 0) {
+    lastHeadAngle = null;
+  }
+  
   // Update animation frame for head alternation (every 200ms when playing)
   if (isPlaying && currentTime - lastAnimationTime > 200) {
     snakeAnimationFrame++;
@@ -285,10 +292,29 @@ export function drawSnakeAnimation(canvas, path, progress, isPlaying = false) {
 
     // Rotation and optional mirroring for head/tail
     if (segment.isHead || segment.isTail) {
-      let rotation = segment.angle + Math.PI; // head and tail rotated by 180° per asset orientation
-      const movingRight = Math.cos(segment.angle) > 0;
+      // Base angle (tangent) used for consistent final pose and mirroring
+      const baseAngle = segment.angle;
+      if (segment.isHead && progress < 0.999) {
+        // Update stored head angle during movement
+        lastHeadAngle = baseAngle;
+      }
+
+      // Determine final pose
+      const HEAD_OVERSHOOT_PX = 10; // small overshoot so the note sits at the neck
+      let drawX = segment.x;
+      let drawY = segment.y;
+      let useAngle = baseAngle;
+      if (segment.isHead && progress >= 0.999) {
+        // Keep the last movement inclination and overshoot slightly forward
+        useAngle = lastHeadAngle != null ? lastHeadAngle : baseAngle;
+        drawX = segment.x + Math.cos(useAngle) * HEAD_OVERSHOOT_PX;
+        drawY = segment.y + Math.sin(useAngle) * HEAD_OVERSHOOT_PX;
+      }
+
+      let rotation = useAngle + Math.PI; // assets face left; rotate 180°
+      const movingRight = Math.cos(useAngle) > 0;
       const flipX = segment.isHead && movingRight;
-      drawSnakeSegment(ctx, image, segment.x, segment.y, rotation, segment.width, segment.height, flipX);
+      drawSnakeSegment(ctx, image, drawX, drawY, rotation, segment.width, segment.height, flipX);
       return; // done with head/tail
     }
 
