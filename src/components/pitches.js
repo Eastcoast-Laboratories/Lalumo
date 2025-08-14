@@ -2569,8 +2569,16 @@ export function pitches() {
           this.ctx.stroke();
           this.ctx.restore();
         }
-        // Draw snake animation on top
-        drawSnakeAnimation(canvas, this.drawPath, progress, isPlaying);
+        // Prepare SSOT based on the same sampled indices used for playback
+        let ssotIndices = null;
+        let ssotCurrentIndex = -1;
+        if (this.currentMelodyPoints && this.currentMelodyPoints.length > 0) {
+          const sampledIndices = this.samplePointsFromPath(this.drawPath, this.currentMelodyPoints.length);
+          ssotIndices = sampledIndices.map(si => si.originalIndex);
+          ssotCurrentIndex = this.currentPlaybackIndex;
+        }
+        // Draw snake animation on top, using SSOT to compute effective progress while preserving curvature
+        drawSnakeAnimation(canvas, this.drawPath, progress, isPlaying, ssotIndices, ssotCurrentIndex);
       }
       
       // Only draw note markers if we have them

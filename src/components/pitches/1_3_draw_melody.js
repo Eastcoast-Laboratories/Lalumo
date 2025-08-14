@@ -248,7 +248,7 @@ function drawSnakeSegment(ctx, image, x, y, angle, width = 30, height = 30, flip
  * @param {number} progress - Animation progress (0-1)
  * @param {boolean} isPlaying - Whether melody is currently playing
  */
-export function drawSnakeAnimation(canvas, path, progress, isPlaying = false) {
+export function drawSnakeAnimation(canvas, path, progress, isPlaying = false, ssotIndices = null, ssotCurrentIndex = -1) {
   if (!canvas || !path || path.length < 2 || !snakeImages.loaded) {
     return;
   }
@@ -269,7 +269,20 @@ export function drawSnakeAnimation(canvas, path, progress, isPlaying = false) {
   
   // Calculate snake segments that fill the played path
   const totalPathLength = calculatePathLength(path);
-  const playedLength = totalPathLength * progress;
+  // If SSOT indices are provided, compute progress from cumulative length up to current SSOT point
+  let effectiveProgress = progress;
+  if (Array.isArray(ssotIndices) && ssotIndices.length >= 2 && ssotCurrentIndex >= 0) {
+    const idx = Math.min(ssotCurrentIndex, ssotIndices.length - 1);
+    const targetOriginalIndex = ssotIndices[idx];
+    let acc = 0;
+    for (let i = 1; i <= targetOriginalIndex && i < path.length; i++) {
+      const dx = path[i].x - path[i - 1].x;
+      const dy = path[i].y - path[i - 1].y;
+      acc += Math.hypot(dx, dy);
+    }
+    effectiveProgress = totalPathLength > 0 ? Math.max(0, Math.min(1, acc / totalPathLength)) : progress;
+  }
+  const playedLength = totalPathLength * effectiveProgress;
   const segmentSize = 25; // Base segment size in pixels
   const numSegments = Math.max(1, Math.floor(playedLength / segmentSize) + 1);
   
@@ -278,7 +291,7 @@ export function drawSnakeAnimation(canvas, path, progress, isPlaying = false) {
   
   for (let i = 0; i < numSegments; i++) {
     // Distribute segments evenly along the played portion
-    const segmentProgress = progress * (i / (numSegments - 1 || 1));
+    const segmentProgress = effectiveProgress * (i / (numSegments - 1 || 1));
     const position = getPositionOnPath(path, segmentProgress);
     
     // Calculate stretch factor based on path density - increased for overlap
@@ -317,7 +330,7 @@ export function drawSnakeAnimation(canvas, path, progress, isPlaying = false) {
     if (segment.isHead || segment.isTail) {
       // Base angle (tangent) used for consistent final pose and mirroring
       const baseAngle = segment.angle;
-      if (segment.isHead && progress < 0.999) {
+      if (segment.isHead && effectiveProgress < 0.999) {
         // Update stored head angle during movement
         lastHeadAngle = baseAngle;
       }
@@ -327,7 +340,7 @@ export function drawSnakeAnimation(canvas, path, progress, isPlaying = false) {
       let drawX = segment.x;
       let drawY = segment.y;
       let useAngle = baseAngle;
-      if (segment.isHead && progress >= 0.999) {
+      if (segment.isHead && effectiveProgress >= 0.999) {
         // Keep the last movement inclination and overshoot slightly forward
         useAngle = lastHeadAngle != null ? lastHeadAngle : baseAngle;
         drawX = segment.x + Math.cos(useAngle) * HEAD_OVERSHOOT_PX;
@@ -346,7 +359,7 @@ export function drawSnakeAnimation(canvas, path, progress, isPlaying = false) {
     const EPS_PX = 12; // local window in pixels for curvature sampling
     const epsProgress = totalPathLength > 0 ? (EPS_PX / totalPathLength) : 0.0;
     const startT = Math.max(0, segment.progress - epsProgress);
-    const endT = Math.min(progress, segment.progress + epsProgress);
+    const endT = Math.min(effectiveProgress, segment.progress + epsProgress);
     const denom = CURVED_K - 1 || 1;
 
     // Slight width overlap to avoid gaps between micro-segments
