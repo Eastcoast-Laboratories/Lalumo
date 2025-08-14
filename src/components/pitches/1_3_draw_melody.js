@@ -214,6 +214,29 @@ function drawSnakeSegment(ctx, image, x, y, angle, width = 30, height = 30, flip
   if (flipX) {
     ctx.scale(1, -1);
   }
+
+  // Clip to a rounded-rectangle to ensure round corners on every segment
+  const w = width;
+  const h = height;
+  const x0 = -w / 2;
+  const y0 = -h / 2;
+  const x1 = w / 2;
+  const y1 = h / 2;
+  const r = Math.min(h / 2, w / 2);
+
+  ctx.beginPath();
+  ctx.moveTo(x0 + r, y0);
+  ctx.lineTo(x1 - r, y0);
+  ctx.quadraticCurveTo(x1, y0, x1, y0 + r);
+  ctx.lineTo(x1, y1 - r);
+  ctx.quadraticCurveTo(x1, y1, x1 - r, y1);
+  ctx.lineTo(x0 + r, y1);
+  ctx.quadraticCurveTo(x0, y1, x0, y1 - r);
+  ctx.lineTo(x0, y0 + r);
+  ctx.quadraticCurveTo(x0, y0, x0 + r, y0);
+  ctx.closePath();
+  ctx.clip();
+
   ctx.drawImage(image, -width/2, -height/2, width, height);
   ctx.restore();
 }
