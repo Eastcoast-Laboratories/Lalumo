@@ -159,6 +159,35 @@ if ($method === 'POST') { // aus _REQUEST
             debugLog("REFERRAL_INCREMENT: Incrementing registration_count for referrer ID: {$referrerId} (Code redemption)");
             $db->exec("UPDATE referrals SET registration_count = registration_count + 1 WHERE referrer_id = $referrerId");
             
+            // Speichere einzelnes Registrierungs-Event in referral_details (redeemCode)
+            $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+            $ipHash = secureIpHash($ip);
+            $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+            $deviceInfo = extractDeviceInfo($userAgent);
+            
+            // Hole referral_code des Referrers
+            $referralCodeStmt = $db->prepare('SELECT referral_code FROM users WHERE id = :id');
+            $referralCodeStmt->bindValue(':id', $referrerId, SQLITE3_INTEGER);
+            $referralCodeResult = $referralCodeStmt->execute();
+            $referralCodeRow = $referralCodeResult->fetchArray(SQLITE3_ASSOC);
+            $referralCode = $referralCodeRow ? $referralCodeRow['referral_code'] : $code;
+            
+            // Füge Referral-Detail-Event hinzu
+            $detailStmt = $db->prepare('INSERT INTO referral_details (referrer_id, referrer_code, referred_username, visitor_ip, visitor_agent, event_type, created_at) VALUES (:referrer_id, :referrer_code, :referred_username, :visitor_ip, :visitor_agent, :event_type, datetime("now"))');
+            $detailStmt->bindValue(':referrer_id', $referrerId, SQLITE3_INTEGER);
+            $detailStmt->bindValue(':referrer_code', $referralCode, SQLITE3_TEXT);
+            $detailStmt->bindValue(':referred_username', $username, SQLITE3_TEXT);
+            $detailStmt->bindValue(':visitor_ip', $ipHash, SQLITE3_TEXT);
+            $detailStmt->bindValue(':visitor_agent', $deviceInfo, SQLITE3_TEXT);
+            $detailStmt->bindValue(':event_type', 'registration', SQLITE3_TEXT);
+            $detailResult = $detailStmt->execute();
+            
+            if ($detailResult) {
+                debugLog("REFERRAL_DETAIL: Registration event stored for referrer_id $referrerId, referred_username $username (redeemCode)");
+            } else {
+                debugLog("REFERRAL_DETAIL_ERROR: Failed to store registration event: " . $db->lastErrorMsg());
+            }
+            
             // Überprüfen, ob die Aktualisierung erfolgreich war
             $checkStmt = $db->prepare('SELECT registration_count FROM referrals WHERE referrer_id = :referrer_id');
             $checkStmt->bindValue(':referrer_id', $referrerId, SQLITE3_INTEGER);
@@ -302,6 +331,35 @@ if ($method === 'POST') { // aus _REQUEST
                 // Jetzt können wir den Zähler sicher erhöhen
                 debugLog("REFERRAL_INCREMENT: Incrementing registration count for referrer ID: {$referrerId}");
                 $db->exec("UPDATE referrals SET registration_count = registration_count + 1 WHERE referrer_id = $referrerId");
+                
+                // Speichere einzelnes Registrierungs-Event in referral_details
+                $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+                $ipHash = secureIpHash($ip);
+                $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+                $deviceInfo = extractDeviceInfo($userAgent);
+                
+                // Hole referral_code des Referrers
+                $referralCodeStmt = $db->prepare('SELECT referral_code FROM users WHERE id = :id');
+                $referralCodeStmt->bindValue(':id', $referrerId, SQLITE3_INTEGER);
+                $referralCodeResult = $referralCodeStmt->execute();
+                $referralCodeRow = $referralCodeResult->fetchArray(SQLITE3_ASSOC);
+                $referralCode = $referralCodeRow ? $referralCodeRow['referral_code'] : 'unknown';
+                
+                // Füge Referral-Detail-Event hinzu
+                $detailStmt = $db->prepare('INSERT INTO referral_details (referrer_id, referrer_code, referred_username, visitor_ip, visitor_agent, event_type, created_at) VALUES (:referrer_id, :referrer_code, :referred_username, :visitor_ip, :visitor_agent, :event_type, datetime("now"))');
+                $detailStmt->bindValue(':referrer_id', $referrerId, SQLITE3_INTEGER);
+                $detailStmt->bindValue(':referrer_code', $referralCode, SQLITE3_TEXT);
+                $detailStmt->bindValue(':referred_username', $username, SQLITE3_TEXT);
+                $detailStmt->bindValue(':visitor_ip', $ipHash, SQLITE3_TEXT);
+                $detailStmt->bindValue(':visitor_agent', $deviceInfo, SQLITE3_TEXT);
+                $detailStmt->bindValue(':event_type', 'registration', SQLITE3_TEXT);
+                $detailResult = $detailStmt->execute();
+                
+                if ($detailResult) {
+                    debugLog("REFERRAL_DETAIL: Registration event stored for referrer_id $referrerId, referred_username $username");
+                } else {
+                    debugLog("REFERRAL_DETAIL_ERROR: Failed to store registration event: " . $db->lastErrorMsg());
+                }
                 
                 // Überprüfen, ob die Aktualisierung erfolgreich war
                 $checkStmt = $db->prepare('SELECT registration_count FROM referrals WHERE referrer_id = :referrer_id');
@@ -452,6 +510,35 @@ elseif ($method === 'GET') {
                 debugLog("REFERRAL_INCREMENT: Incrementing registration_count for referrer ID: {$referrerId} (Code registration via GET)");
                 $db->exec("UPDATE referrals SET registration_count = registration_count + 1 WHERE referrer_id = $referrerId");
                 
+                // Speichere einzelnes Registrierungs-Event in referral_details
+                $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+                $ipHash = secureIpHash($ip);
+                $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+                $deviceInfo = extractDeviceInfo($userAgent);
+                
+                // Hole referral_code des Referrers
+                $referralCodeStmt = $db->prepare('SELECT referral_code FROM users WHERE id = :id');
+                $referralCodeStmt->bindValue(':id', $referrerId, SQLITE3_INTEGER);
+                $referralCodeResult = $referralCodeStmt->execute();
+                $referralCodeRow = $referralCodeResult->fetchArray(SQLITE3_ASSOC);
+                $referralCode = $referralCodeRow ? $referralCodeRow['referral_code'] : $referredBy;
+                
+                // Füge Referral-Detail-Event hinzu
+                $detailStmt = $db->prepare('INSERT INTO referral_details (referrer_id, referrer_code, referred_username, visitor_ip, visitor_agent, event_type, created_at) VALUES (:referrer_id, :referrer_code, :referred_username, :visitor_ip, :visitor_agent, :event_type, datetime("now"))');
+                $detailStmt->bindValue(':referrer_id', $referrerId, SQLITE3_INTEGER);
+                $detailStmt->bindValue(':referrer_code', $referralCode, SQLITE3_TEXT);
+                $detailStmt->bindValue(':referred_username', $username, SQLITE3_TEXT);
+                $detailStmt->bindValue(':visitor_ip', $ipHash, SQLITE3_TEXT);
+                $detailStmt->bindValue(':visitor_agent', $deviceInfo, SQLITE3_TEXT);
+                $detailStmt->bindValue(':event_type', 'registration', SQLITE3_TEXT);
+                $detailResult = $detailStmt->execute();
+                
+                if ($detailResult) {
+                    debugLog("REFERRAL_DETAIL: Registration event stored for referrer_id $referrerId, referred_username $username (GET lockUsername)");
+                } else {
+                    debugLog("REFERRAL_DETAIL_ERROR: Failed to store registration event: " . $db->lastErrorMsg());
+                }
+                
                 // Überprüfen, ob die Aktualisierung erfolgreich war
                 $checkStmt = $db->prepare('SELECT registration_count FROM referrals WHERE referrer_id = :referrer_id');
                 $checkStmt->bindValue(':referrer_id', $referrerId, SQLITE3_INTEGER);
@@ -519,6 +606,34 @@ elseif ($method === 'GET') {
             // Klickzähler erhöhen
             $referrerId = $row['id'];
             $db->exec("UPDATE referrals SET click_count = click_count + 1 WHERE referrer_id = $referrerId");
+            
+            // Speichere einzelnes Referral-Event in referral_details
+            $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+            $ipHash = secureIpHash($ip);
+            $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+            $deviceInfo = extractDeviceInfo($userAgent);
+            
+            // Hole referral_code für das Detail-Event
+            $referralCodeStmt = $db->prepare('SELECT referral_code FROM users WHERE id = :id');
+            $referralCodeStmt->bindValue(':id', $referrerId, SQLITE3_INTEGER);
+            $referralCodeResult = $referralCodeStmt->execute();
+            $referralCodeRow = $referralCodeResult->fetchArray(SQLITE3_ASSOC);
+            $referralCode = $referralCodeRow ? $referralCodeRow['referral_code'] : $code;
+            
+            // Füge Referral-Detail-Event hinzu
+            $detailStmt = $db->prepare('INSERT INTO referral_details (referrer_id, referrer_code, visitor_ip, visitor_agent, event_type, created_at) VALUES (:referrer_id, :referrer_code, :visitor_ip, :visitor_agent, :event_type, datetime("now"))');
+            $detailStmt->bindValue(':referrer_id', $referrerId, SQLITE3_INTEGER);
+            $detailStmt->bindValue(':referrer_code', $referralCode, SQLITE3_TEXT);
+            $detailStmt->bindValue(':visitor_ip', $ipHash, SQLITE3_TEXT);
+            $detailStmt->bindValue(':visitor_agent', $deviceInfo, SQLITE3_TEXT);
+            $detailStmt->bindValue(':event_type', 'click', SQLITE3_TEXT);
+            $detailResult = $detailStmt->execute();
+            
+            if ($detailResult) {
+                debugLog("REFERRAL_DETAIL: Click event stored for referrer_id $referrerId, code $referralCode");
+            } else {
+                debugLog("REFERRAL_DETAIL_ERROR: Failed to store click event: " . $db->lastErrorMsg());
+            }
             
             // Leite zur App mit dem Code in einem URL-Parameter weiter
             $app_url = $config['APP_BASE_URL'];

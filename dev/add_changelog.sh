@@ -10,7 +10,7 @@ CHANGELOG_DE_MD="CHANGELOG_de.md"
 PLAYSTORE_DIR="fastlane/metadata/android/playstore"
 
 # Get version from build.gradle
-VERSION_NAME=4.0
+VERSION_NAME=5.1
 # Get current date
 CURRENT_DATE=$(date +"%Y-%m-%d")
 
@@ -41,21 +41,19 @@ check_length() {
 
 # German Changelog
 DE_CHANGES=$(cat << EOF
-- Neues Chord-Spiel: "Stabil/Instable Akkorde" mit motivierendem Feedback.
-- Kindgerechte Bedienung:
- - Reaktionen auf Wischbewegungen und versehentliche Berührungen (z. B. Handballen).
- - Buttons reagieren auch beim Loslassen nach Ziehbewegung.
-- Einheitliches visuelles Feedback
+- Neue Einführungsnachrichten am Beginn jeder Übung
+- "Häschen hüpf!" verbessert in "Klingt es richtig?"
+- "High or Low": Zufällige Instrumente spielen die Töne
+- "Draw a Melody": Animierte Wiedergabe entlang der gezeichneten Linie
 EOF
 )
 
 # English Changelog
 EN_CHANGES=$(cat << EOF
-- new chord game: "Stable/Unstable Chords" with motivating feedback.
-- child-friendly interface:
- - reactions to swipe movements and accidental touches (e.g. balling).
- - buttons react also on release after swipe.
-- unified visual feedback
+- New introduction messages at the start of each exercise
+- "Bunny Hop" corrected in "Does it sound right?"
+- "High or Low": Random instruments play the tones
+- "Draw a Melody": Animated playback along the drawn line
 EOF
 )
 

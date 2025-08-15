@@ -14,6 +14,12 @@ function minifyXML(content) {
     .trim();
 }
 
+// Helper function to minify HTML content
+function minifyHTML(content) {
+  // Remove all line breaks (but do not touch spaces)
+  return content.toString().replace(/\r?\n/g, '');
+}
+
 // Funktion zum Finden der Template-Dateien
 function findHomepageTemplates() {
   const templatesDir = path.join(__dirname, 'homepage');
@@ -28,6 +34,7 @@ function findHomepageTemplates() {
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
+  const isMobileBuild = env && env.mobile === 'true';
   const homepageTemplates = findHomepageTemplates();
   
   return {
@@ -44,9 +51,8 @@ module.exports = (env, argv) => {
       // Immer Content-Hash für Cache-Busting verwenden
       filename: '[name].[contenthash].js',
       clean: true,
-      // Einheitliche publicPath für Produktion und Entwicklung
-      // Verwende './' für relative Pfade ohne führenden Slash
-      publicPath: './',
+      // Fix HMR: Use absolute path for dev server, relative for production
+      publicPath: isProduction ? './' : '/',
     },
     // Copy static assets from public directory
     devServer: {
@@ -73,6 +79,12 @@ module.exports = (env, argv) => {
       port: 9091,
       hot: true,
       open: true,
+      historyApiFallback: {
+        rewrites: [
+          { from: /^\/app/, to: '/app/index.html' },
+          { from: /./, to: '/index.html' }
+        ]
+      },
       watchFiles: {
         paths: ['src/**/*.html', 'homepage/*-template.html'],
         options: {
@@ -162,9 +174,8 @@ module.exports = (env, argv) => {
         chunks: ['main'],
         inject: true,
         hash: true,
-        // Für Subdirectory-Deployment mit app-Verzeichnis
-        // bei bereits im app/-Verzeichnis generierten Assets relative Pfade ohne app/ verwenden
-        publicPath: '../',
+        // Fix HMR: Use same publicPath as global config
+        publicPath: isProduction ? '../' : '/',
         minify: {
           collapseWhitespace: true,
           removeComments: true,
@@ -172,11 +183,12 @@ module.exports = (env, argv) => {
           removeScriptTypeAttributes: true,
           removeStyleLinkTypeAttributes: true,
           useShortDoctype: true
-        }
+        },
+        postprocess: (html) => minifyHTML(html)
       }),
       
-      // Englische Homepage-Templates (root)
-      ...homepageTemplates.map(template => new HtmlWebpackPlugin({
+      // Homepage-Templates nur für Web-Build, nicht für Mobile-Build
+      ...(isMobileBuild ? [] : homepageTemplates.map(template => new HtmlWebpackPlugin({
         template: `${template.template}?language=en`, // Query-Parameter hinzufügen, um Template-Caching zu verhindern
         filename: template.filename,
         publicPath: '/',
@@ -185,10 +197,10 @@ module.exports = (env, argv) => {
         templateParameters: {
           language: 'en'
         }
-      })),
+      }))),
       
-      // Deutsche Homepage-Templates (de/)
-      ...homepageTemplates.map(template => new HtmlWebpackPlugin({
+      // Deutsche Homepage-Templates (de/) nur für Web-Build
+      ...(isMobileBuild ? [] : homepageTemplates.map(template => new HtmlWebpackPlugin({
         template: `${template.template}?language=de`, // Query-Parameter hinzufügen, um Template-Caching zu verhindern
         filename: `de/${template.filename}`,
         publicPath: '/',
@@ -197,60 +209,41 @@ module.exports = (env, argv) => {
         templateParameters: {
           language: 'de'
         }
-      })),
+      }))),
       new MiniCssExtractPlugin({
         // Für Subdirectory-Deployment: Entferne Content-Hash für konsistente Dateinamen
         filename: isProduction && env.deploy === 'subdirectory' ? '[name].css' : '[name].[contenthash].css',
       }),
-      // Copy homepage assets to dist, de/ directory, and app/ directory (root paths, /de/ paths, and /app/ paths)
+      // Copy assets - für Mobile-Build nur App-relevante Assets
       new CopyWebpackPlugin({
         patterns: [
-          { from: 'homepage/icons', to: 'icons' },
-          { from: 'homepage/icons', to: 'de/icons' },
-          { from: 'homepage/icons', to: 'app/icons' },  // Auch für App-Verzeichnis kopieren
-          // Partials für Haupt-App und App-Verzeichnis kopieren
-          { from: 'public/partials', to: 'partials' },
-          { from: 'public/partials', to: 'app/partials' },
+          // Homepage-Assets nur für Web-Build
+          ...(isMobileBuild ? [] : [
+            { from: 'homepage/icons', to: 'icons' },
+            { from: 'homepage/icons', to: 'de/icons' },
+            { from: 'public/images/backgrounds', to: 'images/backgrounds' },
+            { from: 'public/images/backgrounds', to: 'de/images/backgrounds' },
+            { from: 'public/images', to: 'images' },
+            { from: 'public/images', to: 'de/images' },
+            { from: 'src/favicon.ico', to: 'de/favicon.ico' },
+            { from: 'public/partials', to: 'partials' },
+            { from: 'src/api', to: 'api' },
+            { from: 'src/config.js', to: 'config.js', transform: (content) => content },
+            { from: 'src/config.js', to: 'api/config.js', transform: (content) => content },
+          ]),
           
-          // API-Dateien kopieren
-          { from: 'src/api', to: 'api' },
+          // App-Assets always copy
+          { from: 'homepage/icons', to: 'app/icons' },
+          
           { from: 'src/api', to: 'app/api' },
-          
-          // Wichtige Konfigurationsdatei für die API - nicht minimieren, damit PHP-Parsing funktioniert
-          { from: 'src/config.js', to: 'config.js', transform: (content) => content },
           { from: 'src/config.js', to: 'app/config.js', transform: (content) => content },
-          { from: 'src/config.js', to: 'api/config.js', transform: (content) => content },
           { from: 'src/config.js', to: 'app/api/config.js', transform: (content) => content },
-          { from: 'public/images/backgrounds', to: 'images/backgrounds' },
-          { from: 'public/images/backgrounds', to: 'de/images/backgrounds' },
-          { from: 'public/images/backgrounds', to: 'app/images/backgrounds' },  // Auch für App-Verzeichnis kopieren
-          { from: 'public/images', to: 'images' },
-          { from: 'public/images', to: 'de/images' },
-          { from: 'public/images', to: 'app/images' },  // Auch für App-Verzeichnis kopieren
-          { 
-            from: 'src/favicon.ico',
-            to: 'de/favicon.ico'
-          },
-          // Process and minify XML files from source and copy to multiple locations
+          { from: 'public/images/backgrounds', to: 'app/images/backgrounds' },
+          { from: 'public/images', to: 'app/images' },
+          // XML-files always copy and minify
           {
             from: 'android/app/src/main/res/values/strings.xml',
             to: 'app/strings-en.xml',
-            transform: minifyXML
-          },
-          {
-            from: 'android/app/src/main/res/values/strings.xml',
-            to: 'strings-en.xml',
-            transform: minifyXML
-          },
-          // Minify the source files in the public directory
-          {
-            from: 'android/app/src/main/res/values/strings.xml',
-            to: '../public/strings-en.xml',
-            transform: minifyXML
-          },
-          {
-            from: 'android/app/src/main/res/values/strings.xml',
-            to: 'public/strings-en.xml',
             transform: minifyXML
           },
           {
@@ -258,22 +251,40 @@ module.exports = (env, argv) => {
             to: 'app/strings-de.xml',
             transform: minifyXML
           },
-          {
-            from: 'android/app/src/main/res/values-de/strings.xml',
-            to: 'strings-de.xml',
-            transform: minifyXML
-          },
-          // Minify the source files in the public directory
-          {
-            from: 'android/app/src/main/res/values-de/strings.xml',
-            to: '../public/strings-de.xml',
-            transform: minifyXML
-          },
-          {
-            from: 'android/app/src/main/res/values-de/strings.xml',
-            to: 'public/strings-de.xml',
-            transform: minifyXML
-          },
+          
+          // XML-files for Homepage only for Web-Build
+          ...(isMobileBuild ? [] : [
+            {
+              from: 'android/app/src/main/res/values/strings.xml',
+              to: 'strings-en.xml',
+              transform: minifyXML
+            },
+            {
+              from: 'android/app/src/main/res/values/strings.xml',
+              to: '../public/strings-en.xml',
+              transform: minifyXML
+            },
+            {
+              from: 'android/app/src/main/res/values/strings.xml',
+              to: 'public/strings-en.xml',
+              transform: minifyXML
+            },
+            {
+              from: 'android/app/src/main/res/values-de/strings.xml',
+              to: 'strings-de.xml',
+              transform: minifyXML
+            },
+            {
+              from: 'android/app/src/main/res/values-de/strings.xml',
+              to: '../public/strings-de.xml',
+              transform: minifyXML
+            },
+            {
+              from: 'android/app/src/main/res/values-de/strings.xml',
+              to: 'public/strings-de.xml',
+              transform: minifyXML
+            },
+          ]),
           {
             from: 'public/images',
             to: 'images'

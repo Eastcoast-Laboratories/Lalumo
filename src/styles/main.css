@@ -4,17 +4,168 @@
   color-scheme: light only;
 }
 
+/* Force Portrait Mode */
+@media screen and (orientation: landscape) {
+  body {
+    transform-origin: center center;
+    position: fixed;
+    width: 100vh;
+    height: 100vw;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+  }
+  
+  /* Adjust viewport for rotated content */
+  html {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+}
+
+/* Portrait mode notice overlay - fullscreen in landscape */
+.portrait-notice {
+  display: none;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  max-height: 100vh !important;
+  background-color: #000 !important;
+  opacity: 0.9 !important;
+  color: white !important;
+  z-index: 3000 !important;
+  flex-direction: column;
+  justify-content: flex-start !important;
+  align-items: center;
+  text-align: center;
+  padding: 10px 40px 40px 40px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  font-family: Arial, sans-serif;
+  overflow: hidden !important;
+}
+
+.portrait-notice h2 {
+  font-size: 2.5rem;
+  margin: 0 0 20px 0 !important;
+  padding: 0 !important;
+  font-weight: bold;
+}
+
+.portrait-notice p {
+  font-size: 1.5rem;
+  margin: 10px 0;
+  line-height: 1.4;
+}
+
+.portrait-notice-close {
+  position: absolute !important;
+  top: 20px !important;
+  right: 20px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 2px solid rgba(255, 255, 255, 0.6) !important;
+  color: white !important;
+  font-size: 2.2rem !important;
+  font-weight: bold !important;
+  width: 60px !important;
+  height: 60px !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 3001 !important;
+  transition: all 0.3s ease !important;
+  pointer-events: auto !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  touch-action: manipulation !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+.portrait-notice-close:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+}
+
+.portrait-notice-close:active {
+  background: rgba(255, 255, 255, 0.4) !important;
+  transform: scale(0.95) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Show portrait notice on mobile devices in landscape mode */
+@media screen and (orientation: landscape) {
+  .portrait-notice {
+    display: flex !important;
+  }
+}
+
+/* Alternative check for mobile devices in landscape */
+@media screen and (orientation: landscape) and (max-width: 1024px) and (max-height: 768px) {
+  .portrait-notice {
+    display: flex !important;
+  }
+}
+
+/* Android-specific fixes for fullscreen overlay */
+@media screen and (orientation: landscape) {
+  .portrait-notice {
+    /* Use screen dimensions instead of viewport for Android */
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  /* Ensure body doesn't scroll behind overlay */
+  body:has(.portrait-notice[style*="flex"]) {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+/* Global Button Blocker - 2 second disable after click */
+.activity-button-blocker {
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.activity-button-blocker:disabled {
+  opacity: 0 !important;
+  cursor: progress !important;
+  transform: scale(0.98);
+  user-select: none;
+}
+
+.activity-button-blocker.blocking {
+  opacity: 0 !important;
+  cursor: progress !important;
+  transform: scale(0.98);
+  user-select: none;
+  /* Keep pointer-events but prevent actual clicks via JavaScript */
+}
+
+
+/* Locked activity styling */
+.locked-activity {
+  opacity: 0.9;
+}
+
 /* Debug-Element Sichtbarkeitskontrolle */
 .debug-element {
   opacity: 0.2 !important;
   display: none !important; /* Standardmäßig ausgeblendet */
   visibility: hidden !important;
   pointer-events: none !important; /* Verhindert jegliche Klick-Interaktion */
-}
-
-/* Locked activity styling */
-.locked-activity {
-  opacity: 0.2;
 }
 
 /* Wenn die Entwicklungsumgebung aktiv ist (über body-Klasse steuerbar) */
@@ -31,7 +182,7 @@ html body.dev-mode .debug-element {
   color-scheme: light only;
 }
 
-/* Modal Overlay */
+/* Modal Overlay with welcome message */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -114,20 +265,20 @@ html body.dev-mode .debug-element {
   background-color: #0277bd;
 }
 
-.mascot-welcome {
+.welcome-message {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 1rem 0;
 }
 
-.mascot-welcome .mascot {
+.welcome-message .intro-message {
   width: 100px;
   height: 100px;
   margin-bottom: 1rem;
 }
 
-.mascot-welcome p {
+.welcome-message p {
   font-size: 1.1rem;
   margin: 0.5rem 0;
 }
@@ -208,7 +359,7 @@ html body.dev-mode .debug-element {
   padding: 20px;
   background-image: url('/app/images/backgrounds/settings.jpg');
   background-size: cover;
-  background-position: center;
+  background-position: top;
   color: #ffffff;
   position: relative;
 }
@@ -225,12 +376,13 @@ html body.dev-mode .debug-element {
   z-index: -1;
 }
 
-.settings-section {
+.partial-content {
   margin-bottom: 30px;
 }
 
 .username-edit {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   margin: 8px 0;
   gap: 10px;
@@ -241,9 +393,9 @@ html body.dev-mode .debug-element {
   border: 2px solid var(--color-accent-light);
   border-radius: 8px;
   font-size: 1rem;
-  flex: 1;
+  flex-wrap: wrap;
   background: var(--color-background-lighter);
-  color: var(--color-text);
+  color: var(--text-color-input);
 }
 
 /* Reset Progress Section */
@@ -256,7 +408,7 @@ html body.dev-mode .debug-element {
 
 .help-text {
   font-size: 0.9rem;
-  color: var(--color-text-muted);
+  color: var(--text-color-muted);
   margin-top: 8px;
 }
 
@@ -387,7 +539,7 @@ html body.dev-mode .debug-element {
 }
 
 /* Settings */
-.settings-section {
+.partial-content {
   margin-top: 2rem;
   position: relative;
   z-index: 900; /* Higher z-index to ensure settings are visible */
@@ -502,7 +654,7 @@ html body.dev-mode .debug-element {
   border-radius: 8px;
   background-color: var(--color-background-lighter);
   font-family: monospace;
-  color: var(--color-text);
+  color: var(--text-color);
   resize: vertical;
 }
 
@@ -511,7 +663,7 @@ input, textarea {
 }
 
 input {
-  max-width: 340px;
+  max-width: 360px;
 }
 
 
@@ -535,8 +687,8 @@ input {
   animation: fade-in 0.5s ease-out;
 }
 
-/* Mascot and speech bubble */
-.mascot-container {
+/* Help and speech bubble */
+.welcome-container {
   position: relative;
   display: flex;
   align-items: center;
@@ -547,12 +699,12 @@ input {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.mascot-wrapper {
+.welcome-wrapper {
   animation: bob 3s infinite alternate ease-in-out;
   margin-right: 1rem;
 }
 
-.mascot {
+.intro-message {
   width: 100px;
   height: auto; /* Let height adjust to maintain aspect ratio */
   cursor: pointer;
@@ -671,6 +823,7 @@ input {
   --secondary-color: #6c5ce7; /* username circle background */
   --background-color: #ffffff; /* background of impressum, ...*/
   --text-color: #2d3436;
+  --text-color-input: #2d3436;
   --accent-color: #fdcb6e; /* navigation highlight */
   --success-color: #00b894;
   --warning-color: #ff7675;
@@ -735,7 +888,7 @@ body {
   margin-right: 0.75rem;
   margin-top: 60px;
   margin-left: 0.4rem;
-  z-index: 2500; /* Highest z-index to appear above absolutely everything */
+  z-index: 2500; /* above main menu but below landscape warning layer */
   transition: all 0.3s ease;
 }
 
@@ -1123,11 +1276,15 @@ section {
 }
 
 section h2 {
-  color: var(--secondary-color);
+  color: white;
   text-align: center;
   margin-top: 0;
   margin-bottom: 1.5rem;
   font-size: 1.8rem;
+}
+
+#privacy_partial > h2, #credits_partial > h2, #imprint_partial > h2{
+  margin-top: min(168px, 26vw);
 }
 
 /* Tone Colors Component */
@@ -1471,7 +1628,7 @@ section h2 {
   height: 210px; /* Etwas höher als 2 Zeilen für bessere Sichtbarkeit */
 }
 
-/* Match Sounds Activity (1_2) specific styles */
+/* Up or Down Activity (1_2) specific styles */
 .match-sounds-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1547,6 +1704,13 @@ section h2 {
   margin: 0 auto;
 }
 
+/* Specific positioning for 2_2 stable/unstable progress box */
+.progress_2_2 {
+  position: fixed;
+  bottom: -12px;
+  padding-bottom: 19px;
+}
+
 .melody-name {
   position: absolute;
   top: min(371px, 58vw);
@@ -1577,11 +1741,19 @@ section h2 {
   text-align: center;
   width: auto;
   min-width: 50%;
-  max-width: 90%;
+  max-width: min(90%, 400px);
   font-weight: bold;
   animation: fade-in 0.3s ease;
-  z-index: 9999; /* well above mascot message */
+  z-index: 1400; /* below main menu */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* on wide screens, feedback must be positioned from the right border */
+@media (min-width: 1024px) {
+  .feedback-message {
+    left: auto;
+    right: -236px;
+  }
 }
 
 @keyframes fade-in {
@@ -1594,7 +1766,6 @@ section h2 {
   position: absolute;
   bottom: 0.5rem; /* Am oberen Rand statt am unteren */
   left: 50%;
-  transform: translateX(-50%);
   background-color: rgba(255, 255, 255, 0.5); /* Blauer Hintergrund für bessere Sichtbarkeit */
   color: rgb(0, 0, 0);
   border-radius: 1rem;
@@ -2210,13 +2381,13 @@ section h2 {
   max-width: 90%;
   height: 120px;
   margin: 1.5rem auto;
+  margin-top: 119px;
   position: relative;
   background-color: antiquewhite;
   padding: 21px;
   border:#333;
   border-radius:22px;
   box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
-  
 }
 
 .piano-key {
@@ -2526,9 +2697,9 @@ section h2 {
 /* Progress display for High or Low */
 .high-low-progress, .progress_2_5 {
   position: fixed;
-  bottom: 5px;
+  bottom: -37px;
   background: rgba(255, 255, 255, 0.5);
-  padding: 10px 15px;
+  padding: 5px 4px 61px 4px;
   border-radius: 15px;
   font-size: 14px;
   color: #333;

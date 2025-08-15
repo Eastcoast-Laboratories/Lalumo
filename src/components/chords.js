@@ -190,15 +190,30 @@ export function chords() {
         if (savedProgress) {
           this.progress = JSON.parse(savedProgress);
           
+          // Migrate old progress keys to new format (v4.1 -> v4.2 migration)
+          let migrationHappened = false;
+          if (this.progress['2_5_chords_characters'] && this.progress['2_5'] === undefined) {
+            this.progress['2_5'] = this.progress['2_5_chords_characters'];
+            debugLog('CHORDS', `Migrated 2_5_chords_characters progress (${this.progress['2_5_chords_characters']}) to 2_5`);
+            migrationHappened = true;
+            // Keep the old key for compatibility, but don't delete it
+          }
+          
           // Ensure all activity progress fields exist
-          if (!this.progress['2_1_chords_color-matching']) this.progress['2_1_chords_color-matching'] = 0;
-          if (!this.progress['2_2_chords_stable_unstable']) this.progress['2_2_chords_stable_unstable'] = 0;
-          if (!this.progress['2_3_chords_chord-building']) this.progress['2_3_chords_chord-building'] = 0;
-          if (!this.progress['2_4_chords_missing-note']) this.progress['2_4_chords_missing-note'] = 0;
-          if (!this.progress['2_5_chords_characters']) this.progress['2_5_chords_characters'] = 0;
-          if (!this.progress['2_6_chords_harmony-gardens']) this.progress['2_6_chords_harmony-gardens'] = 0;
+          if (!this.progress['2_1']) this.progress['2_1'] = 0;
+          if (!this.progress['2_2']) this.progress['2_2'] = 0;
+          if (!this.progress['2_3']) this.progress['2_3'] = 0;
+          if (!this.progress['2_4']) this.progress['2_4'] = 0;
+          if (!this.progress['2_5']) this.progress['2_5'] = 0;
+          if (!this.progress['2_6']) this.progress['2_6'] = 0;
           
           debugLog('CHORDS', 'Loaded chords progress data:', this.progress);
+          
+          // Save migrated progress back to localStorage if migration happened
+          if (migrationHappened) {
+            localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
+            debugLog('CHORDS', 'Saved migrated progress data to localStorage');
+          }
           
           // Initialize activity progress from saved data
           this.totalQuestions = this.progress[this.mode] || 0;
@@ -299,7 +314,7 @@ export function chords() {
      */
     generateTranspose() {
       // Get the progress level
-      const progress = this?.progress?.['2_5_chords_characters'] || 0;
+      const progress = this?.progress?.['2_5'] || 0;
       
       // Default values
       let rootNote = 'C4';
@@ -359,7 +374,7 @@ export function chords() {
       
       // Debug information specifically for transpose
       if (this.mode === '2_5_chords_characters') {
-        const progress = this?.progress?.['2_5_chords_characters'] || 0;
+        const progress = this?.progress?.['2_5'] || 0;
         debugLog(['CHORDS', '2_5_TRANSPOSE'], `PlayChordByType - Current progress: ${progress}, Root note: ${rootNote}, TransposeAmount: ${this.currentTransposeAmount || 0}`);
       }
 
@@ -588,10 +603,12 @@ export function chords() {
       } else if (mode === '2_2_chords_stable_unstable') {
         // Initialize Stable or Unstable activity
         debugLog('CHORDS_2_2_DEBUG', 'Initializing Stable or Unstable activity');
+        
+        // Show intro message for this activity
+        window.showActivityIntroMessage('2_2_chords_stable_unstable', this);
+        
         this.currentStableUnstableChord = null;
-        this.showStableUnstableFeedback = false;
-        this.stableUnstableFeedback = '';
-        this.stableUnstableCorrect = false;
+        // Local feedback variables removed - using global feedback system
         
         // Initialize progress if it doesn't exist
         if (!this.progress) this.progress = {};
@@ -632,6 +649,9 @@ export function chords() {
         // Initialisierung für Character Matching
         debugLog('CHORDS', 'Initializing character matching activity');
         
+        // Show intro message for this activity
+        window.showActivityIntroMessage('2_5_chords_characters', this);
+        
         // Always ensure we start in free play mode when entering the activity
         this.is2_5FreePlayMode = true;
         debugLog('CHORDS', '[2_5] Reset to free play mode on activity entry');
@@ -667,9 +687,7 @@ export function chords() {
       // Reset UI state for 2_2_chords_stable_unstable activity, but keep the progress
       if (this.mode === '2_2_chords_stable_unstable') {
         // Only reset UI state, not the progress
-        this.showStableUnstableFeedback = false;
-        this.stableUnstableFeedback = '';
-        this.stableUnstableCorrect = false;
+        // Local feedback variables removed - using global feedback system
         
         // Update background based on current progress
         updateStableUnstableBackground(this);
@@ -677,8 +695,8 @@ export function chords() {
       // Reset for 2_5_chords_characters activity
       else if (this.mode === '2_5_chords_color_matching') {
         // Reset progress to 0 for this activity
-        if (this.progress && this.progress['2_5_chords_characters']) {
-          this.progress['2_5_chords_characters'] = 0;
+        if (this.progress && this.progress['2_5']) {
+          this.progress['2_5'] = 0;
           
           // Save updated progress
           localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
@@ -701,9 +719,9 @@ export function chords() {
      * @activity 2_5_chords_characters
      */
     resetProgressToCurrentLevel() {
-      if (!this.progress || !this.progress['2_5_chords_characters']) return;
+      if (!this.progress || !this.progress['2_5']) return;
       
-      const currentProgress = this.progress['2_5_chords_characters'];
+      const currentProgress = this.progress['2_5'];
       
       // Calculate the start of the current level (floor to nearest multiple of LEVEL_STEP)
       const currentLevel = Math.floor(currentProgress / this.LEVEL_STEP);
@@ -712,7 +730,7 @@ export function chords() {
       debugLog('CHORDS', `Resetting progress from ${currentProgress} to ${newProgress} (level ${currentLevel})`);
       
       // Update progress
-      this.progress['2_5_chords_characters'] = newProgress;
+      this.progress['2_5'] = newProgress;
       
       // Save to localStorage
       localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
@@ -827,9 +845,13 @@ export function chords() {
     checkStableUnstableAnswer(isStable) {
       // Make sure we have a current chord to check against
       if (!this.currentStableUnstableChord) {
-        this.showStableUnstableFeedback = true;
-        this.stableUnstableFeedback = 'Please play a chord first';
-        this.stableUnstableCorrect = false;
+        console.log('CHORD_2_2_FEEDBACK: No current chord, showing error message');
+        window.showFeedbackMessage('Please play a chord first', {
+      activityId: '2_2_chords_stable_unstable',
+      isIntroMessage: false,
+      delaySeconds: 3,
+      component: this
+    });
         return;
       }
       
@@ -837,13 +859,24 @@ export function chords() {
         // Check if the answer is correct
         const isCorrect = checkStableUnstableMatch(isStable, this.currentStableUnstableChord);
         
-        // Update feedback
-        this.showStableUnstableFeedback = true;
-        this.stableUnstableCorrect = isCorrect;
-        
         // Update progress and get feedback message
         const feedback = updateStableUnstableBackground(this, isCorrect);
-        this.stableUnstableFeedback = feedback;
+        
+        // Show feedback using global system
+        console.log('CHORD_2_2_FEEDBACK: Showing feedback:', feedback, 'isCorrect:', isCorrect);
+        if (window.showFeedbackMessage) {
+          // Set the correct/incorrect state in the global store
+          const store = window.Alpine?.store;
+          if (store && store.feedback) {
+            store.feedback.isCorrect = isCorrect;
+          }
+          window.showFeedbackMessage(feedback, {
+      activityId: '2_2_chords_stable_unstable',
+      isIntroMessage: false,
+      delaySeconds: 3,
+      component: this
+    });
+        }
         
         // Log the result
         debugLog('CHORDS_2_2', `User selected ${isStable ? 'stable' : 'unstable'}, ` +
@@ -1052,8 +1085,8 @@ export function chords() {
       // Get the current progress for this activity
       const progressData = localStorage.getItem('lalumo_chords_progress');
       const progress = progressData ? 
-        JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
-        this?.progress?.['2_5_chords_characters'] || 0;
+        JSON.parse(progressData)['2_5'] || 0 : 
+        this?.progress?.['2_5'] || 0;
       
       // Available chord types based on progress
       let chordTypes;
@@ -1160,9 +1193,19 @@ export function chords() {
       
       const isCorrect = noteInterval === this.missingInterval;
       
-      this.showFeedback = true;
       if (isCorrect) {
-        Alpine.store('feedback').feedbackMessage = this.$store.strings.success_message || 'Great job! That\'s correct!';
+        const successMessage = this.$store.strings.success_message || 'Great job! That\'s correct!';
+        console.log('CHORD_2_5_FEEDBACK: Showing success message:', successMessage);
+        const store = window.Alpine?.store;
+        if (store && store.feedback) {
+          store.feedback.isCorrect = true;
+        }
+        window.showFeedbackMessage(successMessage, {
+      activityId: '2_5_chords_chord_characters',
+      isIntroMessage: false,
+      delaySeconds: 3,
+      component: this
+    });
         this.correctAnswers++;
         
         // Show rainbow success effect
@@ -1171,7 +1214,7 @@ export function chords() {
         // Play the complete chord
         setTimeout(() => {
           // Check for transposition
-          const progress = this?.progress?.['2_5_chords_characters'] || 0;
+          const progress = this?.progress?.['2_5'] || 0;
           const shouldTranspose = progress >= 30;
           let rootNote = 'C4';
           
@@ -1199,16 +1242,22 @@ export function chords() {
         setTimeout(() => {
           // Don't reset currentChordType to null here
           // Instead, playIncompleteChord will ensure it's properly set
-          Alpine.store('feedback').showFeedback = false;
+          // Local feedback removed - using global feedback system
           this.playIncompleteChord();
         }, 2000);
       } else {
-        Alpine.store('feedback').feedbackMessage = this.$store.strings.error_message || 'Not quite right. Try again!';
-        
-        // Hide feedback after delay
-        setTimeout(() => {
-          Alpine.store('feedback').showFeedback = false;
-        }, 1500);
+        const errorMessage = this.$store.strings.error_message || 'Not quite right. Try again!';
+        console.log('CHORD_2_5_FEEDBACK: Showing error message:', errorMessage);
+        const store = window.Alpine?.store;
+        if (store && store.feedback) {
+          store.feedback.isCorrect = false;
+        }
+        window.showFeedbackMessage(errorMessage, {
+      activityId: '2_5_chords_chord_characters',
+      isIntroMessage: false,
+      delaySeconds: 3,
+      component: this
+    });
       }
       
       this.totalQuestions++;
@@ -1267,8 +1316,8 @@ export function chords() {
       // Get progress to determine if we should apply transposition
       const progressData = localStorage.getItem('lalumo_chords_progress');
       const progress = progressData ? 
-        JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
-        this?.progress?.['2_5_chords_characters'] || 0;
+        JSON.parse(progressData)['2_5'] || 0 : 
+        this?.progress?.['2_5'] || 0;
       
       // Apply transposition only if progress is 30 or higher (same as game mode)
       if (progress >= 30) {
@@ -1293,8 +1342,8 @@ export function chords() {
       // Get the progress to determine if we need to transpose
       const progressData = localStorage.getItem('lalumo_chords_progress');
       const progress = progressData ? 
-        JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
-        this?.progress?.['2_5_chords_characters'] || 0;
+        JSON.parse(progressData)['2_5'] || 0 : 
+        this?.progress?.['2_5'] || 0;
       
       if (!this.currentChordType) {
         // Need to generate a new chord type
@@ -1303,8 +1352,8 @@ export function chords() {
         // Get the current progress for this activity
         const progressData = localStorage.getItem('lalumo_chords_progress');
         const progress = progressData ? 
-          JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
-          this?.progress?.['2_5_chords_characters'] || 0;
+          JSON.parse(progressData)['2_5'] || 0 : 
+          this?.progress?.['2_5'] || 0;
         
         // Get previous progress to detect progress level changes
         const previousProgress = this.previousProgress || 0;
@@ -1503,15 +1552,25 @@ export function chords() {
       
       const isCorrect = selectedChordType === this.currentChordType;
       
-      this.showFeedback = true;
       if (isCorrect) {
         debugLog('CHORDS', `[REPETITION] Correct answer for chord type: ${this.currentChordType}`);
-        Alpine.store('feedback').feedbackMessage = this.$store.strings.success_message || 'Great job! That\'s correct!';
+        const successMessage = this.$store.strings.success_message || 'Great job! That\'s correct!';
+        console.log('CHORD_2_5_REPETITION_FEEDBACK: Showing success message:', successMessage);
+        const store = window.Alpine?.store;
+        if (store && store.feedback) {
+          store.feedback.isCorrect = true;
+        }
+        window.showFeedbackMessage(successMessage, {
+      activityId: '2_5_chords_chord_characters',
+      isIntroMessage: false,
+      delaySeconds: 3,
+      component: this
+    });
         this.correctAnswers++;
         
-        // Erhöhe den 2_5_chord_characters Fortschritt bei korrekter Antwort
-        if (!this.progress['2_5_chords_characters']) this.progress['2_5_chords_characters'] = 0;
-        this.progress['2_5_chords_characters']++;
+        // Erhöhe den 2_5_chord_characters Fortschritt bei korrekter Antwort (unified key)
+        if (!this.progress['2_5']) this.progress['2_5'] = 0;
+        this.progress['2_5']++;
         
         // Speichere den Fortschritt in localStorage
         localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
@@ -1539,13 +1598,24 @@ export function chords() {
           // Update previousTransposeAmount to avoid direct repeats in next chord
           this.previousTransposeAmount = this.currentTransposeAmount;
           debugLog('CHORDS', `[TRANSPOSE] After correct answer: updated previousTransposeAmount to ${this.previousTransposeAmount}`);
-          Alpine.store('feedback').showFeedback = false;
+          // Local feedback removed - using global feedback system
           
           // Automatically play the next chord after correct answer (new requirement)
           this.playCurrent2_5Chord();
         }, 1500);
       } else {
-        Alpine.store('feedback').feedbackMessage = this.$store.strings.error_message || 'Not quite right. Try again!';
+        const errorMessage = this.$store.strings.error_message || 'Not quite right. Try again!';
+        console.log('CHORD_2_5_REPETITION_FEEDBACK: Showing error message:', errorMessage);
+        const store = window.Alpine?.store;
+        if (store && store.feedback) {
+          store.feedback.isCorrect = false;
+        }
+        window.showFeedbackMessage(errorMessage, {
+      activityId: '2_5_chords_chord_characters',
+      isIntroMessage: false,
+      delaySeconds: 3,
+      component: this
+    });
         
         // Make sure we keep the same chord and transposition after a mistake
         this.currentChordChanged = false;
@@ -1571,7 +1641,7 @@ export function chords() {
         
         // Hide feedback after delay
         setTimeout(() => {
-          Alpine.store('feedback').showFeedback = false;
+          // Local feedback removed - using global feedback system
           
           // Repeat the same chord after incorrect answer with the same transposition
           debugLog(['CHORDS', '2_5_TRANSPOSE'], `Replaying chord ${this.currentChordType} with the same transposition: ${this.currentTransposeRootNote}`);

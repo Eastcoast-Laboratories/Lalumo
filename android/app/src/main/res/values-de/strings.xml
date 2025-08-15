@@ -23,6 +23,10 @@
     <string name="nav_down">Runter</string>
     <string name="back_to_main_a11y">Zurück zum Hauptmenü</string>
     
+    <!-- Portrait Mode Notice -->
+    <string name="portrait_notice_title">📱 Bitte drehe dein Gerät</string>
+    <string name="portrait_notice_message">Lalumo funktioniert nur im Hochformat.</string>
+    
     <!-- Buttons -->
     <string name="button_generate_name">Zufälligen Namen generieren</string>
     <string name="button_save_name">Namen speichern</string>
@@ -32,6 +36,9 @@
     <string name="button_export_progress">Fortschritt exportieren</string>
     <string name="button_import_progress">Fortschritt importieren</string>
     <string name="button_copy_clipboard">In die Zwischenablage kopieren</string>
+    <string name="copy_progress_code">Diesen Code kopieren und speichern:</string>
+    <string name="button_copy_progress">Code kopieren</string>
+    <string name="progress_code_copied">Code erfolgreich in die Zwischenablage kopiert!</string>
     <string name="button_reset_progress">Fortschritt zurücksetzen</string>
     <string name="button_confirm_reset">Ja, alles zurücksetzen</string>
     <string name="button_cancel">Abbrechen</string>
@@ -108,17 +115,18 @@
     <string name="stable_unstable_level6">Meisterstufe: Komplexe erweiterte Harmonien und raffinierte Dissonanzen! 🏆</string>
     <string name="chords_2_5_master">Du bist Akkordmeister! 🎉</string>
     
-    <!-- Mascot Messages for Unlocks -->
-    <string name="mascot_wave_unlocked">Toll! Du hast Wellen-Melodien freigeschaltet! 🌊</string>
-    <string name="mascot_jump_unlocked">Fantastisch! Du hast Zufalls-Sprung-Melodien freigeschaltet! 🐸</string>
-    <string name="mascot_all_unlocked">Großartig! Alle Melodie-Muster sind jetzt verfügbar! 🎉</string>
+    <!-- Help Messages for Unlocks -->
+    <string name="feedback_wave_unlocked">Toll! Du hast Wellen-Melodien freigeschaltet! 🌊</string>
+    <string name="feedback_jump_unlocked">Fantastisch! Du hast Zufalls-Sprung-Melodien freigeschaltet! 🐸</string>
+    <string name="feedback_all_unlocked">Großartig! Alle Melodie-Muster sind jetzt verfügbar! 🎉</string>
     
     <!-- Referrals Page Strings -->
-    <string name="unlock_chords">Spezielle Aktivitäten freischalten</string>
-    <string name="referral_instruction">Teile Lalumo mit deinen Freunden, um spezielle Aktivitäten freizuschalten: Melodie zeichnen, Memory-Spiel und Akkord-Charaktere!</string>
-    <string name="referrals_premium">erfolgreiche Empfehlungen: Spezielle Aktivitäten freischalten</string>
+    <string name="unlock_chords">Mehr Aktivitäten freischalten</string>
+    <string name="referral_instruction">Teile Lalumo mit deinen Freunden, um mehr Aktivitäten freizuschalten: Melodie zeichnen und Akkord-Charaktere!</string>
+    <string name="referrals_premium">erfolgreiche Empfehlungen: Mehr Aktivitäten freischalten</string>
     <string name="referrals_future">erfolgreiche Empfehlungen: Erhalte zukünftige Updates kostenlos</string>
     <string name="register_username">Registriere deinen Benutzernamen</string>
+    <string name="activities_unlocked">Alle Aktivitäten freigeschaltet!</string>
     <string name="username_lock_warning">Nach der Registrierung kannst du deinen Benutzernamen nicht mehr ändern.</string>
     <string name="referred_by_username">Du wurdest empfohlen von:</string>
     <string name="referrer_reward_message">Wenn du dich registrierst, erhält diese Person eine Belohnung!</string>
@@ -175,8 +183,6 @@
     <string name="import_error">Fehler beim Importieren des Fortschritts. Die angegebene Zeichenkette könnte ungültig sein.</string>
     <string name="invalid_save_code">Ungültiger Speichercode. Bitte überprüfe deine Fortschrittszeichenkette.</string>
     <string name="enter_progress_code">Bitte gib zuerst einen Fortschrittscode ein!</string>
-    <string name="unlocked_features">Freigeschaltete Funktionen:</string>
-    <string name="no_features_unlocked">Noch keine speziellen Funktionen freigeschaltet.</string>
     <string name="progress_imported">Fortschritt erfolgreich importiert für %1$s!</string>
     
     <!-- Share Functionality -->
@@ -209,14 +215,6 @@
     <string name="puzzle_completed">Gut gemacht! Puzzle abgeschlossen.</string>
     <string name="level_finished">Level geschafft!</string>
     <string name="keep_practicing">Weiter üben!</string>
-    
-    <!-- Activity Names -->
-    <string name="activity_high_or_low">Hoch oder Tief</string>
-    <string name="activity_match_sounds">Klänge zuordnen</string>
-    <string name="activity_draw_melody">Melodie zeichnen</string>
-    <string name="activity_does_it_sound_right">Klingt das richtig?</string>
-    <string name="activity_memory_game">Memory-Spiel</string>
-    <string name="activity_chord_color">Akkord-Farb Zuordnung</string>
     
     <!-- Reset Confirmations -->
     <string name="reset_activity_confirm">Fortschritt für "%1$s" zurücksetzen?</string>
@@ -251,7 +249,8 @@
     <string name="version_label">Version</string>
     <string name="app_development_label">App-Entwicklung</string>
     <string name="graphics_label">Grafiken &amp; Illustrationen</string>
-    <string name="graphics_content">Bilder erstellt mit ChatGPT - achtsam, liebevoll gestaltete Prompts</string>
+    <string name="graphics_content_line1">Bilder erstellt mit ChatGPT</string>
+    <string name="graphics_content_line2">- Achtsam, liebevoll gestaltete Prompts</string>
     <string name="technologies_label">Technologien</string>
     
     <!-- Impressum Content -->
@@ -304,10 +303,21 @@
     <string name="high_or_low_intro_stage5">Höre beide Töne! Ist der zweite höher oder tiefer?</string>
 
     <!-- Activity Introduction Messages -->
-    <string name="match_sounds_practice">Klicke auf die Bilder zum Üben. Drücke ▶️ für das Spiel!</string>
+    <!-- Pitch Activities -->
+    <string name="intro_1_1_pitches_high_or_low">Höre dir die Note an und wähle, ob sie hoch oder tief ist!</string>
+    <string name="intro_1_2_pitches_match_sounds">Höre dir die Melodie an und wähle, ob sie auf- oder absteigend ist!</string>
+    <string name="intro_1_3_pitches_draw">Male und hör zu – deine Linie wird zu Musik!</string>
+    <string name="intro_1_4_pitches_does_it_sound_right">Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?</string>
+    <string name="intro_1_5_pitches_memory">Höre genau hin und merke dir die Melodie! Kannst du sie nachspielen?</string>
+    
+    <!-- Chord Activities -->
+    <string name="intro_2_2_chords_stable_unstable">Höre dir den Akkord an, klingt er stabil oder instabil? Klicke auf die passende Seite im Wald</string>
+    <string name="intro_2_5_chords_characters">Höre dir die Akkord-Art an und wähle das passende Tier!</string>
+    
+    <!-- Context-specific messages -->
+    <string name="match_sounds_practice">Klicke auf die Bilder zum Üben. Berühre den Vogel für das Spiel!</string>
     <string name="match_sounds_game">Höre zu und wähle das richtige Bild!</string>
-    <string name="does_it_sound_right_intro">Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?</string>
-    <string name="memory_practice">Drücke frei auf die Tasten zum Üben. Drücke ▶️ für das Spiel!</string>
+    <string name="memory_practice">Drücke frei auf die Tasten zum Üben. Berühre den Vogel für das Spiel!</string>
     <string name="memory_game_intro">Höre dir die Melodie an und tippe dann auf die farbigen Knöpfe in der gleichen Reihenfolge!</string>
     
     <!-- Piano Key Labels -->
@@ -320,8 +330,10 @@
     <string name="start_game">Spiel starten</string>
     
     <!-- Chord Feedback Messages -->
-    <string name="feedback_correct_chord">Richtig! Es war ein {0}.</string>
-    <string name="feedback_incorrect_chord">Falsch. Es war ein {0}.</string>
+    <string name="feedback_correct_stable">Richtig! Es war ein stabiler Akkord.</string>
+    <string name="feedback_correct_unstable">Richtig! Es war ein instabiler Akkord.</string>
+    <string name="feedback_incorrect_stable">Falsch. Es war ein stabiler Akkord.</string>
+    <string name="feedback_incorrect_unstable">Falsch. Es war ein instabiler Akkord.</string>
     <string name="stable_chord">stabiler Akkord</string>
     <string name="unstable_chord">instabiler Akkord</string>
     
@@ -338,4 +350,13 @@
     <string name="feedback_1_2_down">Hör mal genauer hin - die Melodie ging nach unten</string>
     <string name="feedback_1_2_wave">Hör mal genauer hin - die Melodie war wellig</string>
     <string name="feedback_1_2_jumpy">Hör mal genauer hin - die Melodie war hüpfend</string>
+    
+    <!-- Sound Judgment Level Descriptions (German) -->
+    <string name="sound_judgment_level_1">Level 1: 2 falsche Noten, keine Pause</string>
+    <string name="sound_judgment_level_2">Level 2: 2 falsche Noten, mit Pausen</string>
+    <string name="sound_judgment_level_3">Level 3: 1 falsche Note, keine Pause</string>
+    <string name="sound_judgment_level_4">Level 4: 1 falsche Note, mit Pausen</string>
+    <string name="sound_judgment_level_5">Level 5: 1 falsche Note, max. 3 Halbtöne Abstand</string>
+    <string name="sound_judgment_level_6">Level 6: 1 falsche Note, max. 2 Halbtöne Abstand</string>
+    <string name="sound_judgment_level_7">Level 7: 1 falsche Note, max. 1 Halbton Abstand</string>
 </resources>

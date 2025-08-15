@@ -1,5 +1,5 @@
 /**
- * 1_2_match_sounds.js - Module for the "Match Sounds" activity
+ * 1_2_match_sounds.js - Module for the "Up or Down" activity
  */
 
 // Import debug utilities
@@ -7,16 +7,16 @@ import { debugLog } from '../../utils/debug.js';
 
 // Export a test function for import tests
 export function testMatchSoundsModuleImport() {
-  debugLog('MATCH_SOUNDS', 'Match Sounds module successfully imported');
+  debugLog('PITCHES', 'Up or Down module successfully imported');
   return true;
 }
 
 /**
- * Reset Match Sounds activity progress
+ * Reset Up or Down activity progress
  * @param {Object} component - The Alpine.js component
  */
 export function reset_1_2_MatchSounds_Progress(component) {
-  debugLog('RESET_MATCH_SOUNDS', 'Starting reset process', {
+  debugLog('PITCHES', 'RESET_MATCH_SOUNDS: Starting reset process', {
     correctAnswersCount: component.correctAnswersCount,
     unlockedPatterns: component.unlockedPatterns
   });
@@ -31,8 +31,19 @@ export function reset_1_2_MatchSounds_Progress(component) {
   localStorage.removeItem('lalumo_progress_match');
   localStorage.removeItem('lalumo_difficulty');
   
-  // Update progress object
-  component.progress['1_2_pitches_match-sounds'] = 0;
+  // Update progress object using unified progress key
+  component.progress['1_2'] = 0;
+  
+  // Persist to localStorage using unified progress system
+  try {
+    const progressData = localStorage.getItem('lalumo_progress');
+    let progress = progressData ? JSON.parse(progressData) : {};
+    progress['1_2'] = 0;
+    localStorage.setItem('lalumo_progress', JSON.stringify(progress));
+  } catch (e) {
+    debugLog(['PITCHES', 'WARN'], 'Could not update progress in localStorage', e);
+  }
+  
   component.updateProgressPitches();
   
   // Reset background if needed
@@ -40,7 +51,7 @@ export function reset_1_2_MatchSounds_Progress(component) {
   if (matchSoundsContainer) {
     const initialBackground = './images/backgrounds/pitches_action1_2_fox_owl.jpg';
     matchSoundsContainer.style.backgroundImage = `url('${initialBackground}')`;
-    debugLog('RESET_MATCH_SOUNDS', 'Reset background to initial state');
+    debugLog('PITCHES', 'RESET_MATCH_SOUNDS: Reset background to initial state');
   }
   
   // Force UI update by triggering Alpine.js reactivity
@@ -52,10 +63,10 @@ export function reset_1_2_MatchSounds_Progress(component) {
     });
     document.dispatchEvent(event);
     
-    debugLog('RESET_MATCH_SOUNDS', 'UI refresh triggered');
+    debugLog('PITCHES', 'RESET_MATCH_SOUNDS: UI refresh triggered');
   });
   
-  debugLog('RESET_MATCH_SOUNDS', 'Reset completed successfully');
+  debugLog('PITCHES', 'RESET_MATCH_SOUNDS: Reset completed successfully');
 }
 
 // Make globally available for diagnosis

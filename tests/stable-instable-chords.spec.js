@@ -61,6 +61,69 @@ test.describe('Lalumo Stable/Unstable Chords Activity', () => {
     }
   });
 
+  test('should test language detection and feedback system', async ({ page }) => {
+    // Listen for all console messages, especially debug logs
+    page.on('console', msg => {
+      console.log(`BROWSER [${msg.type()}]: ${msg.text()}`);
+    });
+    
+    // Test German language
+    console.log('Testing German language...');
+    await page.evaluate(() => {
+      localStorage.setItem('lalumo_language', 'german');
+    });
+    
+    // Navigate to chords section
+    console.log('Navigating to chords section...');
+    const chordsButton = page.locator('button:has-text("Akkorde"), button:has-text("Chords")');
+    await expect(chordsButton).toBeVisible({ timeout: 10000 });
+    await chordsButton.click();
+    await page.waitForTimeout(1000);
+    
+    // Navigate to 2_2 activity
+    console.log('Navigating to 2_2 activity...');
+    const activity22Button = page.locator('button[onclick*="2_2"], a[href*="2_2"]');
+    await expect(activity22Button).toBeVisible({ timeout: 10000 });
+    await activity22Button.click();
+    await page.waitForTimeout(2000);
+    
+    // Wait for activity to load and play a chord
+    const playButton = page.locator('button.play-button, button:has-text("▶")').first();
+    await expect(playButton).toBeVisible({ timeout: 10000 });
+    await playButton.click();
+    await page.waitForTimeout(1000);
+    
+    // Click on stable button to trigger feedback
+    const stableButton = page.locator('button:has-text("Stabil"), button:has-text("Stable")');
+    if (await stableButton.count() > 0) {
+      await stableButton.click();
+      await page.waitForTimeout(2000);
+    }
+    
+    // Test English language
+    console.log('Testing English language...');
+    await page.evaluate(() => {
+      localStorage.setItem('lalumo_language', 'english');
+    });
+    
+    // Play another chord and test feedback
+    await playButton.click();
+    await page.waitForTimeout(1000);
+    
+    const unstableButton = page.locator('button:has-text("Instabil"), button:has-text("Unstable")');
+    if (await unstableButton.count() > 0) {
+      await unstableButton.click();
+      await page.waitForTimeout(2000);
+    }
+    
+    // Check if feedback is displayed
+    const feedbackElement = page.locator('.feedback, [x-show*="feedback"], .stable-unstable-feedback');
+    if (await feedbackElement.count() > 0) {
+      const feedbackText = await feedbackElement.textContent();
+      console.log(`Feedback displayed: ${feedbackText}`);
+    }
+  });
+  
   test('should navigate to 2_2 activity and test chord functionality', async ({ page }) => {
     // Listen for console errors and log them
     page.on('console', msg => {

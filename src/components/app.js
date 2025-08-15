@@ -52,7 +52,7 @@ export function app() {
         name: 'Pitches & Melodies',
         activities: {
           '1_1_pitches_high_or_low': 'High or Low?',
-          '1_2_pitches_match-sounds': 'Match Sounds',
+          '1_2_pitches_match-sounds': 'Up or Down',
           '1_3_pitches_draw-melody': 'Draw a Melody',
           '1_4_pitches_does-it-sound-right': 'Does It Sound Right?',
           '1_5_pitches_memory-game': 'Memory Game'
@@ -2065,12 +2065,6 @@ export function app() {
       
       debugLog('REDEEM', `Code format valid - normalized: ${normalizedCode}`);
       
-      // Prüfen, ob der Benutzer seinen eigenen Code einlösen versucht
-      if (this.friendCode === this.referralCode) {
-        alert(this.$store.strings?.own_code_error || 'You cannot redeem your own referral code!');
-        return;
-      }
-      
       try {
         // API endpoint URL (relative to the app root)
         const apiUrl = `${config.API_BASE_URL}/referral.php`;
@@ -2090,17 +2084,10 @@ export function app() {
         // HTTP-Status prüfen
         if (!response.ok) {
           const data = await response.json();
-          if (response.status === 403) {
-            // 403 Forbidden - Benutzer versucht, eigenen Code einzulösen
-            const errorMessage = this.translateReferralMessage(data.error || 'you_cannot_redeem_your_own_referral_code');
-            alert(errorMessage);
-            return;
-          } else {
-            // Andere API-Fehler
-            const errorMessage = this.translateReferralMessage(data.error || 'redeem_failed');
-            alert(errorMessage);
-            return;
-          }
+          // Handle API errors
+          const errorMessage = this.translateReferralMessage(data.error || 'redeem_failed');
+          alert(errorMessage);
+          return;
         }
         
         // Erfolgreiche Antwort verarbeiten
@@ -2160,7 +2147,7 @@ export function app() {
      * 
      * 1. General activity progress:
      *    - 1_1:XX - Sets high-or-low progress to XX (lalumo_progress_high_or_low)
-     *    - 1_2:XX - Sets match sounds progress to XX (stored in lalumo_progress_match)
+     *    - 1_2:XX - Sets Up or Down progress to XX (stored in lalumo_progress_match)
      *    - 1_3:XX - Sets draw melody progress to XX (stored in lalumo_draw_melody_level)
      *    - 1_4:XX - Sets sound judgment progress to XX (stored in lalumo_soundJudgmentLevel)
      *    - 1_5:XX - Sets memory game progress to XX (stored in lalumo_memory_level)
@@ -2173,7 +2160,7 @@ export function app() {
      * 
      * 2. Combined values (with secondary values):
      *    - 1_3:5s3 - Sets draw melody level to 5 and success counter to 3
-     *    - 1_2:8d3 - Sets match sounds progress to 8 and difficulty to 3
+     *    - 1_2:8d3 - Sets Up or Down progress to 8 and difficulty to 3
      *    - 1_4:6s10 - Sets sound judgment level to 6 and streak to 10
      * 
      * 3. Multiple cheats at once (comma separated):
@@ -2254,33 +2241,13 @@ export function app() {
             }
           }
           
-          // Special handling for 2_5 activity
-          if (activityId === '2_5' || activityId === '2_5_chords_characters') {
-            // Always update the 2_5_chords_characters key for this activity
-            chordsProgressData['2_5_chords_characters'] = progressValue;
-            debugLog(['CHEATCODE'], `: Setting 2_5_chords_characters progress to ${progressValue}`);
-            debugLog(['CHEATCODE', '2_5'], `Setting 2_5_chords_characters progress to ${progressValue}`);
-            
-            // Handle secondary value if present
-            if (secondaryKey && secondaryValue !== null) {
-              debugLog(['CHEATCODE'], ` Activity ${activityId} does not support secondary values`);
-            }
-          } 
-          // Special handling for 2_2 activity
-          else if (activityId === '2_2' || activityId === '2_2_chords_stable_unstable') {
-            // Always update the 2_2_chords_stable_unstable key for this activity
-            chordsProgressData['2_2_chords_stable_unstable'] = progressValue;
-            debugLog(['CHEATCODE'], `: Setting 2_2_chords_stable_unstable progress to ${progressValue}`);
-            debugLog(['CHEATCODE', '2_2_PROGRESS'], `Setting 2_2_chords_stable_unstable progress to ${progressValue}`);
-            
-            // Handle secondary value if present
-            if (secondaryKey && secondaryValue !== null) {
-              debugLog(['CHEATCODE'], ` Activity ${activityId} does not support secondary values`);
-            }
-          } else {
-            // Generic chord activity
-            chordsProgressData[activityId] = progressValue;
-            debugLog(['CHEATCODE'], `: Setting chord activity ${activityId} progress to ${progressValue}`);
+          // Use unified progress keys for all chord activities
+          chordsProgressData[activityId] = progressValue;
+          debugLog(['CHEATCODE'], `: Setting chord activity ${activityId} progress to ${progressValue}`);
+          
+          // Handle secondary value if present
+          if (secondaryKey && secondaryValue !== null) {
+            debugLog(['CHEATCODE'], ` Activity ${activityId} does not support secondary values`);
           }
           
           // Save updated chords progress
@@ -2288,54 +2255,38 @@ export function app() {
           localStorage.setItem('lalumo_chords_progress', updatedChordsData);
           debugLog(['CHEATCODE'], `: Updated chord progress in localStorage: lalumo_chords_progress = ${updatedChordsData}`);
         } else if (activityId.startsWith('1_')) {
-          // For pitch activities - handle each one specifically
-          if (activityId === '1_1') { // High or low
-            localStorage.setItem('lalumo_progress_high_or_low', progressValue);
-            debugLog(['CHEATCODE'], `: Set localStorage: lalumo_progress_high_or_low = ${progressValue}`);
-          } else if (activityId === '1_2') { // Match sounds activity
-            localStorage.setItem('lalumo_progress_match', progressValue);
-            debugLog(['CHEATCODE'], `: Set localStorage: lalumo_progress_match = ${progressValue}`);
-            
-            if (secondaryKey && secondaryValue !== null) {
-              if (secondaryKey === 'd') { // d for difficulty
-                localStorage.setItem('lalumo_difficulty', secondaryValue);
-                debugLog(['CHEATCODE'], `: Set localStorage: lalumo_difficulty = ${secondaryValue}`);
-              } else {
-                debugLog(['CHEATCODE'], `Unknown secondary key ${secondaryKey} for activity ${activityId}`);
-              }
+          // For pitch activities - use unified progress system
+          let pitchProgressData = {};
+          const existingPitchData = localStorage.getItem('lalumo_progress');
+          debugLog(['CHEATCODE'], `: Current pitch progress data: ${existingPitchData}`);
+          
+          if (existingPitchData) {
+            try {
+              pitchProgressData = JSON.parse(existingPitchData);
+            } catch(e) {
+              debugLog(['CHEATCODE'], ` Error parsing existing pitch progress data:`, e);
             }
-          } else if (activityId === '1_3') { // Draw melody activity
-            localStorage.setItem('lalumo_draw_melody_level', progressValue);
-            debugLog(['CHEATCODE'], `: Set localStorage: lalumo_draw_melody_level = ${progressValue}`);
-            
-            if (secondaryKey && secondaryValue !== null) {
-              if (secondaryKey === 's') { // s for success counter
-                localStorage.setItem('lalumo_draw_melody_success_counter', secondaryValue);
-                debugLog(['CHEATCODE'], `: Set localStorage: lalumo_draw_melody_success_counter = ${secondaryValue}`);
-              } else {
-                debugLog(['CHEATCODE'], `Unknown secondary key ${secondaryKey} for activity ${activityId}`);
-              }
-            }
-          } else if (activityId === '1_4') { // Sound judgment activity
-            localStorage.setItem('lalumo_soundJudgmentLevel', progressValue);
-            debugLog(['CHEATCODE'], `: Set localStorage: lalumo_soundJudgmentLevel = ${progressValue}`);
-            
-            if (secondaryKey && secondaryValue !== null) {
-              if (secondaryKey === 's') { // s for streak
-                localStorage.setItem('lalumo_soundJudgmentStreak', secondaryValue);
-                debugLog(['CHEATCODE'], `: Set localStorage: lalumo_soundJudgmentStreak = ${secondaryValue}`);
-              } else {
-                debugLog(['CHEATCODE'], `Unknown secondary key ${secondaryKey} for activity ${activityId}`);
-              }
-            }
-          } else if (activityId === '1_5') { // Memory game
-            localStorage.setItem('lalumo_memory_level', progressValue);
-            debugLog(['CHEATCODE'], `: Set localStorage: lalumo_memory_level = ${progressValue}`);
-          } else {
-            debugLog(['CHEATCODE'], `Unknown pitch activity: ${activityId}`);
-            alert(`Unknown pitch activity ID: ${activityId}`);
-            return false;
           }
+          
+          // Use unified progress keys for all pitch activities
+          pitchProgressData[activityId] = progressValue;
+          debugLog(['CHEATCODE'], `: Setting pitch activity ${activityId} progress to ${progressValue}`);
+          
+          // Handle secondary values for specific activities
+          if (secondaryKey && secondaryValue !== null) {
+            if (activityId === '1_2' && secondaryKey === 'd') {
+              // Special handling for 1_2 difficulty (still uses separate localStorage)
+              localStorage.setItem('lalumo_difficulty', secondaryValue);
+              debugLog(['CHEATCODE'], `: Set localStorage: lalumo_difficulty = ${secondaryValue}`);
+            } else {
+              debugLog(['CHEATCODE'], `Secondary values not supported for activity ${activityId} with key ${secondaryKey}`);
+            }
+          }
+          
+          // Save updated pitch progress
+          const updatedPitchData = JSON.stringify(pitchProgressData);
+          localStorage.setItem('lalumo_progress', updatedPitchData);
+          debugLog(['CHEATCODE'], `: Updated pitch progress in localStorage: lalumo_progress = ${updatedPitchData}`);
         } else {
           // Unknown activity type
           debugLog(['CHEATCODE'], `Unknown activity ID format: ${activityId}`);
@@ -2354,6 +2305,85 @@ export function app() {
         debugLog(['CHEATCODE'], `Error processing cheatcode:`, e);
         alert(`Error processing cheatcode: ${e.message}`);
         return false;
+      }
+    },
+
+    /**
+     * Map old activity mode names to new simplified progress keys
+     * @param {string} mode - The old mode name
+     * @returns {string} The new progress key
+     */
+    mapModeToProgressKey(mode) {
+      const modeMapping = {
+        '1_1_pitches_high_or_low': '1_1',
+        '1_2_pitches_match-sounds': '1_2', 
+        '1_3_pitches_draw-melody': '1_3',
+        '1_4_pitches_does-it-sound-right': '1_4',
+        '1_5_pitches_memory-game': '1_5',
+        '2_1_chords_color-matching': '2_1',
+        '2_2_chords_stable_unstable': '2_2',
+        '2_3_chords_chord-building': '2_3',
+        '2_4_chords_missing-note': '2_4',
+        '2_5_chords_characters': '2_5',
+        '2_6_chords_harmony-gardens': '2_6'
+      };
+      return modeMapping[mode] || mode;
+    },
+
+    /**
+     * Get the progress of the currently active activity
+     * @returns {number} Progress value of current activity (0 if none)
+     */
+    getCurrentActivityProgress() {
+      try {
+        // Get current activity mode from Alpine store
+        const currentActivityMode = this.$store.currentActivityMode;
+        
+        if (currentActivityMode && currentActivityMode.component && currentActivityMode.mode) {
+          const { component, mode } = currentActivityMode;
+          
+          // Get the appropriate component instance
+          let componentInstance = null;
+          if (component === 'pitches' && window.pitchesComponent) {
+            componentInstance = window.pitchesComponent;
+          } else if (component === 'chords' && window.chordsComponent) {
+            componentInstance = window.chordsComponent;
+          }
+          
+          // Get progress from component instance using mapped key
+          const progressKey = this.mapModeToProgressKey(mode);
+          if (componentInstance && componentInstance.progress && componentInstance.progress[progressKey]) {
+            return componentInstance.progress[progressKey] || 0;
+          }
+          
+          // Fallback: try to get from global progress object if available
+          const fallbackProgressKey = this.mapModeToProgressKey(mode);
+          if (window.progress && window.progress[fallbackProgressKey]) {
+            return window.progress[fallbackProgressKey] || 0;
+          }
+        }
+        
+        // Fallback: check if any component has an active mode with progress
+        if (window.pitchesComponent && window.pitchesComponent.mode && window.pitchesComponent.mode !== 'main') {
+          const mode = window.pitchesComponent.mode;
+          const pitchesProgressKey = this.mapModeToProgressKey(mode);
+          if (window.pitchesComponent.progress && window.pitchesComponent.progress[pitchesProgressKey]) {
+            return window.pitchesComponent.progress[pitchesProgressKey] || 0;
+          }
+        }
+        
+        if (window.chordsComponent && window.chordsComponent.mode && window.chordsComponent.mode !== 'main') {
+          const mode = window.chordsComponent.mode;
+          const chordsProgressKey = this.mapModeToProgressKey(mode);
+          if (window.chordsComponent.progress && window.chordsComponent.progress[chordsProgressKey]) {
+            return window.chordsComponent.progress[chordsProgressKey] || 0;
+          }
+        }
+        
+        return 0;
+      } catch (error) {
+        debugLog('RESET_BUTTON', 'Error getting current activity progress:', error);
+        return 0;
       }
     },
   };

@@ -23,6 +23,10 @@
     <string name="nav_down">Down</string>
     <string name="back_to_main_a11y">Back to main menu</string>
     
+    <!-- Portrait Mode Notice -->
+    <string name="portrait_notice_title">📱 Please rotate your device</string>
+    <string name="portrait_notice_message">Lalumo works only in portrait mode.</string>
+    
     <!-- Buttons -->
     <string name="button_generate_name">Generate Random Name</string>
     <string name="button_save_name">Save Name</string>
@@ -32,6 +36,9 @@
     <string name="button_export_progress">Export Progress</string>
     <string name="button_import_progress">Import Progress</string>
     <string name="button_copy_clipboard">Copy to Clipboard</string>
+    <string name="copy_progress_code">Copy this code and save it:</string>
+    <string name="button_copy_progress">Copy Code</string>
+    <string name="progress_code_copied">Progress code copied to clipboard!</string>
     <string name="button_reset_progress">Reset All Progress</string>
     <string name="button_confirm_reset">Yes, Reset Everything</string>
     <string name="button_cancel">Cancel</string>
@@ -109,10 +116,10 @@
     <string name="chords_2_5_master">You are Chords Master! 🎉</string>
 
     
-    <!-- Mascot Messages for Unlocks -->
-    <string name="mascot_wave_unlocked">Great! You unlocked wavy melodies! 🌊</string>
-    <string name="mascot_jump_unlocked">Amazing! You unlocked random jump melodies! 🐸</string>
-    <string name="mascot_all_unlocked">Fantastic! All melody patterns are now available! 🎉</string>
+    <!-- Help Messages for Unlocks -->
+    <string name="feedback_wave_unlocked">Great! You unlocked wavy melodies! 🌊</string>
+    <string name="feedback_jump_unlocked">Amazing! You unlocked random jump melodies! 🐸</string>
+    <string name="feedback_all_unlocked">Fantastic! All melody patterns are now available! 🎉</string>
     
     <!-- Player Settings -->
     <string name="player_settings">Player Settings</string>
@@ -131,16 +138,17 @@
     <string name="username_created">Your name is {username}. You can change this in the settings.</string>
     <string name="username_updated">Your name is {username}. You can change this in the settings.</string>
     <string name="help_messages">Help Messages</string>
-    <string name="help_messages_desc">Control when mascot help messages appear:</string>
+    <string name="help_messages_desc">Control when help messages appear:</string>
     <string name="help_messages_off">Help Messages Hidden</string>
     <string name="help_messages_on">Show Help Messages</string>
     
     <!-- Referrals Page Strings -->
-    <string name="unlock_chords">Unlock Special Activities</string>
-    <string name="referral_instruction">Share Lalumo with your friends to unlock special activities: Draw a Melody, Memory Game, and Chord Story Characters!</string>
-    <string name="referrals_premium">successful referrals: Unlock Special Activities</string>
+    <string name="unlock_chords">Unlock more activities</string>
+    <string name="referral_instruction">Share Lalumo with your friends to unlock more activities: Draw a Melody and Chord Story Characters!</string>
+    <string name="referrals_premium">successful referrals: Unlock more activities</string>
     <string name="referrals_future">successful referrals: Get future updates for free</string>
     <string name="register_username">Register Your Username</string>
+    <string name="activities_unlocked">All activities unlocked!</string>
     <string name="username_lock_warning">After registering, you will no longer be able to change your username.</string>
     <string name="referred_by_username">You were referred by:</string>
     <string name="referrer_reward_message">When you register, they will receive a reward!</string>
@@ -195,8 +203,6 @@
     <string name="import_error">Error importing progress. The provided string may be invalid.</string>
     <string name="invalid_save_code">Invalid save code. Please check your progress string.</string>
     <string name="enter_progress_code">Please enter a progress code first!</string>
-    <string name="unlocked_features">Unlocked features:</string>
-    <string name="no_features_unlocked">No special features unlocked yet.</string>
     <string name="progress_imported">Progress imported successfully for %1$s!</string>
     
     <!-- Share Functionality -->
@@ -210,14 +216,6 @@
     <string name="puzzle_completed">Great work! Puzzle completed.</string>
     <string name="level_finished">Level finished!</string>
     <string name="keep_practicing">Keep practicing!</string>
-    
-    <!-- Activity Names -->
-    <string name="activity_high_or_low">High or Low</string>
-    <string name="activity_match_sounds">Match Sounds</string>
-    <string name="activity_draw_melody">Draw Melody</string>
-    <string name="activity_does_it_sound_right">Does It Sound Right?</string>
-    <string name="activity_memory_game">Memory Game</string>
-    <string name="activity_chord_color">Chord Color Matching</string>
     
     <!-- Reset Confirmations -->
     <string name="reset_activity_confirm">Reset progress for "%1$s"?</string>
@@ -250,7 +248,8 @@
     <string name="version_label">Version</string>
     <string name="app_development_label">App-Development</string>
     <string name="graphics_label">Graphics &amp; Illustrations</string>
-    <string name="graphics_content">Images created with ChatGpt - mindfull, lovingly crafted prompts</string>
+    <string name="graphics_content_line1">Images created with ChatGpt</string>
+    <string name="graphics_content_line2">- mindfull, lovingly crafted prompts</string>
     <string name="technologies_label">Technologies</string>
     
     <!-- Impressum Content -->
@@ -300,15 +299,28 @@
     <string name="high_or_low_intro_stage5">Listen to both tones! Is the second one higher or lower?</string>
 
     <!-- Activity Introduction Messages -->
-    <string name="match_sounds_practice">Click on pictures to practice. Press ▶️ for the game!</string>
+    <!-- Pitch Activities -->
+    <string name="intro_1_1_pitches_high_or_low">Listen to the Note and choose if it is of a high or low pitch!</string>
+    <string name="intro_1_2_pitches_match_sounds">Listen to the Melody and choose if it is ascending or descending!</string>
+    <string name="intro_1_3_pitches_draw">Draw and listen – your line becomes music!</string>
+    <string name="intro_1_4_pitches_does_it_sound_right">Listen to the melody! Does it sound right? Or is there a wrong note?</string>
+    <string name="intro_1_5_pitches_memory">Listen carefully and remember the melody! Can you play it back?</string>
+    
+    <!-- Chord Activities -->
+    <string name="intro_2_2_chords_stable_unstable">Listen to the chord, does it sound stable or unstable? Click on the matching part of the forest</string>
+    <string name="intro_2_5_chords_characters">Listen to the chord and match it to the right character!</string>
+    
+    <!-- Context-specific messages -->
+    <string name="match_sounds_practice">Click on pictures to practice. Touch the bird to start the game!</string>
     <string name="match_sounds_game">Listen and choose the right picture!</string>
-    <string name="does_it_sound_right_intro">Listen to the melody! Does it sound right? Or is there a wrong note?</string>
-    <string name="memory_practice">Press keys freely to practice. Press ▶️ for the game!</string>
+    <string name="memory_practice">Press keys freely to practice. Touch the bird to start the game!</string>
     <string name="memory_game_intro">Listen to the melody, then tap the colored buttons in the same order!</string>
 
     <!-- Chord Feedback Messages -->
-    <string name="feedback_correct_chord">Correct! It was a {0}.</string>
-    <string name="feedback_incorrect_chord">Incorrect. It was a {0}.</string>
+    <string name="feedback_correct_stable">Correct! It was a stable chord.</string>
+    <string name="feedback_correct_unstable">Correct! It was an unstable chord.</string>
+    <string name="feedback_incorrect_stable">Incorrect. It was a stable chord.</string>
+    <string name="feedback_incorrect_unstable">Incorrect. It was an unstable chord.</string>
     <string name="stable_chord">stable chord</string>
     <string name="unstable_chord">unstable chord</string>
     
@@ -337,4 +349,13 @@
     <string name="feedback_1_2_down">Listen more closely - the melody was going down</string>
     <string name="feedback_1_2_wave">Listen more closely - the melody was wavy</string>
     <string name="feedback_1_2_jumpy">Listen more closely - the melody was jumpy</string>
+    
+    <!-- Sound Judgment Level Descriptions (English) -->
+    <string name="sound_judgment_level_1">Level 1: 2 wrong notes, no pause</string>
+    <string name="sound_judgment_level_2">Level 2: 2 wrong notes, with pauses</string>
+    <string name="sound_judgment_level_3">Level 3: 1 wrong note, no pause</string>
+    <string name="sound_judgment_level_4">Level 4: 1 wrong note, with pauses</string>
+    <string name="sound_judgment_level_5">Level 5: 1 wrong note, max. 3 semitones distance</string>
+    <string name="sound_judgment_level_6">Level 6: 1 wrong note, max. 2 semitones distance</string>
+    <string name="sound_judgment_level_7">Level 7: 1 wrong note, max. 1 semitone distance</string>
 </resources>

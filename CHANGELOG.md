@@ -2,6 +2,22 @@
 =========
 
 
+## Version 5.1 (2025-08-06)
+- New introduction messages at the start of each exercise
+- "Bunny Hop" corrected in "Does it sound right?"
+- "High or Low": Random instruments play the tones
+- "Draw a Melody": Animated playback along the drawn line
+
+
+## Version 4.2 (2025-07-22)
+- "High or Low" now with different instruments
+- Fast click protection in games improved the player experience
+
+
+## Version 4.1 (2025-07-19)
+- new songs in "Does It Sound Right?": "Bunny Hop" and "Hey Ho Pull the Wagon"
+
+
 ## Version 4.0 (2025-07-17)
 - new chord game: "Stable/Unstable Chords" with motivating feedback.
 - child-friendly interface:

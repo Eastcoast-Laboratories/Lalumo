@@ -2,6 +2,21 @@
 =========
 
 
+## Version 5.1 (2025-08-06)
+- Neue Einführungsnachrichten am Beginn jeder Übung
+- "Häschen hüpf!" verbessert in "Klingt es richtig?"
+- "High or Low": Zufällige Instrumente spielen die Töne
+- "Draw a Melody": Animierte Wiedergabe entlang der gezeichneten Linie
+
+## Version 4.2 (2025-07-22)
+- "Hoch oder Tief": Jetzt mit unterschiedlichen Instrumenten
+- Schnellklick-Schutz in Spielen verbessert das Spielerlebnis
+
+
+## Version 4.1 (2025-07-19)
+- Neue Lieder in "Klingt es richtig?": "Häschen Hüpf" und "Hey Ho, Spann den Wagen an"
+
+
 ## Version 4.0 (2025-07-17)
 - Neues Chord-Spiel: "Stabil/Instable Akkorde" mit motivierendem Feedback.
 - Kindgerechte Bedienung:

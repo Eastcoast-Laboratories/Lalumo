@@ -165,9 +165,7 @@ Die PHP-Dateien (`referral.php`, `admin.php`) und die Datenbankdatei müssen auf
 - testen, das ist schon implementiert , aber ungetestet: 
    - wenn in der localStorage der username gelockt ist, aber auf dem server gelöscht, dann muss der wieder entlockt werden und die localStorage aktualisiert werden
 
+- wenn man einen redeem code eingelöst hat, soll das in der localstorage gespeichert werden und man kann keinen weiteren
+
 
 ----
-
-ergänze im konzept die häkchen bei den punkten die schon erledigt sind uund ergänue [ ] häkchen, was noch nciht erledigt ist. passe das konzept ggf an, so dass es einer dokumentation wird, wie das referral system funktioniert.
-
-dann mach weiter im plan

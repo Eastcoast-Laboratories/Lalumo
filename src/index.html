@@ -95,13 +95,20 @@
     
     /* Activity elements */
     .activity-container { padding: 12px; }
-    .mascot-welcome { display: flex; align-items: center; margin: 10px 0; }
+    .welcome-message { display: flex; align-items: center; margin: 10px 0; }
   </style>
   <!-- Scripts and more styles will be injected by webpack -->
   <!-- Cache busting wird durch webpack erledigt -->
   
 </head>
 <body class="loading">
+  <!-- Portrait Mode Notice -->
+  <div class="portrait-notice">
+    <button class="portrait-notice-close" onclick="closePortraitNotice()" ontouchstart="closePortraitNotice()" ontouchend="event.preventDefault()" aria-label="Close notice">×</button>
+    <h2 data-string="portrait_notice_title">📱 Please rotate your device</h2>
+    <p data-string="portrait_notice_message">Lalumo works only in portrait mode.</p>
+  </div>
+  
   <!-- Loading spinner overlay -->
   <div id="loading-overlay">
     <img id="loading-logo" src="./icons/icon-512.png" alt="Lalumo Logo">
@@ -113,7 +120,7 @@
     document.body.classList.add(
       window.isNativeApp ? 'native-app' : 'web-app',
       window.isAndroid ? 'android' : (window.isiOS ? 'ios' : 'desktop'),
-      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'dev-mode' : 'production'
+      !window.isNativeApp && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'dev-mode' : 'production'
     );
 
     // Hide loading overlay when page is fully loaded
@@ -123,9 +130,60 @@
         document.body.classList.remove('loading');
       }, 50); // small delay for smoother transition
     });
+    
+    // Portrait mode overlay control
+    function checkOrientation() {
+      const portraitNotice = document.querySelector('.portrait-notice');
+      const isLandscape = window.innerHeight < window.innerWidth;
+      const isMobile = window.innerWidth <= 1024 || window.innerHeight <= 768;
+      
+      if (isLandscape && isMobile) {
+        portraitNotice.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      } else {
+        portraitNotice.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+    
+    // Check orientation on load and resize
+    window.addEventListener('load', checkOrientation);
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', function() {
+      setTimeout(checkOrientation, 100); // delay for orientation change
+    });
+    
+    // Function to manually close portrait notice
+    window.closePortraitNotice = function() {
+      console.log('Close button clicked!');
+      const portraitNotice = document.querySelector('.portrait-notice');
+      if (portraitNotice) {
+        portraitNotice.classList.add('hidden');
+        portraitNotice.style.display = 'none';
+        document.body.style.overflow = '';
+        // Store preference to not show again
+        localStorage.setItem('portraitNoticeDisabled', 'true');
+        console.log('Portrait notice closed successfully');
+      } else {
+        console.error('Portrait notice element not found');
+      }
+    };
+    
+    // Check portrait notice status after Alpine is initialized
+    window.checkPortraitNoticeOnInit = function() {
+      setTimeout(function() {
+        const isDisabled = localStorage.getItem('portraitNoticeDisabled') === 'true';
+        if (isDisabled) {
+          console.log('Portrait notice was previously disabled, hiding it');
+          window.closePortraitNotice();
+        }
+      }, 100); // small delay to ensure DOM is ready
+    };
+    
+    
   </script>
   <!-- app.js -->
-  <main id="app" x-data="app()" x-init="init(); initLazyLoading(); updateEnvironmentClasses();" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
+  <main id="app" x-data="app()" x-init="init(); initLazyLoading(); updateEnvironmentClasses(); checkPortraitNoticeOnInit();" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
     
     <!-- Username Prompt Modal -->
     <div class="modal-overlay" x-show="showUsernamePrompt" x-transition style="display: none;">
@@ -184,6 +242,7 @@
         <!-- Activities Section (shows only when Pitches chapter is active) -->
         <template x-if="active === 'pitches'">
           <div class="menu-activities">
+            <!-- High or Low -->
             <button id="nav_1_1"
               @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_1_pitches_high_or_low'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
@@ -193,15 +252,18 @@
             >
               🔊 <span x-text="$store.strings?.high_or_low || 'High or Low?'"></span>
             </button>
+
+            <!-- Up or Down -->
             <button id="nav_1_2"
               @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_2_pitches_match-sounds'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
               x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'pitches' && value.mode === '1_2_pitches_match-sounds')"
               :class="{ 'active': isActive }"
             >
-            🎵 <span x-text="$store.strings?.match_sounds || 'Match Sounds'"></span>
+            🎵 <span x-text="$store.strings?.match_sounds || 'Up or Down'"></span>
             </button>
             
+            <!-- Does it sound right -->
             <button id="nav_1_4"
               @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_4_pitches_does-it-sound-right'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
@@ -210,6 +272,17 @@
               👉 <span x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></span>
             </button>
             
+            <!-- Memory Game -->
+            <button id="nav_1_5"
+              @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_5_pitches_memory-game'}); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'pitches' && value.mode === '1_5_pitches_memory-game')"
+              :class="{ 'active': isActive }">
+              🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
+            </button>
+
+            <!-- following activities require unlock -->
+
             <!-- Locked Draw a Melody button (visible when not unlocked) -->
             <button id="nav_1_3_locked" x-show="!areAllActivitiesUnlocked"
               @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"
@@ -235,30 +308,6 @@
               🔓 ✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
             </button>
             
-            <!-- Locked Memory Game button (visible when not unlocked) -->
-            <button id="nav_1_5_locked" x-show="!areAllActivitiesUnlocked"
-              @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"
-              class="locked-activity"
-            >
-              <span>🔒 🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span></span>
-            </button>
-            
-            <!-- Unlocked Memory Game button (visible when unlocked through referrals) -->
-            <button id="nav_1_5" x-show="areAllActivitiesUnlocked"
-              @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_5_pitches_memory-game'}); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'pitches' && value.mode === '1_5_pitches_memory-game')"
-              :class="{ 'active': isActive }"
-            >
-              🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
-            </button>
-            
-            <!-- Debug button for Memory Game (always visible) -->
-            <button id="nav_1_5_debug" class="debug-element"
-              @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_5_pitches_memory-game'}); window.innerWidth < 1024 ? menuOpen = false : null"
-            >
-              🔓 🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
-            </button>
           </div>
         </template>
 
@@ -382,7 +431,7 @@
         <div class="menu-settings">
           
           <!-- Reset Current Activity Button -->
-          <button @click="resetCurrentActivity()" class="menu-reset-btn" :title="$store.strings?.reset_current_activity || 'Reset Current Activity'">
+          <button @click="resetCurrentActivity()" class="menu-reset-btn" :title="$store.strings?.reset_current_activity || 'Reset Current Activity'" x-show="getCurrentActivityProgress() > 0">
             🔄 <span x-text="$store.strings?.reset_current_activity || 'Reset Current Activity'"></span>
           </button>
           
@@ -424,7 +473,7 @@
         <div x-show="!mode || mode === 'main'" class="pitch-landing">
           <div class="image-map-container">
             <div class="clickable-area match-area" @click="setMode('1_2_pitches_match-sounds')" aria-label="Match Mode">
-              <span class="area-label" x-text="$store.strings?.match_sounds || 'Match Sounds'"></span>
+              <span class="area-label" x-text="$store.strings?.match_sounds || 'Up or Down'"></span>
             </div>
             <div class="clickable-area draw-area" @click="setMode('1_3_pitches_draw-melody')" aria-label="Draw Mode">
               <span class="area-label" x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
@@ -454,7 +503,7 @@
           
           <!-- High or Low choice buttons -->
           <div class="high-low-choices">
-            <div class="pitch-card low-choice" 
+            <div class="pitch-card low-choice activity-button-blocker" 
                  @click="checkHighOrLowAnswer('low'); blurElement($event)" 
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')"
                  :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')">
@@ -466,7 +515,7 @@
                         ($store.strings?.low_choice || 'Tief')"></span>
               </div>
             </div>
-            <div class="pitch-card high-choice" 
+            <div class="pitch-card high-choice activity-button-blocker" 
                  @click="checkHighOrLowAnswer('high'); blurElement($event)" 
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')"
                  :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')">
@@ -482,16 +531,16 @@
           
           <!-- Progress display -->
           <div class="progress-display high-low-progress">
-            <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', highOrLowProgress || 0)"></p>
-            <p x-show="(highOrLowProgress || 0) < 10" x-text="$store.strings?.high_low_stage1 || 'Get 10 correct to make the tones closer!'"></p>
-            <p x-show="(highOrLowProgress || 0) >= 10 && (highOrLowProgress || 0) < 20" x-text="$store.strings?.high_low_stage2 || 'Get 20 correct to hear two tones!'"></p>
-            <p x-show="(highOrLowProgress || 0) >= 20 && (highOrLowProgress || 0) < 30" x-text="$store.strings?.high_low_stage3 || 'Get 30 correct to make it harder!'"></p>
-            <p x-show="(highOrLowProgress || 0) >= 30 && (highOrLowProgress || 0) < 40" x-text="$store.strings?.high_low_stage4 || 'Get 40 correct for the ultimate challenge!'"></p>
-            <p x-show="(highOrLowProgress || 0) >= 40" x-text="$store.strings?.high_low_master || 'Master level achieved! :celebration:'"></p>
+            <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['1_1'] || 0)"></p>
+            <p x-show="(progress['1_1'] || 0) < 10" x-text="$store.strings?.high_low_stage1 || 'Get 10 correct to make the tones closer!'"></p>
+            <p x-show="(progress['1_1'] || 0) >= 10 && (progress['1_1'] || 0) < 20" x-text="$store.strings?.high_low_stage2 || 'Get 20 correct to hear two tones!'"></p>
+            <p x-show="(progress['1_1'] || 0) >= 20 && (progress['1_1'] || 0) < 30" x-text="$store.strings?.high_low_stage3 || 'Get 30 correct to make it harder!'"></p>
+            <p x-show="(progress['1_1'] || 0) >= 30 && (progress['1_1'] || 0) < 40" x-text="$store.strings?.high_low_stage4 || 'Get 40 correct for the ultimate challenge!'"></p>
+            <p x-show="(progress['1_1'] || 0) >= 40" x-text="$store.strings?.high_low_master || 'Master level achieved! :celebration:'"></p>
           </div>
           
           <!-- Feedback message -->
-          <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+          <!-- Local feedback removed - using unified global feedback -->
         </div>
                 
         <!-- Matching Mode -->
@@ -515,28 +564,28 @@
           <!-- Grid-Container für Match-Sounds mit richtigem rowspan-Verhalten -->
           <div class="match-sounds-container">
             <!-- Up pattern (immer sichtbar) - oben links -->
-            <div class="pitch-card up-card" @click="checkMatch('up'); blurElement($event)" @mousedown="startLongPress('up')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
+            <div class="pitch-card up-card activity-button-blocker" @click="checkMatch('up'); blurElement($event)" @mousedown="startLongPress('up')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
               <div class="pitch-icon up">
                 <img src="images/1x1.gif" alt="Rocket going up" />
               </div>
             </div>
             
             <!-- Down pattern (immer sichtbar) - rechts mit möglichem rowspan -->
-            <div class="pitch-card down-card" @click="checkMatch('down'); blurElement($event)" @mousedown="startLongPress('down')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
+            <div class="pitch-card down-card activity-button-blocker" @click="checkMatch('down'); blurElement($event)" @mousedown="startLongPress('down')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
               <div class="pitch-icon down">
                 <img src="images/1x1.gif" alt="Slide going down" />
               </div>
             </div>
             
             <!-- Wave pattern (wenn freigeschaltet) - unten links -->
-            <div x-show="unlockedPatterns.includes('wave')" class="pitch-card wave-card" @click="checkMatch('wave'); blurElement($event)" @mousedown="startLongPress('wave')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
+            <div x-show="unlockedPatterns.includes('wave')" class="pitch-card wave-card activity-button-blocker" @click="checkMatch('wave'); blurElement($event)" @mousedown="startLongPress('wave')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
               <div class="pitch-icon wave">
                 <img src="images/1x1.gif" alt="Wave pattern" />
               </div>
             </div>
             
             <!-- Jump pattern (wenn freigeschaltet) - unten rechts -->
-            <div x-show="unlockedPatterns.includes('jump')" class="pitch-card jump-card" @click="checkMatch('jump'); blurElement($event)" @mousedown="startLongPress('jump')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
+            <div x-show="unlockedPatterns.includes('jump')" class="pitch-card jump-card activity-button-blocker" @click="checkMatch('jump'); blurElement($event)" @mousedown="startLongPress('jump')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
               <div class="pitch-icon jump">
                 <img src="images/1x1.gif" alt="Jumping frog" />
               </div>
@@ -551,7 +600,7 @@
             <p x-show="correctAnswersCount >= 20" x-text="$store.strings?.all_patterns_unlocked || 'All patterns unlocked! :celebration:'"></p>
           </div>
           
-          <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+          <!-- Local feedback removed - using unified global feedback -->
         </div>
         
         <!-- Drawing Mode -->
@@ -623,12 +672,12 @@
 
             <!-- Animal choice buttons -->
             <div class="sound-judgment-options">
-              <div class="pitch-card animal-card happy" @click="checkSoundHighOrLow(true); blurElement($event)" @touchstart.prevent @touchend.prevent="$el.click();" aria-label="Sounds good" title="Sounds good">
+              <div class="pitch-card animal-card happy activity-button-blocker" @click="checkSoundHighOrLow(true); blurElement($event)" @touchstart.prevent @touchend.prevent="$el.click();" aria-label="Sounds good" title="Sounds good">
                 <div class="pitch-icon animal-icon" title="Sounds good!">
                   <img src="images/1_5_pitches_good_cat.png" alt="Happy cat">
                 </div>
               </div>
-              <div class="pitch-card animal-card unhappy" @click="checkSoundHighOrLow(false); blurElement($event)" @touchstart.prevent @touchend.prevent="$el.click();" aria-label="Sounds wrong" title="Sounds wrong">
+              <div class="pitch-card animal-card unhappy activity-button-blocker" @click="checkSoundHighOrLow(false); blurElement($event)" @touchstart.prevent @touchend.prevent="$el.click();" aria-label="Sounds wrong" title="Sounds wrong">
                 <div class="pitch-icon animal-icon" title="Sounds wrong!">
                   <img src="images/1_5_pitches_bad_snake.png" alt="Unhappy snake">
                 </div>
@@ -637,7 +686,10 @@
           </div>
           
           <!-- Feedback message -->
-          <div id="feedback_message_1_4_pitches" x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+          <!-- Local feedback removed - using unified global feedback -->
+          
+          <!-- Progress bar container for Sound Judgment (1_4) -->
+          <div id="feedback_message_1_4_pitches" class="progress-container"></div>
           
         </div>
         
@@ -672,7 +724,7 @@
             </template>
           </div>
           
-          <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+          <!-- Local feedback removed - using unified global feedback -->
         </div>
       </div>
     </section>
@@ -801,24 +853,24 @@
           <div class="chords-container">            
             <!-- Progress display -->
             <div class="progress-display progress_2_2">
-              <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['2_2_chords_stable_unstable'] || 0)"></p>
-              <p x-show="(progress['2_2_chords_stable_unstable'] || 0) < 10" x-text="$store.strings?.stable_unstable_level1 || 'Can you hear the difference between stable and unstable chords?'"></p>
-              <p x-show="(progress['2_2_chords_stable_unstable'] || 0) >= 10 && (progress['2_2_chords_stable_unstable'] || 0) < 20" x-text="$store.strings?.stable_unstable_level2 || 'Great job! Now listening for seventh chords and altered dominants! 🎵'"></p>
-              <p x-show="(progress['2_2_chords_stable_unstable'] || 0) >= 20 && (progress['2_2_chords_stable_unstable'] || 0) < 30" x-text="$store.strings?.stable_unstable_level3 || 'Level 3: Extended harmonies vs. polytonal chords! 🎼'"></p>
-              <p x-show="(progress['2_2_chords_stable_unstable'] || 0) >= 30 && (progress['2_2_chords_stable_unstable'] || 0) < 40" x-text="$store.strings?.stable_unstable_level4 || 'Level 4: Jazz voicings vs. atonal clusters! 🎹'"></p>
-              <p x-show="(progress['2_2_chords_stable_unstable'] || 0) >= 40 && (progress['2_2_chords_stable_unstable'] || 0) < 50" x-text="$store.strings?.stable_unstable_level5 || 'Level 5: Impressionistic harmonies vs. microtonal variations! 🎶'"></p>
-              <p x-show="(progress['2_2_chords_stable_unstable'] || 0) >= 50" x-text="$store.strings?.stable_unstable_level6 || 'Master Level: Complex extended harmonies and sophisticated dissonances! 🏆'"></p>
+              <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['2_2'] || 0)"></p>
+              <p x-show="(progress['2_2'] || 0) < 10" x-text="$store.strings?.stable_unstable_level1 || 'Can you hear the difference between stable and unstable chords?'"></p>
+              <p x-show="(progress['2_2'] || 0) >= 10 && (progress['2_2'] || 0) < 20" x-text="$store.strings?.stable_unstable_level2 || 'Great job! Now listening for seventh chords and altered dominants! 🎵'"></p>
+              <p x-show="(progress['2_2'] || 0) >= 20 && (progress['2_2'] || 0) < 30" x-text="$store.strings?.stable_unstable_level3 || 'Level 3: Extended harmonies vs. polytonal chords! 🎼'"></p>
+              <p x-show="(progress['2_2'] || 0) >= 30 && (progress['2_2'] || 0) < 40" x-text="$store.strings?.stable_unstable_level4 || 'Level 4: Jazz voicings vs. atonal clusters! 🎹'"></p>
+              <p x-show="(progress['2_2'] || 0) >= 40 && (progress['2_2'] || 0) < 50" x-text="$store.strings?.stable_unstable_level5 || 'Level 5: Impressionistic harmonies vs. microtonal variations! 🎶'"></p>
+              <p x-show="(progress['2_2'] || 0) >= 50" x-text="$store.strings?.stable_unstable_level6 || 'Master Level: Complex extended harmonies and sophisticated dissonances! 🏆'"></p>
             </div>
             
             <div class="button_2_2_grid">
-              <div id="button_2_2_stable" class="character" 
+              <div id="button_2_2_stable" class="character activity-button-blocker" 
                    @click="checkStableUnstableMatch('stable', $data); blurElement($event)"
                    @touchstart.prevent
                    @touchend.prevent="$el.click();">
                 <div title="Stable"></div>
               </div>
               
-              <div id="button_2_2_unstable" class="character" 
+              <div id="button_2_2_unstable" class="character activity-button-blocker" 
                    @click="checkStableUnstableMatch('unstable', $data); blurElement($event)"
                    @touchstart.prevent
                    @touchend.prevent="$el.click();">
@@ -826,7 +878,7 @@
               </div>
             </div>
             
-            <div class="feedback-message" x-show="showStableUnstableFeedback" x-text="stableUnstableFeedback" :class="{'correct': $data.stableUnstableCorrect !== undefined ? $data.stableUnstableCorrect : false, 'incorrect': $data.stableUnstableCorrect !== undefined ? !$data.stableUnstableCorrect : false}"></div>
+            <!-- Local feedback removed - using unified global feedback -->
           </div>
         </div>
         
@@ -875,10 +927,10 @@
             </div>
             
             <div class="note-options">
-              <button @click="checkMissingNote(3)" class="note-option-button">Minor 3rd</button>
-              <button @click="checkMissingNote(4)" class="note-option-button">Major 3rd</button>
-              <button @click="checkMissingNote(7)" class="note-option-button">Perfect 5th</button>
-              <button @click="checkMissingNote(6)" class="note-option-button">Diminished 5th</button>
+              <button @click="checkMissingNote(3)" class="note-option-button activity-button-blocker">Minor 3rd</button>
+              <button @click="checkMissingNote(4)" class="note-option-button activity-button-blocker">Major 3rd</button>
+              <button @click="checkMissingNote(7)" class="note-option-button activity-button-blocker">Perfect 5th</button>
+              <button @click="checkMissingNote(6)" class="note-option-button activity-button-blocker">Diminished 5th</button>
             </div>
             
             <!-- Individual feedback-message div removed - now using unified div -->
@@ -897,31 +949,31 @@
           <div class="chords-container">            
             <!-- Progress display -->
             <div class="progress-display progress_2_5">
-              <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['2_5_chords_characters'] || 0)"></p>
-              <p x-show="(progress['2_5_chords_characters'] || 0) < 10" x-text="$store.strings?.unlock_squirrel_message || 'Get 10 correct to unlock the squirrel! 🐿️'"></p>
-              <p x-show="(progress['2_5_chords_characters'] || 0) >= 10 && (progress['2_5_chords_characters'] || 0) < 20" x-text="$store.strings?.unlock_octopus_message || 'Get 20 correct to unlock the octopus! 🐙'"></p>
-              <p x-show="(progress['2_5_chords_characters'] || 0) >= 20 && (progress['2_5_chords_characters'] || 0) < 30" x-text="$store.strings?.all_animals_unlocked || 'All animals unlocked! 🎉'"></p>
-              <p x-show="(progress['2_5_chords_characters'] || 0) >= 30 && (progress['2_5_chords_characters'] || 0) < 40" x-text="$store.strings?.transpose_challenge || 'Listen carefully! Chords are now changing pitch! 🎵'"></p>
-              <p x-show="(progress['2_5_chords_characters'] || 0) >= 40 && (progress['2_5_chords_characters'] || 0) < 50" x-text="$store.strings?.squirrel_returns || 'The squirrel is back to help! Octopus still sleeping. 🐿️'"></p>
-              <p x-show="(progress['2_5_chords_characters'] || 0) >= 50 && (progress['2_5_chords_characters'] || 0) < 60" x-text="$store.strings?.all_friends_return || 'All friends are back to help you! 🐿️🐙🐶🐱'"></p>
-              <p x-show="(progress['2_5_chords_characters'] || 0) >= 60" x-text="$store.strings?.chords_2_5_master || 'You are Chords Master! 🎉'"></p>
+              <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['2_5'] || 0)"></p>
+              <p x-show="(progress['2_5'] || 0) < 10" x-text="$store.strings?.unlock_squirrel_message || 'Get 10 correct to unlock the squirrel! 🐿️'"></p>
+              <p x-show="(progress['2_5'] || 0) >= 10 && (progress['2_5'] || 0) < 20" x-text="$store.strings?.unlock_octopus_message || 'Get 20 correct to unlock the octopus! 🐙'"></p>
+              <p x-show="(progress['2_5'] || 0) >= 20 && (progress['2_5'] || 0) < 30" x-text="$store.strings?.all_animals_unlocked || 'All animals unlocked! 🎉'"></p>
+              <p x-show="(progress['2_5'] || 0) >= 30 && (progress['2_5'] || 0) < 40" x-text="$store.strings?.transpose_challenge || 'Listen carefully! Chords are now changing pitch! 🎵'"></p>
+              <p x-show="(progress['2_5'] || 0) >= 40 && (progress['2_5'] || 0) < 50" x-text="$store.strings?.squirrel_returns || 'The squirrel is back to help! Octopus still sleeping. 🐿️'"></p>
+              <p x-show="(progress['2_5'] || 0) >= 50 && (progress['2_5'] || 0) < 60" x-text="$store.strings?.all_friends_return || 'All friends are back to help you! 🐿️🐙🐶🐱'"></p>
+              <p x-show="(progress['2_5'] || 0) >= 60" x-text="$store.strings?.chords_2_5_master || 'You are Chords Master! 🎉'"></p>
             </div>
             
             
             <div class="character-grid">
-              <div id="button_2_5_1_major" class="character" @click="checkCharacterMatch('major')" @touchstart.prevent @touchend.prevent="$el.click();">
+              <div id="button_2_5_1_major" class="character activity-button-blocker" @click="checkCharacterMatch('major')" @touchstart.prevent @touchend.prevent="$el.click();">
                 <div title="Happy">Happy</div>
               </div>
               
-              <div id="button_2_5_1_minor" class="character" @click="checkCharacterMatch('minor')" @touchstart.prevent @touchend.prevent="$el.click();">
+              <div id="button_2_5_1_minor" class="character activity-button-blocker" @click="checkCharacterMatch('minor')" @touchstart.prevent @touchend.prevent="$el.click();">
                 <div title="Sad">Sad</div>
               </div>
               
-              <div id="button_2_5_1_augmented" @click="checkCharacterMatch('augmented')" :class="(progress['2_5_chords_characters'] || 0) >= 10 && (progress['2_5_chords_characters'] || 0) < 20 ? 'character progress2' : 'character'" @touchstart.prevent @touchend.prevent="$el.click();">
+              <div id="button_2_5_1_augmented" @click="checkCharacterMatch('augmented')" :class="(progress['2_5'] || 0) >= 10 && (progress['2_5'] || 0) < 20 ? 'character progress2 activity-button-blocker' : 'character activity-button-blocker'" @touchstart.prevent @touchend.prevent="$el.click();">
                 <div title="Surprised">Surprised</div>
               </div>
               
-              <div id="button_2_5_1_diminished" class="character" @click="checkCharacterMatch('diminished')" @touchstart.prevent @touchend.prevent="$el.click();">
+              <div id="button_2_5_1_diminished" class="character activity-button-blocker" @click="checkCharacterMatch('diminished')" @touchstart.prevent @touchend.prevent="$el.click();">
                 <div title="Mysterious">Mysterious</div>
               </div>
             </div>
@@ -962,22 +1014,22 @@
             </div>
             
             <div class="chord-palette">
-              <button @click="plantChordInGarden('major')" class="chord-button">
+              <button @click="plantChordInGarden('major')" class="chord-button activity-button-blocker">
                 <span>🌻</span>
                 <span>Major</span>
               </button>
               
-              <button @click="plantChordInGarden('minor')" class="chord-button">
+              <button @click="plantChordInGarden('minor')" class="chord-button activity-button-blocker">
                 <span>🌷</span>
                 <span>Minor</span>
               </button>
               
-              <button @click="plantChordInGarden('diminished')" class="chord-button">
+              <button @click="plantChordInGarden('diminished')" class="chord-button activity-button-blocker">
                 <span>🌵</span>
                 <span>Diminished</span>
               </button>
               
-              <button @click="plantChordInGarden('augmented')" class="chord-button">
+              <button @click="plantChordInGarden('augmented')" class="chord-button activity-button-blocker">
                 <span>🌺</span>
                 <span>Augmented</span>
               </button>
@@ -1023,7 +1075,9 @@
                
 
     <!-- Unified Feedback Message Container -->
-    <div class="feedback-message" id="unified-feedback-message" x-show="$store.feedback.showFeedback">
+    <div class="feedback-message" id="unified-feedback-message" 
+         x-show="$store.feedback.showFeedback" 
+         :class="{'correct': $store.feedback.isCorrect === true, 'incorrect': $store.feedback.isCorrect === false}">
       <p x-text="$store.feedback.feedbackMessage"></p>
     </div>
     

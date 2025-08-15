@@ -11,6 +11,10 @@ import { playToneNote, isToneJsReady } from '../utils/toneJsSampler';
 // Importiere Debug-Utilities
 import { debugLog } from '../utils/debug.js';
 
+// Import activity-specific helper functions
+import { get_1_4_level } from './pitches/1_4_sound_judgment.js';
+import { drawSnakeAnimation, initSnakeAnimation } from './pitches/1_3_draw_melody.js';
+
 // Import shared feedback utilities
 import { 
   showRainbowSuccess, 
@@ -32,15 +36,15 @@ import { testCommonModuleImport, resetCurrentActivity, resetAllProgress, showRes
   from './pitches/common.js';
 import { extractAnimalName } from './shared/ui-helpers.js';
 
-import { setupHighOrLowMode_1_1, reset_1_1_HighOrLow_Progress, currentHighOrLowStage } 
+import { setup_1_1, reset_1_1_HighOrLow_Progress, currentHighOrLowStage, get_1_1_level } 
   from "./pitches/1_1_high_or_low.js";
 import { testMatchSoundsModuleImport, reset_1_2_MatchSounds_Progress } 
   from "./pitches/1_2_match_sounds.js";
-import { testDrawMelodyModuleImport, reset_1_3_DrawMelody_Progress } 
+import { testDrawMelodyModuleImport, reset_1_3_DrawMelody_Progress, get_1_3_level } 
   from "./pitches/1_3_draw_melody.js";
 import { testSoundJudgmentModuleImport, reset_1_4_SoundJudgment_Progress } 
   from "./pitches/1_4_sound_judgment.js";
-import { testMemoryGameModuleImport, reset_1_5_MemoryGame_Progress } 
+import { testMemoryGameModuleImport, reset_1_5_MemoryGame_Progress, get_1_5_level } 
   from "./pitches/1_5_memory_game.js";
 
 // Importiere High or Low Funktionen direkt aus dem Modul
@@ -62,28 +66,59 @@ export function pitches() {
     correctAnswer: null,
     melodyHasWrongNote: false, // For 'does-it-sound-right' activity - whether current melody has wrong note
     currentMelodyName: '', // Display name of currently playing melody
+    
+    // 1_4 Does It Sound Right - Shuffled melody system
+    shuffledMelodyKeys: [], // Array of shuffled melody keys for sequential playback
+    currentShuffledIndex: 0, // Current position in shuffled array
     choices: [],
     feedback: '',
     showFeedback: false, // Controls visibility of the unified feedback message
     feedbackMessage: '', // The message to show in the unified feedback system
     helpMessage: '',
-    showMascot: false,
+    showHelp: false,
     melodyTimeouts: [], // Array für Timeout-IDs der Melodiesequenzen
-    mascotSettings: {
+    helpSettings: {
       showHelpMessages: true,     // Whether to show help messages
-      disableTTS: true,          // Whether to disable TTS for mascot messages
+      disableTTS: true,          // Whether to disable TTS for intro messages
       seenActivityMessages: {},   // Track which activities have shown the message
     },
     currentHighlightedNote: null, // For highlighting piano keys during playback
+    
+    // Central color configuration for Draw Melody (1_3) visual elements
+    drawMelodyColors: {
+      // Path/line colors
+      staticPath: '#3498db',           // Blue for static completed path
+      unplayedPath: '#2c3e50',         // Darker Blue for unplayed part during playback
+      playedPath: '#3498db',           // blue for played part during playback
+      currentDrawing: 'rgba(234, 188, 52, 1)',       // Sand stroke for current drawing
+      currentDrawingDark: 'rgba(139, 125, 90, 1)',   // Darker sand for inner edge (rgba)
+      currentDrawingShadow: 'rgba(50, 48, 32, 0.22)',// Subtle warm inner shadow color
+      currentDrawingHighlight: 'rgba(255, 239, 188, 0.65)', // Light sand highlight
+      previousPath: 'rgba(117, 94, 26, 0.3)', // Semi-transparent sand for previous path
+      
+      // Note marker colors
+      noteMarker: '#e74c3c',          // Red dots for note positions
+      activeNoteMarker: '#ff6b6b',    // Lighter red for currently playing note
+      sampledNoteMarker: '#e74c3c',   // Red dots for sampled note positions
+      
+      // Text and labels
+      noteLabel: '#333',              // Dark gray for note labels (C4, D4, etc.)
+      
+      // Guide lines
+      guideLines: 'rgba(200, 180, 140, 0.3)', // Semi-transparent brown for guide lines
+    },
     longPressTimer: null,
     longPressThreshold: 800, // milliseconds for long press
     lastSelectedPatternType: null, // Speichert den letzten ausgewählten Pattern-Typ
     consecutivePatternCount: 0,    // Zählt, wie oft das gleiche Pattern hintereinander ausgewählt wurde
     showMemoryHighlighting: false, // Whether to show highlighting in memory game
     
+    // High or Low (1_1) - Persistent instrument selection
+    currentHighOrLowInstrument: null, // Keep same instrument until correct answer
+    
     // Progress tracking
     progress: {
-      '1_1_pitches_high_or_low': 0,
+      '1_1': 0,
       match: 0,
       draw: 0,
       'does-it-sound-right': 0,
@@ -92,7 +127,8 @@ export function pitches() {
     
     // ************ for 1.1 *****************
     // High or Low activity state variables
-    highOrLowProgress: 0, // Number of correct answers in High or Low activity - initialized properly in afterInit
+    // Note: highOrLowProgress is DEPRECATED - use this.progress['1_1'] instead
+    // Kept for backward compatibility during transition
     currentHighOrLowTone: null, // Current tone type (high/low)
     highOrLowSecondTone: null, // For comparison stages
     highOrLowPlayed: false, // Whether the tone has been played
@@ -105,11 +141,12 @@ export function pitches() {
     
     // ************ for 1.3 *****************
     // Draw melody activity progression
-    drawMelodyLevel: 0, // User level in draw melody activity (determines number of notes)
+    // Note: drawMelodyLevel and levelSuccessCounter are DEPRECATED - use this.progress['1_3'] instead
+    // Kept for backward compatibility during transition
     
     // ************ for 1.4 *****************
     // Does It Sound Right activity progression
-    soundJudgmentLevel: 1, // User level in Does It Sound Right activity (determines difficulty)
+    // Level is now calculated from this.progress['1_4'] using get_1_4_level()
     
     // ************ for 1.5 *****************
     // Arrays für die zufälligen Tierbilder
@@ -151,105 +188,98 @@ export function pitches() {
     // ************ for 1.3 *****************
     // Well-known melodies for the "Does It Sound Right?" activity
     knownMelodies: {
-      // 'twinkle': {
-      //   en: 'Twinkle, Twinkle, Little Star',
-      //   de: 'Funkel, funkel, kleiner Stern',
-      //   quarterNoteDuration: 500, // Standardlänge für eine Viertelnote in ms
-      //   notes: [
-      //     'C', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4:h', // h = halbe Note (doppelte Länge)
-      //     'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4:h'  // Standard-Viertelnoten, außer markierte
-      //   ]
-      // },
-      // 'jingle': {
-      //   en: 'Jingle Bells',
-      //   de: 'Jingle Bells',
-      //   quarterNoteDuration: 450, // Etwas schneller für Jingle Bells
-      //   notes: ['E', 'E4', 'E4:h', 'E4', 'E4', 'E4:h', 'E4', 'G4', 'C4', 'D4', 'E4:h']
-      // },
-      // 'happy-birthday': { // tiefer
-      //   en: 'Happy Birthday To You',
-      //   de: 'Zum Geburtstag viel Glück',
-      //   quarterNoteDuration: 600,
-      //   notes: [
-      //     'G3:e', 'G3:e', 'A3:q', 'G3:q', 'C4:q', 'B3:h', 'G3:e', 'G3:e', 'A3:q', 'G3:q', 'D4:q', 'C4:h'
-      //   ]
-      // },
-      // 'frere-jacques': {
-      //   en: 'Brother John (Frère Jacques)',
-      //   de: 'Bruder Jakob',
-      //   quarterNoteDuration: 500,
-      //   notes: [
-      //     'C', 'D4', 'E4', 'C4', // Frère Jacques, Frère Jacques
-      //     'C4', 'D4', 'E4', 'C4', // Dormez-vous? Dormez-vous?
-      //     'E4', 'F4', 'G4:h', // Sonnez les matines
-      //     'E4', 'F4', 'G4:h'  // Sonnez les matines
-      //   ]
-      // },
-      // 'are-you-sleeping': {
-      //   en: 'Are You Sleeping?',
-      //   de: 'Schlaf, Kindlein, schlaf',
-      //   quarterNoteDuration: 550,
-      //   notes: [
-      //     'E:h', 'D4', 'D4', 'C4:H',
-      //     'G3', 'E', 'E', 'D4', 'D4', 'C4:h',
-      //   ]
-      // },
-      // 'little-hans': { // Hänschen klein
-      //   en: 'Little Hans',
-      //   de: 'Hänschen klein',
-      //   quarterNoteDuration: 550,
-      //   notes: [
-      //     'G', 'E4', 'E4:h', 'F4', 'D4', 'D4:h',
-      //     // cdefggg
-      //     'C4', 'D4', 'E4', 'F4', 'G4', 'G4', 'G4:h'          
-      //   ]
-      // },
-      // // de=Alle meine Entchen /  en=All My Little Ducklings
-      // 'all-my-little-ducklings': {
-      //   en: 'All My Little Ducklings',
-      //   de: 'Alle meine Entchen',
-      //   quarterNoteDuration: 550,
-      //   notes: [
-      //     // cdefg:hg:haaaag:h
-      //     'C', 'D4', 'E4', 'F4', 'G4:h', 'G4:h', 'A', 'A', 'A', 'A', 'G:h'
-      //   ]
-      // },
-
-      'haenschen-huepf': {
-        en: 'Bunny Hop',
-        de: 'Häschen Hüpf',
-        quarterNoteDuration: 550,
+      'twinkle': {
+        en: 'Twinkle, Twinkle, Little Star',
+        de: 'Funkel, funkel, kleiner Stern',
+        quarterNoteDuration: 500, // Standardlänge für eine Viertelnote in ms
         notes: [
-          'C', 'D', 'E', 'F', 'G4:h','G4:h', // Häschen in der Grube
-          'A', 'F', 'C5', 'A', 'G:w', 'A', 'F', 'C5', 'A', 'G:w', // sass und schlief
-          'G4', 'F4', 'F4', 'F4', 'F4', 'E4', 'E4:h', // Armes Häschen bist du krank
-          'E4', 'D4', 'E4', 'D4', 'C4', 'E4', 'G4:h',   // dass du nicht mehr hüpfen kannst
-          'C4', 'E', 'G4:h', 'C4', 'E', 'G4:h',        // Häschen hüpf, Häschen hüpf
-          'G4:h', 'G4:h', 'C4:w'                        // Häschen hüpf, Häschen hüpf
+          'C', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4:h', // h = halbe Note (doppelte Länge)
+          'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4:h'  // Standard-Viertelnoten, außer markierte
         ]
       },
-      'hey-ho-spann-den-wagen': {
+      'jingle': {
+        en: 'Jingle Bells',
+        de: 'Jingle Bells',
+        quarterNoteDuration: 450, // Etwas schneller für Jingle Bells
+        notes: ['E', 'E4', 'E4:h', 'E4', 'E4', 'E4:h', 'E4', 'G4', 'C4', 'D4', 'E4:h']
+      },
+      'happy-birthday': {
+        en: 'Happy Birthday To You',
+        de: 'Zum Geburtstag viel Glück',
+        quarterNoteDuration: 600,
+        notes: [
+          'G3:e', 'G3:e', 'A3:q', 'G3:q', 'C4:q', 'B3:h', 'G3:e', 'G3:e', 'A3:q', 'G3:q', 'D4:q', 'C4:h'
+        ]
+      },
+      'frere-jacques': {
+        en: 'Brother John (Frère Jacques)',
+        de: 'Bruder Jakob',
+        quarterNoteDuration: 500,
+        notes: [
+          'C', 'D4', 'E4', 'C4', // Frère Jacques, Frère Jacques
+          'C4', 'D4', 'E4', 'C4', // Dormez-vous? Dormez-vous?
+          'E4', 'F4', 'G4:h', // Sonnez les matines
+          'E4', 'F4', 'G4:h'  // Sonnez les matines
+        ]
+      },
+      'are-you-sleeping': {
+        en: 'Are You Sleeping?',
+        de: 'Schlaf, Kindlein, schlaf',
+        quarterNoteDuration: 550,
+        notes: [
+          'E:h', 'D4', 'D4', 'C4:H',
+          'G3', 'E', 'E', 'D4', 'D4', 'C4:h',
+        ]
+      },
+      'little-hans': { // Hänschen klein
+        en: 'Little Hans',
+        de: 'Hänschen klein',
+        quarterNoteDuration: 550,
+        notes: [
+          'G', 'E4', 'E4:h', 'F4', 'D4', 'D4:h',
+          'C4', 'D4', 'E4', 'F4', 'G4', 'G4', 'G4:h'          
+        ]
+      },
+      'all-my-little-ducklings': {
+        en: 'All My Little Ducklings',
+        de: 'Alle meine Entchen',
+        quarterNoteDuration: 550,
+        notes: [
+          'C', 'D4', 'E4', 'F4', 'G4:h', 'G4:h', 'A', 'A', 'A', 'A', 'G:h'
+        ]
+      },
+      'haeschen-huepf': {
+        en: 'Bunny Hop',
+        de: 'Häschen Hüpf',
+        quarterNoteDuration: 333,
+        notes: [
+          'D', 'E', 'F#', 'G', 'A4:h','A4:h', // Häschen in der Grube
+          'B', 'G', 'D5', 'B', 'A:w', 'B', 'G', 'D5', 'B', 'A:w' // sass und schlief
+          // 'G4', 'F4', 'F4', 'F4', 'F4', 'E4', 'E4:h', // Armes Häschen bist du krank
+          // 'E4', 'D4', 'E4', 'D4', 'C4', 'E4', 'G4:h',   // dass du nicht mehr hüpfen kannst
+          // 'C4', 'E', 'G4:h', 'C4', 'E', 'G4:h',        // Häschen hüpf, Häschen hüpf
+          // 'G4:h', 'G4:h', 'C4:w'                        // Häschen hüpf, Häschen hüpf
+        ]
+      },
+      'hey-ho': {
         en: 'Hey Ho, Pull the Wagon',
         de: 'Hey Ho, Spann den Wagen an',
         quarterNoteDuration: 333,
         notes: [
           'A4:w', 'G4:w', 'A4', 'A4', 'A4', 'A4', 'E4:w', // Hey ho, spann den Wagen an,
           'A4:h', 'A4:h', 'B4:h', 'B4:h', 'C5', 'C5', 'C5', 'C5', 'B4:w', // denn der Wind treibt Regen übers Land
-          'E5', 'E5', 'E5', 'E5', 'E5:h', 'E5:h', 'E5', 'E5', 'E5', 'E5', 'E5', 'D5', 'C5', 'B4:h' // Holt die gold'nen Gaben, Holt die gold'nen Gaben.
+          // 'E5', 'E5', 'E5', 'E5', 'E5:h', 'E5:h', 'E5', 'E5', 'E5', 'E5', 'E5', 'D5', 'C5', 'B4:h' // Holt die gold'nen Gaben, Holt die gold'nen Gaben.
         ]
 
+      },
+      'old-mcdonald': {
+        en: 'Old McDonald Had a Farm',
+        de: 'Old MacDonald hat ne Farm',
+        quarterNoteDuration: 500,
+        notes: [
+          'F', 'F4', 'C4', 'C4', 'D4', 'D4', 'C4:h', 'A4', 'A4', 'G4', 'G4', 'F4:h'
+        ]
       }
-      //,
-      // Old McDonald Had a Farm
-      // 'old-mcdonald': {
-      //   en: 'Old McDonald Had a Farm',
-      //   de: 'Old MacDonald hat ne Farm',
-      //   quarterNoteDuration: 500,
-      //   notes: [
-      //     // 'FFCCDDC:hAAGGF:h', // Old McDonald had a farm
-      //     'F', 'F4', 'C4', 'C4', 'D4', 'D4', 'C4:h', 'A4', 'A4', 'G4', 'G4', 'F4:h'
-      //   ]
-      // }
     },
     // **************************************
 
@@ -258,114 +288,113 @@ export function pitches() {
 	        await audioEngine.initialize();
 	        debugLog("PITCHES_INIT", "Audio engine successfully initialized");
 	      } catch (error) {
-	        debugLog(['PITCHES_INIT', 'ERROR'], `Error initializing audio engine: ${error.message || error}`);
+	        debugLog(['PITCHES', 'ERROR'], "PITCHES_INIT: Error initializing audio engine", error);
 	      }
     },
     
-      /**
-       * Initialize the component
-       * @activity common
-       * @used-by all activities
-       */
-      init() {
-        
-        // Register this component globally immediately
-        debugLog('PITCHES_INIT', 'Registering pitches component globally');
-        window.pitchesComponent = this;
-        debugLog('PITCHES_INIT', `Registration completed. window.pitchesComponent is now: ${!!window.pitchesComponent}`);
-        debugLog('PITCHES_INIT', `Component mode after registration: ${this.mode}`);
-        
-        // Initialize audio engine asynchronously
-        this.initializeAudioEngine();
+    /**
+     * Initialize the component
+     * @activity common
+     * @used-by all activities
+     */
+    init() {
       
-        // Set up text-to-speech if available - with better debugging
-        this.speechSynthesis = null;
-        this.ttsAvailable = false;
-        this.usingNativeAndroidTTS = false;  // Flag für native Android TTS
-        
-        // Überprüfe zuerst, ob die native Android TTS-Brücke verfügbar ist
-        this.checkAndroidNativeTTS();
-        
-        // Fallback: Verzögerte Initialisierung der Web-Sprachsynthese für bessere Kompatibilität
-        this.initSpeechSynthesis();
-        
-        // Load mascot message settings from localStorage
-        try {
-          const savedMascotSettings = localStorage.getItem('lalumo_mascot_settings');
-          if (savedMascotSettings) {
-            const loadedSettings = JSON.parse(savedMascotSettings);
-            // Merge loaded settings with defaults to ensure new flags are set
-            this.mascotSettings = {
-              ...this.mascotSettings,  // Default values
-              ...loadedSettings        // Saved values override defaults
-            };
-            // Reset seenActivityMessages on every app start
-            this.$store.mascotSettings.seenActivityMessages = {};
-            debugLog('PITCHES', 'Loaded mascot settings and reset seen messages', this.mascotSettings);
-          }
-          // Always save back to localStorage to persist any new default flags
-          localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
-        } catch (error) {
-          debugLog(['PITCHES', 'ERROR'], `Error loading mascot settings: ${error.message || error}`);
-          // Keep default settings
+      // Register this component globally immediately
+      debugLog('PITCHES', "PITCHES_INIT: Registering pitches component globally");
+      window.pitchesComponent = this;
+      debugLog('PITCHES', "PITCHES_INIT: Registration completed. window.pitchesComponent is now:", !!window.pitchesComponent);
+      debugLog('PITCHES', "PITCHES_INIT: Component mode after registration:", this.mode);
+      
+      // Initialize audio engine asynchronously
+      this.initializeAudioEngine();
+      
+      // Initialize snake animation for draw melody activity
+      initSnakeAnimation();
+    
+      // Set up text-to-speech if available - with better debugging
+      this.speechSynthesis = null;
+      this.ttsAvailable = false;
+      this.usingNativeAndroidTTS = false;  // Flag für native Android TTS
+      
+      // Überprüfe zuerst, ob die native Android TTS-Brücke verfügbar ist
+      this.checkAndroidNativeTTS();
+      
+      // Fallback: Verzögerte Initialisierung der Web-Sprachsynthese für bessere Kompatibilität
+      this.initSpeechSynthesis();
+      
+      // Load intro message settings from localStorage
+      try {
+        const savedHelpSettings = localStorage.getItem('lalumo_help_settings');
+        if (savedHelpSettings) {
+          const loadedSettings = JSON.parse(savedHelpSettings);
+          // Merge loaded settings with defaults to ensure new flags are set
+          this.helpSettings = {
+            ...this.helpSettings,  // Default values
+            ...loadedSettings        // Saved values override defaults
+          };
+          // Reset seenActivityMessages on every app start
+          this.$store.helpSettings.seenActivityMessages = {};
+          debugLog('PITCHES', 'Loaded help settings and reset seen messages:', this.helpSettings);
+        }
+        // Always save back to localStorage to persist any new default flags
+        localStorage.setItem('lalumo_help_settings', JSON.stringify(this.helpSettings));
+      } catch (error) {
+        debugLog(['PITCHES', 'ERROR'], 'Error loading help settings:', error);
+        // Keep default settings
+      }
+      
+      // Try to load saved progress from localStorage
+      try {
+        const savedProgress = localStorage.getItem('lalumo_progress');
+        if (savedProgress) {
+          this.progress = JSON.parse(savedProgress);
+          
+          // Ensure all activity progress fields exist with simplified ID format
+          if (!this.progress['1_1']) this.progress['1_1'] = 0;
+          if (!this.progress['1_2']) this.progress['1_2'] = 0;
+          if (!this.progress['1_3']) this.progress['1_3'] = 0;
+          if (!this.progress['1_4']) this.progress['1_4'] = 0;
+          if (!this.progress['1_5']) this.progress['1_5'] = 0;
+          
+          debugLog('PITCHES', 'Loaded progress data with unified IDs:', this.progress);
+        } else {
+          // Initialize with empty progress object using unified IDs
+          this.progress = {
+            '1_1': 0,
+            '1_2': 0,
+            '1_3': 0,
+            '1_4': 0,
+            '1_5': 0
+          };
         }
         
-        // Try to load saved progress from localStorage
-        try {
-          const savedProgress = localStorage.getItem('lalumo_progress');
-          if (savedProgress) {
-            this.progress = JSON.parse(savedProgress);
-            
-            // Ensure all activity progress fields exist with the new ID format
-            if (!this.progress['1_1_pitches_high_or_low']) this.progress['1_1_pitches_high_or_low'] = 0;
-            if (!this.progress['1_2_pitches_match-sounds']) this.progress['1_2_pitches_match-sounds'] = 0;
-            if (!this.progress['1_3_pitches_draw-melody']) this.progress['1_3_pitches_draw-melody'] = 0;
-            if (!this.progress['1_4_pitches_does-it-sound-right']) this.progress['1_4_pitches_does-it-sound-right'] = 0;
-            if (!this.progress['1_5_pitches_memory-game']) this.progress['1_5_pitches_memory-game'] = 0;
-            
-            debugLog('PITCHES', `Loaded progress data with new IDs: ${this.progress}`);
-            
-            // Initialize highOrLowProgress from saved data
-            this.highOrLowProgress = this.progress['1_1_pitches_high_or_low'] || 0;
-            debugLog('PITCHES', `Initialized highOrLowProgress from localStorage: ${this.highOrLowProgress}`);
-          } else {
-            // Initialize with empty progress object using new IDs
-            this.progress = {
-              '1_1_pitches_high_or_low': 0,
-              '1_2_pitches_match-sounds': 0,
-              '1_3_pitches_draw-melody': 0,
-              '1_4_pitches_does-it-sound-right': 0,
-              '1_5_pitches_memory-game': 0
-            };
-          }
-          
-          // Load progressive difficulty data
-          const savedDifficulty = localStorage.getItem('lalumo_difficulty');
-          if (savedDifficulty) {
-            const difficultyData = JSON.parse(savedDifficulty);
-            this.correctAnswersCount = difficultyData.correctAnswersCount || 0;
-            this.unlockedPatterns = difficultyData.unlockedPatterns || ['up', 'down'];
-          }
-        } catch (e) {
-          debugLog('PITCHES', 'Could not load saved progress');
+        // Load progressive difficulty data
+        const savedDifficulty = localStorage.getItem('lalumo_difficulty');
+        if (savedDifficulty) {
+          const difficultyData = JSON.parse(savedDifficulty);
+          this.correctAnswersCount = difficultyData.correctAnswersCount || 0;
+          this.unlockedPatterns = difficultyData.unlockedPatterns || ['up', 'down'];
         }
+      } catch (e) {
+        debugLog('PITCHES', 'Could not load saved progress');
+      }
+      
+      // Listen for pitch mode changes from the menu
+      // Listen for the unified activity mode event
+      window.addEventListener('set-activity-mode', (event) => {
+        const { component, mode } = event.detail;
         
-        // Listen for pitch mode changes from the menu
-        // Listen for the unified activity mode event
-        window.addEventListener('set-activity-mode', (event) => {
-          const { component, mode } = event.detail;
+        // Only handle the event if it's for the pitches component
+        if (component === 'pitches') {
+          debugLog('PITCHES', 'Received unified activity mode event for pitches:', mode);
+          this.setMode(mode);
           
-          // Only handle the event if it's for the pitches component
-          if (component === 'pitches') {
-            debugLog('PITCHES', `Received unified activity mode event for pitches: ${mode}`);
-            this.setMode(mode);
-            
-            // Update the unified activity mode in the Alpine store
-            if (window.Alpine?.store) {
-              window.Alpine.store('currentActivityMode', { component: 'pitches', mode });
-            }
+          // Update the unified activity mode in the Alpine store
+          if (window.Alpine?.store) {
+            window.Alpine.store('currentActivityMode', { component: 'pitches', mode });
           }
-        });
+        }
+      });
         
       // Set initial mode based on Alpine store
       if (this.$store.pitchMode) {
@@ -381,7 +410,7 @@ export function pitches() {
         this.setMode('main');
       });
       
-      // Show welcome message with the mascot based on language preference
+      // Show help message based on language preference
       setTimeout(() => {
         this.showContextMessage();
       }, 1000);
@@ -465,7 +494,7 @@ export function pitches() {
       // This allows second finger touches to work
       
       // Log the long press start
-      debugLog('PITCHES', `TOUCH: Starting multi-touch long press for pattern: ${pattern}`);
+      debugLog('PITCHES', 'TOUCH: Starting multi-touch long press for pattern:', pattern);
       
       // Start the long press timer
       this.longPressTimer = setTimeout(() => {
@@ -501,7 +530,7 @@ export function pitches() {
         this.helpMessage = helpText;
         // Use debug logging instead of direct console.log
         import('../utils/debug').then(({ debugLog }) => {
-          debugLog('TOUCH', `Showing mascot message: ${helpText}`);
+          debugLog('TOUCH', `Showing intro message: ${helpText}`);
         });
         
         // Use TTS if available
@@ -519,7 +548,7 @@ export function pitches() {
             debugLog('PITCHES', 'Using Web Speech API');
           }
         } catch (error) {
-          debugLog(['PITCHES', 'ERROR'], `TTS error: ${error.message || error}`);
+          debugLog(['PITCHES', 'ERROR'], 'TTS error:', error);
         }
       }, this.longPressThreshold);
     },
@@ -537,12 +566,12 @@ export function pitches() {
       this.cancelLongPress(); // Clear any existing timer
       
       // Debug log to see which pattern is passed
-      debugLog('PITCHES', `Starting long press for pattern: ${pattern, 'event type:', event ? event.type : 'none'}`);
+      debugLog('PITCHES', 'Starting long press for pattern:', pattern, 'event type:', event ? event.type : 'none');
       
       this.longPressTimer = setTimeout(() => {
         // Get the appropriate help text based on pattern and language
         const languageSetting = localStorage.getItem('lalumo_language') || 'english';
-        debugLog('PITCHES', `Current language setting: ${languageSetting}`);
+        debugLog('PITCHES', 'Current language setting:', languageSetting);
         
         // Convert the language setting to language codes for the help texts
         const language = languageSetting === 'german' ? 'de' : 'en';
@@ -573,7 +602,7 @@ export function pitches() {
         
         // Always set the message, even if a fallback is used
         this.helpMessage = helpText;
-        debugLog('PITCHES', `Mascot message set to: ${helpText}`);
+        debugLog('PITCHES', 'Help message set to:', helpText);
         
         // Use TTS if available
         try {
@@ -590,7 +619,7 @@ export function pitches() {
             debugLog('PITCHES', 'Using Web Speech API');
           }
         } catch (error) {
-          debugLog(['PITCHES', 'ERROR'], `TTS error: ${error.message || error}`);
+          debugLog(['PITCHES', 'ERROR'], 'TTS error:', error);
         }
       }, this.longPressThreshold);
     },
@@ -614,25 +643,41 @@ export function pitches() {
      * @used-by all activities
      */
     setMode(newMode) {
-      debugLog('MODSWITCH', `Changing mode from ${this.mode} to ${newMode}`);
+      debugLog('MODSWITCH', 'Changing mode from' + this.mode + 'to' + newMode);
   
-      // Clear any existing mascot timers and hide message when switching activities
-      if (this.mascotShowTimer) {
-        clearTimeout(this.mascotShowTimer);
-        this.mascotShowTimer = null;
-        debugLog('MASCOT_CLEAR', 'Cleared show timer on mode switch');
+      // Clear any existing intro message timers and hide message when switching activities
+      if (this.helpShowTimer) {
+        clearTimeout(this.helpShowTimer);
+        this.helpShowTimer = null;
+        debugLog('INTROMESSAGE_CLEAR', 'Cleared show timer on mode switch');
       }
-      if (this.mascotHideTimer) {
-        clearTimeout(this.mascotHideTimer);
-        this.mascotHideTimer = null;
-        debugLog('MASCOT_CLEAR', 'Cleared hide timer on mode switch');
+      if (this.introMessageHideTimer) {
+        clearTimeout(this.introMessageHideTimer);
+        this.introMessageHideTimer = null;
+        debugLog('INTROMESSAGE_CLEAR', 'Cleared hide timer on mode switch');
       }
       
+      // Clear global feedback timer when switching activities
+      if (window.clearFeedbackTimer) {
+        window.clearFeedbackTimer();
+        debugLog("FEEDBACK_TIMER", "Cleared global feedback timer on mode switch");
+      }
       // Clear any active melody timeouts when changing modes
       this.clearMelodyTimeouts();
-      // Hide any currently visible mascot message
-      this.showMascot = false;
-      debugLog('MASCOT_CLEAR', `Hidden mascot on mode switch to: ${newMode}`);
+      
+      // Clean up audio resources to prevent audio state corruption between activities
+      if (window.cleanupAudioResources) {
+        try {
+          window.cleanupAudioResources();
+          debugLog(['AUDIO_CLEANUP', 'MODE_SWITCH'], `Audio resources cleaned up when switching from ${this.mode} to ${newMode}`);
+        } catch (error) {
+          debugLog(['AUDIO_CLEANUP', 'ERROR'], `Error cleaning up audio resources: ${error.message}`);
+        }
+      }
+      
+      // Hide any currently visible intro message
+      this.showHelp = false;
+      debugLog('INTROMESSAGE_CLEAR', 'Hidden intro message on mode switch to:' + newMode);
       this.mode = newMode;
       this.resetState();
       
@@ -644,30 +689,29 @@ export function pitches() {
       // Setup the new mode without playing any sounds
       if (newMode === 'main') {
         // This is the landing page with clickable image, no additional setup needed
-        debugLog('PITCHES', 'Showing main selection screen with clickable image');
+        debugLog('Showing main selection screen with clickable image');
       } 
       // New ID format handlers
       else if (newMode === '1_1_pitches_high_or_low') {
-        // For high or low mode, initialize the highOrLowProgress from saved progress
-        this.highOrLowProgress = this.progress['1_1_pitches_high_or_low'] || 0;
-        debugLog('PITCHES', `High or Low mode activated with progress: ${this.highOrLowProgress}`);
+        // For high or low mode, use unified progress tracking
+        debugLog('High or Low mode activated with progress:' + this.progress['1_1'] || 0);
         // Load current stage based on progress
-        setupHighOrLowMode_1_1(this);
+        setup_1_1(this);
       } else if (newMode === '1_2_pitches_match-sounds') {
         this.gameMode = false; // Start in free play mode
-        this.setupMatchingMode_1_2(false); // Setup without playing sound
+        this.setup_1_2(false); // Setup without playing sound
       } else if (newMode === '1_3_pitches_draw-melody') {
-        this.setupDrawingMode_1_3(); // Drawing doesn't play sound by default
+        this.setup_1_3(); // Drawing doesn't play sound by default
       } else if (newMode === '1_4_pitches_does-it-sound-right') {
         // Always generate a melody but don't play it yet (user will press play button)
-        this.setupSoundHighOrLowMode_1_4(false); // Setup without auto-playing sound
+        this.setup_1_4(false); // Setup without auto-playing sound
       } else if (newMode === '1_5_pitches_memory-game') {
         this.gameMode = false; // Start in free play mode
         this.memoryFreePlay = true; // Enable free play
-        this.setupMemoryMode_1_5(false); // Setup without playing sound
+        this.setup_1_5(false); // Setup without playing sound
       }
       
-      // Always show the mascot message for the current mode
+      // Always show the intro message for the current mode
       this.showContextMessage(); // Use our context-aware message function
       
       // Update progress tracking
@@ -680,18 +724,18 @@ export function pitches() {
      * @used-by all activities
      */
     updateProgressPitches() {
-      // Get progress values from the new activity IDs
+      // Get progress values from the unified activity IDs
       const progressValues = [
-        this.progress['1_1_pitches_high_or_low'] || 0,
-        this.progress['1_2_pitches_match-sounds'] || 0,
-        this.progress['1_3_pitches_draw-melody'] || 0,
-        this.progress['1_4_pitches_does-it-sound-right'] || 0,
-        this.progress['1_5_pitches_memory-game'] || 0
+        this.progress['1_1'] || 0,
+        this.progress['1_2'] || 0,
+        this.progress['1_3'] || 0,
+        this.progress['1_4'] || 0,
+        this.progress['1_5'] || 0
       ];
       
       // Calculate total progress (0-100%)
       const totalProgress = progressValues.reduce((sum, val) => sum + val, 0) / 5;
-      debugLog('PITCHES', `Total progress updated: ${totalProgress, 'Progress values:', progressValues}`);
+      debugLog('PITCHES', 'Total progress updated:', totalProgress, 'Progress values:', progressValues);
       
       // Store progress in localStorage for persistence
       localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
@@ -727,7 +771,7 @@ export function pitches() {
      */
     generateHighOrLowTone() {
       const stage = currentHighOrLowStage(this);
-      debugLog('PITCHES', `Generating High or Low tone for stage: ${stage}`);
+      debugLog('PITCHES', 'Generating High or Low tone for stage:', stage);
       
       // Define tone ranges for different stages (according to CONCEPT.md)
       // Fixed: High tones should be C6–B6 as specified in CONCEPT.md
@@ -755,13 +799,13 @@ export function pitches() {
       } while (newTone === this.currentHighOrLowTone && stage < 3);
       
       this.currentHighOrLowTone = newTone;
-      debugLog('PITCHES', `Selected tone type: ${newTone}`);
+      debugLog('PITCHES', 'Selected tone type:', newTone);
       
       // For stages 3 and above, we need two tones with the second one being higher or lower
       if (stage >= 3) {
         // For two-tone stages, we'll decide if the second tone is higher or lower than the first
         this.highOrLowSecondTone = Math.random() < 0.5 ? 'higher' : 'lower';
-        debugLog('PITCHES', `Second tone will be: ${this.highOrLowSecondTone}`);
+        debugLog('PITCHES', 'Second tone will be:', this.highOrLowSecondTone);
       } else {
         this.highOrLowSecondTone = null;
       }
@@ -776,14 +820,14 @@ export function pitches() {
      */
     saveProgress_1_1() {
       try {
-        // Make sure highOrLowProgress is synced to the progress object before saving
-        this.progress['1_1_pitches_high_or_low'] = this.highOrLowProgress;
+        // Use unified progress tracking - progress is already stored correctly
+        // No need to sync from deprecated highOrLowProgress variable
         
         // Save the progress object to localStorage
         localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
-        debugLog('PITCHES', `Progress saved successfully: ${this.progress}`);
+        debugLog('PITCHES', 'Progress saved successfully:', this.progress);
       } catch (error) {
-        debugLog(['PITCHES', 'ERROR'], `Error saving progress: ${error.message || error}`);
+        debugLog(['PITCHES', 'ERROR'], 'Error saving progress:', error);
       }
     },
     
@@ -859,7 +903,7 @@ export function pitches() {
      * @activity 1_1_high_or_low
      */
     generate1_1HighOrLowSequence(stage) {
-      debugLog('PITCHES', `Generating new high or low tone sequence for stage: ${stage}`);
+      debugLog('PITCHES', 'Generating new high or low tone sequence for stage:', stage);
       
       // Initialize tracking variables if they don't exist
       if (!this.lastHighLowSequence) {
@@ -1015,7 +1059,7 @@ export function pitches() {
         this.previousExactTone = toneToPlay;
         
         debugLog('[1_1_RANDOM]', `After selection (single tone): count=${this.consecutiveSameRangeCount}, range=${currentToneRange}, tone=${toneToPlay}`);
-        debugLog('PITCHES', `Generated tone sequence with expected answer: ${this.currentHighOrLowTone}`);
+        debugLog('PITCHES', 'Generated tone sequence with expected answer:', this.currentHighOrLowTone);
       }
     },
     
@@ -1023,6 +1067,8 @@ export function pitches() {
      * Plays a tone or sequence of tones for the High or Low activity
      * Called when the play button is clicked
      * @activity 1_1_high_or_low
+     * @note this function has a .then() in checkHighOrLowAnswer() 
+     *       so after the tone has finished playing, check the answer
      */
     async playHighOrLowTone() {
       if (this.isPlaying) return; // Prevent multiple plays
@@ -1030,7 +1076,7 @@ export function pitches() {
       this.isPlaying = true;
       this.gameStarted = true; // Mark the game as explicitly started
       const stage = currentHighOrLowStage(this);
-      debugLog('PITCHES', `Playing High or Low tone for stage: ${stage, 'gameStarted:', this.gameStarted}`);
+      debugLog('PITCHES', 'Playing High or Low tone for stage:', stage, 'gameStarted:', this.gameStarted);
       
       try {
         // First, ensure the audio engine is initialized
@@ -1048,7 +1094,7 @@ export function pitches() {
           
           // Make sure highOrLowSecondTone is synchronized with the stored sequence
           this.highOrLowSecondTone = expectedAnswer === 'high' ? 'higher' : 'lower';
-          debugLog('PITCHES', `Playing first tone: ${firstTone, 'followed by', this.highOrLowSecondTone, 'tone:', secondTone, 'with expected answer:', expectedAnswer}`);
+          debugLog('PITCHES', 'Playing first tone:', firstTone, 'followed by', this.highOrLowSecondTone, 'tone:', secondTone, 'with expected answer:', expectedAnswer);
           
           // Play the first tone and await it
           await this.playTone(firstTone, 800); // Longer duration for first tone
@@ -1065,7 +1111,7 @@ export function pitches() {
         } else {
           // For single tone stages, play the stored tone
           const { toneToPlay } = this.currentHighOrLowSequence;
-          debugLog('PITCHES', `Playing single tone: ${toneToPlay}`);
+          debugLog('PITCHES', 'Playing single tone:', toneToPlay);
           
           // Play the tone and await it
           await this.playTone(toneToPlay, 800); // Longer duration for single tone
@@ -1076,7 +1122,7 @@ export function pitches() {
           }, 900);
         }
       } catch (error) {
-        debugLog(['PITCHES', 'ERROR'], `Error in playHighOrLowTone: ${error.message || error}`);
+        debugLog(['PITCHES', 'ERROR'], 'Error in playHighOrLowTone:', error);
         this.isPlaying = false;
       }
     },
@@ -1087,8 +1133,9 @@ export function pitches() {
      * @activity 1_1_high_or_low
      */
     checkHighOrLowAnswer(answer) {
-      if (this.isPlaying) {
-        // If a tone is currently playing, ignore the answer
+      if (this.isPlaying && this.progress['1_1'] >= 20) {
+        // If a tone is currently playing and the user has reached stage 2, ignore the answer
+        debugLog(['HIGH_OR_LOW', 'ANSWER_TIMING'], 'Answer ignored: Tone is playing and user has reached stage 2');
         return;
       }
       
@@ -1102,26 +1149,37 @@ export function pitches() {
         // Get a random tone matching the pressed button (low or high)
         const randomTone = this.getRandomTone1_1(answer, stage);
         
-        debugLog('AUDIO', `Playing random ${answer} tone (button ${answer === 'low' ? 'left' : 'right'}): ${randomTone}`);
+        debugLog('PITCHES', `Playing random ${answer} tone (button ${answer === 'low' ? 'left' : 'right'}):`, randomTone);
         
-        // Play the random tone without checking the answer
-        audioEngine.playNote(randomTone.toLowerCase(), 0.3);
+        // Select random instrument for free mode too
+        const availableInstruments = ['default', 'piano', 'violin', 'flute', 'brass'];
+        const randomInstrument = availableInstruments[Math.floor(Math.random() * availableInstruments.length)];
+        debugLog(['HIGH_OR_LOW', 'FREE_MODE', 'INSTRUMENT'], `Selected random instrument for free mode: ${randomInstrument}`);
+        
+        // Play the random tone with random instrument without checking the answer
+        audioEngine.playNote(randomTone.toLowerCase(), 0.3, undefined, 0.8, randomInstrument);
         
         return; // Important: exit without checking the answer
       }
       
-      // If the game is started but the tone hasn't been played yet, play the sequence first
+      // If the game is started but the tone hasn't been played yet
       if (!this.highOrLowPlayed) {
-        // Play a tone first, then check the answer
-        this.playHighOrLowTone().then(() => {
-          // After the tone has finished playing, check the answer
-          this.checkHighOrLowAnswer(answer);
-        });
-        return;
+        // Check if we have a sequence ready - if so, we can process the answer immediately
+        if (this.currentHighOrLowSequence) {
+          debugLog(['HIGH_OR_LOW', 'EARLY_PRESS'], 'Processing answer immediately with existing sequence');
+          // Continue to answer checking logic below
+        } else {
+          // No sequence yet, play a tone first, then check the answer
+          this.playHighOrLowTone().then(() => {
+            // After the tone has finished playing, check the answer
+            this.checkHighOrLowAnswer(answer);
+          });
+          return;
+        }
       }
       
       const stage = currentHighOrLowStage(this);
-      debugLog('PITCHES', `Checking High or Low answer: ${answer, 'for stage:', stage}`);
+      debugLog('PITCHES', 'Checking High or Low answer:', answer, 'for stage:', stage);
       
       let isCorrect = false;
       let correctHiOrLowAnswer = '';
@@ -1139,7 +1197,7 @@ export function pitches() {
         isCorrect = answer === expectedAnswer;
         
         correctHiOrLowAnswer = expectedAnswer;
-        debugLog('PITCHES', `Checking answer: ${answer, 'against expected:', expectedAnswer, 'isCorrect:', isCorrect}`);
+        debugLog('PITCHES', 'Checking answer:', answer, 'against expected:', expectedAnswer, 'isCorrect:', isCorrect);
       } else {
         // Guard against null sequence which can happen when clicking rapidly
         if (!this.currentHighOrLowSequence) {
@@ -1151,18 +1209,18 @@ export function pitches() {
         const expectedAnswer = this.currentHighOrLowSequence?.expectedAnswer || this.currentHighOrLowTone;
         isCorrect = answer === expectedAnswer;
         correctHiOrLowAnswer = expectedAnswer;
-        debugLog('PITCHES', `Checking answer: ${answer, 'against expected:', expectedAnswer}`);
+        debugLog('PITCHES', 'Checking answer:', answer, 'against expected:', expectedAnswer);
       }
       
       // Handle feedback
       if (isCorrect) {
-        // Correct answer: increment progress
-        this.highOrLowProgress = (this.highOrLowProgress || 0) + 1;
+        // Correct answer: increment progress using unified tracking
+        if (!this.progress['1_1']) this.progress['1_1'] = 0;
+        this.progress['1_1'] += 1;
         
-        // Update stored progress
-        this.progress['1_1_pitches_high_or_low'] = this.highOrLowProgress;
+        // Save progress
         this.saveProgress_1_1();
-        debugLog('PITCHES', `Updated progress in localStorage: ${this.highOrLowProgress}`);
+        debugLog('PITCHES', 'Updated progress in localStorage:', this.progress['1_1']);
         
         // Play success sound
         audioEngine.playNote('success', 1, undefined, 0.4);
@@ -1176,11 +1234,18 @@ export function pitches() {
         }, 2000);
         showRainbowSuccess();
         
-        // Clear the current sequence so a new one will be generated next time
-      // Use setTimeout to avoid issues with rapid clicking
-      setTimeout(() => {
-        this.currentHighOrLowSequence = null;
-      }, 100);
+        // Reset instrument selection for next round after correct answer
+        this.currentHighOrLowInstrument = null;
+        debugLog(['HIGH_OR_LOW', 'INSTRUMENT'], 'Reset instrument selection after correct answer');
+        
+        // Pre-generate next sequence to support early button presses
+        // Use setTimeout to avoid issues with rapid clicking
+        setTimeout(() => {
+          const nextStage = currentHighOrLowStage(this);
+          this.generate1_1HighOrLowSequence(nextStage);
+          this.highOrLowPlayed = false; // Mark new sequence as not played yet
+          debugLog(['HIGH_OR_LOW', 'NEXT_SEQUENCE'], `Pre-generated next sequence for stage ${nextStage}`);
+        }, 100);
         
         // Check if we've reached a new stage
         const newStage = currentHighOrLowStage(this);
@@ -1223,23 +1288,34 @@ export function pitches() {
           this.playHighOrLowTone();
         }, 2000);
 
+        let feedbackMessage;
         if (stage >= 3) {
           // For comparison stages
-          this.feedback = (this.$store.strings?.high_or_low_wrong_comparison || 'Try again. The second tone was {0}.')
+          feedbackMessage = (this.$store.strings?.high_or_low_wrong_comparison || 'Try again. The second tone was {0}.')
             .replace('{0}', correctHiOrLowAnswer === 'high' ? 
               (this.$store.strings?.high_choice || 'higher') : 
               (this.$store.strings?.low_choice || 'lower'));
         } else {
           // For single tone stages
-          this.feedback = (this.$store.strings?.high_or_low_wrong_single || 'Try again. The tone was {0}.')
+          feedbackMessage = (this.$store.strings?.high_or_low_wrong_single || 'Try again. The tone was {0}.')
             .replace('{0}', correctHiOrLowAnswer === 'high' ? 
               (this.$store.strings?.high_choice || 'high') : 
               (this.$store.strings?.low_choice || 'low'));
         }
+        
+        // Show feedback using global system
+        debugLog('PITCHES', 'HIGH_OR_LOW_FEEDBACK: Showing error message:', feedbackMessage);
+        const store = window.Alpine?.store;
+        if (store && store.feedback) {
+          store.feedback.isCorrect = false;
+        }
+        window.showFeedbackMessage(feedbackMessage, {
+      activityId: '1_1_pitches_high_or_low',
+      isIntroMessage: false,
+      delaySeconds: 3,
+      component: this
+    });
       }
-      
-      // Show feedback
-      this.showFeedback = true;
       
       // Clear any existing timer
       if (this.highOrLowFeedbackTimer) {
@@ -1248,7 +1324,7 @@ export function pitches() {
       
       // Hide feedback after a delay
       this.highOrLowFeedbackTimer = setTimeout(() => {
-        this.showFeedback = false;
+        // Local feedback removed - using global feedback system
         
         // Generate a new tone after feedback is hidden
         this.generateHighOrLowTone();
@@ -1271,12 +1347,25 @@ export function pitches() {
         // Convert duration from milliseconds to seconds for Tone.js
         const durationSeconds = duration / 1000;
         
-        // Play the note with the central audio engine
-        audioEngine.playNote(note, durationSeconds);
+        // For High or Low activity (1_1), use persistent instrument selection
+        let instrument = 'default';
+        if (this.mode === '1_1_pitches_high_or_low') {
+          // Only select new instrument if none is currently set
+          if (!this.currentHighOrLowInstrument) {
+            const instruments = ['default', 'piano', 'violin', 'flute', 'brass'];
+            this.currentHighOrLowInstrument = instruments[Math.floor(Math.random() * instruments.length)];
+            debugLog(['HIGH_OR_LOW', 'INSTRUMENT'], `Randomly selected new instrument: ${this.currentHighOrLowInstrument}`);
+          }
+          instrument = this.currentHighOrLowInstrument;
+          debugLog(['HIGH_OR_LOW', 'INSTRUMENT'], `Using persistent instrument: ${instrument} for note ${note}`);
+        }
+        
+        // Play the note with the central audio engine using selected instrument
+        audioEngine.playNote(note, durationSeconds, undefined, 0.8, instrument);
         
         return true;
       } catch (error) {
-        debugLog(['PITCHES', 'ERROR'], `Error playing tone: ${error.message || error}`);
+        debugLog(['PITCHES', 'ERROR'], 'Error playing tone:', error);
         return false;
       }
     },
@@ -1297,11 +1386,18 @@ export function pitches() {
       
       // Based on the current activity mode, handle appropriately
       if (this.mode === '1_4_pitches_does-it-sound-right') {
-        // For Sound Judgment activity
+        // For Sound Judgment activity in free mode, play melodies from free shuffle
         if (!this.gameMode) {
-          debugLog('PITCHES', 'SOUND JUDGMENT: In practice mode, need to start game');
-          this.startSoundJudgmentGame();
-          return; // startSoundJudgmentGame will handle playing the melody
+          debugLog('PITCHES', 'SOUND JUDGMENT: In free mode, playing from free shuffle');
+          // Generate melody using free mode shuffle
+          if (generateNew) {
+            this.generateSoundHighOrLowMelodyFreeMode();
+          }
+          // Play the melody without switching to game mode
+          if (this.currentSequence && this.currentSequence.length > 0) {
+            this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
+          }
+          return;
         }
       }
       
@@ -1327,7 +1423,7 @@ export function pitches() {
           // This ensures the animals only change when the user answers correctly or enters the activity
           this.selectRandomAnimalImages();
           if (!this.generateSoundHighOrLowMelody()) {
-            debugLog(['AUDIO', 'ERROR'], 'Failed to generate sound judgment melody');
+            debugLog(['PITCHES', 'ERROR'], 'AUDIO_ERROR: Failed to generate sound judgment melody');
             
             // UI-Status zurücksetzen
             document.querySelectorAll('.play-button').forEach(btn => {
@@ -1337,18 +1433,18 @@ export function pitches() {
             return;
           }
           
-          debugLog('PITCHES', `AUDIO: Generated new melody with ID: ${this.currentMelodyId}`);
+          debugLog('PITCHES', 'AUDIO: Generated new melody with ID:', this.currentMelodyId);
           // Play the newly generated melody with the melody ID
           this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
         } 
         // Play the existing melody if we're not generating a new one
         else if (this.currentSequence && this.currentSequence.length > 0) {
-          debugLog('PITCHES', `AUDIO: Replaying existing melody with ID: ${this.currentMelodyId}`);
+          debugLog('PITCHES', 'AUDIO: Replaying existing melody with ID:', this.currentMelodyId);
           this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
         } 
         // Handle case where there's no melody to play
         else {
-          debugLog(['AUDIO', 'ERROR'], 'No sequence to play for sound judgment activity');
+          debugLog(['PITCHES', 'ERROR'], 'AUDIO_ERROR: No sequence to play for sound judgment activity');
           
           // Try to generate a melody as fallback
           if (this.generateSoundHighOrLowMelody()) {
@@ -1400,7 +1496,7 @@ export function pitches() {
       const pattern = [];
       
       // Log kompletten Tonbereich
-      debugLog('PITCHES', `Available notes: ${this.availableNotes.join(', '}`));
+      debugLog('PITCHES', 'Available notes:', this.availableNotes.join(', '));
       debugLog('PITCHES', `Starting down pattern at index ${startIndex}: ${this.availableNotes[startIndex]}`);
       
       for (let i = 0; i < 5; i++) {
@@ -1411,7 +1507,7 @@ export function pitches() {
       }
       
       // Debug output of the complete melody
-      debugLog('PITCHES', `Down pattern complete: ${pattern.join(', '}`));
+      debugLog('PITCHES', 'Down pattern complete:', pattern.join(', '));
       
       return pattern;
     },
@@ -1449,16 +1545,16 @@ export function pitches() {
 
 
     /** *****************************************************
-     * 1_2 Match Sounds Activity
+     * 1_2 Up or Down Activity
      ******************************************************** */
     
     /**
      * Setup for the matching mode
      * @activity 1_2_match_sounds
      */
-    setupMatchingMode_1_2(playSound = false, generateNew = true) {
+    setup_1_2(playSound = false, generateNew = true) {
       this.animationInProgress = false;
-      this.showActivityIntroMessage('match');
+      window.showActivityIntroMessage('match', this);
       this.updateMatchingBackground(); // Update background based on progress
       this.updateMatchSoundsPitchCardLayout(); // Aktualisiere Pitch-Card-Layout basierend auf Freischaltungsstatus
       
@@ -1477,7 +1573,7 @@ export function pitches() {
         if ((this.currentProgress == 10 || this.currentProgress == 20) && this.correctAnswer && availableTypes.includes(this.correctAnswer)) {
           // Use forced pattern (newly unlocked wave/jump)
           selectedType = this.correctAnswer;
-          debugLog('PITCHES', `PATTERN_FORCE_DEBUG: Using forced pattern: ${selectedType}`);
+          debugLog('PITCHES', 'PATTERN_FORCE_DEBUG: Using forced pattern:', selectedType);
           
           // Reset consecutive counter for forced patterns
           if (selectedType !== this.lastSelectedPatternType) {
@@ -1591,16 +1687,15 @@ export function pitches() {
         showRainbowSuccess();
         
         // Update progress with new ID format only
-        if (!this.progress['1_2_pitches_match-sounds']) {
-          this.progress['1_2_pitches_match-sounds'] = 0;
+        if (!this.progress['1_2']) {
+          this.progress['1_2'] = 0;
         }
-        // Increment progress counter
-        this.progress['1_2_pitches_match-sounds'] += 1;
-        const currentProgress = this.progress['1_2_pitches_match-sounds'];
+        this.progress['1_2'] += 1;
+        const currentProgress = this.progress['1_2'];
         // Synchronize currentProgress property with the actual progress value
         this.currentProgress = currentProgress;
         
-        debugLog('PITCHES', `PROGRESS_SYNC: Updated match progress: ${currentProgress, 'currentProgress synced:', this.currentProgress}`);
+        debugLog('PITCHES', 'PROGRESS_SYNC: Updated match progress:', currentProgress, 'currentProgress synced:', this.currentProgress);
         
         // Important thresholds for background changes
         if (currentProgress === 10 || currentProgress === 20) {
@@ -1632,7 +1727,7 @@ export function pitches() {
         // If correct answer, automatically progress to next melody after feedback
         if (isCorrect) {
           // Setup a new match automatically
-          this.setupMatchingMode_1_2(true, true);
+          this.setup_1_2(true, true);
           debugLog('PITCHES', 'Auto-progressed to next melody in match mode');
         }
         // For wrong answers, don't generate new melody so user can try the same one again
@@ -1668,8 +1763,13 @@ export function pitches() {
         this.correctAnswer = 'wave'; // PATTERN_FORCE_DEBUG: Force wave pattern next
         
         unlocked = true;
-        const message = window.Alpine?.store('strings')?.mascot_wave_unlocked || 'Great! You unlocked wavy melodies! :wave:';
-        window.showMascotMessage(message, null, 2, this);
+        const message = window.Alpine?.store('strings')?.feedback_wave_unlocked || 'Great! You unlocked wavy melodies! :wave:';
+        window.showFeedbackMessage(message, {
+      activityId: null,
+      isIntroMessage: false,
+      delaySeconds: 2,
+      component: this
+    });
       }
       
       // Unlock jump pattern at 20 correct answers  
@@ -1678,14 +1778,19 @@ export function pitches() {
         this.correctAnswer = 'jump'; // PATTERN_FORCE_DEBUG: Force jump pattern next
         
         unlocked = true;
-        const message = window.Alpine?.store('strings')?.mascot_jump_unlocked || 'Amazing! You unlocked random jump melodies! :frog:';
-        window.showMascotMessage(message, null, 2, this);
+        const message = window.Alpine?.store('strings')?.feedback_jump_unlocked || 'Amazing! You unlocked random jump melodies! :frog:';
+        window.showFeedbackMessage(message, {
+      activityId: null,
+      isIntroMessage: false,
+      delaySeconds: 2,
+      component: this
+    });
       }
       
       // Wenn ein neues Pattern freigeschaltet wurde und wir im Match-Sounds-Modus sind,
       // aktualisieren wir das Layout der Pitch-Cards
       if (unlocked && this.mode === '1_2_pitches_match-sounds') {
-        debugLog('PITCHES', 'Pattern unlocked, updating Match Sounds layout');
+        debugLog('PITCHES', 'Pattern unlocked, updating Up or Down layout');
         this.updateMatchSoundsPitchCardLayout();
       }
       
@@ -1728,37 +1833,35 @@ export function pitches() {
     
     /**
      * Shows context-specific messages based on current activity and stage
-     * Displays instructions and guidance to the user via the mascot
+     * For complex context-dependent messages. Simple intro messages use showActivityIntroMessage()
      * @activity common
-     * @used-by all activities
+     * @used-by activities with complex context logic
      */
     showContextMessage() {
-      let message = '';
       const language = localStorage.getItem('lalumo_language') || 'english';
+      let message = '';
       
-      // Provide context-specific instructions based on current mode
+      // Handle activities with complex context-dependent logic
       if (this.mode === '1_1_pitches_high_or_low') {
         // For the High or Low activity, show different instructions based on the current stage
         const stage = currentHighOrLowStage(this);
-        debugLog('PITCHES', `Showing context message for High or Low stage: ${stage}`);
+        debugLog('PITCHES', 'LOG_CONTEXT_MESSAGE: Showing context message for High or Low stage:', stage);
         
         // Get the appropriate message based on stage and language
         if (this.$store.strings) {
-          // high_or_low_intro_stage1, high_or_low_intro_stage2, high_or_low_intro_stage3, high_or_low_intro_stage4, high_or_low_intro_stage5
           const stageKey = `high_or_low_intro_stage${stage}`;
           message = this.$store.strings[stageKey];
         }
         
-        // TODO: no Fallbacks if string is not found
-        // add this to strings.xml
+        // Fallback messages if strings.xml not available
         if (!message) {
           switch(stage) {
             case 1:
             case 2:
               // Single tone stages
               message = language === 'german' ? 
-                'Höre den Ton! Ist er hoch oder tief? Drücke ▶️ um das Spiel zu starten!' : 
-                'Listen to the tone! Is it high or low? Press ▶️ for the game!';
+                'Höre den Ton! Ist er hoch oder tief? Berühre den Vogel um das Spiel zu starten!' : 
+                'Listen to the tone! Is it high or low? Touch the bird to start the game!';
               break;
             case 3:
             case 4:
@@ -1770,40 +1873,60 @@ export function pitches() {
               break;
           }
         }
+        
+        // Show context-specific message
+        if (message) {
+          window.showFeedbackMessage(message, {
+            activityId: this.mode + '_stage' + stage,
+            isIntroMessage: true,
+            delaySeconds: 10,
+            component: this
+          });
+        }
       } else if (this.mode === '1_2_pitches_match-sounds') {
-        // TODO: use match_sounds_practice from strings.xml
+        // Context-dependent message based on game mode
         if (!this.gameMode) {
           message = language === 'german' ? 
-            'Klicke auf die Bilder zum Üben. Drücke ▶️ um das Spiel zu starten!' : 
-            'Click on pictures to practice. Press ▶️ to start the game!';
+            'Klicke auf die Bilder zum Üben. Berühre den Vogel um das Spiel zu starten!' : 
+            'Click on pictures to practice. Touch the bird to start the game!';
         } else {
           message = language === 'german' ? 
             'Höre zu und wähle das richtige Bild!' : 
             'Listen and choose the right picture!';
         }
-      } else if (this.mode === '1_4_pitches_does-it-sound-right') {
-        message = language === 'german' ? 
-          'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?' : 
-          'Listen to the melody! Does it sound right? Or is there a wrong note?';
+        
+        if (message) {
+          window.showFeedbackMessage(message, {
+      activityId: this.mode + '_' + (this.gameMode ? 'game' : 'practice'),
+      isIntroMessage: true,
+      delaySeconds: 10,
+      component: this
+    });
+        }
       } else if (this.mode === '1_5_pitches_memory-game') {
+        // Context-dependent message based on free play mode
         if (this.memoryFreePlay) {
           message = language === 'german' ? 
-            'Drücke frei auf die Tasten zum Üben. Drücke ▶️ um das Spiel zu starten!' : 
-            'Press keys freely to practice. Press ▶️ to start the game!';
+            'Drücke frei auf die Tasten zum Üben. Berühre den Vogel um das Spiel zu starten!' : 
+            'Press keys freely to practice. Touch the bird to start the game!';
         } else {
           message = language === 'german' ? 
-            'Höre dir die Melodie an und tippe dann auf die farbigen Tasten in der gleichen Reihenfolge!' : 
-            'Listen to the melody, then tap the colored keys in the same order!';
+            'Höre dir die Melodie an und tippe dann auf die Tasten in der gleichen Reihenfolge!' : 
+            'Listen to the melody, then tap the keys in the same order!';
         }
-      } else if (this.mode === '2_5_chords_characters') {
-        message = language === 'german' ? 
-          'Jede Chordart hat ihre eigene Persönlichkeit! Höre dir die Chordart an und wähle das passende Bild!' : 
-          'Each chord type has its own personality! Listen to the chord and match it to the right character!';
-      }
-      
-      // Show the message using the existing function
-      if (message) {
-        window.showMascotMessage(message, this.mode, 0.5, this);
+        
+        if (message) {
+          window.showFeedbackMessage(message, {
+            activityId: this.mode + '_' + (this.memoryFreePlay ? 'freeplay' : 'game'),
+            isIntroMessage: true,
+            delaySeconds: 10,
+            component: this
+          });
+        }
+      } else {
+        // For activities without complex context logic, use the central intro message function
+        debugLog('PITCHES', 'LOG_CONTEXT_MESSAGE: Using central intro message for activity:', this.mode);
+        window.showActivityIntroMessage(this.mode, this);
       }
     },
     
@@ -1826,11 +1949,11 @@ export function pitches() {
           const testUtterance = new SpeechSynthesisUtterance('');
           testUtterance.volume = 0; // Silent test
           testUtterance.onend = () => debugLog('PITCHES', 'Silent test utterance completed successfully');
-          testUtterance.onerror = (err) => debugLog(['PITCHES', 'ERROR'], `Test utterance failed: ${err.message || err}`);
+          testUtterance.onerror = (err) => debugLog(['PITCHES', 'ERROR'], 'Test utterance failed:', err);
           this.speechSynthesis.speak(testUtterance);
           debugLog('PITCHES', 'Initial speech test started');
         } catch (error) {
-          debugLog(['PITCHES', 'ERROR'], `Speech synthesis test failed: ${error.message || error}`);
+          debugLog(['PITCHES', 'ERROR'], 'Speech synthesis test failed:', error);
         }
       } else {
         debugLog('PITCHES', 'Speech synthesis API not found on initial check');
@@ -1850,7 +1973,7 @@ export function pitches() {
             this.speechSynthesis.speak(testUtterance);
             debugLog('PITCHES', 'Delayed speech test started');
           } catch (error) {
-            debugLog(['PITCHES', 'ERROR'], `Delayed speech test failed: ${error.message || error}`);
+            debugLog(['PITCHES', 'ERROR'], 'Delayed speech test failed:', error);
           }
         }
       }, 2000);
@@ -1881,7 +2004,7 @@ export function pitches() {
       
       // Setup callback for Android TTS ready event
       window.androidTTSReady = (isReady) => {
-        debugLog('PITCHES', `Native Android TTS ready callback received: ${isReady}`);
+        debugLog('PITCHES', 'Native Android TTS ready callback received:', isReady);
         this.usingNativeAndroidTTS = !!isReady;
         this.ttsAvailable = !!isReady;
         
@@ -1892,7 +2015,7 @@ export function pitches() {
       
       // Setup callback for Android TTS results
       window.androidTTSCallback = (result) => {
-        debugLog('PITCHES', `Android TTS speech result: ${result}`);
+        debugLog('PITCHES', 'Android TTS speech result:', result);
       };
       
       // Check if the native Android TTS bridge is available
@@ -1903,18 +2026,18 @@ export function pitches() {
           // Get TTS status for diagnostics
           if (typeof window.AndroidTTS.getTTSStatus === 'function') {
             const status = window.AndroidTTS.getTTSStatus();
-            debugLog('PITCHES', `Android TTS Status: ${status}`);
+            debugLog('PITCHES', 'Android TTS Status:', status);
           }
           
           // Check if TTS is available through the bridge
           if (typeof window.AndroidTTS.isTTSAvailable === 'function') {
             const ttsAvailable = window.AndroidTTS.isTTSAvailable();
-            debugLog('PITCHES', `Android TTS available: ${ttsAvailable}`);
+            debugLog('PITCHES', 'Android TTS available:', ttsAvailable);
             this.usingNativeAndroidTTS = ttsAvailable;
             this.ttsAvailable = ttsAvailable;
           }
         } catch (error) {
-          debugLog(['PITCHES', 'ERROR'], `Error checking Android TTS availability: ${error.message || error}`);
+          debugLog(['PITCHES', 'ERROR'], 'Error checking Android TTS availability:', error);
         }
       } else {
         debugLog('PITCHES', 'Native Android TTS bridge not detected');
@@ -1922,23 +2045,23 @@ export function pitches() {
     },
     
     /**
-     * Hide mascot message and save preference to not show help messages
+     * Hide intro message and save preference to not show help messages
      * @activity common
      * @used-by all activities
      */
-    hideAndSaveMascotPreference() {
-      // Hide the mascot message
-      this.showMascot = false;
+    hideAndSaveHelpPreference() {
+      // Hide the intro message
+      this.showHelp = false;
       
       // Update settings to not show help messages
-      this.$store.mascotSettings.showHelpMessages = false;
+      this.$store.helpSettings.showHelpMessages = false;
       
       // Save the settings to localStorage
       try {
-        localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
-        debugLog('PITCHES', 'Saved mascot settings, help messages disabled');
+        localStorage.setItem('lalumo_help_settings', JSON.stringify(this.helpSettings));
+        debugLog('PITCHES', 'Saved help settings, help messages disabled');
       } catch (error) {
-        debugLog(['PITCHES', 'ERROR'], `Error saving mascot settings: ${error.message || error}`);
+        debugLog(['PITCHES', 'ERROR'], 'Error saving help settings:', error);
       }
     },
     
@@ -1950,76 +2073,39 @@ export function pitches() {
     toggleHelpMessages(show = null) {
       // If no value provided, toggle the current value
       if (show === null) {
-        this.$store.mascotSettings.showHelpMessages = !this.$store.mascotSettings.showHelpMessages;
+        this.$store.helpSettings.showHelpMessages = !this.$store.helpSettings.showHelpMessages;
       } else {
-        this.$store.mascotSettings.showHelpMessages = show;
+        this.$store.helpSettings.showHelpMessages = show;
       }
       
       // When enabling, clear the history of seen messages to allow them to appear again
-      if (this.$store.mascotSettings.showHelpMessages) {
-        this.$store.mascotSettings.seenActivityMessages = {};
+      if (this.$store.helpSettings.showHelpMessages) {
+        this.$store.helpSettings.seenActivityMessages = {};
       }
       
       // Save settings to localStorage
       try {
-        localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
-        debugLog('PITCHES', `Help messages ${this.$store.mascotSettings.showHelpMessages ? 'enabled' : 'disabled'}`);
+        localStorage.setItem('lalumo_help_settings', JSON.stringify(this.helpSettings));
+        debugLog('PITCHES', `Help messages ${this.$store.helpSettings.showHelpMessages ? 'enabled' : 'disabled'}`);
       } catch (error) {
-        debugLog(['PITCHES', 'ERROR'], `Error saving mascot settings: ${error.message || error}`);
+        debugLog(['PITCHES', 'ERROR'], 'Error saving help settings:', error);
       }
       
-      return this.$store.mascotSettings.showHelpMessages;
+      return this.$store.helpSettings.showHelpMessages;
     },
     
     /**
-     * @deprecated Use window.showMascotMessage() instead
+     * @deprecated Use window.showFeedbackMessage() instead
      * This method is kept for backward compatibility but now forwards to the global function
      */
-    showMascotMessage(message, activityId = null, delaySeconds = 2) {
-      debugLog(['PITCHES', 'WARN'], 'DEPRECATED: showMascotMessage is deprecated. Use window.showMascotMessage() instead');
-      window.showMascotMessage(message, activityId, delaySeconds, this);
-    },
-    
-    /**
-     * Shows the appropriate introduction message for an activity
-     * @param {string} activityMode - The identifier of the activity
-     */
-    showActivityIntroMessage(activityMode) {
-      // Get the current language
-      const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
-      
-      // Define all intro messages for different activities
-      const introMessages = {
-        '1_1_pitches_high_or_low': {
-          'en': 'Listen to the Note and choose if it is of a high or low pitch!',
-          'de': 'Höre dir die Note an und wähle, ob sie hoch oder tief ist!'
-        },
-        '1_2_pitches_match-sounds': {
-          'en': 'Listen to the Melody and choose if it is ascending or descending!',
-          'de': 'Höre dir die Melodie an und wähle, ob sie auf- oder absteigend ist!'
-        },
-        '1_3_pitches_draw': {
-          'en': 'Draw and listen – your line becomes music!',
-          'de': 'Male und hör zu – deine Linie wird zu Musik!'
-        },
-        '1_4_pitches_does-it-sound-right': {
-          'en': 'Listen to the melody! Does it sound right? Or is there a wrong note?',
-          'de': 'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?'
-        },
-        '1_5_pitches_memory': {
-          'en': 'Listen carefully and remember the melody! Can you play it back?',
-          'de': 'Höre genau hin und merke dir die Melodie! Kannst du sie nachspielen?'
-        },
-      };
-      
-      // Find the right message for the activity and language
-      const messages = introMessages[activityMode] || introMessages['1_1_pitches_high_or_low'];
-      const message = messages[language] || messages['en'];
-      
-      // Show the message with activity ID to prevent duplication
-      // Generate a unique ID for this activity using the current mode
-      const activityId = '1_' + this.mode;
-      window.showMascotMessage(message, activityId, 2, this);
+    showFeedbackMessage(message, activityId = null, delaySeconds = 2) {
+      debugLog(['PITCHES', 'WARN'], 'DEPRECATED: showFeedbackMessage is deprecated. Use window.showFeedbackMessage() instead in activity ' + activityId + ' (' + this.mode + ')');
+      window.showFeedbackMessage(message, {
+      activityId: activityId,
+      isIntroMessage: false,
+      delaySeconds: delaySeconds,
+      component: this
+    });
     },
     
     /**
@@ -2040,15 +2126,15 @@ export function pitches() {
           utterance.pitch = 1.2; // Slightly higher pitch for friendly sound
           
           // Detailed logging for better diagnostics
-          utterance.onstart = () => debugLog('PITCHES', `Speech started for: ${message}`);
-          utterance.onend = () => debugLog('PITCHES', `Speech ended for: ${message}`);
-          utterance.onerror = (event) => debugLog(['PITCHES', 'ERROR'], `Speech error: ${event.message || event}`);
+          utterance.onstart = () => debugLog('PITCHES', 'Speech started for:', message);
+          utterance.onend = () => debugLog('PITCHES', 'Speech ended for:', message);
+          utterance.onerror = (event) => debugLog(['PITCHES', 'ERROR'], 'Speech error:', event);
           
           // Speak the message
           debugLog('PITCHES', 'Speaking message with Web Speech API');
           this.speechSynthesis.speak(utterance);
         } catch (error) {
-          debugLog(['PITCHES', 'ERROR'], `Error using speech synthesis: ${error.message || error}`);
+          debugLog(['PITCHES', 'ERROR'], 'Error using speech synthesis:', error);
           debugLog('PITCHES', 'Speech failed completely');
         }
       } else {
@@ -2084,7 +2170,7 @@ export function pitches() {
         // Direkt über die Audio-Engine abspielen anstatt Events zu verwenden
         audioEngine.playNote(note, 0.75);
       } catch (err) {
-        debugLog(['PITCHES', 'ERROR'], `Error playing note: ${err.message || err}`);
+        debugLog(['PITCHES', 'ERROR'], 'Error playing note:', err);
       }
       
       // Etwas längere Pause zwischen den Noten für bessere Unterscheidbarkeit
@@ -2114,7 +2200,7 @@ export function pitches() {
      * @param {string} elementType - Typ des zu animierenden Elements ('up', 'down', 'wave', 'jump')
      */
     animatePatternElement(elementType) {
-      debugLog('PITCHES', `ANIM: Animating element type: ${elementType}`);
+      debugLog('PITCHES', 'ANIM: Animating element type:', elementType);
       
       // Animations-Klassen basierend auf dem Element-Typ
       const animationClasses = {
@@ -2144,12 +2230,12 @@ export function pitches() {
       
       // Define card class selector based on element type
       const cardClass = `.pitch-card:has(.pitch-icon.${elementType}), .pitch-card.${elementType}`;
-      debugLog('PITCHES', `ANIM: Using card selector: ${cardClass}`);
+      debugLog('PITCHES', 'ANIM: Using card selector:', cardClass);
       
       // Apply animation to cards (for Android compatibility)
       const cards = document.querySelectorAll(cardClass);
       cards.forEach(card => {
-        debugLog('ANIM', 'Animating card for', elementType);
+        debugLog('PITCHES', 'ANIM: Animating card for', elementType);
         card.classList.add('active');
         
         setTimeout(() => {
@@ -2159,7 +2245,7 @@ export function pitches() {
       
       // Apply original animation to icon elements
       elements.forEach(element => {
-        debugLog('ANIM', 'Animating icon for', elementType);
+        debugLog('PITCHES', 'ANIM: Animating icon for', elementType);
         // Alle bestehenden Animationsklassen entfernen
         element.classList.remove('animate-up', 'animate-down', 'animate-wave', 'animate-jump');
         // Passende Animationsklasse hinzufügen
@@ -2232,7 +2318,7 @@ export function pitches() {
       // IMPORTANT: Don't prevent default or stop propagation here
       // This allows second finger touches to work
       
-      debugLog('TOUCH', `Touch on ${pattern} pattern, touches: ${event.touches.length}`);
+      debugLog('PITCHES', `TOUCH: Touch on ${pattern} pattern, touches:`, event.touches.length);
       
       // Directly trigger the pattern playback regardless of how many touches
       if (!this.isPlaying) {
@@ -2262,7 +2348,7 @@ export function pitches() {
      */
     activity1_2_matchSoundsPlaySequence(type) {
       // Enhanced logging for diagnosis
-      debugLog('PITCHES', `AUDIO: Sequence play requested for type: ${type}`);
+      debugLog('PITCHES', 'AUDIO: Sequence play requested for type:', type);
       
       // Always stop any currently playing sound first
       this.stopCurrentSound();
@@ -2291,7 +2377,7 @@ export function pitches() {
       } else if (type === 'jump') {
         pattern = this.generateJumpyPattern();
       } else {
-        debugLog(['PITCHES', 'ERROR'], `AUDIO: Invalid pattern type: ${type.message || type}`);
+        debugLog(['PITCHES', 'ERROR'], 'AUDIO: Invalid pattern type:', type);
         return; // Invalid type
       }
       
@@ -2340,13 +2426,13 @@ export function pitches() {
       
       // Cancel any pending timeouts in this component
       if (this.soundTimeoutId) {
-        debugLog('PITCHES', `AUDIO: Clearing soundTimeoutId: ${this.soundTimeoutId}`);
+        debugLog('PITCHES', 'AUDIO: Clearing soundTimeoutId:', this.soundTimeoutId);
         clearTimeout(this.soundTimeoutId);
         this.soundTimeoutId = null;
       }
       
       if (this.resetTimeoutId) {
-        debugLog('PITCHES', `AUDIO: Clearing resetTimeoutId: ${this.resetTimeoutId}`);
+        debugLog('PITCHES', 'AUDIO: Clearing resetTimeoutId:', this.resetTimeoutId);
         clearTimeout(this.resetTimeoutId);
         this.resetTimeoutId = null;
       }
@@ -2358,7 +2444,7 @@ export function pitches() {
           try {
             clearTimeout(timeoutId);
           } catch (e) {
-            debugLog(['PITCHES', 'ERROR'], `AUDIO_ERROR: Failed to clear timeout: ${e.message || e}`);
+            debugLog(['PITCHES', 'ERROR'], 'AUDIO_ERROR: Failed to clear timeout:', e);
           }
         });
         // Array vollständig zurücksetzen
@@ -2370,7 +2456,7 @@ export function pitches() {
       
       // Remove active classes from all pitch cards
       const activeCards = document.querySelectorAll('.pitch-card.active');
-      debugLog('AUDIO', 'Removing active class from', activeCards.length, 'pitch cards');
+      debugLog('PITCHES', 'AUDIO: Removing active class from', activeCards.length, 'pitch cards');
       activeCards.forEach(card => card.classList.remove('active'));
       
       // Aktualisiere UI-Status
@@ -2390,8 +2476,47 @@ export function pitches() {
         audioEngine.stopAll();
         debugLog('PITCHES', 'AUDIO: Stopped all sounds using central audio engine');
       } catch (e) {
-        debugLog(['PITCHES', 'ERROR'], `AUDIO_ERROR: Failed to stop audio engine: ${e.message || e}`);
+        debugLog(['PITCHES', 'ERROR'], 'AUDIO_ERROR: Failed to stop audio engine:', e);
       }
+    },
+    
+    /**
+     * Sample points evenly across a path
+     * @param {Array} path - The path to sample from
+     * @param {number} sampleSize - Number of points to sample
+     * @returns {Array} Array of sampled points with their original indices
+     */
+    samplePointsFromPath(path, sampleSize) {
+      if (!path || path.length === 0 || sampleSize <= 0) {
+        return [];
+      }
+      
+      const sampledPoints = [];
+      
+      if (sampleSize === 1) {
+        // Nur ein Punkt: nimm den mittleren Punkt
+        const middleIndex = Math.floor(path.length / 2);
+        sampledPoints.push({
+          point: path[middleIndex],
+          originalIndex: middleIndex
+        });
+      } else {
+        // Mehrere Punkte: gleichmäßig über den gesamten Pfad verteilen
+        for (let i = 0; i < sampleSize; i++) {
+          // Berechne den Index gleichmäßig über den gesamten Pfad
+          const ratio = i / (sampleSize - 1); // 0 bis 1
+          const index = Math.floor(ratio * (path.length - 1));
+          
+          if (path[index]) {
+            sampledPoints.push({
+              point: path[index],
+              originalIndex: index
+            });
+          }
+        }
+      }
+      
+      return sampledPoints.filter(item => item.point && item.point.x !== undefined && item.point.y !== undefined);
     },
     
     /**
@@ -2412,18 +2537,48 @@ export function pitches() {
       
       // Redraw the melody line if we have a path
       if (this.drawPath && this.drawPath.length > 0) {
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.drawPath[0].x, this.drawPath[0].y);
-        
-        for (let i = 1; i < this.drawPath.length; i++) {
-          if (this.drawPath[i]) {
-            this.ctx.lineTo(this.drawPath[i].x, this.drawPath[i].y);
+        // Determine how much of the path has been played using the same sampling logic
+        let playedPathLength = 0;
+        if (this.currentPlaybackIndex >= 0 && this.currentMelodyPoints && this.currentMelodyPoints.length > 0) {
+          // Use the same sampling function to get the exact indices
+          const sampledIndices = this.samplePointsFromPath(this.drawPath, this.currentMelodyPoints.length);
+          
+          if (this.currentPlaybackIndex < sampledIndices.length) {
+            // Get the exact index of the currently playing note
+            playedPathLength = sampledIndices[this.currentPlaybackIndex].originalIndex + 1;
           }
         }
         
-        this.ctx.strokeStyle = '#3498db';
-        this.ctx.lineWidth = 4;
-        this.ctx.stroke();
+        // Draw the full path as a subtle sand track while playing
+        const progress = this.drawPath.length > 0 ? playedPathLength / this.drawPath.length : 0;
+        const isPlaying = this.currentPlaybackIndex >= 0;
+        if (isPlaying) {
+          this.ctx.save();
+          this.ctx.strokeStyle = this.drawMelodyColors.previousPath;
+          this.ctx.globalAlpha = 1.0;
+          this.ctx.lineWidth = 4;
+          this.ctx.lineCap = 'round';
+          this.ctx.lineJoin = 'round';
+          this.ctx.beginPath();
+          const fp = this.drawPath[0];
+          this.ctx.moveTo(fp.x, fp.y);
+          for (let i = 1; i < this.drawPath.length; i++) {
+            const p = this.drawPath[i];
+            this.ctx.lineTo(p.x, p.y);
+          }
+          this.ctx.stroke();
+          this.ctx.restore();
+        }
+        // Prepare SSOT based on the same sampled indices used for playback
+        let ssotIndices = null;
+        let ssotCurrentIndex = -1;
+        if (this.currentMelodyPoints && this.currentMelodyPoints.length > 0) {
+          const sampledIndices = this.samplePointsFromPath(this.drawPath, this.currentMelodyPoints.length);
+          ssotIndices = sampledIndices.map(si => si.originalIndex);
+          ssotCurrentIndex = this.currentPlaybackIndex;
+        }
+        // Draw snake animation on top, using SSOT to compute effective progress while preserving curvature
+        drawSnakeAnimation(canvas, this.drawPath, progress, isPlaying, ssotIndices, ssotCurrentIndex);
       }
       
       // Only draw note markers if we have them
@@ -2438,8 +2593,9 @@ export function pitches() {
                           this.activeNoteHighlight.x === point.x && 
                           this.activeNoteHighlight.y === point.y;
           
-          // Draw the note markers - use lighter red for active note
-          this.ctx.fillStyle = isActive ? '#ff6b6b' : '#e74c3c';
+          // Draw the note markers - use lighter red for active note, semi-transparent
+          this.ctx.globalAlpha = 0.3; // Make note markers semi-transparent
+          this.ctx.fillStyle = isActive ? this.drawMelodyColors.activeNoteMarker : this.drawMelodyColors.noteMarker;
           this.ctx.beginPath();
           this.ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
           this.ctx.fill();
@@ -2449,10 +2605,66 @@ export function pitches() {
           const noteIndex = Math.min(Math.floor(relativeHeight * notes.length), notes.length - 1);
           const noteName = notes[noteIndex];
           
-          this.ctx.fillStyle = '#333';
+          this.ctx.fillStyle = this.drawMelodyColors.noteLabel;
           this.ctx.font = '10px Arial';
           this.ctx.fillText(noteName, point.x + 8, point.y - 8);
+          
+          // Reset alpha for other drawing operations
+          this.ctx.globalAlpha = 1.0;
         });
+      }
+    },
+    
+    /**
+     * Redraw the completed path with static color (used after drawing is finished)
+     * @activity 1_3_draw_melody
+     */
+    redrawCompletedPath() {
+      if (!this.ctx || !this.drawPath || this.drawPath.length === 0) return;
+      
+      // Clear and redraw the path with the static unplayed color
+      this.ctx.beginPath();
+      this.ctx.moveTo(this.drawPath[0].x, this.drawPath[0].y);
+      
+      for (let i = 1; i < this.drawPath.length; i++) {
+        if (this.drawPath[i]) {
+          this.ctx.lineTo(this.drawPath[i].x, this.drawPath[i].y);
+        }
+      }
+      
+      this.ctx.strokeStyle = this.drawMelodyColors.staticPath;
+      this.ctx.lineWidth = 4;
+      this.ctx.stroke();
+      
+      // Also redraw the note points on top of the line
+      if (this.currentMelodyPoints && this.currentMelodyPoints.length > 0) {
+        const canvas = document.querySelector('.drawing-canvas');
+        if (canvas) {
+          const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5'];
+          
+          this.currentMelodyPoints.forEach((point, index) => {
+            if (!point) return;
+            
+            // Draw the note markers (no active highlighting for completed path), semi-transparent
+            this.ctx.globalAlpha = 0.5; // Make note markers semi-transparent
+            this.ctx.fillStyle = this.drawMelodyColors.noteMarker;
+            this.ctx.beginPath();
+            this.ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
+            this.ctx.fill();
+            
+            // Add note labels
+            const relativeHeight = 1 - (point.y / canvas.height);
+            const noteIndex = Math.min(Math.floor(relativeHeight * notes.length), notes.length - 1);
+            const noteName = notes[noteIndex];
+            
+            this.ctx.fillStyle = this.drawMelodyColors.noteLabel;
+            this.ctx.font = '10px Arial';
+            this.ctx.fillText(noteName, point.x + 8, point.y - 8);
+            
+            // Reset alpha for other drawing operations
+            this.ctx.globalAlpha = 1.0;
+          });
+        }
       }
     },
     
@@ -2503,7 +2715,7 @@ export function pitches() {
       const noteCount = 12;
       
       // Draw subtle horizontal lines for each note position
-      ctx.strokeStyle = 'rgba(200, 180, 140, 0.3)';
+      ctx.strokeStyle = this.drawMelodyColors.guideLines;
       ctx.lineWidth = 0.5;
       
       for (let i = 0; i < noteCount; i++) {
@@ -2536,44 +2748,20 @@ export function pitches() {
      * Set up the drawing mode for melody drawing activity
      * @activity 1_3_draw_melody
      */
-    setupDrawingMode_1_3() {
+    setup_1_3() {
       this.drawPath = [];
       this.isDrawing = false;
       
-      // Load saved level and success counter values from localStorage
-      try {
-        const savedLevel = localStorage.getItem('lalumo_draw_melody_level');
-        if (savedLevel !== null) {
-          this.drawMelodyLevel = parseInt(savedLevel, 10);
-          debugLog('PITCHES', `MELODY_SETUP: Loaded saved level: ${this.drawMelodyLevel}`);
-        } else if (this.drawMelodyLevel === undefined) {
-          // If no level is saved and none has been set yet
-          this.drawMelodyLevel = 0;
-          debugLog('PITCHES', 'MELODY_SETUP: Initialized default level to 0');
-        }
-        
-        const savedCounter = localStorage.getItem('lalumo_draw_melody_success_counter');
-        if (savedCounter !== null) {
-          this.levelSuccessCounter = parseInt(savedCounter, 10);
-          debugLog('PITCHES', `MELODY_SETUP: Loaded saved success counter: ${this.levelSuccessCounter}`);
-        } else if (this.levelSuccessCounter === undefined) {
-          // If no counter is saved and none has been set yet
-          this.levelSuccessCounter = 0;
-          debugLog('PITCHES', 'MELODY_SETUP: Initialized default success counter to 0');
-        }
-      } catch (e) {
-        debugLog(['MELODY_SETUP', 'WARN'], 'Error loading saved level data', e);
-        // Fallback to default values
-        if (this.drawMelodyLevel === undefined) this.drawMelodyLevel = 0;
-        if (this.levelSuccessCounter === undefined) this.levelSuccessCounter = 0;
-      }
+      // Use unified progress tracking - no need to load from separate localStorage
+      // Level and progress are calculated from this.progress['1_3']
+      debugLog('PITCHES', 'MELODY_SETUP: Using unified progress tracking, current progress:', this.progress['1_3'] || 0);
       
       // Not in challenge mode by default
       this.melodyChallengeMode = false;
       this.stopReferencePlayback(); this.referenceSequence = null;
       
       // Show intro message when entering the activity
-      this.showActivityIntroMessage('draw');
+      window.showActivityIntroMessage('draw', this);
       
       // Clear any existing drawing when switching to this mode
       this.clearDrawing();
@@ -2585,18 +2773,25 @@ export function pitches() {
         // Only set up these event listeners in free play mode
         if (!this.melodyChallengeMode) {
           // Handle pointer up events on the window to catch cases where pointer is released outside canvas
+          let endDrawingCalled = false;
           const handlePointerUp = (e) => {
-            if (this.isDrawing) {
+            if (this.isDrawing && !endDrawingCalled) {
               debugLog('PITCHES', 'Pointer up detected outside canvas, ending drawing');
+              endDrawingCalled = true;
               this.endDrawing(e);
+              // Reset flag after a short delay to allow for next drawing
+              setTimeout(() => { endDrawingCalled = false; }, 100);
             }
           };
           
           // Handle pointer leave events on the canvas
           const handlePointerLeave = (e) => {
-            if (this.isDrawing) {
+            if (this.isDrawing && !endDrawingCalled) {
               debugLog('PITCHES', 'Pointer left canvas while drawing, ending drawing');
+              endDrawingCalled = true;
               this.endDrawing(e);
+              // Reset flag after a short delay to allow for next drawing
+              setTimeout(() => { endDrawingCalled = false; }, 100);
             }
           };
           
@@ -2767,15 +2962,16 @@ export function pitches() {
         // Use shared progress bar utility
         const isGerman = document.documentElement.lang === "de";
         const activityName = isGerman ? "Melodien" : "melodies";
-        const currentLevel = this.drawMelodyLevel + 3; // Level + 3 = Anzahl der Noten
+        const currentLevel = get_1_3_level(this);
+        const currentNoteCount = currentLevel + 3; // Level + 3 = Anzahl der Noten
         
         showActivityProgressBar({
           appendToContainer: ".drawing-container",
           progressClass: "melody-progress",
-          currentCount: this.levelSuccessCounter,
+          currentCount: (this.progress['1_3'] || 0) % 3, // Current progress within level
           totalCount: 3,
-          currentLevel: this.drawMelodyLevel + 1,
-          notesCount: currentLevel,
+          currentLevel: currentLevel + 1,
+          notesCount: currentNoteCount,
           activityName: activityName,
           positioning: {
             position: "fixed",
@@ -2871,12 +3067,13 @@ export function pitches() {
       const minNotes = 3;
       const maxNotes = 8;
       
-      // Berechne die Anzahl der Noten basierend auf dem Level
+      // Berechne die Anzahl der Noten basierend auf dem Level (calculated from progress)
       // Höheres Level = mehr Noten (bis zum Maximum)
-      let sequenceLength = minNotes + this.drawMelodyLevel;
+      const currentLevel = get_1_3_level(this);
+      let sequenceLength = minNotes + currentLevel;
       sequenceLength = Math.min(sequenceLength, maxNotes); // Auf maximal 8 Noten begrenzen
       
-      debugLog('PITCHES', `Generating melody with ${sequenceLength} notes (user level: ${this.drawMelodyLevel})`);
+      debugLog('PITCHES', `Generating melody with ${sequenceLength} notes (progress level: ${currentLevel})`);
       
       // Generiere eine zufällige Melodie mit einer einfachen musikalischen Struktur
       this.referenceSequence = [];
@@ -2896,7 +3093,7 @@ export function pitches() {
         this.referenceSequence.push(notes[lastIndex]);
       }
       
-      debugLog('PITCHES', `Generated reference melody: ${this.referenceSequence}`);
+      debugLog('PITCHES', 'Generated reference melody:', this.referenceSequence);
       return this.referenceSequence;
     },
     
@@ -2908,7 +3105,7 @@ export function pitches() {
       if (this.referencePlaybackTimeouts) {
         this.referencePlaybackTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
         this.referencePlaybackTimeouts = [];
-        debugLog('REFERENCE_SEQ_DEBUG', 'Stopped all reference playback timeouts');
+        debugLog('PITCHES', "[REFERENCE_SEQ_DEBUG] Stopped all reference playback timeouts");
       }
     },
     
@@ -2924,14 +3121,14 @@ export function pitches() {
         
         // Wenn immer noch keine Sequenz existiert, breche ab
         if (!this.referenceSequence || this.referenceSequence.length === 0) {
-          debugLog(['MELODY_PLAY', 'ERROR'], 'Failed to generate reference sequence');
+          debugLog(['PITCHES', 'ERROR'], 'MELODY_PLAY: Failed to generate reference sequence');
           return;
         }
       }
       
-      debugLog('PITCHES', `MELODY_PLAY: Playing reference melody: ${this.referenceSequence}`);
+      debugLog('PITCHES', 'MELODY_PLAY: Playing reference melody:', this.referenceSequence);
       if (!this.referenceSequence || !Array.isArray(this.referenceSequence) || this.referenceSequence.length === 0) {
-        debugLog(['REFERENCE_SEQ_DEBUG', 'WARN'], `referenceSequence is null/empty, aborting playReferenceSequence: ${this.referenceSequence}`);
+        debugLog(['PITCHES', 'WARN'], "REFERENCE_SEQ_DEBUG: referenceSequence is null/empty, aborting playReferenceSequence", this.referenceSequence);
         return;
       }
       
@@ -2945,7 +3142,7 @@ export function pitches() {
       const playNote = (index) => {
         // Check if referenceSequence still exists and is valid
         if (!this.referenceSequence || index >= this.referenceSequence.length) {
-          debugLog('REFERENCE_SEQ_DEBUG', `Playback stopped: referenceSequence=${!!this.referenceSequence}, index=${index}`);
+          debugLog('PITCHES', `[REFERENCE_SEQ_DEBUG] Playback stopped: referenceSequence=${!!this.referenceSequence}, index=${index}`);
           return;
         }
         
@@ -2980,6 +3177,17 @@ export function pitches() {
       this.canvas = canvas; // Store canvas reference for use in other methods
       this.ctx = canvas.getContext('2d');
       
+      // Stop any ongoing playback immediately when a new drawing starts
+      // This cancels both the drawn melody playback and the reference melody playback
+      if (typeof this.stopDrawnMelodyPlayback === 'function') {
+        debugLog('PITCHES', '[DRAW_MELODY_STOP] startDrawing(): stopping drawn melody playback');
+        this.stopDrawnMelodyPlayback();
+      }
+      if (typeof this.stopReferencePlayback === 'function') {
+        debugLog('PITCHES', '[REFERENCE_SEQ_STOP] startDrawing(): stopping reference playback');
+        this.stopReferencePlayback();
+      }
+      
       // Clear the canvas
       this.ctx.clearRect(0, 0, canvas.width, canvas.height);
       
@@ -2988,7 +3196,7 @@ export function pitches() {
         this.ctx.save(); // Save the current context state
         
         // Set semi-transparent style for previous path
-        this.ctx.strokeStyle = 'rgba(52, 152, 219, 0.3)'; // Semi-transparent blue
+        this.ctx.strokeStyle = this.drawMelodyColors.previousPath;
         this.ctx.lineWidth = 4;
         this.ctx.lineCap = 'round';
         this.ctx.lineJoin = 'round';
@@ -3011,7 +3219,7 @@ export function pitches() {
       this.drawPath = [];
       
       // Set style for new drawing
-      this.ctx.strokeStyle = '#3498db'; // Blauer Strich
+      this.ctx.strokeStyle = this.drawMelodyColors.currentDrawing;
       this.ctx.lineWidth = 4;
       this.ctx.lineCap = 'round';
       this.ctx.lineJoin = 'round';
@@ -3039,10 +3247,41 @@ export function pitches() {
       // Füge den aktuellen Punkt hinzu
       this.addPointToPath(e);
       
-      // Zeichne den aktuellen Pfad
+      // Zeichne den aktuellen Pfad mit "in den Sand gedrückt"-Effekt
       const lastPoint = this.drawPath[this.drawPath.length - 1];
       this.ctx.lineTo(lastPoint.x, lastPoint.y);
+
+      // Unterstrich (dunkler, leicht weicher Schatten) – tieferer Graben
+      this.ctx.save();
+      const baseWidth = this.ctx.lineWidth;
+      this.ctx.strokeStyle = this.drawMelodyColors.currentDrawingDark; // dark sand for inner edge
+      this.ctx.lineWidth = baseWidth + 4;
+      this.ctx.globalAlpha = 0.55;
+      this.ctx.shadowColor = this.drawMelodyColors.currentDrawingShadow;
+      this.ctx.shadowBlur = 3;
+      this.ctx.shadowOffsetX = 0;
+      this.ctx.shadowOffsetY = 1; // leichte Kante nach unten
       this.ctx.stroke();
+      this.ctx.restore();
+
+      // Highlight-Kante (heller Sand), leichte Verschiebung nach oben für Relief
+      this.ctx.save();
+      this.ctx.translate(0, -0.6);
+      this.ctx.strokeStyle = this.drawMelodyColors.currentDrawingHighlight;
+      this.ctx.lineWidth = Math.max(1, baseWidth - 1);
+      this.ctx.globalAlpha = 0.7;
+      this.ctx.shadowColor = 'transparent';
+      this.ctx.stroke();
+      this.ctx.restore();
+
+      // Oberstrich (Hauptfarbe Sand)
+      this.ctx.save();
+      this.ctx.strokeStyle = this.drawMelodyColors.currentDrawing; // #C2B280
+      this.ctx.lineWidth = baseWidth;
+      this.ctx.globalAlpha = 1.0;
+      this.ctx.shadowColor = 'transparent';
+      this.ctx.stroke();
+      this.ctx.restore();
     },
     
     /**
@@ -3091,6 +3330,15 @@ export function pitches() {
      * End drawing and play the resulting melody
      */
     endDrawing(e) {
+      debugLog('PITCHES', `[DRAW_MELODY_DEBUG] endDrawing() called - drawPath length: ${this.drawPath.length}`);
+      
+      // Prevent double calls from multiple event handlers (mouseup + touchend)
+      if (this._endDrawingInProgress) {
+        debugLog('PITCHES', `[DRAW_MELODY_DEBUG] endDrawing() already in progress, ignoring duplicate call`);
+        return;
+      }
+      this._endDrawingInProgress = true;
+      
       if (e) {
         e.preventDefault(); // Verhindert unbeabsichtigtes Verhalten auf Mobilgeräten
       }
@@ -3108,14 +3356,23 @@ export function pitches() {
         this.ctx.closePath();
       }
       
+      // Snake animation replaces the need for redrawing the completed path
+      // this.redrawCompletedPath(); // Removed - snake handles visualization
+      
       // Melodie aus der Zeichnung generieren und abspielen
       this.playDrawnMelody();
+      
+      // Reset debouncing flag after processing is complete
+      setTimeout(() => {
+        this._endDrawingInProgress = false;
+      }, 50);
     },
     
     /**
      * Play a melody based on the drawn path
      */
     playDrawnMelody() {
+      debugLog('PITCHES', `[DRAW_MELODY_DEBUG] playDrawnMelody() called - drawPath length: ${this.drawPath.length}`);
       if (this.drawPath.length === 0) return;
       
       const canvas = document.querySelector('.drawing-canvas');
@@ -3140,83 +3397,115 @@ export function pitches() {
       } 
       // Im Spiel-Modus: Anzahl der Noten basierend auf dem Level
       else {
-        const currentMelodyLength = minNotes + this.drawMelodyLevel;
+        const currentLevel = get_1_3_level(this);
+        const currentMelodyLength = minNotes + currentLevel;
         sampleSize = Math.min(Math.min(maxNotes, currentMelodyLength), this.drawPath.length);
-        debugLog('PITCHES', `MELODY_NOTES: Using ${sampleSize} notes based on level ${this.drawMelodyLevel} in challenge mode`);
+        debugLog('PITCHES', `MELODY_NOTES: Using ${sampleSize} notes based on level ${currentLevel} in challenge mode`);
       }
       
-      var sampledPoints = [];
+      // Use the shared sampling function for consistent point distribution
+      const sampledData = this.samplePointsFromPath(this.drawPath, sampleSize);
+      const sampledPoints = sampledData.map(item => {
+        debugLog('PITCHES', 'DRAW_PATH_DEBUG: index=', item.originalIndex, 'drawPath.length=', this.drawPath.length, 'point=', item.point);
+        return item.point;
+      });
       
-      // Immer den ersten Punkt nehmen
-      sampledPoints.push(this.drawPath[0]);
-      
-      // Für Melodien mit mehr als 2 Noten, die mittleren Punkte verteilen
-      if (sampleSize > 2) {
-        // Wir verteilen die mittleren Punkte zwischen dem ersten und letzten Punkt
-        // Wir nehmen sampleSize - 2 innere Punkte (da der erste und letzte Punkt fixiert sind)
-        const innerPoints = sampleSize - 2;
-        
-        // Berechne das Intervall für die inneren Punkte
-        // Wir nutzen nicht die volle Länge, sondern lassen etwas Platz am Ende
-        const availableLength = this.drawPath.length * 0.85;
-        const step = Math.floor(availableLength / (innerPoints + 1));
-        
-        for (let i = 1; i <= innerPoints; i++) {
-          const index = Math.min(i * step, this.drawPath.length - 2);
-          sampledPoints.push(this.drawPath[index]);
-          debugLog('DRAW_PATH_DEBUG', `index=${index}, drawPath.length=${this.drawPath.length}, point=${JSON.stringify(this.drawPath[index])}`);
-        }
-      }
-      
-      // Immer den letzten Punkt nehmen
-      
-      // Filter out undefined points to prevent runtime errors
-      sampledPoints = sampledPoints.filter(point => point && point.x !== undefined && point.y !== undefined);
-      debugLog('PITCHES', `DRAW_PATH_DEBUG: sampledPoints after filter: ${sampledPoints.length, 'points'}`);
-      sampledPoints.push(this.drawPath[this.drawPath.length - 1]);
+      debugLog('PITCHES', 'DRAW_PATH_DEBUG: sampledPoints after sampling:', sampledPoints.length, 'points');
       
       // Y-Positionen auf Noten abbilden (höhere Position = höherer Ton)
       // Entferne die unterste Oktave aus dem Bereich
       const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5'];
       
-      const sequence = sampledPoints.map(point => {
+      const sequence = sampledPoints.map((point, idx) => {
         // Y-Koordinate invertieren (0 ist oben im Canvas)
         const relativeHeight = 1 - (point.y / height);
-        const noteIndex = Math.floor(relativeHeight * notes.length);
-        return notes[Math.min(noteIndex, notes.length - 1)];
+        let noteIndex = Math.floor(relativeHeight * notes.length);
+        
+        // Defensive checks and logging for out-of-bounds drawing
+        if (isNaN(relativeHeight) || relativeHeight < 0 || relativeHeight > 1) {
+          debugLog(['DRAW_MELODY_ERROR', 'Y_OUT_OF_BOUNDS'], `Point ${idx}: y=${point.y}, height=${height}, relativeHeight=${relativeHeight}`);
+        }
+        if (noteIndex < 0) {
+          debugLog(['DRAW_MELODY_ERROR', 'NEGATIVE_NOTE_INDEX'], `Point ${idx}: noteIndex clamped from ${noteIndex} to 0, y=${point.y}`);
+          noteIndex = 0;
+        } else if (noteIndex >= notes.length) {
+          debugLog(['DRAW_MELODY_ERROR', 'OVERSHOOT_NOTE_INDEX'], `Point ${idx}: noteIndex clamped from ${noteIndex} to ${notes.length-1}, y=${point.y}`);
+          noteIndex = notes.length - 1;
+        }
+        
+        const note = notes[noteIndex];
+        if (!note) {
+          debugLog(['DRAW_MELODY_ERROR', 'UNDEFINED_NOTE'], `Point ${idx}: noteIndex=${noteIndex}, y=${point.y}, relativeHeight=${relativeHeight}`);
+        }
+        return note;
       });
       
-      debugLog('PITCHES', `Playing drawn melody sequence: ${sequence}`);
+      // Filter out any undefined notes and log them
+      const validSequence = sequence.filter((note, idx) => {
+        if (!note) {
+          debugLog(['DRAW_MELODY_ERROR', 'FILTERED_UNDEFINED_NOTE'], `Removed undefined note at index ${idx}`);
+          return false;
+        }
+        return true;
+      });
+      
+      // If all notes were filtered out, use a fallback sequence
+      const finalSequence = validSequence.length > 0 ? validSequence : ['C4', 'E4', 'G4'];
+      if (validSequence.length === 0) {
+        debugLog(['DRAW_MELODY_ERROR', 'FALLBACK_SEQUENCE'], 'All notes were undefined, using fallback sequence');
+      }
+      
+      debugLog('PITCHES', 'Playing drawn melody sequence:', finalSequence);
+      debugLog(['DRAW_MELODY_DEBUG', 'SEQUENCE_STATS'], `Original: ${sequence.length}, Valid: ${validSequence.length}, Final: ${finalSequence.length}`);
       
       // Visuelle Darstellung verbessern - farbige Punkte für gesampelte Stellen
       if (this.ctx) {
         sampledPoints.forEach((point, index) => {
           // Kreise an den gesampelten Punkten zeichnen
-          this.ctx.fillStyle = '#e74c3c'; // Rote Punkte für die gesampelten Stellen
+          this.ctx.fillStyle = this.drawMelodyColors.sampledNoteMarker;
           this.ctx.beginPath();
           this.ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
           this.ctx.fill();
           
           // Optional: Notennamen dazuschreiben
-          this.ctx.fillStyle = '#333';
+          this.ctx.fillStyle = this.drawMelodyColors.noteLabel;
           this.ctx.font = '10px Arial';
-          this.ctx.fillText(sequence[index], point.x + 8, point.y - 8);
+          this.ctx.fillText(finalSequence[index] || 'N/A', point.x + 8, point.y - 8);
         });
       }
       
       // Store the sampled points for redrawing
       this.currentMelodyPoints = sampledPoints;
       
+      // Initialize playback index
+      this.currentPlaybackIndex = -1;
+      
+      // Prepare cancellation and timeout tracking for drawn melody playback
+      if (!this.drawnPlaybackTimeouts) this.drawnPlaybackTimeouts = [];
+      this.drawnPlaybackToken = (this.drawnPlaybackToken || 0) + 1;
+      this.isDrawnPlaybackActive = true;
+      
       // Sequenz mit korrektem Timing abspielen und die gesampelten Punkte übergeben
+      // Apply toLowerCase safely to valid notes only
+      const lowerCaseSequence = finalSequence.map(note => {
+        if (!note || typeof note !== 'string') {
+          debugLog(['DRAW_MELODY_ERROR', 'INVALID_NOTE_FOR_LOWERCASE'], `Invalid note for toLowerCase: ${note}`);
+          return 'c4'; // fallback
+        }
+        return note.toLowerCase();
+      });
+      
       this.playDrawnNoteSequence(
-        sequence.map(note => note.toLowerCase()), 
+        lowerCaseSequence, 
         0, 
-        sampledPoints
+        sampledPoints,
+        this.drawnPlaybackToken
       );
       
       // Compare with reference melody if in challenge mode
       if (this.melodyChallengeMode && this.referenceSequence) {
-        this.compareWithReferenceSequence_1_3(sequence);
+        debugLog('PITCHES', `[DRAW_MELODY_DEBUG] About to call compareWithReferenceSequence_1_3`);
+        this.compareWithReferenceSequence_1_3(finalSequence);
       }
     },
     
@@ -3224,25 +3513,38 @@ export function pitches() {
      * Spielt eine Sequenz von Noten nacheinander ab
      * Verwendet die zentrale Audio-Engine für konsistente Audiowiedergabe auf allen Plattformen
      */
-    playDrawnNoteSequence(notes, index = 0, sampledPoints = null) {
+    playDrawnNoteSequence(notes, index = 0, sampledPoints = null, token = null) {
+      // Abort if playback has been cancelled or token mismatches
+      if (token != null && token !== this.drawnPlaybackToken) {
+        debugLog('PITCHES', '[DRAW_MELODY_STOP] playDrawnNoteSequence(): token mismatch, aborting step');
+        return;
+      }
+      if (!this.isDrawnPlaybackActive) {
+        return;
+      }
+      
       if (index >= notes.length) {
-        // Clear active highlight when playback is complete
+        // Clear active highlight and reset playback index when playback is complete
         if (this.activeNoteHighlight) {
           this.activeNoteHighlight = null;
-          this.redrawMelody();
+          this.currentPlaybackIndex = -1;
+          // Snake animation replaces the need for redrawing
+          // this.redrawCompletedPath(); // Removed - snake handles visualization
         }
+        this.isDrawnPlaybackActive = false;
         return;
       }
       
       const note = notes[index];
       
       try {
-        // Update active note highlight
+        // Update active note highlight and current playback index
         this.activeNoteHighlight = sampledPoints && sampledPoints[index] 
           ? { x: sampledPoints[index].x, y: sampledPoints[index].y }
           : null;
+        this.currentPlaybackIndex = index;
           
-        // Redraw with the new active note
+        // Redraw with the new active note and path coloring
         this.redrawMelody();
         
         // Play the note through the central audio engine
@@ -3268,18 +3570,62 @@ export function pitches() {
                 try {
                   noteElements[noteIndex].classList.remove('playing');
                 } catch(e) {
-                  debugLog(['PITCHES', 'ERROR'], `MELODY_HIGHLIGHT_ERROR: Error removing highlight: ${e.message || e}`);
+                  debugLog(['PITCHES', 'ERROR'], 'MELODY_HIGHLIGHT_ERROR: Error removing highlight:', e);
                 }
               }, 300);
             }
           }
         }
       } catch (error) {
-        debugLog(['PITCHES', 'ERROR'], `Error playing note in drawn melody: ${error.message || error}`);
+        debugLog(['PITCHES', 'ERROR'], 'Error playing note in drawn melody:', error);
         // Continue with next note even if there was an error
       } finally {
         // Play next note with delay
-        setTimeout(() => this.playDrawnNoteSequence(notes, index + 1, sampledPoints), 300);
+        const tId = setTimeout(() => this.playDrawnNoteSequence(notes, index + 1, sampledPoints, token), 300);
+        if (Array.isArray(this.drawnPlaybackTimeouts)) this.drawnPlaybackTimeouts.push(tId);
+      }
+    },
+
+    /**
+     * Stop playback of the drawn melody immediately
+     * Clears scheduled timeouts, resets flags and highlights
+     */
+    stopDrawnMelodyPlayback() {
+      try {
+        this.isDrawnPlaybackActive = false;
+        this.drawnPlaybackToken = (this.drawnPlaybackToken || 0) + 1; // invalidate existing callbacks
+        if (Array.isArray(this.drawnPlaybackTimeouts)) {
+          this.drawnPlaybackTimeouts.forEach(id => {
+            try { clearTimeout(id); } catch (_) {}
+          });
+          this.drawnPlaybackTimeouts = [];
+        }
+        this.currentPlaybackIndex = -1;
+        this.activeNoteHighlight = null;
+        if (typeof this.redrawMelody === 'function') {
+          this.redrawMelody();
+        }
+        debugLog('PITCHES', '[DRAW_MELODY_STOP] stopDrawnMelodyPlayback(): playback cancelled');
+      } catch (e) {
+        debugLog(['PITCHES', 'ERROR'], '[DRAW_MELODY_STOP_ERROR] Failed to stop drawn melody playback', e);
+      }
+    },
+
+    /**
+     * Stop playback of the reference melody (challenge mode)
+     * Clears any scheduled timeouts
+     */
+    stopReferencePlayback() {
+      try {
+        if (Array.isArray(this.referencePlaybackTimeouts)) {
+          this.referencePlaybackTimeouts.forEach(id => {
+            try { clearTimeout(id); } catch (_) {}
+          });
+          this.referencePlaybackTimeouts = [];
+        }
+        debugLog('PITCHES', '[REFERENCE_SEQ_STOP] stopReferencePlayback(): playback cancelled');
+      } catch (e) {
+        debugLog(['PITCHES', 'ERROR'], '[REFERENCE_SEQ_STOP_ERROR] Failed to stop reference playback', e);
       }
     },
     
@@ -3290,6 +3636,7 @@ export function pitches() {
      * @activity 1_3_draw_melody
      */
     compareWithReferenceSequence_1_3(drawnSequence) {
+      debugLog('PITCHES', `[DRAW_MELODY_DEBUG] compareWithReferenceSequence_1_3 called with:`, drawnSequence);
       // Cannot compare if there's no reference
       if (!this.referenceSequence || this.referenceSequence.length === 0) return;
       
@@ -3308,90 +3655,49 @@ export function pitches() {
       
       // Calculate the match percentage
       const matchPercentage = (matchCount / compareLength) * 100;
-      debugLog('PITCHES', `Melody match: ${matchCount}/${compareLength} notes (${matchPercentage.toFixed(1)}%)`);
+      debugLog('PITCHES', `[DRAW_MELODY_DEBUG] Melody match: ${matchCount}/${compareLength} notes (${matchPercentage.toFixed(1)}%)`);
+      debugLog('PITCHES', `[DRAW_MELODY_DEBUG] Match percentage >= 80? ${matchPercentage >= 80}`);
+      debugLog('PITCHES', `[DRAW_MELODY_DEBUG] Perfect match (100%)? ${matchPercentage === 100}`);
       
       // Provide feedback based on match percentage
       let feedback = '';
       const isGerman = document.documentElement.lang === 'de';
       let perfectMatch = matchPercentage === 100;
       
-      // Initialize success counter if not already initialized
-      if (this.levelSuccessCounter === undefined) {
-        // Try to load from localStorage first
-        try {
-          const savedCounter = localStorage.getItem('lalumo_draw_melody_success_counter');
-          if (savedCounter !== null) {
-            this.levelSuccessCounter = parseInt(savedCounter, 10);
-            debugLog('PITCHES', `MELODY_PROGRESSION: Loaded success counter from localStorage: ${this.levelSuccessCounter}`);
-          } else {
-            this.levelSuccessCounter = 0;
-            debugLog('PITCHES', 'MELODY_PROGRESSION: Initialized success counter to 0');
-          }
-        } catch (e) {
-          this.levelSuccessCounter = 0;
-          debugLog(['STORAGE', 'WARN'], 'Could not load success counter from localStorage', e);
-        }
-      }
-      
-      // Update the progress in the central progress object
-      // Convert level and success counter to a percentage value (0-100)
-      // Level 0 with 0 successful melodies = 0%, Level 5 with 10 successful melodies = 100%
-      const maxLevel = 5;
-      const melodiesPerLevel = 10;
-      const totalProgress = Math.min(100, Math.round((this.drawMelodyLevel * melodiesPerLevel + this.levelSuccessCounter) / 
-                                                   (maxLevel * melodiesPerLevel + 1) * 100));
-      
-      // Update the central progress object
-      this.progress['1_3_pitches_draw-melody'] = totalProgress;
-      debugLog('PITCHES', `MELODY_PROGRESS: Updated central progress to ${totalProgress}% for draw-melody activity`);
-      
-      // Save to localStorage
-      try {
-        localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
-      } catch (e) {
-        debugLog(['STORAGE', 'WARN'], 'Could not update central progress in localStorage', e);
-      }
-      
       // Create feedback message
       if (matchPercentage >= 80) {
-        // Great match - count towards level increase
+        // Great match - increment progress using unified tracking
+        debugLog('PITCHES', `[DRAW_MELODY_DEBUG] About to increment progress from ${this.progress['1_3'] || 0}`);
+        if (!this.progress['1_3']) this.progress['1_3'] = 0;
+        this.progress['1_3'] += 1;
+        debugLog('PITCHES', `[DRAW_MELODY_DEBUG] Progress incremented to ${this.progress['1_3']}`);
         
-        // Increase success counter
-        this.levelSuccessCounter++;
-        debugLog('PITCHES', `MELODY_PROGRESSION: Success count: ${this.levelSuccessCounter}/3 for level ${this.drawMelodyLevel}`);
+        const currentProgress = this.progress['1_3'];
+        const currentLevel = get_1_3_level(this);
         
-        // Save success counter to localStorage
+        debugLog('PITCHES', `MELODY_PROGRESSION: Progress incremented to ${currentProgress} (level ${currentLevel})`);
+        
+        // Save progress to localStorage
         try {
-          localStorage.setItem('lalumo_draw_melody_success_counter', this.levelSuccessCounter);
+          localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
         } catch (e) {
-          debugLog(['STORAGE', 'WARN'], 'Could not save success counter to localStorage', e);
+          debugLog(['PITCHES', 'WARN'], 'Could not update progress in localStorage', e);
         }
         
-        // If counter reaches 10, increase level if not at max
-        if (this.levelSuccessCounter >= 3 && this.drawMelodyLevel < 5) { // Max level is 5 (gives 8 notes)
-          this.drawMelodyLevel++;
-          this.levelSuccessCounter = 0; // Reset counter for next level
-          debugLog('PITCHES', `MELODY_PROGRESSION: User level increased to ${this.drawMelodyLevel}`);
-          
-          // Save level to localStorage for persistence
-          try {
-            localStorage.setItem('lalumo_draw_melody_level', this.drawMelodyLevel);
-            localStorage.setItem('lalumo_draw_melody_success_counter', 0); // Reset counter in storage
-          } catch (e) {
-            debugLog(['STORAGE', 'WARN'], 'Could not save draw melody level to localStorage', e);
-          }
+        // Check if we just leveled up (every 3 correct answers)
+        if (currentProgress % 3 === 0 && currentLevel < 5) { // Max level is 5 (gives 8 notes)
+          const noteCount = currentLevel + 3;
           
           // TODO: move translation to strings.xml
           feedback = isGerman ? 
-            `Super! Du hast 10 Melodien erfolgreich gespielt! Jetzt versuche längere Melodien mit ${this.drawMelodyLevel + 3} Tönen.` : 
-            `Great job! You've successfully played 10 melodies! Now try longer melodies with ${this.drawMelodyLevel + 3} notes.`;
+            `Super! Jetzt versuche längere Melodien mit ${noteCount} Tönen!` : 
+            `Great job! Now try longer melodies with ${noteCount} notes!`;
           
-          // Show rainbow effect for perfect match
+          // Show rainbow effect for level up
           if (perfectMatch) {
-            // Create and show rainbow success animation
             showRainbowSuccess();
           }
-        } else {
+        } else if (currentLevel >= 5) {
           // TODO: move translation to strings.xml
           feedback = isGerman ? 
             'Fantastisch! Du hast alle Melodien gemeistert!' : 
@@ -3401,7 +3707,7 @@ export function pitches() {
           setTimeout(() => {
             // Play success sound
             audioEngine.playNote('success');
-            debugLog('AUDIO', '[1_3] Playing success feedback sound with audio engine. level: ' + this.levelSuccessCounter);
+            debugLog('AUDIO', '[1_3] Playing success feedback sound with audio engine. progress: ' + currentProgress);
             
             // Always show rainbow for mastering all levels
             showRainbowSuccess();
@@ -3425,7 +3731,7 @@ export function pitches() {
       }
       
       // Display feedback to the user
-      this.showFeedbackMessage(feedback, 3000);
+      showFeedbackMessage(feedback, 3000);
       
       // Generate a new reference melody only if the match was perfect (100%)
       setTimeout(() => {
@@ -3442,33 +3748,6 @@ export function pitches() {
           this.updateDrawingModeUI();
         }
       }, 3500);
-    },
-    
-    /**
-     * Display feedback to the user
-     * @param {string} message - The feedback message
-     * @param {number} duration - How long to show the message (ms)
-     */
-    showFeedbackMessage(message, duration = 2000) {
-      // Create or update feedback element
-      let feedbackElement = document.querySelector('.melody-feedback');
-      
-      if (!feedbackElement) {
-        feedbackElement = document.createElement('div');
-        feedbackElement.className = 'melody-feedback';
-        const container = document.querySelector('.drawing-container');
-        if (container) {
-          container.parentNode.insertBefore(feedbackElement, container.nextSibling);
-        }
-      }
-      
-      feedbackElement.textContent = message;
-      feedbackElement.style.opacity = '1';
-      
-      // Hide the feedback after the specified duration
-      setTimeout(() => {
-        feedbackElement.style.opacity = '0';
-      }, duration);
     },
     
     /**
@@ -3519,15 +3798,13 @@ export function pitches() {
      * @activity 1_5_memory_game
      
      */
-    setupMemoryMode_1_5(playSound = false, generateNew = true) {
+    setup_1_5(playSound = false, generateNew = true) {
       // Use the specific C, D, E, G, A notes for the memory game (skipping F and H/B)
       const fixedNotes = ['C4', 'D4', 'E4', 'G4', 'A4'];
       
-      // Initialize memory success count from localStorage or default to 0
-      if (this.memorySuccessCount === undefined) {
-        const savedLevel = localStorage.getItem('lalumo_memory_level');
-        this.memorySuccessCount = savedLevel ? parseInt(savedLevel, 10) : 0;
-      }
+      // Initialize memory progress from unified tracking
+      const currentProgress = this.progress['1_5'] || 0;
+      debugLog('PITCHES', 'MEMORY_SETUP: Using unified progress tracking, current progress:', currentProgress);
       
       if (generateNew) {
         // Bei jeder neuen Sequenz auch neue Tierbilder anzeigen
@@ -3535,21 +3812,21 @@ export function pitches() {
         this.selectRandomAnimalImages();
         
         this.currentSequence = [];
-        // Determine sequence length based on success count
+        // Determine sequence length based on progress count
         let length;
-        if (this.memorySuccessCount < 3) {
+        if (currentProgress < 3) {
           length = 2; // First 3 successes: 2 notes
-        } else if (this.memorySuccessCount < 6) {
+        } else if (currentProgress < 6) {
           length = 3; // Next 3 successes: 3 notes
-        } else if (this.memorySuccessCount < 11) {
+        } else if (currentProgress < 11) {
           length = 4; // Next 5 successes: 4 notes
-        } else if (this.memorySuccessCount < 16) {
+        } else if (currentProgress < 16) {
           length = 5; // Next 5 successes: 5 notes
         } else {
           length = 6; // After 15 successes: 6 notes
         }
         
-        debugLog('PITCHES', `Memory game: Level ${this.memorySuccessCount + 1}, using ${length} notes`);
+        debugLog('PITCHES', `Memory game: Progress ${currentProgress}, using ${length} notes`);
         
         // First note is fully random
         let lastNote = fixedNotes[Math.floor(Math.random() * fixedNotes.length)];
@@ -3725,8 +4002,15 @@ export function pitches() {
         // Play error sound using the central audio engine
         audioEngine.playNote('try_again', 1.0);
         
-        this.showFeedback = true;
-        this.feedback = (this.$store.strings?.memory_incorrect || 'Let\'s try again. Listen carefully!');
+        // Show feedback using global system
+        const errorMessage = this.$store.strings?.memory_incorrect || 'Let\'s try again. Listen carefully!';
+        debugLog('PITCHES', 'MEMORY_GAME_FEEDBACK: Showing error message:', errorMessage);
+        window.showFeedbackMessage(errorMessage, {
+      activityId: '1_5_pitches_memory',
+      isIntroMessage: false,
+      delaySeconds: 3,
+      component: this
+    });
         
         // Enable highlighting for the next playback after an error
         this.showMemoryHighlighting = true;
@@ -3734,7 +4018,7 @@ export function pitches() {
         
         // Reset after a delay
         setTimeout(() => {
-          this.showFeedback = false;
+          // Local feedback removed - using global feedback system
           this.userSequence = [];
           this.playMemorySequence();
         }, 2000);
@@ -3776,10 +4060,37 @@ export function pitches() {
         }
       }
       
-      this.showFeedback = true;
-      this.feedback = isCorrect ? 
+      // Show feedback using global system
+      debugLog(['MEMORY_GAME', 'FEEDBACK'], `checkMemorySequence called - isCorrect: ${isCorrect}`);
+      debugLog(['MEMORY_GAME', 'STRINGS'], `Alpine.store('strings') available: ${!!this.$store.strings}`);
+      
+      const feedbackMessage = isCorrect ? 
         (this.$store.strings?.memory_correct || 'Amazing memory! You got it right!') : 
         (this.$store.strings?.memory_incorrect || 'Let\'s try again. Listen carefully!');
+      
+      debugLog(['MEMORY_GAME', 'FEEDBACK'], `Feedback message: ${feedbackMessage}`);
+      debugLog(['MEMORY_GAME', 'FEEDBACK'], `showFeedbackMessage function available: ${typeof window.showFeedbackMessage}`);
+      
+      // Set correct/incorrect state in global store
+      const store = window.Alpine?.store;
+      if (store && store.feedback) {
+        store.feedback.isCorrect = isCorrect;
+        debugLog(['MEMORY_GAME', 'FEEDBACK'], `Set store.feedback.isCorrect to: ${isCorrect}`);
+      } else {
+        debugLog(['MEMORY_GAME', 'FEEDBACK'], `Alpine store or feedback not available`);
+      }
+      
+      if (typeof window.showFeedbackMessage === 'function') {
+        debugLog(['MEMORY_GAME', 'FEEDBACK'], `Calling showFeedbackMessage with: ${feedbackMessage}`);
+        window.showFeedbackMessage(feedbackMessage, {
+          activityId: '1_5_pitches_memory',
+          isIntroMessage: false,
+          delaySeconds: 3,
+          component: this
+        });
+      } else {
+        debugLog(['PITCHES', 'ERROR'], '[MEMORY_GAME_ERROR] showFeedbackMessage function not available');
+      }
       
       // Play feedback sound using the central audio engine
       if (isCorrect) {
@@ -3799,24 +4110,17 @@ export function pitches() {
         // Create and show rainbow success animation
         showRainbowSuccess();
         
-        // Increment and save memory game progress
-        this.memorySuccessCount = (this.memorySuccessCount || 0) + 1;
-        
-        // Update progress with new activity ID only
-        if (!this.progress['1_5_pitches_memory-game']) {
-          this.progress['1_5_pitches_memory-game'] = 0;
-        }
+        // Increment progress using unified tracking
+        if (!this.progress['1_5']) this.progress['1_5'] = 0;
+        this.progress['1_5'] += 1;
         
         // Reset to sound-only mode for the next sequence
         this.showMemoryHighlighting = false;
         debugLog("PIANO_DIRECT", "Success! Disabling highlighting for next sequence");
         
-        // Store the maximum success count as the progress value
-        this.progress['1_5_pitches_memory-game'] = Math.max(this.memorySuccessCount, this.progress['1_5_pitches_memory-game'] || 0);
+        debugLog('PITCHES', 'Updated memory progress:', this.progress['1_5']);
         
-        debugLog('PITCHES', `Updated memory progress: ${this.progress['1_5_pitches_memory-game']}`);
-        
-        localStorage.setItem('lalumo_memory_level', this.memorySuccessCount.toString());
+        // Save progress to localStorage
         localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
       } else {
         // Show shake animation on the last pressed key if available
@@ -3830,11 +4134,11 @@ export function pitches() {
       
       // Reset after feedback
       setTimeout(() => {
-        this.showFeedback = false;
+        // Local feedback removed - using global feedback system
         
         if (isCorrect) {
           // Play the new melody automatically after 2 seconds
-          this.setupMemoryMode_1_5();
+          this.setup_1_5();
           
           // Play the new sequence automatically after another 2 seconds
           setTimeout(() => {
@@ -3862,7 +4166,7 @@ export function pitches() {
         if (!this.gameMode) {
           this.startMatchGame(); // Start game mode from free play
         } else {
-          this.setupMatchingMode_1_2(true, false); // Replay current melody in game mode
+          this.setup_1_2(true, false); // Replay current melody in game mode
         }
       } else if (this.mode === '1_4_pitches_does-it-sound-right') {
         // Pass false to indicate we want to replay the current melody, not generate a new one
@@ -3921,7 +4225,7 @@ export function pitches() {
       this.lastBadAnimal = this.badAnimalImages[badIndex];
       this.currentBadAnimalImage = this.badAnimalImages[badIndex];
       
-      debugLog('ANIMALS', `Selected ${this.currentGoodAnimalImage}, ${this.currentBadAnimalImage}`);
+      debugLog('PITCHES', 'ANIMALS: Selected', this.currentGoodAnimalImage, this.currentBadAnimalImage);
       
       // Update the image sources in the DOM
       this.updateAnimalImages();
@@ -3931,7 +4235,7 @@ export function pitches() {
      * Updates the DOM with the current animal images
      */
     updateAnimalImages() {
-      debugLog('ANIMALS', `Updating animal images in DOM with ${this.currentGoodAnimalImage} and ${this.currentBadAnimalImage}`);
+      debugLog('PITCHES', 'ANIMALS: Updating animal images in DOM with ' + this.currentGoodAnimalImage + ' and ' + this.currentBadAnimalImage);
       // Find the image elements
       const goodAnimalImg = document.querySelector('.pitch-card.animal-card.happy .animal-icon img');
       const badAnimalImg = document.querySelector('.pitch-card.animal-card.unhappy .animal-icon img');
@@ -3942,7 +4246,7 @@ export function pitches() {
         // Extract animal name from filename for better accessibility
         const goodAnimalName = extractAnimalName(this.currentGoodAnimalImage);
         goodAnimalImg.alt = `Happy ${goodAnimalName}`;
-        debugLog('ANIMALS', `Updated good animal image in DOM with ${goodAnimalName}`);
+        debugLog('PITCHES', 'ANIMALS: Updated good animal image in DOM with ' + goodAnimalName);
       } else {
         debugLog('PITCHES', 'ANIMALS: Good animal button or image not found in DOM');
       }
@@ -3952,7 +4256,7 @@ export function pitches() {
         // Extract animal name from filename for better accessibility
         const badAnimalName = extractAnimalName(this.currentBadAnimalImage);
         badAnimalImg.alt = `Unhappy ${badAnimalName}`;
-        debugLog('ANIMALS', `Updated bad animal image in DOM with ${badAnimalName}`);
+        debugLog('PITCHES', 'ANIMALS: Updated bad animal image in DOM with ' + badAnimalName);
       } else {
         debugLog('PITCHES', 'ANIMALS: Bad animal button or image not found in DOM');
       }
@@ -3963,8 +4267,8 @@ export function pitches() {
      * Now includes practice mode and game mode separation
      * @param {boolean} playSound - Whether to play a melody right away
      */
-    setupSoundHighOrLowMode_1_4(playSound = false) {
-      debugLog('PITCHES', 'Setting up Sound HighOrLow mode in practice mode');
+    setup_1_4(playSound = false) {
+      debugLog('setup_1_4', 'Setting up Sound HighOrLow mode in practice mode');
       
       // Initialize in practice mode
       this.gameMode = false;
@@ -3983,6 +4287,11 @@ export function pitches() {
       this.correctAnswer = null;
       this.soundJudgmentCorrectStreak = 0; // Neue Variable für die aktuelle Erfolgsserie
       
+      // Initialize separate melody shuffles for free and game mode
+      this.shuffleAllMelodies('free');
+      this.shuffleAllMelodies('game');
+      debugLog(['SOUND_JUDGMENT', 'SETUP'], 'Initialized separate shuffles for free and game mode');
+      
       // Select random animal images for this round
       this.selectRandomAnimalImages();
       
@@ -3994,23 +4303,22 @@ export function pitches() {
         ? 'Drücke auf Play, um eine Melodie zu hören. Klingt sie richtig? Oder ist da ein falscher Ton?'
         : 'Press play to hear a melody. Does it sound right? Or is there a wrong note?';
       
-      // Track activity usage and initialize level from preferences if available
-      if (!this.progress['1_4_pitches_does-it-sound-right']) {
-        this.progress['1_4_pitches_does-it-sound-right'] = 0;
+      // Track activity usage and initialize progress if needed
+      if (!this.progress['1_4']) {
+        this.progress['1_4'] = 0;
       }
       
-      // Lade den Level aus dem localStorage, falls vorhanden
-      const savedLevel = parseInt(localStorage.getItem('lalumo_soundJudgmentLevel'));
-      if (!isNaN(savedLevel) && savedLevel >= 1 && savedLevel <= 7) {
-        this.soundJudgmentLevel = savedLevel;
-        debugLog('PITCHES', `SOUND JUDGMENT: Loaded level ${this.soundJudgmentLevel} from preferences`);
-      } else if (!this.soundJudgmentLevel || this.soundJudgmentLevel < 1) {
-        // Fallback: Setze Level auf 1, wenn nichts gespeichert ist
-        this.soundJudgmentLevel = 1;
-      }
+      // Level is now calculated from this.progress['1_4'] using get_1_4_level()
+      // No need to load from separate localStorage anymore
+      debugLog('PITCHES', `SOUND JUDGMENT: Current level ${get_1_4_level(this)} (progress: ${this.progress['1_4'] || 0})`);
       
-      // Show mascot message first (moved from playback completion)
-      window.showMascotMessage(introMessage, null, 2, this);
+      // Show intro message first (moved from playback completion)
+      window.showFeedbackMessage(introMessage, {
+      activityId: null,
+      isIntroMessage: true,
+      delaySeconds: 10,
+      component: this
+    });
       
       // Generate a melody in preparation for game mode
       this.generateSoundHighOrLowMelody();
@@ -4059,7 +4367,12 @@ export function pitches() {
         // }
         
         // // Show the instrument-specific message
-        // window.showMascotMessage(instrumentMessage, null, 2, this);
+        // window.showFeedbackMessage(instrumentMessage, {
+        //   activityId: null,
+        //   isIntroMessage: false,
+        //   delaySeconds: 2,
+        //   component: this
+        // });
         
         // Generate a melody without wrong notes for practice mode
         this.generatePracticeMelody();
@@ -4080,7 +4393,12 @@ export function pitches() {
           : 'Listen to the melody! Does it sound right? Or is there a wrong note?';
         
         // Show the game mode message
-        window.showMascotMessage(gameMessage, null, 2, this);
+        window.showFeedbackMessage(gameMessage, {
+      activityId: null,
+      isIntroMessage: false,
+      delaySeconds: 2,
+      component: this
+    });
         
         // Update the progress display now that we're in game mode
         this.update_progress_display();
@@ -4099,12 +4417,10 @@ export function pitches() {
       // Generate a melody without wrong notes for practice mode
       // Similar to generateSoundHighOrLowMelody but without wrong notes
       
-      // Get a random melody from our known melodies
-      const availableMelodyIds = Object.keys(this.knownMelodies);
-      const randomIndex = Math.floor(Math.random() * availableMelodyIds.length);
-      const selectedMelodyId = availableMelodyIds[randomIndex];
+      // Use free mode shuffle for practice melodies too
+      const selectedMelodyId = this.getNextShuffledMelody('free');
       
-      debugLog('PITCHES', `SOUND JUDGMENT PRACTICE: Selected melody ${selectedMelodyId}`);
+      debugLog(['SOUND_JUDGMENT', 'PRACTICE'], `Selected practice melody from free shuffle: ${selectedMelodyId}`);
       
       // Get the notes for this melody
       const melodyNotes = this.knownMelodies[selectedMelodyId].notes;
@@ -4166,16 +4482,17 @@ export function pitches() {
     update_progress_display() {
       // Verwende die gemeinsame Hilfsfunktion aus ui-helpers.js
       const levelDescriptions = {
-        1: 'Level 1: 2 falsche Noten, keine Pause',
-        2: 'Level 2: 2 falsche Noten, mit Pausen',
-        3: 'Level 3: 1 falsche Note, keine Pause',
-        4: 'Level 4: 1 falsche Note, mit Pausen',
-        5: 'Level 5: 1 falsche Note, max. 3 Halbtöne Abstand',
-        6: 'Level 6: 1 falsche Note, max. 2 Halbtöne Abstand',
-        7: 'Level 7: 1 falsche Note, max. 1 Halbton Abstand'
+        1: this.$store.strings?.sound_judgment_level_1 || 'Level 1: 2 wrong notes, no pause',
+        2: this.$store.strings?.sound_judgment_level_2 || 'Level 2: 2 wrong notes, with pauses',
+        3: this.$store.strings?.sound_judgment_level_3 || 'Level 3: 1 wrong note, no pause',
+        4: this.$store.strings?.sound_judgment_level_4 || 'Level 4: 1 wrong note, with pauses',
+        5: this.$store.strings?.sound_judgment_level_5 || 'Level 5: 1 wrong note, max. 3 semitones distance',
+        6: this.$store.strings?.sound_judgment_level_6 || 'Level 6: 1 wrong note, max. 2 semitones distance',
+        7: this.$store.strings?.sound_judgment_level_7 || 'Level 7: 1 wrong note, max. 1 semitone distance'
       };
       
-      const levelText = levelDescriptions[this.soundJudgmentLevel] || `Level ${this.soundJudgmentLevel}`;
+      const currentLevel = get_1_4_level(this);
+      const levelText = levelDescriptions[currentLevel] || `Level ${currentLevel}`;
       const streakInfo = this.soundJudgmentCorrectStreak > 0 ? ` (${this.soundJudgmentCorrectStreak}/3)` : '';
       
       // Rufe die gemeinsame Hilfsfunktion auf
@@ -4193,7 +4510,7 @@ export function pitches() {
             progressClass: "sound-judgment-progress",
             currentCount: this.soundJudgmentCorrectStreak || 0,
             totalCount: 3,
-            currentLevel: this.soundJudgmentLevel || 1,
+            currentLevel: get_1_4_level(this),
             notesCount: null,
             barOnly: true,
             activityName: progressbarDescription,
@@ -4206,6 +4523,114 @@ export function pitches() {
           });
         }
       });
+    },
+    
+    /**
+     * Generates a melody for free mode in "Does It Sound Right?" activity
+     * Always generates correct melodies (no wrong notes) and uses free mode shuffle
+     */
+    generateSoundHighOrLowMelodyFreeMode() {
+      // Get all melody keys
+      const melodyKeys = Object.keys(this.knownMelodies);
+      if (melodyKeys.length === 0) {
+        debugLog(['PITCHES', 'ERROR'], 'No melodies available for sound HighOrLow free mode');
+        return false;
+      }
+      
+      // Always correct melodies in free mode
+      this.melodyHasWrongNote = false;
+      
+      // Use free mode shuffle
+      const randomMelodyKey = this.getNextShuffledMelody('free');
+      debugLog(['SOUND_JUDGMENT', 'FREE_MODE'], `Selected melody from free shuffle: ${randomMelodyKey}`);
+      
+      const selectedMelody = this.knownMelodies[randomMelodyKey];
+      
+      // Store the melody ID for later reference
+      this.currentMelodyId = randomMelodyKey;
+      
+      // Get the current language
+      const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+      
+      // Set the melody name in the appropriate language
+      this.currentMelodyName = selectedMelody[language] || selectedMelody.en;
+      debugLog('PITCHES', `FREE_MODE_MELODY: Set currentMelodyName to "${this.currentMelodyName}" for melody ID "${randomMelodyKey}"`);
+      
+      // Update UI immediately after setting melody name
+      document.querySelectorAll('.sound-status').forEach(el => {
+        el.textContent = this.currentMelodyName;
+      });
+      
+      // Use the original melody notes (no modifications for free mode)
+      this.currentSequence = [...selectedMelody.notes];
+      
+      debugLog('PITCHES', `FREE_MODE: Generated correct melody "${this.currentMelodyName}" with ${this.currentSequence.length} notes`);
+      return true;
+    },
+    
+    /**
+     * Shuffles all melodies for sequential playback in 1_4 activity
+     * Creates separate randomized orders for free mode and game mode
+     * @param {string} mode - 'free' or 'game' to specify which shuffle to create
+     */
+    shuffleAllMelodies(mode = 'game') {
+      const melodyKeys = Object.keys(this.knownMelodies);
+      debugLog(['SOUND_JUDGMENT', 'SHUFFLE'], `Shuffling ${melodyKeys.length} melodies for ${mode} mode`);
+      
+      // Fisher-Yates shuffle algorithm
+      const shuffledKeys = [...melodyKeys];
+      for (let i = shuffledKeys.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledKeys[i], shuffledKeys[j]] = [shuffledKeys[j], shuffledKeys[i]];
+      }
+      
+      // Store separate shuffles for free and game mode
+      if (mode === 'free') {
+        this.shuffledMelodyKeysFree = shuffledKeys;
+        this.currentShuffledIndexFree = 0;
+        debugLog(['SOUND_JUDGMENT', 'SHUFFLE'], `Free mode shuffled order: ${shuffledKeys.join(', ')}`);
+      } else {
+        this.shuffledMelodyKeysGame = shuffledKeys;
+        this.currentShuffledIndexGame = 0;
+        debugLog(['SOUND_JUDGMENT', 'SHUFFLE'], `Game mode shuffled order: ${shuffledKeys.join(', ')}`);
+      }
+    },
+    
+    /**
+     * Gets the next melody from the shuffled list
+     * Automatically reshuffles when reaching the end of the list
+     * @param {string} mode - 'free' or 'game' to specify which shuffle to use
+     * @returns {string} The melody key to use
+     */
+    getNextShuffledMelody(mode = 'game') {
+      // Determine which shuffle arrays to use based on mode
+      const isGameMode = mode === 'game';
+      
+      // Get current state
+      let shuffledKeys = isGameMode ? this.shuffledMelodyKeysGame : this.shuffledMelodyKeysFree;
+      let currentIndex = isGameMode ? this.currentShuffledIndexGame : this.currentShuffledIndexFree;
+      
+      // Initialize shuffle if not done yet or if we've reached the end
+      if (!shuffledKeys || shuffledKeys.length === 0 || currentIndex >= shuffledKeys.length) {
+        this.shuffleAllMelodies(mode);
+        // Get the updated arrays after shuffling
+        shuffledKeys = isGameMode ? this.shuffledMelodyKeysGame : this.shuffledMelodyKeysFree;
+        currentIndex = isGameMode ? this.currentShuffledIndexGame : this.currentShuffledIndexFree;
+      }
+      
+      // Get the melody at current index
+      const melodyKey = shuffledKeys[currentIndex];
+      
+      // Increment the appropriate index
+      if (isGameMode) {
+        this.currentShuffledIndexGame++;
+      } else {
+        this.currentShuffledIndexFree++;
+      }
+      
+      debugLog(['SOUND_JUDGMENT', 'SHUFFLE'], `Selected melody ${currentIndex + 1}/${shuffledKeys.length} (${mode} mode): ${melodyKey}`);
+      
+      return melodyKey;
     },
     
     /**
@@ -4224,45 +4649,36 @@ export function pitches() {
       // Get all melody keys
       const melodyKeys = Object.keys(this.knownMelodies);
       if (melodyKeys.length === 0) {
-        debugLog(['SOUND_JUDGMENT', 'ERROR'], 'No melodies available for sound HighOrLow activity');
+        debugLog(['PITCHES', 'ERROR'], 'No melodies available for sound HighOrLow activity');
         return false;
       }
       
-      // Stellsicherheit für Level-System
-      if (!this.soundJudgmentLevel || this.soundJudgmentLevel < 1) {
-        this.soundJudgmentLevel = 1;
-      } else if (this.soundJudgmentLevel > 7) {
-        this.soundJudgmentLevel = 7;
-      }
+      // Get current level from progress (automatically constrained to 1-7)
+      const currentLevel = get_1_4_level(this);
       
       // Setze die Schwierigkeitsparameter abhängig vom Level
       const difficulty = {
-        numberOfWrongNotes: this.soundJudgmentLevel <= 2 ? 2 : 1,
-        allowPauseModification: this.soundJudgmentLevel % 2 === 0, // Gerade Levels erlauben Pausen als Fehler
-        maxSemitoneDistance: this.soundJudgmentLevel >= 5 ? 9 - this.soundJudgmentLevel : 100 // Level 5: 3, Level 6: 2, Level 7: 1
+        numberOfWrongNotes: currentLevel <= 2 ? 2 : 1,
+        allowPauseModification: currentLevel % 2 === 0, // Gerade Levels erlauben Pausen als Fehler
+        maxSemitoneDistance: currentLevel >= 5 ? 9 - currentLevel : 100 // Level 5: 3, Level 6: 2, Level 7: 1
       };
       
-      debugLog('SOUND_JUDGMENT', `Currently at level ${this.soundJudgmentLevel}: ${JSON.stringify(difficulty)}`);
+      debugLog('PITCHES', `SOUND JUDGMENT: Currently at level ${currentLevel}`, difficulty);
         
       // Randomly decide if the melody should have a wrong note (50% chance)
       this.melodyHasWrongNote = Math.random() < 0.5;
       
-      // Wähle eine Melodie aus, die nicht dieselbe wie die vorherige ist
-      let randomMelodyKey;
-      let attempts = 0;
-      const maxAttempts = 10; // Sicherheitsgrenze, um unendliche Schleifen zu vermeiden
+      // Use shuffled sequential melody selection instead of random
+      // Determine mode: if gameMode is false, we're in free mode
+      const mode = this.gameMode ? 'game' : 'free';
+      debugLog(['SOUND_JUDGMENT', 'MODE_DEBUG'], `gameMode: ${this.gameMode}, detected mode: ${mode}`);
+      debugLog(['SOUND_JUDGMENT', 'SHUFFLE_STATE'], `Free shuffle: ${this.shuffledMelodyKeysFree?.length || 0} melodies, index: ${this.currentShuffledIndexFree || 0}`);
+      debugLog(['SOUND_JUDGMENT', 'SHUFFLE_STATE'], `Game shuffle: ${this.shuffledMelodyKeysGame?.length || 0} melodies, index: ${this.currentShuffledIndexGame || 0}`);
       
-      do {
-        randomMelodyKey = melodyKeys[Math.floor(Math.random() * melodyKeys.length)];
-        attempts++;
-      } while (randomMelodyKey === this.currentMelodyId && melodyKeys.length > 1 && attempts < maxAttempts);
+      const randomMelodyKey = this.getNextShuffledMelody(mode);
+      debugLog(['SOUND_JUDGMENT', 'MELODY_SELECTION'], `Selected shuffled melody for ${mode} mode: ${randomMelodyKey}`);
       
-      if (randomMelodyKey === this.currentMelodyId && melodyKeys.length > 1) {
-        debugLog(['MELODY_SELECT', 'WARN'], 'Couldn\'t find a different melody after max attempts, using a different one anyway');
-        // Explizit eine andere Melodie wählen
-        const currentIndex = melodyKeys.indexOf(this.currentMelodyId);
-        randomMelodyKey = melodyKeys[(currentIndex + 1) % melodyKeys.length];
-      }
+      // Note: No need to check for duplicates since shuffling ensures variety
       
       const selectedMelody = this.knownMelodies[randomMelodyKey];
       
@@ -4390,12 +4806,12 @@ export function pitches() {
       // If melody has wrong note, correctAnswer=false (meaning user should say it sounds wrong)
       this.correctAnswer = !this.melodyHasWrongNote;
       
-      debugLog('PITCHES', `Generated sound judgment melody: ${{
+      debugLog('PITCHES', 'Generated sound judgment melody:', {
         name: this.currentMelodyName,
-        level: this.soundJudgmentLevel,
+        level: get_1_4_level(this),
         hasWrongNote: this.melodyHasWrongNote,
         sequence: this.currentSequence
-      }}`);
+      });
       
       return true;
     },
@@ -4537,10 +4953,10 @@ export function pitches() {
 	  
 	  // Log the melody definition for debugging
 	  if (melodyId && this.knownMelodies[melodyId]) {
-	    debugLog('DURATION_DEBUG', `Melody "${melodyId}" definition: ${JSON.stringify({
+	    debugLog('PITCHES', `DURATION_DEBUG: Melody "${melodyId}" definition:`, {
 	      quarterNoteDuration: this.knownMelodies[melodyId].quarterNoteDuration,
 	      notes: this.knownMelodies[melodyId].notes
-	    })}`);
+	    });
       }
       
       /**
@@ -4649,7 +5065,7 @@ export function pitches() {
         };
       });
       
-      debugLog('PITCHES', `AUDIO: Processed notes with durations: ${processedNotes}`);
+      debugLog('PITCHES', 'AUDIO: Processed notes with durations:', processedNotes);
       
       // Prepare melody timeouts if not already initialized
       if (!this.melodyTimeouts) {
@@ -4659,7 +5075,7 @@ export function pitches() {
       // CRITICAL FIX: Make sure we explicitly preserve and log the instrument parameter
       // Extract the instrument from original options
       const instrumentToUse = options.instrument || 'default';
-      debugLog('INSTRUMENT_CRITICAL', `Starting melody sequence with instrument: ${instrumentToUse}`);
+      debugLog('PITCHES', `[INSTRUMENT_CRITICAL] Starting melody sequence with instrument: ${instrumentToUse}`);
       
       // Start playing notes sequentially with the correct instrument
       this.playProcessedNoteSequence(processedNotes, 0, context, {
@@ -4698,7 +5114,7 @@ export function pitches() {
       // Add specific debugging to trace instrument through the async calls
       const instrumentTracking = options.instrument || 'default';
       
-      debugLog('INSTRUMENT_TRACKING', `Note ${index}/${notes.length} with instrument: ${instrumentTracking}`);
+      debugLog('PITCHES', `[INSTRUMENT_TRACKING] Note ${index}/${notes.length} with instrument: ${instrumentTracking}`);
       
       // Save the instrument at the start of each note to ensure consistency
       const currentSequenceInstrument = instrumentTracking;
@@ -4729,7 +5145,7 @@ export function pitches() {
         debugLog('PITCHES', `DURATION_DEBUG: Using effective quarter note duration: ${effectiveQuarterDuration}ms`);
         
         // Get the input parameters for logging
-        debugLog('DURATION_DEBUG', `Original note data: ${JSON.stringify({ 
+        debugLog('PITCHES', `DURATION_DEBUG: Original note data:`, { 
           name, 
           duration, 
           index, 
@@ -4737,7 +5153,7 @@ export function pitches() {
           'melody ID': options.melodyId,
           'total notes': notes.length,
           'options': JSON.stringify(options)
-        })}`);
+        });
         
         if (duration) {
           // Base the mapping on relative multiples of quarter note duration
@@ -4775,30 +5191,30 @@ export function pitches() {
         
         if (context === 'practice' && requestedInstrument !== 'default') {
           // Log the explicit instrument we're using for this melody
-          debugLog('INSTRUMENT_EXPLICIT', `Using explicit instrument for melody: ${requestedInstrument}`);
+          debugLog('PITCHES', `[INSTRUMENT_EXPLICIT] Using explicit instrument for melody: ${requestedInstrument}`);
           
           // Set volume based on instrument type - but don't call useInstrument here
           // We'll pass the instrument directly to each note instead
           if (requestedInstrument === 'violin') {
             volume = 0.65; // Reduced violin volume as it has enhanced harmonics now
-            debugLog('INSTRUMENT_SETUP', 'Using violin with volume 0.65 (AMSynth with triangle oscillator)');
+            debugLog('PITCHES', '[INSTRUMENT_SETUP] Using violin with volume 0.65 (AMSynth with triangle oscillator)');
           } else if (requestedInstrument === 'flute') {
             volume = 0.85; // Increased flute volume as it has a purer tone
-            debugLog('INSTRUMENT_SETUP', 'Using flute with volume 0.85 (Synth with sine wave)');
+            debugLog('PITCHES', '[INSTRUMENT_SETUP] Using flute with volume 0.85 (Synth with sine wave)');
           } else if (requestedInstrument === 'tuba') {
             volume = 0.6; // Reduced tuba volume as it has enhanced bass response
-            debugLog('INSTRUMENT_SETUP', 'Using tuba with volume 0.6 (FMSynth with square8 wave)');
+            debugLog('PITCHES', '[INSTRUMENT_SETUP] Using tuba with volume 0.6 (FMSynth with square8 wave)');
           } else {
             // Fallback to standard sound
-            debugLog('INSTRUMENT_SETUP', 'Using default instrument with standard volume (PolySynth)');
+            debugLog('PITCHES', '[INSTRUMENT_SETUP] Using default instrument with standard volume (PolySynth)');
           }
           
           // Make sure the instrument is explicitly logged
-          debugLog('INSTRUMENT_VERBOSE', `Playing ${requestedInstrument} note: ${name} with volume ${volume}`);
+          debugLog('PITCHES', `[INSTRUMENT_VERBOSE] Playing ${requestedInstrument} note: ${name} with volume ${volume}`);
         } else if (context === 'sound-judgment') {
           // REFACTORED: Don't call useInstrument here, always pass 'default' as the instrument parameter
           // Instead of relying on global state that can be lost in async calls
-          debugLog('INSTRUMENT_SOUND_JUDGMENT', 'Using default instrument for sound judgment');
+          debugLog('PITCHES', '[INSTRUMENT_SOUND_JUDGMENT] Using default instrument for sound judgment');
           
           // Für die "Does It Sound Right?"-Aktivität: Präfix hinzufügen
           processedName = `sound_${name.toLowerCase()}`;
@@ -4808,7 +5224,7 @@ export function pitches() {
         } else {
           // REFACTORED: Don't call useInstrument here either, just log what we're doing
           // and let the direct parameter passing take care of it
-          debugLog('INSTRUMENT_DEFAULT', 'Using default instrument for general playback');
+          debugLog('PITCHES', '[INSTRUMENT_DEFAULT] Using default instrument for general playback');
           // Default instrument will be passed directly as parameter
         }
         
@@ -4825,12 +5241,12 @@ export function pitches() {
         const instrumentToUse = options.instrument || 'default';
         
         // Log the instrument being used for this note
-        debugLog('INSTRUMENT_DIRECT', `Playing note ${processedName} with instrument: ${instrumentToUse}`);
+        debugLog('PITCHES', `[INSTRUMENT_DIRECT] Playing note ${processedName} with instrument: ${instrumentToUse}`);
         
         // Pass the instrument directly as a parameter - never inside options
         // Make sure we're matching the audioEngine.playNote signature correctly:
         // playNote(noteName, duration, time, velocity, instrument, options)
-        debugLog('INSTRUMENT_DEBUG', `About to call playNote with instrument: ${instrumentToUse}`);
+        debugLog('PITCHES', `[INSTRUMENT_DEBUG] About to call playNote with instrument: ${instrumentToUse}`);
         audioEngine.playNote(processedName, millisecondDuration, undefined, volume, instrumentToUse);
         
         // Speichere die aktuelle Note für zukünftige Stops
@@ -4852,7 +5268,7 @@ export function pitches() {
           // This is the critical fix that ensures instrument consistency across the entire melody
           // Extract the instrument to make it clear and explicit in logs what's being passed
           const instrumentForNextNote = currentSequenceInstrument;
-          debugLog('INSTRUMENT_PRESERVED', `Scheduling next note with instrument: ${instrumentForNextNote}`);
+          debugLog('PITCHES', `[INSTRUMENT_PRESERVED] Scheduling next note with instrument: ${instrumentForNextNote}`);
           
           // Pass the instrument in the options object but in a way that it's explicitly tracked
           const nextOptions = {...options, instrument: instrumentForNextNote};
@@ -4863,7 +5279,7 @@ export function pitches() {
         this.melodyTimeouts.push(timeoutId);
         
       } catch (err) {
-        debugLog(['AUDIO_ERROR', 'ERROR'], `Failed to play note ${name}: ${err.message || err}`);
+        debugLog(['PITCHES', 'ERROR'], `AUDIO_ERROR: Failed to play note ${name}:`, err);
         // Try to continue with next note despite error
         const timeoutId = setTimeout(() => {
           this.playProcessedNoteSequence(notes, index + 1, context, options);
@@ -4904,9 +5320,24 @@ export function pitches() {
         }
       }
       
-      // Display feedback message
-      this.feedback = feedbackMessage;
-      this.showFeedback = true;
+      // Display feedback message using global feedback system
+      debugLog(['SOUND_JUDGMENT', 'FEEDBACK'], `checkSoundHighOrLow called - isCorrect: ${isCorrect}`);
+      debugLog(['SOUND_JUDGMENT', 'FEEDBACK'], `Feedback message: ${feedbackMessage}`);
+      
+      if (typeof window.showFeedbackMessage === 'function') {
+        window.showFeedbackMessage(feedbackMessage, {
+          activityId: '1_4_pitches_sound_judgment',
+          isIntroMessage: false,
+          isCorrect: isCorrect,
+          delaySeconds: 3,
+          component: this
+        });
+      } else {
+        debugLog(['PITCHES', 'ERROR'], '[SOUND_JUDGMENT_ERROR] showFeedbackMessage function not available');
+        // Fallback to old system if global feedback not available
+        this.feedback = feedbackMessage;
+        this.showFeedback = true;
+      }
       
       // Play feedback sound using the central audio engine
       audioEngine.playNote(isCorrect ? 'success' : 'try_again', 1.0);
@@ -4917,41 +5348,54 @@ export function pitches() {
         // Create and show rainbow success animation
         showRainbowSuccess();
         
-        // Increment progress counter
-        if (!this.progress['1_4_pitches_does-it-sound-right']) {
-          this.progress['1_4_pitches_does-it-sound-right'] = 0;
+        // Initialize progress for this activity if it doesn't exist
+        if (!this.progress['1_4']) {
+          this.progress['1_4'] = 0;
         }
-        this.progress['1_4_pitches_does-it-sound-right']++;
+        this.progress['1_4']++;
         
         // Save progress to localStorage
         localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
         
-        debugLog('PITCHES', `Updated sound judgment progress: ${this.progress['1_4_pitches_does-it-sound-right']}`);
+        debugLog('PITCHES', 'Updated sound judgment progress:', this.progress['1_4']);
         
         // Increment the streak counter for level progression
         this.soundJudgmentCorrectStreak++;
         debugLog('PITCHES', `SOUND JUDGMENT: Streak increased to ${this.soundJudgmentCorrectStreak}`);
         
-        // Check if we should advance to the next level (10 correct in a row)
-        if (this.soundJudgmentCorrectStreak >= 3 && this.soundJudgmentLevel < 7) {
-          this.soundJudgmentLevel++;
+        // Check if we should advance to the next level (3 correct in a row)
+        const currentLevel = get_1_4_level(this);
+        if (this.soundJudgmentCorrectStreak >= 3 && currentLevel < 7) {
+          // Level up happens automatically when progress increases
+          // We just need to add enough progress to reach the next level
+          const progressNeededForNextLevel = currentLevel * 7;
+          const currentProgress = this.progress['1_4'] || 0;
+          
+          if (currentProgress < progressNeededForNextLevel) {
+            this.progress['1_4'] = progressNeededForNextLevel;
+            localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
+          }
+          
           this.soundJudgmentCorrectStreak = 0; // Reset streak for next level
+          const newLevel = get_1_4_level(this);
           
-          // Save the updated level to preferences
-          localStorage.setItem('lalumo_soundJudgmentLevel', this.soundJudgmentLevel);
-          
-          debugLog('PITCHES', `SOUND JUDGMENT: Advanced to level ${this.soundJudgmentLevel}!`);
+          debugLog('PITCHES', `SOUND JUDGMENT: Advanced to level ${newLevel}! (progress: ${this.progress['1_4']})`);
           
           // Show level-up message
           let levelUpMessage;
           if (language === 'de') {
-            levelUpMessage = `Super! Du hast Level ${this.soundJudgmentLevel} erreicht!`;
+            levelUpMessage = `Super! Du hast Level ${newLevel} erreicht!`;
           } else {
-            levelUpMessage = `Great! You've reached level ${this.soundJudgmentLevel}!`;
+            levelUpMessage = `Great! You've reached level ${newLevel}!`;
           }
           
-          // Show mascot message for level up
-          window.showMascotMessage(levelUpMessage, null, 2, this);
+          // Show intro message for level up
+          window.showFeedbackMessage(levelUpMessage, {
+		      activityId: null,
+		      isIntroMessage: false,
+		      delaySeconds: 2,
+		      component: this
+		  });
           
           // Special animation for level up (bigger rainbow)
           showBigRainbowSuccess();
@@ -4967,9 +5411,8 @@ export function pitches() {
       }
       
       // After a delay, reset and prepare for the next melody
+      // Reduced timeout since global feedback system handles message display timing
       setTimeout(() => {
-        this.showFeedback = false;
-        
         if (isCorrect) {
           // If the answer was correct, generate a new melody
           this.playMelody(true);
@@ -4978,7 +5421,7 @@ export function pitches() {
           // Pass false to indicate not to generate a new melody
           this.playMelody(false);
         }
-      }, 2000);
+      }, 3000); // Match the delaySeconds from global feedback system
     },
 
     /**
@@ -4987,7 +5430,7 @@ export function pitches() {
     startMemoryGame() {
       this.gameMode = true;
       this.memoryFreePlay = false;
-      this.setupMemoryMode_1_5(true, true); // Play sound and generate new
+      this.setup_1_5(true, true); // Play sound and generate new
       this.showContextMessage(); // Update instructions
     },
 
@@ -5020,7 +5463,7 @@ export function pitches() {
     },
     
     updateMatchingBackground() {
-      const progress = this.progress['1_2_pitches_match-sounds'] || 0;
+      const progress = this.progress['1_2'] || 0;
       let backgroundImage;
       
       // Progress thresholds change at exactly 10 and 20 successes
@@ -5047,7 +5490,7 @@ export function pitches() {
         matchingActivity.style.backgroundImage = `url(${backgroundImage})`;
         debugLog('PITCHES', `Updated background based on progress (${progress}): ${backgroundImage}`);
       } else {
-        debugLog('Error', 'while updating background: div not found')
+        debugLog('PITCHES', '[Error] while updating background: div not found')
       }
     },
     
@@ -5056,7 +5499,7 @@ export function pitches() {
      * based on the unlocked patterns status.
      */
     updateMatchSoundsPitchCardLayout() {
-      debugLog('PITCHES', 'Updating Match Sounds pitch card layout based on unlocked patterns');
+      debugLog('PITCHES', 'Updating Up or Down pitch card layout based on unlocked patterns');
       
       // Identify the Match-Sounds activity container
       const matchingActivity = document.querySelector('[x-show="mode === \'1_2_pitches_match-sounds\'"]');
@@ -5065,7 +5508,7 @@ export function pitches() {
       // Find the container that holds the pitch cards in a grid
       const gridContainer = matchingActivity.querySelector('.match-sounds-container');
       if (!gridContainer) {
-        debugLog('PITCHES', 'No match-sounds-container found in match sounds activity');
+        debugLog('PITCHES', 'No match-sounds-container found in Up or Down activity');
         return;
       }
       
@@ -5095,7 +5538,7 @@ export function pitches() {
     
     startMatchGame() {
       this.gameMode = true;
-      this.setupMatchingMode_1_2(true, true); // Play sound and generate new
+      this.setup_1_2(true, true); // Play sound and generate new
       this.showContextMessage(); // Update instructions
     }
   };

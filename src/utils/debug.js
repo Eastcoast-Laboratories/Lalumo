@@ -6,6 +6,9 @@
 // Debug flag - set to false in production
 let isDebugMode = false;
 
+// Initialize app start time for detailed timing logs
+const appStartTime = Date.now();
+
 // Production detection (Android, deployed web)
 const isProduction = () => {
   // Check if we're running as an Android app
@@ -54,7 +57,7 @@ const initDebugMode = (forceDebug = false) => {
   }
 };
 
-/**
+/** function debugLog()
  * Log a message only if in debug mode
  * @param {string|string[]} module - Module or component name, or array of module names/tags
  * @param {string} [message=''] - The message to log (if empty, module is used as message)
@@ -88,14 +91,16 @@ const debugLog = (module, message = '', ...args) => {
       }
     }
     
+    // Get timestamp in milliseconds since app start
+    const timestamp = Date.now() - appStartTime;
     // Choose the appropriate console method based on isError flag
     const logMethod = isError ? console.error : console.log;
     
     // Log with the formatted tag prefix and all additional arguments
     if (args.length > 0) {
-      logMethod(`${tagPrefix} ${message}`, ...args);
+      logMethod(`${timestamp} ${tagPrefix} ${message}`, ...args);
     } else {
-      logMethod(`${tagPrefix} ${message}`);
+      logMethod(`${timestamp} ${tagPrefix} ${message}`);
     }
   }
 };

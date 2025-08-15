@@ -109,14 +109,12 @@ unter chrome auf dem handy android 15:
     - Sektionenkommentare zur besseren Navigation
     - nicht benutzte stile entfernen
 
-# mascot message:
-    - die richtige zugehörige mascot message überall soll direkt wenn man die activity öffnet kommen. im moment kommt die alte message, wo man vorher war in dem mascot message container
-    - es soll niemals eine mascot message starten, wenn man in irgendeiner activity auf den play button drückt
-    - die einstellungen haben erst nach einem neuladen effekt, ohne bleibt die message bleibt verschwunden
-    - in preferences ein kleines mascot bild neben die einstellung zum hiden
+# intro messages:
+    - es soll niemals eine intro message starten, wenn man in irgendeiner activity auf den play button drückt
+    - die einstellungen haben erst nach einem neuladen effekt, ohne bleibt die message bleibt verschwunde
     - hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
 
-- reachable via a hash-anchor-link: make this link go directly to the 1_1_pitches_high_or_low activity: https://lalumo.z11.de/#1_pitches-1_1_pitches_high_or_low
+- there is already the hash redirect, when coming from a referral, erweitere so dass die seite reachable wird via a hash-anchor-link: make this link go directly to the 1_1_pitches_high_or_low activity: https://lalumo.z11.de/#1_1
 
 - all chapters and activities are included in the sitemap. also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
 
@@ -148,7 +146,6 @@ reset-button:
 - "Images created with ChatGpt mindfull. Loving prompts" verbessern
 - Finanzierung durch unlock button mit link zu Crowd funding
 
-- referral count page aus den settings aufrufbar machen
 - das template in dem partial refferer.html funktioniert nichdt, ev. templates werden in partials nicht gaufgelöst? in commit 4d82fbca wurde ein äjhnliches problem gelöst
 
 - die meisten activities sollen einen free- und einen game-mode haben, in dem man die sounds ausprobieren kann (free) oder das game spielt, bei dem man die richtigen buttons drücken muss, der die richtigen effekte zeigt aus `feedback.js`
@@ -169,14 +166,20 @@ reset-button:
 
 1_3 Draw a Melody:
 - # bereit zur veröffentlichung
+- man kann in einen zustand kommen durch schnelles zeichnen im game mode, wo keine noten mehr auf den linien landen, auchnicht, wenn man wieder auf free stellt, es wird dann nur eine blaue linie gezeichnet und keine noten
 - Zeichnen geht nicht mehr auf den Handy, man schiebt den bildschirm hin und her, anstatt zu malen. könnte helfen: overflow hiddern
 - play sound and rainbow exact after the painted melody is played (in case it is a longer melody)
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
-- Wenn man einen Ton trifft, die Note aufleuchten verbessern, vielieicht den strich an der stelle dick machen oder so
+- prevent level progression while current melody is still playing: wenn man noch zeichnet, whaehrend der noch spielt, dann kann schon auf den nächsten level wechseln (von 3 auf 4) und es werden 4 noten auf die linie gezeichnet, obwohl nur 3 waren, und drei davon richtig waren. das muss nicht passieren.
+- dies kommt zu früh:
+  // TODO: move translation to strings.xml
+          feedback = isGerman ? 
+            'Fantastisch! Du hast alle Melodien gemeistert!' : 
+            'Amazing! You\'ve mastered all the melodies!';
 
 1_4 Does It Sound Right:
-- baue die lieder im TODO block im pitches.js
 - # bereit zur veröffentlichung
+- Transposed melodies im höheren Level
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
 - fix gebogenen text
 - es kommt mehrmals in log "Generated sound judgment melody:..."
@@ -184,8 +187,8 @@ reset-button:
 - eigene melodien hochladen
 
 1_5 memory game:
-  -  Klavier weiter runter auf kleinen bildschirmen
   - # bereit zur veröffentlichung
+  - wenn man in 1_4 eine melodie startet und dann während die noch spielt in 1_5 wechselt, dann werden unter dem piano 10 kreise angezeigt
 
 2_2_chords_stable_unstable:
   - # bereit zur veröffentlichung
@@ -194,6 +197,7 @@ reset-button:
   - # bereit zur veröffentlichung
   - es soll der erfolgssound kommen
   - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte
+  - die Eule macht die Augen auf, wenn man das Spiel startet 
 
 
 # mobile-build.sh:
@@ -209,7 +213,60 @@ reset-button:
 
 - Webpack-Bundle-Analyzer verwenden um große Abhängigkeiten zu identifizieren
 
-- class .debug-elements always hidden in production
+- Redeem refresh button einbauen
+
+- Bei Fehler: richtigen Button aufleuchten lassen als hilfe
 
 # most important
-****
+- im web zeigt er die landscape warnung an, dass man sein gerät drehen soll. die warnung darf nur auf android oder ios kommen, auch im browser auf den geräten
+
+- Intro-Messages System vollständig implementieren und zentralisieren
+
+es soll keine funktionien mehr geben, die nur für eine activity gedacht sind. lösche diese und benutze nur die in settings, ich habe mascot überall umbenannt in helpmessage, feedback oder introMessage und  die showMascotMessage in showFeedbackMessage umbenannt und am besten bekommt die eine option, ob die message eine introMessage ist, oder nicht, wenn ja, dann kann man sie disablen mit den settings für introMessage
+
+erstelle einen prompt was jetztz genau zu tun ist
+
+Hauptziele:
+
+Intro-Messages wieder funktionsfähig machen: Aktuell werden keine Intro-Messages mehr angezeigt, obwohl sie beim ersten Öffnen jeder Activity erscheinen sollen
+
+Vollständige Zentralisierung: Alle Intro-Message-Texte und -Logik in 
+src/components/shared/feedback.js konsolidieren
+
+String-Externalisierung: Alle Texte aus dem Code in strings.xml auslagern
+
+Settings-Integration: Die Hilf-Nachrichten-Einstellung soll korrekt funktionieren
+Spezifische Aufgaben:
+
+A) Intro-Messages Bugfix:
+
+Analysiere, warum Intro-Messages nicht mehr angezeigt werden
+Stelle sicher, dass beim ersten Öffnen jeder Activity die entsprechende Intro-Message erscheint
+Teste alle Activities: 1_1, 1_2, 1_3, 1_4, 1_5, 2_2, 2_5
+
+B) Code-Zentralisierung:
+
+vervollständige das Verschieben aller Intro-Message-Definitionen aus @pitches.js#L1854-1862 und @pitches.js#L1796-1872 nach `components/shared/feedback.js`.
+Entferne redundante/doppelte Logik aus `pitches.js`
+erweitere die einheitliche, zentrale Funktion `showActivityIntroMessage` aus `components/shared/feedback.js` für alle Intro-Messages
+
+C) String-Externalisierung:
+
+Lagere alle Intro-Message-Texte in strings.xml aus (Deutsch und Englisch)
+Nutze die bereits vorhandenen, aber ungenutzten Strings aus @strings.xml#L302-308, korrigiere diese bei bedarf mit den schon ausfühlihchen texten aus `components/shared/feedback.js`
+Erweitere strings.xml um fehlende Intro-Message-Texte
+Passe die zentrale Funktion an, um Texte aus strings.xml zu laden
+
+D) Settings-Integration:
+
+Stelle sicher, dass die Einstellung "Hilf-Nachrichten: Steuere, wann Hilf-Nachrichten erscheinen" korrekt funktioniert.
+Teste, dass Intro-Messages respektiert werden, wenn die Einstellung deaktiviert ist
+Verifiziere die Funktionalität in den Settings
+
+Erwartetes Ergebnis:
+
+Intro-Messages erscheinen wieder beim ersten Öffnen jeder Activity.
+Alle Texte sind in strings.xml externalisiert.
+Eine zentrale, saubere Funktion in src/components/shared/feedback.js verwaltet alle Intro-Messages.
+Settings-Integration funktioniert einwandfrei.
+Keine redundante Logik mehr in pitches.js und 2_chords.js
