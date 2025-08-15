@@ -357,7 +357,7 @@ html body.dev-mode .debug-element {
 /* Settings page */
 .settings-page {
   padding: 20px;
-  background-image: url('/app/images/backgrounds/settings.jpg');
+  background-image: url('/images/backgrounds/settings.jpg');
   background-size: cover;
   background-position: top;
   color: #ffffff;

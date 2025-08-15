@@ -20,7 +20,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('/app/images/backgrounds/settings.jpg');
+  background-image: url('/images/backgrounds/settings.jpg');
   background-size: cover;
   background-position: top;
   opacity: 0.9;
@@ -71,7 +71,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('/app/images/backgrounds/credits.jpg');
+  background-image: url('/images/backgrounds/credits.jpg');
   background-size: cover;
   background-position: top;
   opacity: 0.9;
@@ -117,7 +117,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('/app/images/backgrounds/impressum.jpg');
+  background-image: url('/images/backgrounds/impressum.jpg');
   background-size: cover;
   background-position: top;
   opacity: 0.9;
@@ -157,7 +157,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('/app/images/backgrounds/impressum.jpg');
+  background-image: url('/images/backgrounds/impressum.jpg');
   background-size: cover;
   background-position: top;
   opacity: 0.9;
