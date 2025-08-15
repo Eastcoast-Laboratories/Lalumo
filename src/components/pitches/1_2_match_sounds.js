@@ -7,7 +7,7 @@ import { debugLog } from '../../utils/debug.js';
 
 // Export a test function for import tests
 export function testMatchSoundsModuleImport() {
-  console.log('Up or Down module successfully imported');
+  debugLog('PITCHES', 'Up or Down module successfully imported');
   return true;
 }
 
@@ -16,7 +16,7 @@ export function testMatchSoundsModuleImport() {
  * @param {Object} component - The Alpine.js component
  */
 export function reset_1_2_MatchSounds_Progress(component) {
-  console.log('RESET_MATCH_SOUNDS: Starting reset process', {
+  debugLog('PITCHES', 'RESET_MATCH_SOUNDS: Starting reset process', {
     correctAnswersCount: component.correctAnswersCount,
     unlockedPatterns: component.unlockedPatterns
   });
@@ -41,7 +41,7 @@ export function reset_1_2_MatchSounds_Progress(component) {
     progress['1_2'] = 0;
     localStorage.setItem('lalumo_progress', JSON.stringify(progress));
   } catch (e) {
-    console.warn('Could not update progress in localStorage', e);
+    debugLog(['PITCHES', 'WARN'], 'Could not update progress in localStorage', e);
   }
   
   component.updateProgressPitches();
@@ -51,7 +51,7 @@ export function reset_1_2_MatchSounds_Progress(component) {
   if (matchSoundsContainer) {
     const initialBackground = './images/backgrounds/pitches_action1_2_fox_owl.jpg';
     matchSoundsContainer.style.backgroundImage = `url('${initialBackground}')`;
-    console.log('RESET_MATCH_SOUNDS: Reset background to initial state');
+    debugLog('PITCHES', 'RESET_MATCH_SOUNDS: Reset background to initial state');
   }
   
   // Force UI update by triggering Alpine.js reactivity
@@ -63,10 +63,10 @@ export function reset_1_2_MatchSounds_Progress(component) {
     });
     document.dispatchEvent(event);
     
-    console.log('RESET_MATCH_SOUNDS: UI refresh triggered');
+    debugLog('PITCHES', 'RESET_MATCH_SOUNDS: UI refresh triggered');
   });
   
-  console.log('RESET_MATCH_SOUNDS: Reset completed successfully');
+  debugLog('PITCHES', 'RESET_MATCH_SOUNDS: Reset completed successfully');
 }
 
 // Make globally available for diagnosis

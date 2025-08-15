@@ -27,7 +27,7 @@ export function get_1_3_level(component) {
 
 // Export a test function for import tests
 export function testDrawMelodyModuleImport() {
-  console.log('Draw Melody module successfully imported');
+  debugLog('PITCHES', 'Draw Melody module successfully imported');
   return true;
 }
 
@@ -36,7 +36,7 @@ export function testDrawMelodyModuleImport() {
  * @param {Object} component - The Alpine.js component
  */
 export function reset_1_3_DrawMelody_Progress(component) {
-  console.log('RESET_DRAW_MELODY: Starting reset process', {
+  debugLog('PITCHES', 'RESET_DRAW_MELODY: Starting reset process', {
     currentProgress: component.progress['1_3'] || 0,
     challengeMode: component.melodyChallengeMode
   });
@@ -62,7 +62,7 @@ export function reset_1_3_DrawMelody_Progress(component) {
     try {
       progress = JSON.parse(progressData);
     } catch (error) {
-      console.error('Error parsing progress data:', error);
+      debugLog(['PITCHES', 'ERROR'], 'Error parsing progress data:', error);
     }
   }
   progress['1_3'] = 0;
@@ -73,7 +73,7 @@ export function reset_1_3_DrawMelody_Progress(component) {
     component.clearDrawing();
   }
   
-  console.log('RESET_DRAW_MELODY: Reset completed successfully');
+  debugLog('PITCHES', 'RESET_DRAW_MELODY: Reset completed successfully');
 }
 
 /**
@@ -121,7 +121,7 @@ export function preloadSnakeImages() {
       }
     };
     img.onerror = () => {
-      console.warn(`Failed to load snake image: ${path}`);
+      debugLog(['PITCHES', 'WARN'], `Failed to load snake image: ${path}`);
       loadedCount++;
       if (loadedCount === totalImages) {
         snakeImages.loaded = true;

@@ -6,7 +6,7 @@
 import { debugLog } from '../../utils/debug.js';
 
 // Debug-Log beim Laden des Moduls
-console.log('HIGH_OR_LOW_MODULE: Module loaded');
+debugLog('PITCHES', 'HIGH_OR_LOW_MODULE: Module loaded');
 
 /**
  * Calculate level for Activity 1_1 (High or Low) based on progress
@@ -48,7 +48,7 @@ export function currentHighOrLowStage(component) {
  * @param {Object} component - The Alpine.js component
  */
 export function reset_1_1_HighOrLow_Progress(component) {
-  console.log('RESET_HIGH_OR_LOW: Starting reset process', {
+  debugLog('PITCHES', 'RESET_HIGH_OR_LOW: Starting reset process', {
     currentProgress: component.progress['1_1'] || 0,
     gameStarted: component.gameStarted
   });
@@ -77,7 +77,7 @@ export function reset_1_1_HighOrLow_Progress(component) {
     try {
       progress = JSON.parse(progressData);
     } catch (error) {
-      console.error('Error parsing progress data:', error);
+      debugLog(['PITCHES', 'ERROR'], 'Error parsing progress data:', error);
     }
   }
   progress['1_1'] = 0;
@@ -92,10 +92,10 @@ export function reset_1_1_HighOrLow_Progress(component) {
     });
     document.dispatchEvent(event);
     
-    console.log('RESET_HIGH_OR_LOW: UI refresh triggered');
+    debugLog('PITCHES', 'RESET_HIGH_OR_LOW: UI refresh triggered');
   });
   
-  console.log('RESET_HIGH_OR_LOW: Reset completed successfully with UI refresh');
+  debugLog('PITCHES', 'RESET_HIGH_OR_LOW: Reset completed successfully with UI refresh');
 }
 
 /**
@@ -104,7 +104,7 @@ export function reset_1_1_HighOrLow_Progress(component) {
  */
 export function setup_1_1(component) {
   // Initialize the high or low activity
-  console.log('High or Low mode ready with progress:', component.highOrLowProgress);
+  debugLog('PITCHES', 'High or Low mode ready with progress:', component.highOrLowProgress);
   
   // Pre-generate sequence to support early button presses
   const stage = get_1_1_level(component);
@@ -113,7 +113,7 @@ export function setup_1_1(component) {
   
   // Reset game state - not started until the user explicitly clicks play
   component.gameStarted = false;
-  console.log('High or Low game reset, gameStarted:', component.gameStarted);
+  debugLog('PITCHES', 'High or Low game reset, gameStarted:', component.gameStarted);
   
   // Show intro message immediately when entering the activity
   window.showActivityIntroMessage('1_1_pitches_high_or_low', component);

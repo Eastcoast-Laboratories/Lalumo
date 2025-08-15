@@ -260,7 +260,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       component
     });
   } else {
-    console.warn('LOG_INTRO_MESSAGE: No intro message found for activity:', activityMode);
+    debugLog(['FEEDBACK', 'WARN'], 'LOG_INTRO_MESSAGE: No intro message found for activity:', activityMode);
   }
 }
 
@@ -286,7 +286,7 @@ document.addEventListener('alpine:init', () => {
  */
 export function resetShownIntroMessages() {
   shownIntroMessages.clear();
-  console.log('LOG_INTRO_MESSAGE: Reset all shown intro messages');
+  debugLog('FEEDBACK', 'LOG_INTRO_MESSAGE: Reset all shown intro messages');
 }
 
 // Make functions globally available
@@ -358,7 +358,7 @@ export function playSuccessSound() {
   if (window.app && typeof window.app.playSuccessSound === 'function') {
     window.app.playSuccessSound();
   } else {
-    console.warn('FEEDBACK_UTILITIES: App instance not available for success sound');
+    debugLog(['FEEDBACK', 'WARN'], 'FEEDBACK_UTILITIES: App instance not available for success sound');
   }
 }
 
@@ -371,7 +371,7 @@ export function playErrorSound() {
   if (window.app && typeof window.app.playErrorSound === 'function') {
     window.app.playErrorSound();
   } else {
-    console.warn('FEEDBACK_UTILITIES: App instance not available for error sound');
+    debugLog(['FEEDBACK', 'WARN'], 'FEEDBACK_UTILITIES: App instance not available for error sound');
   }
 }
 
@@ -477,7 +477,7 @@ export function showActivityProgressBar(options) {
   // Find target container
   const targetContainer = document.querySelector(appendToContainer);
   if (!targetContainer) {
-    console.warn(`PROGRESS_BAR: Container not found: ${appendToContainer}`);
+    debugLog(['FEEDBACK', 'WARN'], `PROGRESS_BAR: Container not found: ${appendToContainer}`);
     return null;
   }
 
@@ -543,7 +543,7 @@ export function showActivityProgressBar(options) {
     targetContainer.appendChild(progressContainer);
   }
 
-  console.log(`PROGRESS_BAR: Created for ${activityName} - ${currentCount}/${totalCount}`);
+  debugLog('FEEDBACK', `PROGRESS_BAR: Created for ${activityName} - ${currentCount}/${totalCount}`);
   return progressContainer;
 }
 
@@ -555,6 +555,6 @@ export function hideActivityProgressBar(progressClass = 'activity-progress') {
   const progressContainer = document.querySelector(`.${progressClass}`);
   if (progressContainer) {
     progressContainer.remove();
-    console.log(`PROGRESS_BAR: Removed progress bar with class: ${progressClass}`);
+    debugLog('FEEDBACK', `PROGRESS_BAR: Removed progress bar with class: ${progressClass}`);
   }
 }

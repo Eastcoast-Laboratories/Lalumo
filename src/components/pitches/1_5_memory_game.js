@@ -19,7 +19,7 @@ export function get_1_5_level(component) {
 
 // Export a test function for import tests
 export function testMemoryGameModuleImport() {
-  console.log('Memory Game module successfully imported');
+  debugLog('PITCHES', 'Memory Game module successfully imported');
   return true;
 }
 
@@ -28,7 +28,7 @@ export function testMemoryGameModuleImport() {
  * @param {Object} component - The Alpine.js component
  */
 export function reset_1_5_MemoryGame_Progress(component) {
-  console.log('RESET_MEMORY_GAME: Starting reset process', {
+  debugLog('PITCHES', 'RESET_MEMORY_GAME: Starting reset process', {
     currentProgress: component.progress['1_5'] || 0
   });
   
@@ -50,13 +50,13 @@ export function reset_1_5_MemoryGame_Progress(component) {
     try {
       progress = JSON.parse(progressData);
     } catch (error) {
-      console.error('Error parsing progress data:', error);
+      debugLog(['PITCHES', 'ERROR'], 'Error parsing progress data:', error);
     }
   }
   progress['1_5'] = 0;
   localStorage.setItem('lalumo_progress', JSON.stringify(progress));
   
-  console.log('RESET_MEMORY_GAME: Reset completed successfully');
+  debugLog('PITCHES', 'RESET_MEMORY_GAME: Reset completed successfully');
 }
 
 // Make globally available for diagnosis

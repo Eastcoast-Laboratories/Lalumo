@@ -175,7 +175,7 @@ export function update_2_5Background(component) {
  * Used by the resetCurrentActivity function
  */
 export function reset_2_5_Progress(component) {
-  console.log('[CHORDS_2_5] Resetting 2_5 progress...', {
+  debugLog(['CHORDS', '2_5'], 'Resetting 2_5 progress...', {
     currentProgress: component.progress['2_5'] || 0
   });
   
@@ -190,7 +190,7 @@ export function reset_2_5_Progress(component) {
     try {
       progress = JSON.parse(progressData);
     } catch (error) {
-      console.error('Error parsing progress data:', error);
+      debugLog(['CHORDS', 'ERROR'], `Error parsing progress data: ${error.message}`);
     }
   }
   progress['2_5'] = 0;
@@ -200,7 +200,7 @@ export function reset_2_5_Progress(component) {
   update_2_5Background(component);
   update2_5ButtonsVisibility(component);
   
-  console.log('[CHORDS_2_5] 2_5 progress reset complete and persisted');
+  debugLog(['CHORDS', '2_5'], '2_5 progress reset complete and persisted');
 }
 
 // Compatibility alias for old function name
@@ -209,7 +209,7 @@ export function resetProgress_2_5() {
   if (chordsComponent) {
     reset_2_5_Progress(chordsComponent);
   } else {
-    console.error('Cannot reset 2_5: chordsComponent not found');
+    debugLog(['CHORDS', 'ERROR'], 'Cannot reset 2_5: chordsComponent not found');
   }
 }
 
