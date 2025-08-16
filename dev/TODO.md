@@ -209,9 +209,7 @@ reset-button:
       3. **Timeout collision**: Multiple overlapping timers calling playMemorySequence()
          - Trigger: Make error, then click play before 2s error recovery timeout
          - Result: Competing timers interfere with sequence state
-      4. **Cross-activity state pollution**: isPlaying flag from other activities
-         - Trigger: Switch from 1_4 to 1_5 while melody playing, then use 1_5 play button
-         - Result: Stale isPlaying state blocks new playback
+   s
     * DEFENSIVE FIX APPLIED: Added currentSequence safety check in playCurrentMelody() replay path
     * Watch for log: "MEMORY_REPLAY: No sequence found, regenerating for safety"
     * INCORRECT FIX REVERTED: Attempted to use playCurrentMelody() for error/success/replay flows

@@ -143,10 +143,7 @@ test.describe('1_5 Memory Game Bug Reproduction Tests', () => {
   test('Should trigger Race Condition #2: Click during success auto-play window', async ({ page }) => {
     console.log('🧪 Test 3: Race Condition #2 - Success auto-play interference');
     
-    // Navigate to 1_5 memory game
-    await page.click('.memory-area');
-    await page.waitForTimeout(1000);
-    
+    // Test setup already navigated to 1_5 memory game
     const playButton = page.locator('[id="1_5_pitches"] .circular-play-button');
     await expect(playButton).toBeVisible({ timeout: 5000 });
     
@@ -199,10 +196,7 @@ test.describe('1_5 Memory Game Bug Reproduction Tests', () => {
   test('Should trigger Race Condition #3: Click during error recovery timeout', async ({ page }) => {
     console.log('🧪 Test 4: Race Condition #3 - Error recovery timeout collision');
     
-    // Navigate to 1_5 memory game
-    await page.click('.memory-area');
-    await page.waitForTimeout(1000);
-    
+    // Test setup already navigated to 1_5 memory game
     const playButton = page.locator('[id="1_5_pitches"] .circular-play-button');
     await expect(playButton).toBeVisible({ timeout: 5000 });
     
@@ -296,10 +290,7 @@ test.describe('1_5 Memory Game Bug Reproduction Tests', () => {
   test('Should monitor for defensive fix activation', async ({ page }) => {
     console.log('🧪 Test 6: Monitor for defensive fix activation');
     
-    // Navigate to 1_5 memory game
-    await page.click('.memory-area');
-    await page.waitForTimeout(1000);
-    
+    // Test setup already navigated to 1_5 memory game
     const playButton = page.locator('[id="1_5_pitches"] .circular-play-button');
     await expect(playButton).toBeVisible({ timeout: 5000 });
     
