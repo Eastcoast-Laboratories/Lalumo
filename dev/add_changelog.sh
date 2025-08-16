@@ -41,19 +41,13 @@ check_length() {
 
 # German Changelog
 DE_CHANGES=$(cat << EOF
-- Neue Einführungsnachrichten am Beginn jeder Übung
-- "Häschen hüpf!" verbessert in "Klingt es richtig?"
-- "High or Low": Zufällige Instrumente spielen die Töne
-- "Draw a Melody": Animierte Wiedergabe entlang der gezeichneten Linie
+- "Draw a Melody": Eine Schlange kriecht entlang des gezeichneten Pfades und spielt die Töne
 EOF
 )
 
 # English Changelog
 EN_CHANGES=$(cat << EOF
-- New introduction messages at the start of each exercise
-- "Bunny Hop" corrected in "Does it sound right?"
-- "High or Low": Random instruments play the tones
-- "Draw a Melody": Animated playback along the drawn line
+- "Draw a Melody": A snake crawls along the drawn path and plays the tones
 EOF
 )
 
