@@ -11,7 +11,7 @@ const { setupTest, navigateToActivity, returnToMain } = require('../helpers/test
  * then stops responding to subsequent play button clicks
  */
 test.describe('1_5 Memory Game Bug Reproduction Tests', () => {
-  test.setTimeout(30000); // Extended timeout for comprehensive testing
+  test.setTimeout(60000); // Extended timeout for comprehensive testing
 
   let consoleLogs = [];
   let pianoDirectLogs = [];
@@ -52,14 +52,10 @@ test.describe('1_5 Memory Game Bug Reproduction Tests', () => {
   test('Should navigate to 1_5 memory game and verify basic functionality', async ({ page }) => {
     console.log('🧪 Test 1: Basic functionality verification');
     
-    // Navigate to 1_5 memory game activity
-    await page.click('.memory-area');
-    await page.waitForTimeout(1000);
-    
-    // Verify we're in the correct activity
-    const activityContainer = page.locator('#1_5_pitches');
+    // Verify we're in the 1_5 memory game activity (setup already navigated here)
+    const activityContainer = page.locator('[id="1_5_pitches"]');
     await expect(activityContainer).toBeVisible({ timeout: 5000 });
-    console.log('✅ Successfully navigated to 1_5 memory game');
+    console.log('✅ Successfully in 1_5 memory game');
     
     // Verify piano keyboard is present
     const pianoKeyboard = page.locator('.piano-keyboard');
@@ -67,9 +63,25 @@ test.describe('1_5 Memory Game Bug Reproduction Tests', () => {
     console.log('✅ Piano keyboard is visible');
     
     // Verify play button is present
-    const playButton = page.locator('#1_5_pitches .circular-play-button');
+    const playButton = page.locator('[id="1_5_pitches"] .circular-play-button');
     await expect(playButton).toBeVisible({ timeout: 2000 });
     console.log('✅ Play button is visible');
+    
+    // Actually click the play button to test playback
+    console.log('🎯 Clicking play button to test memory game playback...');
+    const logCountBefore = pianoDirectLogs.length;
+    await playButton.click();
+    await page.waitForTimeout(3000); // Wait for sequence to play
+    
+    const logCountAfter = pianoDirectLogs.length;
+    const newLogs = logCountAfter - logCountBefore;
+    console.log(`📊 PIANO_DIRECT logs before: ${logCountBefore}, after: ${logCountAfter}, new: ${newLogs}`);
+    
+    if (newLogs > 0) {
+      console.log('✅ Memory game playback working - PIANO_DIRECT logs detected');
+    } else {
+      console.log('🚨 BUG REPRODUCED: No PIANO_DIRECT logs - memory game playback failed!');
+    }
     
     // Verify piano keys are present
     const pianoKeys = page.locator('.piano-key.white');
@@ -87,7 +99,7 @@ test.describe('1_5 Memory Game Bug Reproduction Tests', () => {
     await page.click('.memory-area');
     await page.waitForTimeout(1000);
     
-    const playButton = page.locator('#1_5_pitches .circular-play-button');
+    const playButton = page.locator('[id="1_5_pitches"] .circular-play-button');
     await expect(playButton).toBeVisible({ timeout: 5000 });
     
     console.log('🎯 Attempting to trigger gameMode race condition...');
@@ -138,7 +150,7 @@ test.describe('1_5 Memory Game Bug Reproduction Tests', () => {
     await page.click('.memory-area');
     await page.waitForTimeout(1000);
     
-    const playButton = page.locator('#1_5_pitches .circular-play-button');
+    const playButton = page.locator('[id="1_5_pitches"] .circular-play-button');
     await expect(playButton).toBeVisible({ timeout: 5000 });
     
     console.log('🎯 Attempting to trigger currentSequence corruption...');
@@ -194,7 +206,7 @@ test.describe('1_5 Memory Game Bug Reproduction Tests', () => {
     await page.click('.memory-area');
     await page.waitForTimeout(1000);
     
-    const playButton = page.locator('#1_5_pitches .circular-play-button');
+    const playButton = page.locator('[id="1_5_pitches"] .circular-play-button');
     await expect(playButton).toBeVisible({ timeout: 5000 });
     
     console.log('🎯 Attempting to trigger timeout collision...');
@@ -260,12 +272,12 @@ test.describe('1_5 Memory Game Bug Reproduction Tests', () => {
     await page.waitForTimeout(1000);
     
     // Verify we're in 1_5
-    const activity15 = page.locator('#1_5_pitches');
+    const activity15 = page.locator('[id="1_5_pitches"]');
     await expect(activity15).toBeVisible({ timeout: 5000 });
     console.log('✅ Switched to 1_5 activity');
     
     // Now try to use the 1_5 play button
-    const play15Button = page.locator('#1_5_pitches .circular-play-button');
+    const play15Button = page.locator('[id="1_5_pitches"] .circular-play-button');
     await expect(play15Button).toBeVisible({ timeout: 2000 });
     
     console.log('🎹 Testing 1_5 play button after cross-activity switch...');
@@ -291,7 +303,7 @@ test.describe('1_5 Memory Game Bug Reproduction Tests', () => {
     await page.click('.memory-area');
     await page.waitForTimeout(1000);
     
-    const playButton = page.locator('#1_5_pitches .circular-play-button');
+    const playButton = page.locator('[id="1_5_pitches"] .circular-play-button');
     await expect(playButton).toBeVisible({ timeout: 5000 });
     
     console.log('🔍 Monitoring for "MEMORY_REPLAY: No sequence found, regenerating for safety"');

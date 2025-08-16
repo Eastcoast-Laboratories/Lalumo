@@ -40,12 +40,60 @@ async function setupTest(page) {
   // Wait for initial load
   await page.waitForTimeout(1000);
   
+  // Handle portrait notice by clicking the close button
+  const portraitNoticeClose = page.locator('.portrait-notice-close');
+  if (await portraitNoticeClose.isVisible({ timeout: 1000 }).catch(() => false)) {
+    debugLog('TEST_UTILS', 'Portrait notice detected, clicking close button...');
+    await portraitNoticeClose.click();
+    await page.waitForTimeout(500);
+  }
+  
+  // Handle all UI overlays that might block clicks
+  await page.evaluate(() => {
+    // Hide portrait notice if still visible
+    const portraitNotice = document.querySelector('.portrait-notice');
+    if (portraitNotice) {
+      portraitNotice.style.display = 'none';
+      console.log('TEST: Hidden portrait notice');
+    }
+    
+    // Hide any other overlays that might interfere
+    const overlays = document.querySelectorAll('.overlay, .modal-overlay, .blocking-overlay');
+    overlays.forEach(overlay => {
+      if (overlay.style.display !== 'none') {
+        overlay.style.display = 'none';
+        console.log('TEST: Hidden overlay:', overlay.className);
+      }
+    });
+  });
+  await page.waitForTimeout(1000);
+  
   // Check for and handle username modal
   await handleUsernameModal(page);
   
-  // Ensure we're on the main screen
-  await expect(page.locator('.pitch-landing')).toBeVisible({ timeout: 2000 });
-  debugLog('TEST_UTILS', 'Initial setup complete, on main landing page');
+  // Wait for Alpine.js to initialize and app to be ready
+  debugLog('TEST_UTILS', 'Waiting for Alpine.js initialization...');
+  await page.waitForFunction(() => {
+    const hasAlpine = !!window.Alpine;
+    const pitchesElement = document.querySelector('[x-data="pitches()"]');
+    const hasPitchesComponent = pitchesElement && pitchesElement._x_dataStack && pitchesElement._x_dataStack.length > 0;
+    
+    if (!hasAlpine) console.log('TEST_DEBUG: Alpine not found');
+    else if (!pitchesElement) console.log('TEST_DEBUG: pitches element not found');
+    else if (!hasPitchesComponent) console.log('TEST_DEBUG: pitches component not initialized');
+    else console.log('TEST_DEBUG: Alpine.js and pitches component fully initialized!');
+    
+    return hasAlpine && hasPitchesComponent;
+  }, { timeout: 15000 });
+  
+  // Click the 1_5 Memory Game navigation button to enter the piano app
+  debugLog('TEST_UTILS', 'Clicking 1_5 Memory Game navigation button...');
+  const nav15Button = page.locator('#nav_1_5');
+  await nav15Button.waitFor({ state: 'visible', timeout: 5000 });
+  await nav15Button.click();
+  await page.waitForTimeout(1000);
+  
+  debugLog('TEST_UTILS', 'Initial setup complete, navigated to 1_5 memory game');
 }
 
 /**

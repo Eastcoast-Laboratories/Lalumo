@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Memory Game Bug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .log { background: #f5f5f5; padding: 10px; margin: 10px 0; font-family: monospace; }
+        button { padding: 10px 15px; margin: 5px; font-size: 16px; }
+        .error { color: red; }
+        .success { color: green; }
+        .debug { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>1_5 Memory Game Bug Reproduction Test</h1>
+    
+    <div class="test-section">
+        <h2>Manual Test Instructions</h2>
+        <p>1. Open the main app at <a href="http://localhost:9091/app/" target="_blank">http://localhost:9091/app/</a></p>
+        <p>2. Click the debug button "🎹 Memory Game" (nav_1_5) to navigate to 1_5 memory game</p>
+        <p>3. Click the Play button multiple times and watch console logs</p>
+        <p>4. Look for BUG_DEBUG logs to track the issue</p>
+    </div>
+
+    <div class="test-section">
+        <h2>Expected Bug Behavior</h2>
+        <ul>
+            <li><strong>First play:</strong> Should work - logs show "BUG_DEBUG: playCurrentMelody() called" and "PIANO_DIRECT Starting memory sequence playback"</li>
+            <li><strong>Second play:</strong> Bug may occur - might not show PIANO_DIRECT logs</li>
+            <li><strong>Third play:</strong> Further verification of bug</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>Debug Logs to Watch For</h2>
+        <div class="log">
+            <strong>Normal Flow:</strong><br>
+            BUG_DEBUG: playCurrentMelody() called - mode: 1_5_pitches_memory-game, gameMode: false/true<br>
+            BUG_DEBUG: 1_5 memory game path - gameMode: false/true<br>
+            BUG_DEBUG: Starting new memory game (gameMode=false) OR BUG_DEBUG: Replaying memory sequence (gameMode=true)<br>
+            PIANO_DIRECT Starting memory sequence playback with X notes<br>
+        </div>
+        
+        <div class="log error">
+            <strong>Bug Indicators:</strong><br>
+            - Missing PIANO_DIRECT logs on subsequent plays<br>
+            - BUG_DEBUG: playMemorySequence() EARLY RETURN - no sequence!<br>
+            - Inconsistent gameMode states<br>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Race Condition Tests</h2>
+        <p>Try these specific scenarios to trigger the bug:</p>
+        <ol>
+            <li><strong>Rapid Clicks:</strong> Click Play button 2-3 times rapidly within 100ms</li>
+            <li><strong>Success Auto-play Interference:</strong> Complete a sequence correctly, then click Play during the 2s auto-play window</li>
+            <li><strong>Error Recovery Interference:</strong> Make an error, then click Play before the 2s error recovery timeout</li>
+            <li><strong>Cross-activity Pollution:</strong> Switch from another activity while sound is playing, then use 1_5 Play button</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>Console Commands for Testing</h2>
+        <div class="log">
+            // Check current state<br>
+            console.log('Current state:', {<br>
+            &nbsp;&nbsp;mode: Alpine.store('pitches')?.mode,<br>
+            &nbsp;&nbsp;gameMode: Alpine.store('pitches')?.gameMode,<br>
+            &nbsp;&nbsp;isPlaying: Alpine.store('pitches')?.isPlaying,<br>
+            &nbsp;&nbsp;currentSequence: Alpine.store('pitches')?.currentSequence?.length || 0<br>
+            });<br><br>
+            
+            // Force trigger playCurrentMelody<br>
+            Alpine.store('pitches').playCurrentMelody();<br><br>
+            
+            // Reset game state<br>
+            Alpine.store('pitches').gameMode = false;<br>
+            Alpine.store('pitches').isPlaying = false;
+        </div>
+    </div>
+
+    <script>
+        // Auto-refresh every 30 seconds to keep this test page updated
+        setTimeout(() => {
+            location.reload();
+        }, 30000);
+        
+        console.log('🧪 Memory Game Bug Test Page Loaded');
+        console.log('📋 Use this page as a reference while testing the memory game');
+    </script>
+</body>
+</html>

@@ -3858,6 +3858,7 @@ export function pitches() {
     playMemorySequence() {
       debugLog("PIANO_DIRECT", "Starting memory sequence playback with", this.currentSequence.length, 'notes');
       debugLog("PIANO_DIRECT", "Visual highlighting is", this.showMemoryHighlighting ? 'enabled' : 'disabled');
+      debugLog('PITCHES', `BUG_DEBUG: playMemorySequence() called - isPlaying: ${this.isPlaying}, gameMode: ${this.gameMode}, sequence: [${this.currentSequence?.join(', ') || 'null'}]`);
       
       // Zuerst alle vorherigen Sounds stoppen (wichtig für sauberen Reset)
       this.stopCurrentSound();
@@ -3868,7 +3869,25 @@ export function pitches() {
       // Ensure we have a sequence to play
       if (!this.currentSequence || this.currentSequence.length === 0) {
         debugLog("PIANO_DIRECT", "No sequence to play");
+        debugLog('PITCHES', 'BUG_DEBUG: playMemorySequence() EARLY RETURN - no sequence!');
         return;
+      }
+      
+      // BUG FIX: Check if Tone.js is ready before attempting playback
+      if (!isToneJsReady()) {
+        debugLog("PIANO_DIRECT", "BUG_FIX: Tone.js not ready - attempting to initialize");
+        // Import and initialize Tone.js synchronously if possible
+        import('../utils/toneJsSampler.js').then(async (module) => {
+          try {
+            await module.initToneJs();
+            debugLog("PIANO_DIRECT", "BUG_FIX: Tone.js initialized successfully, restarting playback");
+            // Restart playback after initialization
+            this.playMemorySequence();
+          } catch (error) {
+            debugLog("PIANO_DIRECT", "BUG_FIX: Failed to initialize Tone.js:", error);
+          }
+        });
+        return; // Exit current attempt, will retry after initialization
       }
       
       // Play each note in the sequence with delays
@@ -3887,18 +3906,30 @@ export function pitches() {
           }
           
           // DIRECT TONE.JS: Use global sampler directly for memory game sequence
-          // This bypasses the audio engine completely for more reliable playback
-          debugLog("PIANO_DIRECT", `Memory game sequence: playing ${note}`);
-          
-          const noteUpperCase = note.toUpperCase();
-          
-          // Play with direct Tone.js approach if ready
-          if (isToneJsReady()) {
-            // Use slightly higher velocity (1.0) for sequence notes
-            playToneNote(noteUpperCase, 0.8, 1.0);
+      // This bypasses the audio engine completely for more reliable playback
+      debugLog("PIANO_DIRECT", `Memory game sequence: playing ${note}`);
+      
+      const noteUpperCase = note.toUpperCase();
+      
+      // Play with direct Tone.js approach if ready
+      if (isToneJsReady()) {
+        // Use slightly higher velocity (1.0) for sequence notes
+        playToneNote(noteUpperCase, 0.8, 1.0);
+      } else {
+        debugLog("PIANO_DIRECT", `BUG_FIX: Tone.js not ready - attempting initialization`);
+        // Try to initialize Tone.js if not ready (fixes the bug!)
+        import('../utils/toneJsSampler.js').then(async (module) => {
+          await module.initToneJs();
+          debugLog("PIANO_DIRECT", `BUG_FIX: Tone.js initialized, retrying note ${noteUpperCase}`);
+          if (module.isToneJsReady()) {
+            module.playToneNote(noteUpperCase, 0.8, 1.0);
           } else {
-            debugLog("PIANO_DIRECT", `Skipping note ${noteUpperCase} - sampler not ready`);
+            debugLog("PIANO_DIRECT", `BUG_FIX: Still not ready after init - ${noteUpperCase} skipped`);
           }
+        }).catch(err => {
+          debugLog("PIANO_DIRECT", `BUG_FIX: Failed to initialize Tone.js: ${err}`);
+        });
+      }
           
           // Remove this timeout from tracking once executed
           const timeoutIndex = this.melodyTimeouts.indexOf(playTimeoutId);
@@ -4161,6 +4192,8 @@ export function pitches() {
      * @used_by 1_5_pitches_memory-game
      */
     playCurrentMelody() {
+      debugLog('PITCHES', `BUG_DEBUG: playCurrentMelody() called - mode: ${this.mode}, gameMode: ${this.gameMode}, isPlaying: ${this.isPlaying}`);
+      
       // activity IDs
       if (this.mode === '1_2_pitches_match-sounds') {
         if (!this.gameMode) {
@@ -4172,18 +4205,23 @@ export function pitches() {
         // Pass false to indicate we want to replay the current melody, not generate a new one
         this.playMelody(false);
       } else if (this.mode === '1_5_pitches_memory-game') {
+        debugLog('PITCHES', `BUG_DEBUG: 1_5 memory game path - gameMode: ${this.gameMode}, currentSequence: ${this.currentSequence?.length || 'null'}`);
+        
         if (!this.gameMode) {
+          debugLog('PITCHES', 'BUG_DEBUG: Starting new memory game (gameMode=false)');
           // Neue Tiere beim Start des Memory-Spiels anzeigen
           debugLog('PITCHES', 'ANIMALS: Selecting new animals for starting memory game');
           this.selectRandomAnimalImages();
           this.startMemoryGame(); // Start game mode from free play
         } else {
+          debugLog('PITCHES', 'BUG_DEBUG: Replaying memory sequence (gameMode=true)');
           // Replay sollte keine neuen Tiere anzeigen, nur bei neuen Spielen/Sequenzen
           // Add safety check for missing sequence (defensive fix for intermittent bug)
           if (!this.currentSequence || this.currentSequence.length === 0) {
             debugLog('PITCHES', 'MEMORY_REPLAY: No sequence found, regenerating for safety');
             this.setup_1_5(false, true); // Generate new without playing
           }
+          debugLog('PITCHES', `BUG_DEBUG: About to call playMemorySequence() with sequence length: ${this.currentSequence?.length || 'null'}`);
           this.playMemorySequence(); // Just replay current sequence in game mode
         }
       }
@@ -5433,10 +5471,13 @@ export function pitches() {
      * Start game mode for memory (called when play button is pressed)
      */
     startMemoryGame() {
+      debugLog('PITCHES', `BUG_DEBUG: startMemoryGame() called - current gameMode: ${this.gameMode}, isPlaying: ${this.isPlaying}`);
       this.gameMode = true;
       this.memoryFreePlay = false;
+      debugLog('PITCHES', 'BUG_DEBUG: Set gameMode=true, calling setup_1_5(true, true)');
       this.setup_1_5(true, true); // Play sound and generate new
       this.showContextMessage(); // Update instructions
+      debugLog('PITCHES', 'BUG_DEBUG: startMemoryGame() completed');
     },
 
     /**
