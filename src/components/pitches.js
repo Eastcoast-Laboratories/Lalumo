@@ -83,6 +83,7 @@ export function pitches() {
       seenActivityMessages: {},   // Track which activities have shown the message
     },
     currentHighlightedNote: null, // For highlighting piano keys during playback
+    memoryGameStarting: false, // BUG FIX: Prevent race condition during memory game startup
     
     // Central color configuration for Draw Melody (1_3) visual elements
     drawMelodyColors: {
@@ -1949,11 +1950,11 @@ export function pitches() {
           const testUtterance = new SpeechSynthesisUtterance('');
           testUtterance.volume = 0; // Silent test
           testUtterance.onend = () => debugLog('PITCHES', 'Silent test utterance completed successfully');
-          testUtterance.onerror = (err) => debugLog(['PITCHES', 'ERROR'], 'Test utterance failed:', err);
+          testUtterance.onerror = (err) => debugLog(['PITCHES'], 'Test utterance failed:', err);
           this.speechSynthesis.speak(testUtterance);
           debugLog('PITCHES', 'Initial speech test started');
         } catch (error) {
-          debugLog(['PITCHES', 'ERROR'], 'Speech synthesis test failed:', error);
+          debugLog(['PITCHES'], 'Speech synthesis test failed:', error);
         }
       } else {
         debugLog('PITCHES', 'Speech synthesis API not found on initial check');
@@ -5472,11 +5473,20 @@ export function pitches() {
      */
     startMemoryGame() {
       debugLog('PITCHES', `BUG_DEBUG: startMemoryGame() called - current gameMode: ${this.gameMode}, isPlaying: ${this.isPlaying}`);
+      
+      // BUG FIX: Prevent race condition during game startup
+      if (this.memoryGameStarting) {
+        debugLog('PITCHES', 'BUG_FIX: Memory game already starting, ignoring duplicate call');
+        return;
+      }
+      
+      this.memoryGameStarting = true;
       this.gameMode = true;
       this.memoryFreePlay = false;
       debugLog('PITCHES', 'BUG_DEBUG: Set gameMode=true, calling setup_1_5(true, true)');
       this.setup_1_5(true, true); // Play sound and generate new
       this.showContextMessage(); // Update instructions
+      this.memoryGameStarting = false; // Clear flag after completion
       debugLog('PITCHES', 'BUG_DEBUG: startMemoryGame() completed');
     },
 

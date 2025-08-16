@@ -95,10 +95,7 @@ test.describe('1_5 Memory Game Bug Reproduction Tests', () => {
   test('Should trigger Race Condition #1: Rapid clicks before startMemoryGame completes', async ({ page }) => {
     console.log('🧪 Test 2: Race Condition #1 - Rapid clicks');
     
-    // Navigate to 1_5 memory game
-    await page.click('.memory-area');
-    await page.waitForTimeout(1000);
-    
+    // Test setup already navigated to 1_5 memory game
     const playButton = page.locator('[id="1_5_pitches"] .circular-play-button');
     await expect(playButton).toBeVisible({ timeout: 5000 });
     
