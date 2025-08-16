@@ -3,6 +3,7 @@
  */
 
 const { expect } = require('@playwright/test');
+// Test overlay imports removed - now implemented directly in this file
 
 // Test environment debug logging utility
 // Uses console.log directly since this is test-time logging where console output is expected
@@ -17,9 +18,9 @@ const debugLog = (module, message, ...args) => {
 
 /**
  * Setup the test environment and navigate to the app
- * Handles common operations like username generation
+ * Handles common operations like username generation and test overlay
  */
-async function setupTest(page) {
+async function setupTest(page, testName = 'Unbekannter Test') {
   // Set reasonable timeout
   page.setDefaultTimeout(5000);
   
@@ -39,6 +40,9 @@ async function setupTest(page) {
   
   // Wait for initial load
   await page.waitForTimeout(1000);
+  
+  // Initialize test overlay system
+  await initializeTestOverlay(page);
   
   // Handle portrait notice by clicking the close button
   const portraitNoticeClose = page.locator('.portrait-notice-close');
@@ -221,12 +225,155 @@ async function checkElementVisibility(page, selector, description) {
   }
 }
 
+/**
+ * Initialize test overlay system (DRY implementation)
+ */
+async function initializeTestOverlay(page) {
+  await page.evaluate(() => {
+    // Create test overlay helper functions in window scope
+    window.testOverlay = {
+      create: function(testName, status = 'running') {
+        // Remove existing overlay
+        const existing = document.getElementById('test-overlay');
+        if (existing) existing.remove();
+        
+        // Create new overlay
+        const overlay = document.createElement('div');
+        overlay.id = 'test-overlay';
+        overlay.style.cssText = `
+          position: fixed !important;
+          bottom: 30px !important;
+          right: 10px !important;
+          background: rgba(0, 0, 0, 0.9) !important;
+          color: #00ff00 !important;
+          padding: 12px 16px !important;
+          border-radius: 8px !important;
+          font-family: 'Courier New', monospace !important;
+          font-size: 14px !important;
+          font-weight: bold !important;
+          z-index: 999999 !important;
+          border: 2px solid #00ff00 !important;
+          box-shadow: 0 4px 12px rgba(0, 255, 0, 0.4) !important;
+        `;
+        
+        this.update(overlay, testName, status);
+        document.body.appendChild(overlay);
+        console.log('🔧 TEST_OVERLAY: Created overlay for', testName);
+        return overlay;
+      },
+      
+      update: function(overlay, testName, status) {
+        const statusEmoji = {
+          'running': '🔄',
+          'passed': '✅', 
+          'failed': '❌',
+          'skipped': '⏭️'
+        };
+        
+        const statusColor = {
+          'running': '#ffff00',
+          'passed': '#00ff00',
+          'failed': '#ff0000', 
+          'skipped': '#888888'
+        };
+        
+        overlay.innerHTML = `
+          <div>🧪 ${testName}</div>
+          <div style="font-size: 12px; color: ${statusColor[status] || '#ffff00'};">
+            ${statusEmoji[status] || '🔄'} ${this.getStatusText(status)}
+          </div>
+        `;
+      },
+      
+      getStatusText: function(status) {
+        const texts = {
+          'running': 'Test läuft...',
+          'passed': 'Test erfolgreich!',
+          'failed': 'Test fehlgeschlagen!',
+          'skipped': 'Test übersprungen'
+        };
+        return texts[status] || 'Test läuft...';
+      },
+      
+      show: function(testName, status = 'running') {
+        return this.create(testName, status);
+      },
+      
+      updateStatus: function(status, message = null) {
+        const overlay = document.getElementById('test-overlay');
+        if (overlay && window.testOverlay.currentTestName) {
+          const displayMessage = message || window.testOverlay.getStatusText(status);
+          window.testOverlay.update(overlay, window.testOverlay.currentTestName, status);
+          if (message) {
+            const statusDiv = overlay.querySelector('div:last-child');
+            if (statusDiv) {
+              statusDiv.innerHTML = `${window.testOverlay.getStatusEmoji(status)} ${message}`;
+            }
+          }
+        }
+      },
+      
+      getStatusEmoji: function(status) {
+        const emojis = { 'running': '🔄', 'passed': '✅', 'failed': '❌', 'skipped': '⏭️' };
+        return emojis[status] || '🔄';
+      },
+      
+      remove: function() {
+        const overlay = document.getElementById('test-overlay');
+        if (overlay) {
+          overlay.remove();
+          console.log('🔧 TEST_OVERLAY: Removed overlay');
+        }
+      }
+    };
+  });
+}
+
+/**
+ * Show test overlay with name and status
+ */
+async function showTestOverlay(page, testName, status = 'running') {
+  await page.evaluate((args) => {
+    if (window.testOverlay) {
+      window.testOverlay.currentTestName = args.testName;
+      window.testOverlay.show(args.testName, args.status);
+    }
+  }, { testName, status });
+}
+
+/**
+ * Update test overlay status
+ */
+async function updateTestOverlay(page, status, message = null) {
+  await page.evaluate((args) => {
+    if (window.testOverlay) {
+      window.testOverlay.updateStatus(args.status, args.message);
+    }
+  }, { status, message });
+}
+
+/**
+ * Remove test overlay
+ */
+async function removeTestOverlay(page) {
+  await page.evaluate(() => {
+    if (window.testOverlay) {
+      window.testOverlay.remove();
+    }
+  });
+}
+
+// Export all functions for use in tests
 module.exports = {
   setupTest,
-  handleUsernameModal,
-  navigateToActivity,
-  returnToMain,
-  diagnoseAlpineComponent,
+  debugLog,
   checkElementVisibility,
-  debugLog
+  returnToMain,
+  initializeTestOverlay,
+  showTestOverlay,
+  updateTestOverlay,
+  removeTestOverlay,
+  // Legacy exports for backward compatibility
+  showTestInfo: showTestOverlay,
+  updateTestStatus: updateTestOverlay
 };

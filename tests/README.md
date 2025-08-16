@@ -37,16 +37,35 @@ npx playwright test tests/activities/
 
 # Einzelnen Test ausführen
 npx playwright test tests/stable-instable-chords.spec.js
+
+# Playwright UI öffnen (Alle Tests anzeigen):
+npx playwright test --ui
+
+# Einzelnen Test debuggen (verschiedene Modi):
+npx playwright test tests/activities/match-sounds.spec.js --ui          # UI-Modus (empfohlen)
+npx playwright test tests/activities/match-sounds.spec.js --debug       # Debug-Modus (pausiert)
+npx playwright test tests/activities/match-sounds.spec.js --headed      # Browser sichtbar
 ```
 
 ### **Debug-Modus:**
-```bash
-# Interaktiver Debug-Modus
-npx playwright test --debug
 
-# Mit Trace-Recording
-npx playwright test --trace on
-```
+**🎯 Playwright UI (Beste Option):**
+- `npx playwright test --ui` öffnet eine grafische Oberfläche
+- Zeigt alle Tests in einer Baumstruktur
+- Interaktive Ausführung und Debugging
+- Live-Vorschau des Browsers
+
+**🔧 Debug-Modi:**
+- `--debug`: Pausiert bei jedem Schritt, ermöglicht Step-by-Step Debugging
+- `--headed`: Browser ist sichtbar, Test läuft normal durch
+- `--ui`: Grafische Oberfläche mit allen Debug-Features
+
+**🚨 Troubleshooting:**
+- **about:blank Problem**: Stelle sicher, dass der Dev-Server läuft (`http://localhost:9091`)
+- **Test-Overlay nicht sichtbar**: Öffne Browser-Konsole (F12) und suche nach `🔧 TEST_OVERLAY` Logs
+- **Port-Konflikte**: Bei `EADDRINUSE` Fehlern den alten Prozess beenden (`pkill -f playwright`)
+
+**Hinweis:** Falls beim Öffnen des Reports mit `npx playwright show-report` die Fehlermeldung `EADDRINUSE: address already in use` erscheint, ist der Report-Server bereits aktiv. Öffne einfach die URL aus der letzten Testausgabe (z.B. `http://localhost:9323`) direkt im Browser oder beende den alten Prozess (`pkill -f playwright`) und starte den Befehl erneut.
 
 ## 📊 **Test Reports**
 

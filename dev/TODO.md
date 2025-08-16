@@ -115,6 +115,7 @@ unter chrome auf dem handy android 15:
     - hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
 
 - there is already the hash redirect, when coming from a referral, erweitere so dass die seite reachable wird via a hash-anchor-link: make this link go directly to the 1_1_pitches_high_or_low activity: https://lalumo.z11.de/#1_1
+- fix and use the tests/hash-navigation.spec.js to develop the hash navigation like test-driven development
 
 - all chapters and activities are included in the sitemap. also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
 

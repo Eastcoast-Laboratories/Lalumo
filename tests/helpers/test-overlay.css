@@ -1,0 +1,61 @@
+/* Test Overlay Styles - nur für Playwright Tests sichtbar */
+.test-overlay {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #00ff00;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 10000;
+  border: 1px solid #00ff00;
+  box-shadow: 0 2px 8px rgba(0, 255, 0, 0.3);
+  max-width: 300px;
+  word-wrap: break-word;
+  backdrop-filter: blur(4px);
+  transition: opacity 0.3s ease;
+}
+
+.test-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.test-overlay .test-name {
+  display: block;
+  margin-bottom: 4px;
+  color: #ffffff;
+  font-size: 11px;
+}
+
+.test-overlay .test-status {
+  display: block;
+  font-size: 10px;
+  color: #00ff00;
+}
+
+.test-overlay .test-status.running {
+  color: #ffff00;
+}
+
+.test-overlay .test-status.failed {
+  color: #ff0000;
+}
+
+.test-overlay .test-status.passed {
+  color: #00ff00;
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 768px) {
+  .test-overlay {
+    bottom: 5px;
+    right: 5px;
+    font-size: 10px;
+    padding: 6px 8px;
+    max-width: 200px;
+  }
+}
