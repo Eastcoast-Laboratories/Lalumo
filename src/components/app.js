@@ -1085,7 +1085,7 @@ export function app() {
           decodedData = atob(cleanedData);
           debugLog('IMPORT', `Decoded data successfully, length: ${decodedData.length}, Preview: ${decodedData.substring(0, 50)}...`);
         } catch (e) {
-          debugLog(['APP', 'ERROR'], `Base64 decoding failed: ${e, 'Data was:', cleanedData.substring(0, 100.message || e, 'Data was:', cleanedData.substring(0, 100}`));
+          debugLog(['APP', 'ERROR'], `Base64 decoding failed: ${e.message || e}, Data was: ${cleanedData.substring(0, 100)}`);
           alert(this.$store.strings?.import_error_format || 'Error: Invalid import data format');
           return;
         }
@@ -1096,14 +1096,14 @@ export function app() {
           parsedData = JSON.parse(decodedData);
           debugLog('IMPORT', `Import data parsed successfully: ${Object.keys(parsedData).join(', ')}`);
         } catch (e) {
-          debugLog(['APP', 'ERROR'], `JSON parsing failed: ${e, 'Decoded data was:', decodedData.substring(0, 100.message || e, 'Decoded data was:', decodedData.substring(0, 100}`));
+          debugLog(['APP', 'ERROR'], `JSON parsing failed: ${e.message || e}, Decoded data was: ${decodedData.substring(0, 100)}`);
           alert(this.$store.strings?.import_error_json || 'Error: Could not parse import data');
           return;
         }
         
         // Überprüfe Version und Datenformat
         if (!parsedData.version || parsedData.version !== "2.0" || !parsedData.localStorageData) {
-          debugLog(['APP', 'ERROR'], `Unsupported import format: ${JSON.stringify(parsedData.message || JSON.stringify(parsedData}`).substring(0, 200));
+          debugLog(['APP', 'ERROR'], `Unsupported import format: ${JSON.stringify(parsedData.message || JSON.stringify(parsedData))}`.substring(0, 200));
           alert(this.$store.strings?.import_error_version || 'Error: Unsupported import format. Only version 2.0 is supported.');
           return;
         }
