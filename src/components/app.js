@@ -388,16 +388,27 @@ export function app() {
       // Extrahiere den Hash ohne das #-Zeichen
       const hashContent = hash.substring(1); 
       
-      // Aufteilen nach Parametern (falls mehrere durch & getrennt sind)
-      const params = {};
-      hashContent.split('&').forEach(param => {
-        const [key, value] = param.split('=');
-        if (key && value) {
-          params[key] = decodeURIComponent(value);
-        }
-      });
+      // Check for simple activity format first (#1_1, #1_2, etc.)
+      const activityPattern = /^(\d+_\d+)$/;
+      const simpleActivityMatch = hashContent.match(activityPattern);
       
-      debugLog('DEEPLINK', `Extrahierte Parameter: ${params}`);
+      let params = {};
+      
+      if (simpleActivityMatch) {
+        // Simple format: #1_1 -> activity=1_1
+        params.activity = simpleActivityMatch[1];
+        debugLog('DEEPLINK', `Simple activity format detected: ${params.activity}`);
+      } else {
+        // Aufteilen nach Parametern (falls mehrere durch & getrennt sind)
+        hashContent.split('&').forEach(param => {
+          const [key, value] = param.split('=');
+          if (key && value) {
+            params[key] = decodeURIComponent(value);
+          }
+        });
+      }
+      
+      debugLog('DEEPLINK', `Extrahierte Parameter:`, params);
       
       // Process referral code from URL hash (#ref=CODE)
       if (params.ref) {
