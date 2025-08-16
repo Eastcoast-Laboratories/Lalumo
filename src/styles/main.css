@@ -147,7 +147,6 @@
 }
 
 .activity-button-blocker.blocking {
-  opacity: 0 !important;
   cursor: progress !important;
   transform: scale(0.98);
   user-select: none;
