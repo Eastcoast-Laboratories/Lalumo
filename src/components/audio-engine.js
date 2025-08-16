@@ -571,7 +571,11 @@ export class AudioEngine {
       return;
     }
     
-    // Note sofort stoppen mit triggerRelease
+    // Note sofort stoppen mit triggerRelease (nur wenn Synth vorhanden)
+    if (!this._synth) {
+      debugLog(['AUDIO_ENGINE', 'WARN'], 'STOP_NOTE: _synth is null, skipping triggerRelease');
+      return;
+    }
     this._synth.triggerRelease(parsedNote);
     
     // Note aus der Liste aktiver Noten entfernen
@@ -630,13 +634,17 @@ export class AudioEngine {
           mergedOptions.onNoteStart(null, event.index);
         }
       } else {
-        // Note abspielen
-        this._synth.triggerAttackRelease(
-          event.note, 
-          event.duration, 
-          time, 
-          event.velocity
-        );
+        // Note abspielen (nur wenn Synth vorhanden)
+        if (!this._synth) {
+          debugLog(['AUDIO_SEQUENCE', 'WARN'], `Sequence synth missing at index ${event.index}, skipping note ${event.note}`);
+        } else {
+          this._synth.triggerAttackRelease(
+            event.note, 
+            event.duration, 
+            time, 
+            event.velocity
+          );
+        }
         
         debugLog('AUDIO_SEQUENCE', `Note gespielt: ${event.note} (${event.originalNote}) an Position ${event.index + 1}/${processedNotes.length}`);
         
@@ -743,7 +751,15 @@ export class AudioEngine {
     debugLog('AUDIO', `Spiele Akkord mit Noten: ${validNotes.join(', ')}, Dauer: ${duration}s`);
     
     try {
-      // Alle Noten gleichzeitig abspielen
+      // Alle Noten gleichzeitig abspielen (nur wenn Synth vorhanden)
+      if (!this._synth) {
+        debugLog(['AUDIO_CHORD', 'WARN'], 'PLAY_CHORD: _synth is null, recreating default synth');
+        try { this.useInstrument('default'); } catch (e) {}
+      }
+      if (!this._synth) {
+        debugLog(['AUDIO_CHORD', 'ERROR'], 'PLAY_CHORD: Cannot play chord because _synth is still null');
+        return false;
+      }
       this._synth.triggerAttackRelease(validNotes, duration, Tone.now(), velocity);
       
       // Noten als aktiv markieren
@@ -906,6 +922,20 @@ export class AudioEngine {
     // Bisherige Sounds stoppen
     this.stopAll();
     
+    // Ensure a synth exists after potential cleanup
+    if (!this._synth) {
+      debugLog(['AUDIO_ENGINE', 'WARN'], `SPECIAL_SOUND: _synth is null before playback for '${soundName}', recreating default synth`);
+      try {
+        this.useInstrument('default');
+      } catch (e) {
+        debugLog(['AUDIO_ENGINE', 'ERROR'], `SPECIAL_SOUND: Failed to recreate synth: ${e.message || e}`);
+      }
+      if (!this._synth) {
+        debugLog(['AUDIO_ENGINE', 'ERROR'], `SPECIAL_SOUND: _synth still null, cannot play '${soundName}'`);
+        return;
+      }
+    }
+    
     // Aktuelle Zeit ermitteln
     let currentTime = Tone.now();
     
@@ -914,6 +944,10 @@ export class AudioEngine {
       const duration = sound.durations[index] || 0.25;
       
       // Note zum richtigen Zeitpunkt abspielen
+      if (!this._synth) {
+        debugLog(['AUDIO_ENGINE', 'WARN'], 'SPECIAL_SOUND: _synth became null during sequence, aborting');
+        return;
+      }
       this._synth.triggerAttackRelease(
         note, 
         duration, 
