@@ -18,8 +18,13 @@ test.describe('Lalumo Up or Down Activity Tests', () => {
   });
 
   test('Should navigate to Up or Down activity and perform basic interaction', async ({ page }) => {
-    // Navigate to Up or Down activity using the helper
-    const activityContainer = await navigateToActivity(page, '.match-area', '1_2_pitches');
+    // Navigate to Up or Down activity using the index.html button
+    await page.click('#nav_1_2');
+    await page.waitForTimeout(1000);
+    
+    // Verify we're on the right activity
+    const activityContainer = page.locator('[id="1_2_pitches"]');
+    await expect(activityContainer).toBeVisible({ timeout: 5000 });
     
     // Wait for cards to be generated
     await page.waitForTimeout(1000);

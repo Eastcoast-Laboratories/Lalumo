@@ -29,34 +29,34 @@ test.describe('Lalumo Memory Game Activity Tests', () => {
   });
 
   test('Should navigate to Memory Game activity and perform basic interaction', async ({ page }) => {
-    // Navigate to Memory Game activity using the helper
-    const activityContainer = await navigateToActivity(page, '.memory-area', '1_5_pitches');
+    // Navigate to Memory Game activity using the index.html button
+    await page.click('#nav_1_5');
+    await page.waitForTimeout(1000);
     
-    // Verify memory cards are visible
-    const memoryContainer = page.locator('.memory-container');
-    await expect(memoryContainer).toBeVisible({ timeout: 2000 });
-    debugLog('MEMORY_GAME_SPEC', 'Memory container is visible');
+    // Verify we're on the right activity
+    const activityContainer = page.locator('[id="1_5_pitches"]');
+    await expect(activityContainer).toBeVisible({ timeout: 5000 });
     
-    // Check if memory cards are rendered
-    const memoryCards = page.locator('.memory-card');
-    const cardCount = await memoryCards.count();
-    expect(cardCount).toBeGreaterThan(0);
-    debugLog('MEMORY_GAME_SPEC', `Found ${cardCount} memory cards`);
+    // Verify piano keys are visible (memory game uses piano interface)
+    const pianoKeys = page.locator('[id="1_5_pitches"] .piano-key');
+    await expect(pianoKeys.first()).toBeVisible({ timeout: 5000 });
+    debugLog('MEMORY_GAME_SPEC', 'Piano keys are visible');
     
-    // Flip the first card
-    const firstCard = memoryCards.first();
-    await expect(firstCard).toBeVisible({ timeout: 2000 });
-    await firstCard.click();
-    debugLog('MEMORY_GAME_SPEC', 'Clicked on first memory card');
-    await page.waitForTimeout(500);
+    // Check if play button is rendered
+    const playButton = page.locator('[id="1_5_pitches"] .circular-play-button');
+    await expect(playButton).toBeVisible({ timeout: 2000 });
+    debugLog('MEMORY_GAME_SPEC', 'Play button is visible');
     
-    // Flip another card (doesn't matter if it matches)
-    if (cardCount > 1) {
-      const secondCard = memoryCards.nth(1);
-      await secondCard.click();
-      debugLog('MEMORY_GAME_SPEC', 'Clicked on second memory card');
-      await page.waitForTimeout(1000);
-    }
+    // Click the play button to start the memory game
+    await playButton.click();
+    debugLog('MEMORY_GAME_SPEC', 'Clicked play button to start memory game');
+    await page.waitForTimeout(2000); // Wait for sequence to play
+    
+    // Click a piano key to interact with the memory game
+    const firstPianoKey = pianoKeys.first();
+    await firstPianoKey.click({ force: true });
+    debugLog('MEMORY_GAME_SPEC', 'Clicked first piano key');
+    await page.waitForTimeout(1000);
     
     // Check if any feedback is displayed using helper function
     await checkElementVisibility(page, '#1_5_pitches .feedback-container', 'Feedback message');

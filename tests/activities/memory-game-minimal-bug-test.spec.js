@@ -2,6 +2,7 @@
 // Focus on reproducing the "plays once then stops" bug without UI overlay issues
 
 const { test, expect } = require('@playwright/test');
+const { setupTest } = require('../helpers/test-utils');
 
 test.describe('1_5 Memory Game Minimal Bug Test', () => {
   test.setTimeout(60000); // Extended timeout
@@ -16,51 +17,22 @@ test.describe('1_5 Memory Game Minimal Bug Test', () => {
 
     // Capture console logs
     page.on('console', msg => {
-      const text = msg.text();
-      consoleLogs.push({
-        type: msg.type(),
-        text: text,
-        timestamp: Date.now()
-      });
+      const logText = msg.text();
+      consoleLogs.push({ type: msg.type(), text: logText });
       
-      // Track PIANO_DIRECT logs specifically
-      if (text.includes('PIANO_DIRECT')) {
-        pianoDirectLogs.push({
-          text: text,
-          timestamp: Date.now()
-        });
-        console.log(`🎹 PIANO_DIRECT: ${text}`);
+      if (logText.includes('PIANO_DIRECT')) {
+        pianoDirectLogs.push({ type: msg.type(), text: logText });
+        console.log(`🎹 PIANO_DIRECT: ${logText}`);
       }
       
       // Track other relevant logs
-      if (text.includes('MEMORY_GAME') || text.includes('MEMORY_REPLAY') || text.includes('TONE_JS')) {
-        console.log(`🎵 ${text}`);
+      if (logText.includes('MEMORY_GAME') || logText.includes('MEMORY_REPLAY') || logText.includes('TONE_JS')) {
+        console.log(`🎵 ${logText}`);
       }
     });
 
-    // Navigate directly to app and force hide overlays
-    await page.goto('http://localhost:9091/app/', { timeout: 10000 });
-    
-    // Aggressively hide all overlays
-    await page.addStyleTag({
-      content: `
-        .portrait-notice, .modal-overlay, .overlay, .blocking-overlay {
-          display: none !important;
-          visibility: hidden !important;
-          opacity: 0 !important;
-          pointer-events: none !important;
-        }
-      `
-    });
-    
-    // Wait for app to load
-    await page.waitForTimeout(2000);
-    
-    // Force Alpine.js to be ready
-    await page.waitForFunction(() => {
-      return window.Alpine && window.Alpine.store;
-    }, { timeout: 10000 });
-    
+    // Use the working test framework from main suite
+    await setupTest(page);
     console.log('🚀 Test setup complete');
   });
 
@@ -87,7 +59,7 @@ test.describe('1_5 Memory Game Minimal Bug Test', () => {
       console.log(`🎯 Current mode: ${currentMode}`);
       
       // Find and click the play button multiple times to reproduce the bug
-      const playButton = page.locator('.play-button, [data-action="play"], .memory-play-button').first();
+      const playButton = page.locator('[id="1_5_pitches"] .circular-play-button');
       
       console.log('🎵 Attempt 1: First play (should work)');
       await playButton.click();

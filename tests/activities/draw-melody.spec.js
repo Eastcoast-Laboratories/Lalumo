@@ -28,8 +28,13 @@ test.describe('Lalumo Draw a Melody Activity Tests', () => {
   });
 
   test('Should navigate to Draw a Melody activity and perform basic interaction', async ({ page }) => {
-    // Navigate to Draw a Melody activity using the helper
-    const activityContainer = await navigateToActivity(page, '.draw-area', '1_3_pitches');
+    // Navigate to Draw a Melody activity using the debug button (always visible)
+    await page.click('#nav_1_3_debug');
+    await page.waitForTimeout(1000);
+    
+    // Verify we're on the right activity
+    const activityContainer = page.locator('[id="1_3_pitches"]');
+    await expect(activityContainer).toBeVisible({ timeout: 5000 });
     
     // Verify the canvas is visible
     const drawingCanvas = page.locator('canvas.drawing-canvas');
@@ -40,7 +45,7 @@ test.describe('Lalumo Draw a Melody Activity Tests', () => {
     await page.waitForTimeout(1000);
     
     // Click the play button to hear the melody
-    const playButton = page.locator('#1_3_pitches .play-btn');
+    const playButton = page.locator('[id="1_3_pitches"] .circular-play-button');
     await expect(playButton).toBeVisible({ timeout: 2000 });
     await playButton.click();
     debugLog('DRAW_MELODY_SPEC', 'Clicked play button, melody should now play');

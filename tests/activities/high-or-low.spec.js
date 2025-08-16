@@ -28,14 +28,19 @@ test.describe('Lalumo High or Low Activity Tests', () => {
   });
 
   test('Should navigate to High or Low activity and perform basic interaction', async ({ page }) => {
-    // Navigate to High or Low activity using the helper
-    const activityContainer = await navigateToActivity(page, '.high-or-low-area', '1_1_pitches');
+    // Navigate to High or Low activity using the index.html button
+    await page.click('#nav_1_1');
+    await page.waitForTimeout(1000);
+    
+    // Verify we're on the right activity
+    const activityContainer = page.locator('[id="1_1_pitches"]');
+    await expect(activityContainer).toBeVisible({ timeout: 5000 });
     
     // Wait for tones to be generated
     await page.waitForTimeout(1000);
     
     // Play the tones
-    const playButton = page.locator('#1_1_pitches .play-btn');
+    const playButton = page.locator('[id="1_1_pitches"] .circular-play-button');
     await expect(playButton).toBeVisible({ timeout: 2000 });
     await playButton.click();
     debugLog('HIGH_LOW_SPEC', 'Clicked play button, tones should now play');

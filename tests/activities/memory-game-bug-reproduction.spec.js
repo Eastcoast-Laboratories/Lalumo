@@ -240,17 +240,17 @@ test.describe('1_5 Memory Game Bug Reproduction Tests', () => {
     console.log('🎯 Attempting to trigger cross-activity state pollution...');
     console.log('📝 Strategy: Switch from 1_4 to 1_5 while melody playing');
     
-    // First navigate to 1_4 activity
-    await page.click('.sound-judgment-area');
+    // First navigate to 1_4 activity using index.html button
+    await page.click('#nav_1_4');
     await page.waitForTimeout(1000);
     
     // Verify we're in 1_4
-    const activity14 = page.locator('#1_4_pitches');
+    const activity14 = page.locator('[id="1_4_pitches"]');
     await expect(activity14).toBeVisible({ timeout: 5000 });
     console.log('✅ Navigated to 1_4 activity');
     
     // Start playing a melody in 1_4
-    const play14Button = page.locator('#1_4_pitches .circular-play-button');
+    const play14Button = page.locator('[id="1_4_pitches"] .circular-play-button');
     if (await play14Button.isVisible()) {
       await play14Button.click();
       console.log('🎵 Started melody in 1_4 activity');
@@ -259,7 +259,7 @@ test.describe('1_5 Memory Game Bug Reproduction Tests', () => {
     
     // Quickly switch to 1_5 while 1_4 might still be playing
     console.log('🔄 Switching to 1_5 while 1_4 melody may be playing...');
-    await page.click('.memory-area');
+    await page.click('#nav_1_5');
     await page.waitForTimeout(1000);
     
     // Verify we're in 1_5
