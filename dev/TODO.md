@@ -214,6 +214,11 @@ reset-button:
          - Result: Stale isPlaying state blocks new playback
     * DEFENSIVE FIX APPLIED: Added currentSequence safety check in playCurrentMelody() replay path
     * Watch for log: "MEMORY_REPLAY: No sequence found, regenerating for safety"
+    * INCORRECT FIX REVERTED: Attempted to use playCurrentMelody() for error/success/replay flows
+      - This caused NEW issues: error sound and replay after every keystroke
+      - playCurrentMelody() is meant for manual play button clicks, not internal replay flows
+      - All changes reverted back to original playMemorySequence() calls
+    * STATUS: Back to original state - need to find actual root cause of intermittent bug
   - 
 
 2_2_chords_stable_unstable:

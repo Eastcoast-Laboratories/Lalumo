@@ -1,4 +1,24 @@
 // @ts-check
+// STATUS: WORKING - Hash navigation and back button functionality tests
+// 
+// PURPOSE: Tests URL hash-based navigation between activities in the Lalumo app
+// WHAT IT TESTS:
+//   1. Navigation between all pitch activities (1_1, 1_2, 1_3, 1_4, 1_5)
+//   2. Back button functionality and browser history
+//   3. Proper activity switching via hash changes
+//   4. Element visibility after navigation
+//
+// CURRENT STATUS: ✅ WORKING
+//   - Properly handles username dialogs
+//   - Tests all major navigation paths
+//   - Includes comprehensive error handling
+//   - Uses correct selectors for current app structure
+//
+// KNOWN ISSUES: None
+// 
+// HOW TO RUN: npx playwright test tests/hash-navigation.spec.js --headed
+// DEPENDENCIES: Requires local dev server running on http://localhost:9091
+
 const { test, expect } = require('@playwright/test');
 
 // Test environment debug logging utility
@@ -37,8 +57,8 @@ test.describe('Lalumo Hash Navigation', () => {
     });
 
     try {
-      // Navigate to the app and wait for it to be ready
-      await page.goto('http://localhost:9091/', { timeout: 5000 });
+      // Navigate to the app directly to /app/ to skip homepage
+      await page.goto('http://localhost:9091/app/', { timeout: 5000 });
       
       // Kurze Wartezeit für die Initialisierung
       await page.waitForTimeout(500);

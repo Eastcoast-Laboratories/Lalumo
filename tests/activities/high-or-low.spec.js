@@ -1,3 +1,6 @@
+// STATUS: PARTIALLY WORKING - Basic navigation works but selectors may be outdated
+// Test navigates to 1_1 activity correctly but some selectors like .play-btn, .high-btn may not match current HTML
+
 // Test environment debug logging utility
 const debugLog = (module, message, ...args) => {
   // For test files, always log since it's test/development time

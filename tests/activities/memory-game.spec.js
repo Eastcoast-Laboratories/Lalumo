@@ -1,3 +1,7 @@
+// STATUS: NOT WORKING - Test is for wrong activity (memory card game instead of 1_5 piano memory game)
+// This test navigates to memory cards activity, not the 1_5 piano sequence memory game
+// The selectors (.memory-container, .memory-card) don't exist in the actual 1_5 activity
+
 // Test environment debug logging utility
 const debugLog = (module, message, ...args) => {
   // For test files, always log since it's test/development time

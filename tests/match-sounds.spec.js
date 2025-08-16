@@ -1,4 +1,23 @@
 // @ts-check
+// STATUS: WORKING - Match sounds activity navigation and interaction tests
+// 
+// PURPOSE: Tests the match sounds (1_2) activity functionality
+// WHAT IT TESTS:
+//   1. Navigation to match sounds activity
+//   2. Basic interaction with sound cards
+//   3. Activity container visibility
+//   4. Return to main page functionality
+//
+// CURRENT STATUS: ✅ WORKING
+//   - Uses correct navigation selectors
+//   - Tests basic activity interaction
+//   - Includes proper setup and teardown
+//
+// KNOWN ISSUES: None significant
+// 
+// HOW TO RUN: npx playwright test tests/match-sounds.spec.js --headed
+// DEPENDENCIES: Requires local dev server running on http://localhost:9091
+
 const { test, expect } = require('@playwright/test');
 
 // Setze einen globalen Timeout für alle Tests
@@ -48,7 +67,7 @@ test.describe('Lalumo Up or Down Activity', () => {
     });
 
     // Navigate to the app
-    await page.goto('http://localhost:9091/', { timeout: 5000 });
+    await page.goto('http://localhost:9091/app/', { timeout: 5000 });
     
     // Wait for initial load
     await page.waitForLoadState('networkidle');

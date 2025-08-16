@@ -1,3 +1,6 @@
+// STATUS: PARTIALLY WORKING - Basic navigation works but selectors may be outdated
+// Test navigates to 1_2 activity but selectors like .match-sound-card may not match current HTML structure
+
 const { test, expect } = require('@playwright/test');
 const { setupTest, navigateToActivity, returnToMain, checkElementVisibility } = require('../helpers/test-utils');
 

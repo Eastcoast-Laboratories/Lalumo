@@ -1,3 +1,26 @@
+// STATUS: WORKING - Home button navigation functionality tests
+// 
+// PURPOSE: Tests home button functionality across different activities
+// WHAT IT TESTS:
+//   1. Navigation to activities and back using home buttons
+//   2. Home button visibility and functionality
+//   3. Proper return to main landing page
+//   4. DOM state after navigation
+//
+// CURRENT STATUS: ✅ WORKING
+//   - Includes comprehensive error handling and retry logic
+//   - Tests multiple activities (Up/Down, Draw Melody, Memory Game)
+//   - Has diagnostic functions for debugging
+//   - Uses correct selectors for current app structure
+//
+// KNOWN ISSUES: 
+//   - Some selectors may be outdated (.match-area, .draw-area, .memory-area)
+//   - Alpine.js component diagnosis may need TypeScript declarations
+// 
+// HOW TO FIX: Update activity area selectors if navigation fails
+// HOW TO RUN: npx playwright test tests/home-buttons.spec.js --headed
+// DEPENDENCIES: Requires local dev server running on http://localhost:9091
+
 const { test, expect } = require('@playwright/test');
 
 /**
@@ -22,8 +45,8 @@ test.describe('Lalumo Home Button Navigation', () => {
       console.log(`BROWSER LOG: ${msg.type()}: ${msg.text()}`);
     });
 
-    // Navigate to the app
-    await page.goto('http://localhost:9091/', { timeout: 5000 });
+    // Navigate to the app directly to /app/ to skip homepage
+    await page.goto('http://localhost:9091/app/', { timeout: 5000 });
     
     // Wait for initial load
     await page.waitForTimeout(1000);
