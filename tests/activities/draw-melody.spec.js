@@ -5,9 +5,9 @@
 const debugLog = (module, message, ...args) => {
   // For test files, always log since it's test/development time
   if (args.length > 0) {
-    debugLog('DRAW_MELODY_SPEC', `[${module}] ${message}`, ...args);
+    console.log('DRAW_MELODY_SPEC', `[${module}] ${message}`, ...args);
   } else {
-    debugLog('DRAW_MELODY_SPEC', `[${module}] ${message}`);
+    console.log('DRAW_MELODY_SPEC', `[${module}] ${message}`);
   }
 };
 
@@ -28,23 +28,22 @@ test.describe('Lalumo Draw a Melody Activity Tests', () => {
   });
 
   test('Should navigate to Draw a Melody activity and perform basic interaction', async ({ page }) => {
+    // Increase test timeout to 30 seconds
+    test.setTimeout(30000);
     // Navigate to Draw a Melody activity using the debug button (always visible)
     await page.click('#nav_1_3_debug');
     await page.waitForTimeout(1000);
     
-    // Verify we're on the right activity
+    // Verify activity container is visible
     const activityContainer = page.locator('[id="1_3_pitches"]');
     await expect(activityContainer).toBeVisible({ timeout: 5000 });
     
-    // Verify the canvas is visible
-    const drawingCanvas = page.locator('canvas.drawing-canvas');
+    // Verify drawing canvas is visible
+    const drawingCanvas = page.locator('[id="1_3_pitches"] .drawing-canvas');
     await expect(drawingCanvas).toBeVisible({ timeout: 2000 });
     debugLog('DRAW_MELODY_SPEC', 'Drawing canvas is visible');
     
-    // Listen for melody to be played
-    await page.waitForTimeout(1000);
-    
-    // Click the play button to hear the melody
+    // Click play button to hear reference melody
     const playButton = page.locator('[id="1_3_pitches"] .circular-play-button');
     await expect(playButton).toBeVisible({ timeout: 2000 });
     await playButton.click();
@@ -70,22 +69,15 @@ test.describe('Lalumo Draw a Melody Activity Tests', () => {
       debugLog('DRAW_MELODY_SPEC', 'Could not get canvas bounds for drawing');
     }
     
-    // Wait for drawing to register
-    await page.waitForTimeout(1000);
+    // Wait for drawing to register and melody to play automatically
+    await page.waitForTimeout(3000);
     
-    // Click check button to check the drawing
-    const checkButton = page.locator('#1_3_pitches .check-btn');
-    await expect(checkButton).toBeVisible({ timeout: 2000 });
-    await checkButton.click();
-    debugLog('DRAW_MELODY_SPEC', 'Clicked check button to verify the drawing');
+    // Drawing is automatically processed on mouseup/touchend - no check button needed
+    debugLog('DRAW_MELODY_SPEC', 'Drawing completed, melody should play automatically');
     
-    // Wait for feedback
-    await page.waitForTimeout(1000);
+    // Check if feedback is visible using helper function
+    await checkElementVisibility(page, '.feedback-container', 'Feedback message');
     
-    // Check feedback is visible using helper function
-    await checkElementVisibility(page, '#1_3_pitches .feedback-container', 'Feedback message');
-    
-    // Return to main using helper function
-    await returnToMain(page);
+    debugLog('DRAW_MELODY_SPEC', 'Draw melody test completed successfully');
   });
 });

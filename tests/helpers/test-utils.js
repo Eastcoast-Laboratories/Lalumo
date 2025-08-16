@@ -227,5 +227,6 @@ module.exports = {
   navigateToActivity,
   returnToMain,
   diagnoseAlpineComponent,
-  checkElementVisibility
+  checkElementVisibility,
+  debugLog
 };

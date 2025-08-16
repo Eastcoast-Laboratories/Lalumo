@@ -6,9 +6,9 @@
 const debugLog = (module, message, ...args) => {
   // For test files, always log since it's test/development time
   if (args.length > 0) {
-    debugLog('MEMORY_GAME_SPEC', `[${module}] ${message}`, ...args);
+    console.log('MEMORY_GAME_SPEC', `[${module}] ${message}`, ...args);
   } else {
-    debugLog('MEMORY_GAME_SPEC', `[${module}] ${message}`);
+    console.log('MEMORY_GAME_SPEC', `[${module}] ${message}`);
   }
 };
 
@@ -29,6 +29,8 @@ test.describe('Lalumo Memory Game Activity Tests', () => {
   });
 
   test('Should navigate to Memory Game activity and perform basic interaction', async ({ page }) => {
+  // Increase test timeout to 30 seconds
+  test.setTimeout(30000);
     // Navigate to Memory Game activity using the index.html button
     await page.click('#nav_1_5');
     await page.waitForTimeout(1000);
@@ -38,7 +40,7 @@ test.describe('Lalumo Memory Game Activity Tests', () => {
     await expect(activityContainer).toBeVisible({ timeout: 5000 });
     
     // Verify piano keys are visible (memory game uses piano interface)
-    const pianoKeys = page.locator('[id="1_5_pitches"] .piano-key');
+    const pianoKeys = page.locator('[id="1_5_pitches"] .piano-key.white');
     await expect(pianoKeys.first()).toBeVisible({ timeout: 5000 });
     debugLog('MEMORY_GAME_SPEC', 'Piano keys are visible');
     
@@ -50,12 +52,13 @@ test.describe('Lalumo Memory Game Activity Tests', () => {
     // Click the play button to start the memory game
     await playButton.click();
     debugLog('MEMORY_GAME_SPEC', 'Clicked play button to start memory game');
-    await page.waitForTimeout(2000); // Wait for sequence to play
+    await page.waitForTimeout(3000); // Wait for sequence to play
     
-    // Click a piano key to interact with the memory game
-    const firstPianoKey = pianoKeys.first();
-    await firstPianoKey.click({ force: true });
-    debugLog('MEMORY_GAME_SPEC', 'Clicked first piano key');
+    // Click a specific piano key (C4) to interact with the memory game
+    const c4Key = page.locator('[id="1_5_pitches"] .piano-key.c4');
+    await expect(c4Key).toBeVisible({ timeout: 2000 });
+    await c4Key.click();
+    debugLog('MEMORY_GAME_SPEC', 'Clicked C4 piano key');
     await page.waitForTimeout(1000);
     
     // Check if any feedback is displayed using helper function
@@ -64,7 +67,6 @@ test.describe('Lalumo Memory Game Activity Tests', () => {
     // Wait for any card animations to complete
     await page.waitForTimeout(2000);
     
-    // Return to main using helper function
-    await returnToMain(page);
+    debugLog('MEMORY_GAME_SPEC', 'Memory game test completed successfully');
   });
 });

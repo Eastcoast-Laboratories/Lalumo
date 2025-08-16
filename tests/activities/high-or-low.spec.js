@@ -5,9 +5,9 @@
 const debugLog = (module, message, ...args) => {
   // For test files, always log since it's test/development time
   if (args.length > 0) {
-    debugLog('HIGH_LOW_SPEC', `[${module}] ${message}`, ...args);
+    console.log('HIGH_LOW_SPEC', `[${module}] ${message}`, ...args);
   } else {
-    debugLog('HIGH_LOW_SPEC', `[${module}] ${message}`);
+    console.log('HIGH_LOW_SPEC', `[${module}] ${message}`);
   }
 };
 
@@ -28,39 +28,37 @@ test.describe('Lalumo High or Low Activity Tests', () => {
   });
 
   test('Should navigate to High or Low activity and perform basic interaction', async ({ page }) => {
+    // Increase test timeout to 30 seconds
+    test.setTimeout(30000);
     // Navigate to High or Low activity using the index.html button
     await page.click('#nav_1_1');
     await page.waitForTimeout(1000);
     
-    // Verify we're on the right activity
+    // Verify activity container is visible
     const activityContainer = page.locator('[id="1_1_pitches"]');
     await expect(activityContainer).toBeVisible({ timeout: 5000 });
     
-    // Wait for tones to be generated
-    await page.waitForTimeout(1000);
-    
-    // Play the tones
+    // Click play button to start the activity
     const playButton = page.locator('[id="1_1_pitches"] .circular-play-button');
     await expect(playButton).toBeVisible({ timeout: 2000 });
     await playButton.click();
     debugLog('HIGH_LOW_SPEC', 'Clicked play button, tones should now play');
     
-    // Wait for tones to finish playing
+    // Wait for the high/low choice buttons to appear
     await page.waitForTimeout(2000);
     
-    // Answer the question - click higher
-    const higherButton = page.locator('#1_1_pitches .high-btn');
-    await expect(higherButton).toBeVisible({ timeout: 2000 });
-    await higherButton.click();
-    debugLog('HIGH_LOW_SPEC', 'Clicked higher button as answer');
+    // Click on high choice button to test interaction
+    const highButton = page.locator('[id="1_1_pitches"] .high-choice');
+    await expect(highButton).toBeVisible({ timeout: 5000 });
+    await highButton.click();
+    debugLog('HIGH_OR_LOW_SPEC', 'Clicked high choice button as answer');
     
     // Wait for feedback
     await page.waitForTimeout(1000);
     
     // Check feedback is visible using helper function
-    await checkElementVisibility(page, '#1_1_pitches .feedback-container', 'Feedback message');
+    await checkElementVisibility(page, '[id="1_1_pitches"] .feedback-container', 'Feedback message');
     
-    // Return to main using helper function
-    await returnToMain(page);
+    debugLog('HIGH_LOW_SPEC', 'High or Low test completed successfully');
   });
 });

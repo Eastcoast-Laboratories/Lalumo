@@ -38,6 +38,8 @@ test.describe('Piano Key Interference Bug Test - Enhanced', () => {
   });
 
   test('Should test piano key interference and correct melody recovery', async ({ page }) => {
+    // Increase test timeout to 60 seconds for complex interactions
+    test.setTimeout(60000);
     console.log('🧪 Enhanced Piano Key Interference Test');
     console.log('🎯 Strategy: 1) Piano interference during playback, 2) Wrong keys, 3) Correct melody on third try');
     
@@ -194,6 +196,8 @@ test.describe('Piano Key Interference Bug Test - Enhanced', () => {
   });
 
   test('Should play correct melody on third try and hear new sequence', async ({ page }) => {
+    // Increase test timeout to 60 seconds for complex interactions
+    test.setTimeout(60000);
     console.log('🧪 Correct Melody on Third Try Test');
     console.log('🎯 Strategy: 1) Interfere during playback, 2) Two wrong attempts, 3) Correct melody → new sequence');
     

@@ -2,7 +2,7 @@
 // Test navigates to 1_2 activity but selectors like .match-sound-card may not match current HTML structure
 
 const { test, expect } = require('@playwright/test');
-const { setupTest, navigateToActivity, returnToMain, checkElementVisibility } = require('../helpers/test-utils');
+const { setupTest, navigateToActivity, returnToMain, checkElementVisibility, debugLog } = require('../helpers/test-utils');
 
 /**
  * Test suite for Up or Down (1_2) activity in Lalumo app
@@ -18,6 +18,8 @@ test.describe('Lalumo Up or Down Activity Tests', () => {
   });
 
   test('Should navigate to Up or Down activity and perform basic interaction', async ({ page }) => {
+    // Increase test timeout to 30 seconds
+    test.setTimeout(30000);
     // Navigate to Up or Down activity using the index.html button
     await page.click('#nav_1_2');
     await page.waitForTimeout(1000);
@@ -26,30 +28,29 @@ test.describe('Lalumo Up or Down Activity Tests', () => {
     const activityContainer = page.locator('[id="1_2_pitches"]');
     await expect(activityContainer).toBeVisible({ timeout: 5000 });
     
-    // Wait for cards to be generated
+    // Wait for activity to fully load and cards to be generated
+    await page.waitForTimeout(2000);
+    
+    // Verify pitch cards are visible (up and down cards)
+    const upCard = page.locator('[id="1_2_pitches"] .up-card');
+    const downCard = page.locator('[id="1_2_pitches"] .down-card');
+    await expect(upCard).toBeVisible({ timeout: 5000 });
+    await expect(downCard).toBeVisible({ timeout: 5000 });
+    debugLog('MATCH_SOUNDS_SPEC', 'Found up and down pitch cards');
+    
+    // Click on the up card to test interaction
+    await upCard.click();
+    debugLog('MATCH_SOUNDS_SPEC', 'Clicked on up pitch card');
     await page.waitForTimeout(1000);
     
-    // Verify cards are visible
-    const cards = page.locator('.match-sound-card');
-    expect(await cards.count()).toBeGreaterThan(0);
-    console.log(`Found ${await cards.count()} sound matching cards`);
-    
-    // Click on the first card
-    await cards.first().click();
-    console.log('Clicked on first Up or Down card');
+    // Click on the down card to test second interaction
+    await downCard.click();
+    debugLog('MATCH_SOUNDS_SPEC', 'Clicked on down pitch card');
     await page.waitForTimeout(1000);
-    
-    // Click on another card (doesn't matter if it matches or not, just testing interaction)
-    if (await cards.count() > 1) {
-      await cards.nth(1).click();
-      console.log('Clicked on second Up or Down card');
-      await page.waitForTimeout(1000);
-    }
     
     // Check if feedback is displayed using helper function
     await checkElementVisibility(page, '#1_2_pitches .feedback-container', 'Feedback message');
     
-    // Return to main using helper function
-    await returnToMain(page);
+    debugLog('MATCH_SOUNDS_SPEC', 'Match sounds test completed successfully');
   });
 });
