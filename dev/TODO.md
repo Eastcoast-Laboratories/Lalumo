@@ -189,6 +189,32 @@ reset-button:
 1_5 memory game:
   - # bereit zur veröffentlichung
   - wenn man in 1_4 eine melodie startet und dann während die noch spielt in 1_5 wechselt, dann werden unter dem piano 10 kreise angezeigt
+  - not reproduceable BUG: sometimes the memory game only plays one sequence then stops playing sound on subsequent clicks
+    * First sequence plays correctly: G4, C4 with logs showing "PIANO_DIRECT Starting memory sequence playback"
+    * After completion, clicking play button again produces no new "PIANO_DIRECT" logs
+    * Key log patterns from first run:
+      - `395611 [PIANO_DIRECT] Starting memory sequence playback with 2 notes`
+      - `395612 [PIANO_DIRECT] Visual highlighting is disabled`
+      - `395613 [PITCHES] MEMORY_GAME: Playing note 1/2: G4 (sound only)`
+      - `396213 [PITCHES] MEMORY_GAME: Playing note 2/2: C4 (sound only)`
+      - `396515 [PIANO_DIRECT] Memory sequence complete, highlighting cleared`
+    * No button blocker on play button or piano keys in 1_5 (verified in index.html)
+    * ANALYSIS: Most likely causes and reproduction methods:
+      1. **gameMode race condition** (MOST LIKELY): Rapid clicks before startMemoryGame() completes
+         - Trigger: Click play button rapidly 2-3 times within 100ms of first click
+         - Result: gameMode=true but playMemorySequence() called without proper setup
+      2. **currentSequence corruption**: Auto-play timers conflict with manual clicks
+         - Trigger: Click play during success auto-play window (2s after correct sequence)
+         - Result: sequence becomes undefined/empty, playMemorySequence() returns early
+      3. **Timeout collision**: Multiple overlapping timers calling playMemorySequence()
+         - Trigger: Make error, then click play before 2s error recovery timeout
+         - Result: Competing timers interfere with sequence state
+      4. **Cross-activity state pollution**: isPlaying flag from other activities
+         - Trigger: Switch from 1_4 to 1_5 while melody playing, then use 1_5 play button
+         - Result: Stale isPlaying state blocks new playback
+    * DEFENSIVE FIX APPLIED: Added currentSequence safety check in playCurrentMelody() replay path
+    * Watch for log: "MEMORY_REPLAY: No sequence found, regenerating for safety"
+  - 
 
 2_2_chords_stable_unstable:
   - # bereit zur veröffentlichung

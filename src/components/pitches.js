@@ -4179,6 +4179,11 @@ export function pitches() {
           this.startMemoryGame(); // Start game mode from free play
         } else {
           // Replay sollte keine neuen Tiere anzeigen, nur bei neuen Spielen/Sequenzen
+          // Add safety check for missing sequence (defensive fix for intermittent bug)
+          if (!this.currentSequence || this.currentSequence.length === 0) {
+            debugLog('PITCHES', 'MEMORY_REPLAY: No sequence found, regenerating for safety');
+            this.setup_1_5(false, true); // Generate new without playing
+          }
           this.playMemorySequence(); // Just replay current sequence in game mode
         }
       }
