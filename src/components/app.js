@@ -475,39 +475,89 @@ export function app() {
           const activityId = params.activity;
           
           if (activityId.startsWith('1_')) {
-            // Pitch activities - dispatch the set-activity-mode event
+            // Pitch activities - ensure pitch tab is active, then set mode
             debugLog('DEEPLINK', `Starting pitch activity: ${activityId}`);
-            window.dispatchEvent(new CustomEvent('set-activity-mode', {
-              detail: activityId
-            }));
             
-            // Focus the navigation button for this activity (if it exists)
+            // Set active to 'pitches' to ensure pitch navigation tab is active
+            this.active = 'pitches';
+            debugLog('DEEPLINK', 'Set active = pitches');
+            
+            // Wait for tab to be active, then dispatch the pitch activity mode
             this.$nextTick(() => {
-              const navButton = document.getElementById('nav_' + activityId.split('_').slice(0, 2).join('_'));
-              if (navButton) navButton.focus();
+              const targetMode = activityId + '_pitches_' + this.getActivityModeFromId(activityId);
+              debugLog('DEEPLINK', `Dispatching pitch mode: ${targetMode}`);
+              
+              window.dispatchEvent(new CustomEvent('set-activity-mode', {
+                detail: { 
+                  component: 'pitches', 
+                  mode: targetMode
+                }
+              }));
+              
+              // Focus the navigation button for this activity (if it exists)
+              this.$nextTick(() => {
+                const navButton = document.getElementById('nav_' + activityId.split('_').slice(0, 2).join('_'));
+                if (navButton) navButton.focus();
+              });
             });
           } else if (activityId.startsWith('2_')) {
-            // Chord activities - dispatch the set-activity-mode event
+            // Chord activities - ensure chord tab is active, then set mode
             debugLog('DEEPLINK', `Starting chord activity: ${activityId}`);
-            window.dispatchEvent(new CustomEvent('set-activity-mode', {
-              detail: activityId
-            }));
             
-            // Focus the navigation button for this activity (if it exists)
+            // Set active to 'chords' to open the chord navigation tab
+            this.active = 'chords';
+            debugLog('DEEPLINK', 'Set active = chords');
+            
+            // Wait for tab to be active, then dispatch the chord activity mode
             this.$nextTick(() => {
-              const navButton = document.getElementById('nav_' + activityId.split('_').slice(0, 2).join('_'));
-              if (navButton) navButton.focus();
+              const targetMode = activityId + '_chords_' + this.getActivityModeFromId(activityId);
+              debugLog('DEEPLINK', `Dispatching chord mode: ${targetMode}`);
+              
+              window.dispatchEvent(new CustomEvent('set-activity-mode', {
+                detail: { 
+                  component: 'chords', 
+                  mode: targetMode
+                }
+              }));
+              
+              // Focus the navigation button for this activity (if it exists)
+              this.$nextTick(() => {
+                const navButton = document.getElementById('nav_' + activityId.split('_').slice(0, 2).join('_'));
+                if (navButton) navButton.focus();
+              });
             });
           }
           
-          // Lösche den Hash aus der URL nach dem Start der Aktivität
-          if (history.replaceState) {
-            history.replaceState(null, document.title, window.location.pathname + window.location.search);
-          } else {
-            window.location.hash = '';
-          }
+          // Lösche den Hash aus der URL nach dem Start der Aktivität (verzögert für Alpine.js)
+          setTimeout(() => {
+            if (history.replaceState) {
+              history.replaceState(null, document.title, window.location.pathname + window.location.search);
+            } else {
+              window.location.hash = '';
+            }
+          }, 1000); // 1 Sekunde Verzögerung für Alpine.js-Reaktion
         });
       }
+    },
+    
+    // Helper function to map activity IDs to their mode suffixes
+    getActivityModeFromId(activityId) {
+      const modeMap = {
+        // Pitch Activities (1_x)
+        '1_1': 'high_or_low',
+        '1_2': 'match-sounds', 
+        '1_3': 'draw-melody',
+        '1_4': 'does-it-sound-right',
+        '1_5': 'memory-game',
+        // Chord Activities (2_x) - Must match HTML x-show modes exactly
+        '2_1': 'color-matching',      // → '2_1_chords_color-matching'
+        '2_2': 'stable_unstable',     // → '2_2_chords_stable_unstable' (Fixed: was 'stable-unstable')
+        '2_3': 'chord-building',      // → '2_3_chords_chord-building'
+        '2_4': 'missing-note',        // → '2_4_chords_missing-note'
+        '2_5': 'characters',          // → '2_5_chords_characters'
+        '2_6': 'harmony-gardens'      // → '2_6_chords_harmony-gardens'
+      };
+      return modeMap[activityId] || 'high_or_low';
     },
     
     async init() {
@@ -545,6 +595,12 @@ export function app() {
         if (event.detail && event.detail.sound) {
           this.playSound(event.detail.sound);
         }
+      });
+      
+      // Add event listener for hash changes to enable hash navigation
+      window.addEventListener('hashchange', () => {
+        debugLog('DEEPLINK', 'Hash changed, re-parsing URL hash');
+        this.parseUrlHash();
       });
       
       // Detect if we're on Android

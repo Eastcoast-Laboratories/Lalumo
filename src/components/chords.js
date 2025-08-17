@@ -238,9 +238,19 @@ export function chords() {
       document.addEventListener('set-activity-mode', (event) => {
         const { component, mode } = event.detail;
         
+        debugLog('CHORDS', `Event received: component=${component}, mode=${mode}`);
+        
         // Only handle the event if it's for the chords component
         if (component === 'chords') {
           debugLog('CHORDS', `Received unified activity mode event: ${mode}`);
+          
+          // Check DOM visibility before proceeding
+          const activityElement = document.querySelector(`[x-show="mode === '${mode}'"]`);
+          debugLog('CHORDS', `DOM element for mode '${mode}' found: ${!!activityElement}`);
+          if (activityElement) {
+            debugLog('CHORDS', `Element visibility: display=${activityElement.style.display}, x-show=${activityElement.getAttribute('x-show')}`);
+          }
+          
           // Call our own setMode method to ensure proper initialization
           this.setMode(mode || 'main');
           
@@ -248,6 +258,8 @@ export function chords() {
           if (window.Alpine?.store) {
             window.Alpine.store('currentActivityMode', { component: 'chords', mode: mode || 'main' });
           }
+        } else {
+          debugLog('CHORDS', `Ignoring event for component: ${component}`);
         }
       });
       
@@ -566,6 +578,9 @@ export function chords() {
      * @param {string} mode - The activity mode to set
      */
     setMode(mode) {
+      debugLog('CHORDS', `setMode called with: ${mode}`);
+      
+      // Stop any currently playing sounds
       this.stopAllSounds();
       
       debugLog('CHORDS_2_1_DEBUG', `setMode called, changing from ${this.mode} to ${mode}`);

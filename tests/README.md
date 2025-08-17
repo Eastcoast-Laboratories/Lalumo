@@ -78,8 +78,7 @@ npx playwright show-report
 # 1. Öffne die URL aus der letzten Testausgabe direkt im Browser (z.B. http://localhost:9323)
 # ODER
 # 2. Beende den alten Report-Server und starte neu:
-pkill -f playwright
-npx playwright show-report
+pkill -f playwright; npx playwright show-report
 
 # ODER
 # 3. Verwende einen anderen Port:

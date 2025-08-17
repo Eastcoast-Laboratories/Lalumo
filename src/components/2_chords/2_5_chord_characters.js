@@ -110,8 +110,6 @@ export function update_2_5Background(component) {
     // Get progress from unified progress system
     const progress = component?.progress?.['2_5'] || 0;
     
-
-    
     // Determine background image based on progress
     let backgroundImage;
     
