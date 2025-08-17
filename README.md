@@ -95,9 +95,8 @@ run.sh
 ```
 
 The application will be available at http://localhost:9091 in your browser.
-- Main page: http://localhost:9091/index.html
-- Card library: http://localhost:9091/cards.html
-- Multiplayer mode: http://localhost:9091/multiplayer.html
+- Homepage: http://localhost:9091/index.html
+- App: http://localhost:9091/app/index.html
 
 
 # Production
@@ -120,7 +119,7 @@ npm run build:fast
 
 # Online Deployment
 
-The application is deployed at: https://lalumo.z11.de/
+The application is deployed at: https://lalumo.eu/
 
 To update the online version, follow these steps from the project's root directory:
 

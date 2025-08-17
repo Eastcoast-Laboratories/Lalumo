@@ -1,6 +1,6 @@
 # Lalumo - Child-Friendly Music Education App
 
-Lalumo is a child-friendly music understanding app with animal friends, melodies, and puzzles built using Node.js, Webpack, Capacitor for mobile, Alpine.js, and Tone.js.
+Lalumo is a child-friendly music understanding app with animal friends, melodies, and chords built using Node.js, Webpack, Capacitor for mobile, Alpine.js, and Tone.js.
 
 **Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.**
 
@@ -45,11 +45,8 @@ Lalumo is a child-friendly music understanding app with animal friends, melodies
   ```
 
 - **Application URLs:**
-  - Main app: http://localhost:9091/
-  - Main page: http://localhost:9091/index.html
-  - Card library: http://localhost:9091/cards.html
-  - Multiplayer mode: http://localhost:9091/multiplayer.html
-  - Homepage: http://localhost:9091/homepage
+  - Main app: http://localhost:9091/app/index.html
+  - Homepage: http://localhost:9091/index.html
 
 ### Mobile Development
 - **Update mobile apps with latest web code:**
@@ -100,21 +97,21 @@ After making changes, **ALWAYS** run these validation steps:
    Should return HTTP 200 OK.
 
 4. **Test key URLs:**
-   - Main app: http://localhost:9091/
-   - Cards: http://localhost:9091/cards.html
-   - Multiplayer: http://localhost:9091/multiplayer.html
+   - Main app: http://localhost:9091/app/index.html
+   - Homepage: http://localhost:9091/index.html
 
 ### Manual Testing Scenarios
 **ALWAYS perform these user scenarios after making changes:**
 
 1. **Basic Navigation Test:**
-   - Open http://localhost:9091/ in browser
+   - Open http://localhost:9091/app/index.html in browser
    - Accept username modal if it appears
-   - Navigate between different sections using the menu
+   - Click the X on the Portrait warning Overlay
+   - Navigate between different activities using the menu
    - Verify no console errors appear
 
 2. **Audio Functionality Test:**
-   - Navigate to any music activity (e.g., chord exercises)
+   - Navigate to any music activity (e.g., "High or Low")
    - Test play button functionality
    - Verify audio starts without errors
 
@@ -127,12 +124,15 @@ After making changes, **ALWAYS** run these validation steps:
 ## Important File Locations
 
 ### Core Directories
-- `/src/` - Source code (JavaScript, CSS, components)
+- `/src/` - Source code for the app (JavaScript, CSS, components)
+- `/homepage/` - Source code for the homepage (HTML, CSS, components)
 - `/public/` - Static assets (images, sounds, etc.)
 - `/dist/` - Build output directory
 - `/tests/` - Playwright test files
 - `/android/` - Android Capacitor project
 - `/ios/` - iOS Capacitor project
+- `/dev/` - Development scripts and documentation
+- `/fastlane/` - Mobile deployment configuration for f-droid
 
 ### Key Files
 - `package.json` - Dependencies and npm scripts
@@ -190,7 +190,7 @@ The following are outputs from frequently run commands. Reference them instead o
 ├── homepage/                 # Homepage templates
 ├── ios/                      # iOS Capacitor project
 ├── public/                   # Static assets (images, sounds)
-├── src/                      # Source code (JS, CSS, components)
+├── src/                      # Source code for the app (JS, CSS, components)
 ├── tests/                    # Playwright test files
 ├── tools/                    # Development tools
 ├── package.json              # Dependencies and scripts
