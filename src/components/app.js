@@ -469,6 +469,14 @@ export function app() {
       // Verarbeite Activity-Parameter (#activity=ID)
       if (params.activity) {
         debugLog('DEEPLINK', `Aktivität gefunden: ${params.activity}`);
+        
+        // Prevent duplicate processing if already processing
+        if (this._processingDeeplink) {
+          debugLog('DEEPLINK', 'Already processing deeplink, skipping duplicate');
+          return;
+        }
+        this._processingDeeplink = true;
+        
         // Hier den direkten Start der Aktivität implementieren
         this.$nextTick(() => {
           // Start different activities based on ID format (1_1, 2_5, etc.)
@@ -512,6 +520,10 @@ export function app() {
             this.$nextTick(() => {
               const targetMode = activityId + '_chords_' + this.getActivityModeFromId(activityId);
               debugLog('DEEPLINK', `Dispatching chord mode: ${targetMode}`);
+              debugLog('DEEPLINK', `Expected mode mapping: ${activityId} -> ${this.getActivityModeFromId(activityId)}`);
+              
+              // Debug: Compare with button click
+              debugLog('DEEPLINK', `Button click equivalent: $dispatch('set-activity-mode', {component: 'chords', mode: '${targetMode}'})`);
               
               window.dispatchEvent(new CustomEvent('set-activity-mode', {
                 detail: { 
@@ -520,9 +532,20 @@ export function app() {
                 }
               }));
               
+              // Additional debug: Check if event was dispatched
+              debugLog('DEEPLINK', `Event dispatched for mode: ${targetMode}`);
+              
               // Focus the navigation button for this activity (if it exists)
               this.$nextTick(() => {
-                const navButton = document.getElementById('nav_' + activityId.split('_').slice(0, 2).join('_'));
+                const buttonId = 'nav_' + activityId.split('_').slice(0, 2).join('_');
+                let navButton = document.getElementById(buttonId);
+                
+                // For activity 2_5, try locked version if unlocked version is not visible
+                if (!navButton && activityId === '2_5') {
+                  navButton = document.getElementById(buttonId + '_locked');
+                }
+                
+                debugLog('DEEPLINK', `Navigation button found: ${navButton ? buttonId : 'none'}`);
                 if (navButton) navButton.focus();
               });
             });
@@ -535,6 +558,8 @@ export function app() {
             } else {
               window.location.hash = '';
             }
+            // Reset processing flag
+            this._processingDeeplink = false;
           }, 1000); // 1 Sekunde Verzögerung für Alpine.js-Reaktion
         });
       }
@@ -557,6 +582,7 @@ export function app() {
         '2_5': 'characters',          // → '2_5_chords_characters'
         '2_6': 'harmony-gardens'      // → '2_6_chords_harmony-gardens'
       };
+      debugLog('DEEPLINK', `Mode mapping for ${activityId}: ${modeMap[activityId] || 'high_or_low'}`);
       return modeMap[activityId] || 'high_or_low';
     },
     

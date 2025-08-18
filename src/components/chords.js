@@ -235,10 +235,11 @@ export function chords() {
       
       // Listen for chord mode changes via event
       // Listen for the unified activity mode event
-      document.addEventListener('set-activity-mode', (event) => {
+      window.addEventListener('set-activity-mode', (event) => {
         const { component, mode } = event.detail;
         
         debugLog('CHORDS', `Event received: component=${component}, mode=${mode}`);
+        debugLog('CHORDS', `Current chords component mode before change: ${this.mode}`);
         
         // Only handle the event if it's for the chords component
         if (component === 'chords') {
@@ -253,6 +254,22 @@ export function chords() {
           
           // Call our own setMode method to ensure proper initialization
           this.setMode(mode || 'main');
+          
+          // CRITICAL: Force Alpine.js to update the mode property
+          this.mode = mode || 'main';
+          debugLog('CHORDS', `Forced Alpine mode update to: ${this.mode}`);
+          
+          // Force Alpine.js reactivity update
+          this.$nextTick(() => {
+            debugLog('CHORDS', `After nextTick - mode is: ${this.mode}`);
+            
+            // Double-check element visibility after Alpine update
+            const activityElement = document.querySelector(`[x-show="mode === '${mode}'"]`);
+            if (activityElement) {
+              const computedStyle = window.getComputedStyle(activityElement);
+              debugLog('CHORDS', `After Alpine update - Element visibility: display=${computedStyle.display}, visibility=${computedStyle.visibility}`);
+            }
+          });
           
           // Update the unified activity mode in the Alpine store
           if (window.Alpine?.store) {

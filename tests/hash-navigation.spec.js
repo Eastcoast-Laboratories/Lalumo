@@ -238,53 +238,60 @@ test.describe('Lalumo Hash Navigation', () => {
     
     try {
       const chordActivities = [
-        { id: '2_1', name: 'Color Matching', selector: 'div[x-show*="2_1_chords_color-matching"]' },
-        { id: '2_5', name: 'Chord Characters', selector: 'div[x-show*="2_5_chords_chord-characters"]' }
+        { id: '2_2', name: 'Stable or Unstable', selector: '[id="2_2_chords_stable_unstable"]' },
+        { id: '2_5', name: 'Character Matching', selector: '[id="2_5_chords_characters"]' }
       ];
       
       // Teste Navigation zu jeder Chord-Aktivität
       for (const activity of chordActivities) {
         debugLog(['HASH_NAV_SPEC', 'TEST'], `Testing navigation to ${activity.name} (${activity.id})`);
         
-        // Alternative Approach: Direkte Navigation über Chord-Tab-Button
-        debugLog(['HASH_NAV_SPEC', 'TEST'], `Using direct navigation approach for ${activity.name}`);
+        // Hash-Navigation programmatisch
+        await page.evaluate((activityId) => {
+          window.location.hash = activityId;
+          window.dispatchEvent(new HashChangeEvent('hashchange'));
+        }, activity.id);
         
-        // 1. Öffne Chord-Tab durch Klick auf den Chord-Button
-        const chordTabButton = await page.locator('button:has-text("Chords")').first();
-        if (await chordTabButton.isVisible()) {
-          await chordTabButton.click();
-          debugLog(['HASH_NAV_SPEC', 'ACTION'], 'Clicked chord tab button');
-          await page.waitForTimeout(500);
-        }
+        // Warte auf Navigation
+        await page.waitForTimeout(2000);
         
-        // 2. Klicke direkt auf den spezifischen Activity-Button
-        const activityButton = await page.locator(`button:has-text("${activity.name}")`).first();
-        if (await activityButton.isVisible()) {
-          await activityButton.click();
-          debugLog(['HASH_NAV_SPEC', 'ACTION'], `Clicked ${activity.name} button`);
-          await page.waitForTimeout(1000);
-        }
-        
-        // 3. Prüfe, ob die Aktivität jetzt sichtbar ist
-        const chordVisible = await page.isVisible(activity.selector);
-        debugLog(['HASH_NAV_SPEC', 'RESULT'], `${activity.name} visible after direct navigation: ${chordVisible}`);
-        
-        if (!chordVisible) {
-          debugLog(['HASH_NAV_SPEC', 'ERROR'], `Chord activity ${activity.name} not visible after direct navigation`);
+        // Prüfe Alpine.js Zustand
+        const alpineState = await page.evaluate(() => {
+          const chordsComponent = document.querySelector('[x-data*="chords"]');
+          if (!chordsComponent || !chordsComponent._x_dataStack) return 'No chords component found';
           
-          // Fallback: Versuche Hash-Navigation als Backup
-          await page.evaluate((activityId) => {
-            window.location.hash = activityId;
-            window.dispatchEvent(new HashChangeEvent('hashchange'));
-          }, activity.id);
+          const data = chordsComponent._x_dataStack[0];
+          return {
+            mode: data.mode,
+            active: window.Alpine?.store('app')?.active
+          };
+        });
+        
+        debugLog(['HASH_NAV_SPEC', 'ALPINE'], `Alpine state for ${activity.id}:`, JSON.stringify(alpineState));
+        
+        // Prüfe, ob die Aktivität sichtbar ist
+        const isVisible = await page.evaluate((selector) => {
+          const element = document.querySelector(selector);
+          if (!element) return false;
+          const style = window.getComputedStyle(element);
+          return style.display !== 'none' && style.visibility !== 'hidden';
+        }, activity.selector);
+        
+        debugLog(['HASH_NAV_SPEC', 'RESULT'], `${activity.name} visible: ${isVisible}`);
+        
+        if (!isVisible) {
+          // Debug: Sammle mehr Informationen
+          const debugInfo = await page.evaluate((selector) => {
+            const element = document.querySelector(selector);
+            return {
+              found: !!element,
+              display: element ? window.getComputedStyle(element).display : 'N/A',
+              xShow: element ? element.getAttribute('x-show') : 'N/A'
+            };
+          }, activity.selector);
           
-          await page.waitForTimeout(2000);
-          const hashVisible = await page.isVisible(activity.selector);
-          debugLog(['HASH_NAV_SPEC', 'FALLBACK'], `${activity.name} visible after hash fallback: ${hashVisible}`);
-          
-          if (!hashVisible) {
-            throw new Error(`Chord activity ${activity.name} not visible after both direct navigation and hash navigation`);
-          }
+          debugLog(['HASH_NAV_SPEC', 'DEBUG'], `Element debug for ${activity.name}:`, JSON.stringify(debugInfo));
+          throw new Error(`Activity ${activity.name} not visible after hash navigation to #${activity.id}`);
         }
       }
       
