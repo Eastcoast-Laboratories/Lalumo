@@ -469,14 +469,6 @@ export function app() {
       // Verarbeite Activity-Parameter (#activity=ID)
       if (params.activity) {
         debugLog('DEEPLINK', `Aktivität gefunden: ${params.activity}`);
-        
-        // Prevent duplicate processing if already processing
-        if (this._processingDeeplink) {
-          debugLog('DEEPLINK', 'Already processing deeplink, skipping duplicate');
-          return;
-        }
-        this._processingDeeplink = true;
-        
         // Hier den direkten Start der Aktivität implementieren
         this.$nextTick(() => {
           // Start different activities based on ID format (1_1, 2_5, etc.)
@@ -520,10 +512,6 @@ export function app() {
             this.$nextTick(() => {
               const targetMode = activityId + '_chords_' + this.getActivityModeFromId(activityId);
               debugLog('DEEPLINK', `Dispatching chord mode: ${targetMode}`);
-              debugLog('DEEPLINK', `Expected mode mapping: ${activityId} -> ${this.getActivityModeFromId(activityId)}`);
-              
-              // Debug: Compare with button click
-              debugLog('DEEPLINK', `Button click equivalent: $dispatch('set-activity-mode', {component: 'chords', mode: '${targetMode}'})`);
               
               window.dispatchEvent(new CustomEvent('set-activity-mode', {
                 detail: { 
@@ -531,9 +519,6 @@ export function app() {
                   mode: targetMode
                 }
               }));
-              
-              // Additional debug: Check if event was dispatched
-              debugLog('DEEPLINK', `Event dispatched for mode: ${targetMode}`);
               
               // Focus the navigation button for this activity (if it exists)
               this.$nextTick(() => {
@@ -552,15 +537,13 @@ export function app() {
           }
           
           // Lösche den Hash aus der URL nach dem Start der Aktivität (verzögert für Alpine.js)
-          setTimeout(() => {
-            if (history.replaceState) {
-              history.replaceState(null, document.title, window.location.pathname + window.location.search);
-            } else {
-              window.location.hash = '';
-            }
-            // Reset processing flag
-            this._processingDeeplink = false;
-          }, 1000); // 1 Sekunde Verzögerung für Alpine.js-Reaktion
+          // setTimeout(() => {
+          //   if (history.replaceState) {
+          //     history.replaceState(null, document.title, window.location.pathname + window.location.search);
+          //   } else {
+          //     window.location.hash = '';
+          //   }
+          // }, 1000); // 1 Sekunde Verzögerung für Alpine.js-Reaktion
         });
       }
     },
@@ -582,7 +565,6 @@ export function app() {
         '2_5': 'characters',          // → '2_5_chords_characters'
         '2_6': 'harmony-gardens'      // → '2_6_chords_harmony-gardens'
       };
-      debugLog('DEEPLINK', `Mode mapping for ${activityId}: ${modeMap[activityId] || 'high_or_low'}`);
       return modeMap[activityId] || 'high_or_low';
     },
     
