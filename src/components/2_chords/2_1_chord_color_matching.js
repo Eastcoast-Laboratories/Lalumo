@@ -142,7 +142,7 @@ export function checkColorAnswer(component, selectedColor) {
     });
   } else {
     const errorMessage = 'Not quite! Let\'s try another one.';
-    console.log('CHORD_2_1_FEEDBACK: Showing error message:', errorMessage);
+    console.log('CHORD_2_1_FEEDBACK: Showing fail message:', errorMessage);
     const store = window.Alpine?.store;
     if (store && store.feedback) {
       store.feedback.isCorrect = false;

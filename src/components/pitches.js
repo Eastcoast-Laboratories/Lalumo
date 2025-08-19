@@ -1305,7 +1305,7 @@ export function pitches() {
         }
         
         // Show feedback using global system
-        debugLog('PITCHES', 'HIGH_OR_LOW_FEEDBACK: Showing error message:', feedbackMessage);
+        debugLog('PITCHES', 'HIGH_OR_LOW_FEEDBACK: Showing fail message:', feedbackMessage);
         const store = window.Alpine?.store;
         if (store && store.feedback) {
           store.feedback.isCorrect = false;
@@ -4036,7 +4036,7 @@ export function pitches() {
         
         // Show feedback using global system
         const errorMessage = this.$store.strings?.memory_incorrect || 'Let\'s try again. Listen carefully!';
-        debugLog('PITCHES', 'MEMORY_GAME_FEEDBACK: Showing error message:', errorMessage);
+        debugLog('PITCHES', 'MEMORY_GAME_FEEDBACK: Showing fail message:', errorMessage);
         window.showFeedbackMessage(errorMessage, {
       activityId: '1_5_pitches_memory',
       isIntroMessage: false,
