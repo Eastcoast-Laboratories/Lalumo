@@ -1267,22 +1267,7 @@
   function setupBackButtonHandler() {
     // Erkennen der Plattform
     const isAndroid = /Android/i.test(navigator.userAgent);
-    
-    // Definitionen für verschiedene Back-Button-Verhalten
-    let currentConfirmMessage = 'Attention! Do you really want to leave this page?';
-    
-    // String-Aktualisierungsfunktion - wird aufgerufen, wenn Alpine.store aktualisiert wird
-    function updateBackButtonStrings() {
-      // Aktualisiere die lokale Nachrichtenvariable aus dem Store
-      if (Alpine.store('strings')?.back_button_confirm_exit) {
-        currentConfirmMessage = Alpine.store('strings').back_button_confirm_exit;
-        window.debugLog('BACK_BUTTON', 'Updated back button confirm message:', currentConfirmMessage);
-      }
-    }
-    
-    // Initial versuchen, Strings zu laden
-    updateBackButtonStrings();
-    
+        
     // Event-Listener für Store-Änderungen (wird ausgelöst, sobald Strings geladen sind)
     document.addEventListener('DOMContentLoaded', () => {
       // Initialize Alpine.js
@@ -1314,18 +1299,42 @@
       }
     }
 
+    let currentConfirmMessage = 'Attention! Do you really want to leave this page?';
+    
     // Event-Listener für Store-Änderungen (wird ausgelöst, sobald Strings geladen sind)
     document.addEventListener('alpine:initialized', function() {
       if (window.Alpine && window.Alpine.effect) {
         window.Alpine.effect(() => {
-          // Diese Funktion wird automatisch aufgerufen, wenn sich Alpine.store('strings') ändert
-          updateBackButtonStrings();
+          if (Alpine.store('strings')?.back_button_confirm_exit) {
+            currentConfirmMessage = Alpine.store('strings').back_button_confirm_exit;
+            window.debugLog('BACK_BUTTON', 'Updated back button confirm message:', currentConfirmMessage);
+          } else {
+            window.debugLog(['BACK_BUTTON'], 'back button confirm message could not be set');
+          }
         });
       }
     });
     
+    // Track hash navigation to avoid popstate conflicts
+    let isHashNavigation = false;
+    
+    // Listen for hash changes to mark hash navigation
+    window.addEventListener('hashchange', function() {
+      isHashNavigation = true;
+      // Reset flag after a short delay
+      setTimeout(() => {
+        isHashNavigation = false;
+      }, 100);
+    });
+    
     // Behandlung für Browser-History (web)
     window.addEventListener('popstate', function(event) {
+      // Skip popstate handling if this is from hash navigation
+      if (isHashNavigation) {
+        window.debugLog('BACK_BUTTON', 'Skipping popstate handling for hash navigation');
+        return;
+      }
+      
       // Testen, ob wir in einer App sind oder im Browser
       if (isAndroid) {
         // In Android: Zurück zum Menü, wenn nicht gesperrt , TODO: select by 'id="app"' instead

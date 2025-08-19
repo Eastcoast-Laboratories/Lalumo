@@ -4,7 +4,7 @@
   <url>
     <!-- Home english -->
     <loc>https://lalumo.eu/</loc>
-    <lastmod>2025-07-06</lastmod>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -12,28 +12,28 @@
   <url>
     <!-- Home german -->
     <loc>https://lalumo.eu/de/</loc>
-    <lastmod>2025-07-06</lastmod>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <!-- AGB -->
     <loc>https://lalumo.eu/de/agb.html</loc>
-    <lastmod>2025-07-06</lastmod>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <!-- Impressum -->
     <loc>https://lalumo.eu/de/impressum.html</loc>
-    <lastmod>2025-07-06</lastmod>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <!-- Datenschutz -->
     <loc>https://lalumo.eu/de/datenschutz.html</loc>
-    <lastmod>2025-07-06</lastmod>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -41,42 +41,39 @@
   <url>
     <!-- Terms and Conditions -->
     <loc>https://lalumo.eu/agb.html</loc>
-    <lastmod>2025-07-06</lastmod>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <!-- Imprint -->
     <loc>https://lalumo.eu/impressum.html</loc>
-    <lastmod>2025-07-06</lastmod>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <!-- Privacy Policy -->
     <loc>https://lalumo.eu/datenschutz.html</loc>
-    <lastmod>2025-07-06</lastmod>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <!-- App -->
   <url>
     <loc>https://lalumo.eu/app/</loc>
-    <lastmod>2025-07-06</lastmod>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
-  <!-- Chapters -->
-  <url><loc>https://lalumo.eu/app/#1_pitches</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://lalumo.eu/app/#2_chords</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <!-- Pitches Activities -->
-  <url><loc>https://lalumo.eu/app/#1_pitches-1_1_pitches_high_or_low</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://lalumo.eu/app/#1_pitches-1_2_pitches_draw-melody</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://lalumo.eu/app/#1_pitches-1_3_pitches_memory-game</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <!-- Chords Activities -->
-  <url><loc>https://lalumo.eu/app/#2_chords-2_5_chords_characters</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- Direct Activity Links (New Format) -->
+  <url><loc>https://lalumo.eu/app/#1_1</loc><lastmod>2025-08-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lalumo.eu/app/#1_2</loc><lastmod>2025-08-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lalumo.eu/app/#1_3</loc><lastmod>2025-08-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lalumo.eu/app/#1_4</loc><lastmod>2025-08-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lalumo.eu/app/#1_5</loc><lastmod>2025-08-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lalumo.eu/app/#2_2</loc><lastmod>2025-08-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lalumo.eu/app/#2_5</loc><lastmod>2025-08-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <!-- Legal -->
-  <url><loc>https://lalumo.eu/app/#impressum</loc><lastmod>2025-05-27</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://lalumo.eu/app/#datenschutz</loc><lastmod>2025-05-27</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://lalumo.eu/app/#credits</loc><lastmod>2025-05-27</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>

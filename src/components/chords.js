@@ -857,7 +857,7 @@ export function chords() {
     checkStableUnstableAnswer(isStable) {
       // Make sure we have a current chord to check against
       if (!this.currentStableUnstableChord) {
-        console.log('CHORD_2_2_FEEDBACK: No current chord, showing error message');
+        console.log('CHORD_2_2_FEEDBACK: No current chord, Showing fail message');
         window.showFeedbackMessage('Please play a chord first', {
       activityId: '2_2_chords_stable_unstable',
       isIntroMessage: false,
@@ -1259,7 +1259,7 @@ export function chords() {
         }, 2000);
       } else {
         const errorMessage = this.$store.strings.error_message || 'Not quite right. Try again!';
-        console.log('CHORD_2_5_FEEDBACK: Showing error message:', errorMessage);
+        console.log('CHORD_2_5_FEEDBACK: Showing fail message:', errorMessage);
         const store = window.Alpine?.store;
         if (store && store.feedback) {
           store.feedback.isCorrect = false;
@@ -1617,7 +1617,7 @@ export function chords() {
         }, 1500);
       } else {
         const errorMessage = this.$store.strings.error_message || 'Not quite right. Try again!';
-        console.log('CHORD_2_5_REPETITION_FEEDBACK: Showing error message:', errorMessage);
+        console.log('CHORD_2_5_REPETITION_FEEDBACK: Showing fail message:', errorMessage);
         const store = window.Alpine?.store;
         if (store && store.feedback) {
           store.feedback.isCorrect = false;
