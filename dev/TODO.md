@@ -114,10 +114,9 @@ unter chrome auf dem handy android 15:
     - die einstellungen haben erst nach einem neuladen effekt, ohne bleibt die message bleibt verschwunde
     - hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
 
-- there is already the hash redirect, when coming from a referral, erweitere so dass die seite reachable wird via a hash-anchor-link: make this link go directly to the 1_1_pitches_high_or_low activity: https://lalumo.z11.de/#1_1
-- fix and use the tests/hash-navigation.spec.js to develop the hash navigation like test-driven development
+- hash navigation in der Navigation als links einbauen, so dass man in der wwebapp die aktuelle activity bookmarken kann oder in einem neuen fenster öffnen kann
 
-- all chapters and activities are included in the sitemap. also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
+- all chapters and activities are included in the sitemap. also, if you select another activity in the nav, the hash tag #1_1, #1_2, ... should change or be added, so you can bookmark the activity or send the link to someone
 
 Dies soll in allen aktionen:
 - immer bei Misserfolg (error): den sound abspielen und den hintergrund hin und her-wackeln (.shake-error)

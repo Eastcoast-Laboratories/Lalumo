@@ -2,6 +2,10 @@
 =========
 
 
+## Version 5.2 (2025-08-20)
+- "Draw a Melody": Eine Schlange kriecht entlang des gezeichneten Pfades und spielt die Töne
+- Lalumo jetzt auf F-Droid verfügbar
+
 ## Version 5.1 (2025-08-06)
 - Neue Einführungsnachrichten am Beginn jeder Übung
 - "Häschen hüpf!" verbessert in "Klingt es richtig?"

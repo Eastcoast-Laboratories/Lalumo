@@ -1,0 +1,10 @@
+# Play Store Changelogs für Version 5.2
+
+<en-GB>
+- "Draw a Melody": A snake crawls along the drawn path and plays the tones
+- Lalumo now avaliable on F-Droid store 
+</en-GB>
+<de-DE>
+- "Draw a Melody": Eine Schlange kriecht entlang des gezeichneten Pfades und spielt die Töne
+- Lalumo jetzt auf F-Droid verfügbar
+</de-DE>

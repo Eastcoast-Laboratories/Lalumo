@@ -2,6 +2,10 @@
 =========
 
 
+## Version 5.2 (2025-08-20)
+- "Draw a Melody": A snake crawls along the drawn path and plays the tones
+- Lalumo now avaliable on F-Droid store 
+
 ## Version 5.1 (2025-08-06)
 - New introduction messages at the start of each exercise
 - "Bunny Hop" corrected in "Does it sound right?"

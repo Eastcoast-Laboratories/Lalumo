@@ -145,6 +145,21 @@ update_version() {
   else
     echo "Changelog generator file not found at $CHANGELOG_GENERATOR_FILE"
   fi
+  
+  # F-Droid metadata aktualisieren
+  echo "###### 2.3 Updating version in F-Droid metadata"
+  FDROID_METADATA_FILE="metadata/com.lalumo.app.yml"
+  if [ -f "$FDROID_METADATA_FILE" ]; then
+    echo "New F-Droid version: $ANDROID_VERSION (versionCode: $NEW_CODE)"
+    # Ersetze versionName und versionCode in der Build-Sektion
+    sed -i "s/versionName: '[0-9.]\+'/versionName: '$ANDROID_VERSION'/" "$FDROID_METADATA_FILE"
+    sed -i "s/versionCode: [0-9]\+/versionCode: $NEW_CODE/" "$FDROID_METADATA_FILE"
+    # Ersetze CurrentVersion und CurrentVersionCode am Ende der Datei
+    sed -i "s/CurrentVersion: '[0-9.]\+'/CurrentVersion: '$ANDROID_VERSION'/" "$FDROID_METADATA_FILE"
+    sed -i "s/CurrentVersionCode: [0-9]\+/CurrentVersionCode: $NEW_CODE/" "$FDROID_METADATA_FILE"
+  else
+    echo "F-Droid metadata file not found at $FDROID_METADATA_FILE"
+  fi
 }
 
 # Parse command line arguments

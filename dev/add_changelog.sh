@@ -42,12 +42,14 @@ check_length() {
 # German Changelog
 DE_CHANGES=$(cat << EOF
 - "Draw a Melody": Eine Schlange kriecht entlang des gezeichneten Pfades und spielt die Töne
+- Lalumo jetzt auf F-Droid verfügbar
 EOF
 )
 
 # English Changelog
 EN_CHANGES=$(cat << EOF
 - "Draw a Melody": A snake crawls along the drawn path and plays the tones
+- Lalumo now avaliable on F-Droid store 
 EOF
 )
 

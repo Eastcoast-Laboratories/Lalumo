@@ -1,0 +1,2 @@
+- "Draw a Melody": A snake crawls along the drawn path and plays the tones
+- Lalumo now avaliable on F-Droid store 
