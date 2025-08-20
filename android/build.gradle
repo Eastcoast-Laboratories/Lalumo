@@ -27,18 +27,18 @@ allprojects {
     plugins.withType(JavaBasePlugin).configureEach {
         java {
             toolchain {
-                languageVersion = JavaLanguageVersion.of(21)
+                languageVersion = JavaLanguageVersion.of(17)
             }
         }
     }
     
-    // Anwenden der Java 21-Konfiguration auf alle Unterprojekte
+    // Apply Java 17-config to all subprojects
     afterEvaluate {
         if (project.hasProperty('android')) {
             android {
                 compileOptions {
-                    sourceCompatibility JavaVersion.VERSION_21
-                    targetCompatibility JavaVersion.VERSION_21
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
                 }
             }
         }

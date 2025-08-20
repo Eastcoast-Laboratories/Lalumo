@@ -14,18 +14,18 @@ RepoType: git
 Repo: https://github.com/Eastcoast-Laboratories/Lalumo
 
 Builds:
-  - versionName: '5.1'
-    versionCode: 31
+  - versionName: '5.2'
+    versionCode: 32
     commit: 51d046767eeb37368c967de4765996e38ca1c0ca
     subdir: android/app
     sudo:
-      - echo "deb https://deb.debian.org/debian trixie main" > /etc/apt/sources.list.d/trixie.list
       - apt-get update
-      - apt-get install -y -t trixie openjdk-21-jdk-headless
+      - apt-get install -y openjdk-17-jdk-headless
       - apt-get install -y npm
-      - update-alternatives --auto java
+      - update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
     gradle:
-      - yes
+      - -Pfdroid
+      - assembleRelease
     prebuild:
       - cd ../..
       - npm install --build-from-source
@@ -42,5 +42,5 @@ Builds:
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: '5.1'
-CurrentVersionCode: 31
+CurrentVersion: '5.2'
+CurrentVersionCode: 32

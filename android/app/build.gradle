@@ -11,8 +11,8 @@ android {
         // - versionCode wird bei jedem Build inkrementiert
         // - versionName wird aus package.json übernommen (mit erhöhter Patch-Version x.y.z)
         // Manuelle Änderungen hier werden beim nächsten Build überschrieben
-        versionCode 31
-        versionName "5.1"
+        versionCode 32
+        versionName "5.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -22,11 +22,11 @@ android {
     }
     buildTypes {
         release {
-            // Enables code-related app optimization
-            minifyEnabled true
+            // Enable minification by default (Android Studio), disable for F-Droid builds
+            minifyEnabled project.hasProperty('fdroid') ? false : true
             
-            // Enables resource shrinking
-            shrinkResources true
+            // Enable resource shrinking by default (Android Studio), disable for F-Droid builds
+            shrinkResources project.hasProperty('fdroid') ? false : true
             
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

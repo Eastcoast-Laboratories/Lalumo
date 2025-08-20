@@ -5,17 +5,38 @@
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Capacitor WebView and JavaScript interface rules
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Keep all Capacitor plugin classes
+-keep class com.getcapacitor.** { *; }
+-keep class com.capacitorjs.** { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Keep WebView JavaScript interfaces
+-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+   public *;
+}
+
+# Keep all classes that might be used by JavaScript
+-keepattributes JavascriptInterface
+-keepattributes *Annotation*
+
+# Keep line numbers for debugging
+-keepattributes SourceFile,LineNumberTable
+
+# Don't obfuscate class names that JavaScript might reference
+-keepnames class ** { *; }
+
+# Keep all public methods that might be called from JavaScript
+-keepclassmembers class * {
+    public *;
+}
+
+# Prevent crashes from missing classes
+-dontwarn com.getcapacitor.**
+-dontwarn com.capacitorjs.**
+
+# Keep splash screen plugin
+-keep class com.capacitorjs.plugins.splashscreen.** { *; }
