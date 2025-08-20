@@ -547,7 +547,18 @@ export function app() {
         });
       }
     },
-    
+
+    // Update URL hash when activity mode changes
+    updateUrlHash(activityId) {
+      if (activityId && activityId.match(/^\d+_\d+/)) {
+        const hashValue = activityId.match(/^(\d+_\d+)/)[1];
+        if (window.location.hash !== `#${hashValue}`) {
+          window.history.replaceState(null, null, `#${hashValue}`);
+          debugLog('HASH_NAV', `Updated URL hash to: #${hashValue}`);
+        }
+      }
+    },
+
     // Helper function to map activity IDs to their mode suffixes
     getActivityModeFromId(activityId) {
       const modeMap = {

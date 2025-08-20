@@ -251,6 +251,11 @@ export function chords() {
           // CRITICAL: Force Alpine.js to update the mode property
           this.mode = mode || 'main';
           
+          // Update URL hash for bookmarking
+          if (window.Alpine?.data?.app?.updateUrlHash) {
+            window.Alpine.data.app.updateUrlHash(mode);
+          }
+          
           // Update the unified activity mode in the Alpine store
           if (window.Alpine?.store) {
             window.Alpine.store('currentActivityMode', { component: 'chords', mode: mode || 'main' });

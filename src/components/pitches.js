@@ -394,6 +394,11 @@ export function pitches() {
           if (window.Alpine?.store) {
             window.Alpine.store('currentActivityMode', { component: 'pitches', mode });
           }
+          
+          // Update URL hash for bookmarking
+          if (window.Alpine?.data?.app?.updateUrlHash) {
+            window.Alpine.data.app.updateUrlHash(mode);
+          }
         }
       });
         

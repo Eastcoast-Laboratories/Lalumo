@@ -16,7 +16,7 @@ Repo: https://github.com/Eastcoast-Laboratories/Lalumo
 Builds:
   - versionName: '5.2'
     versionCode: 32
-    commit: 384a76f60ec78c7d56ca963f14298724df7a411b
+    commit: 13dbe581cc707236b89e62496a9878cb03a7b7d1
     subdir: android/app
     sudo:
       - apt-get update
@@ -24,8 +24,7 @@ Builds:
       - apt-get install -y npm
       - update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
     gradle:
-      - -Pfdroid
-      - assembleRelease
+      - yes
     prebuild:
       - cd ../..
       - npm install --build-from-source
@@ -39,6 +38,8 @@ Builds:
       - android/app/build.gradle
     scandelete:
       - node_modules
+    gradleprops:
+      - fdroid
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags

@@ -375,10 +375,6 @@ html body.dev-mode .debug-element {
   z-index: -1;
 }
 
-.partial-content {
-  margin-bottom: 30px;
-}
-
 .username-edit {
   display: flex;
   flex-wrap: wrap;
@@ -542,6 +538,7 @@ html body.dev-mode .debug-element {
   margin-top: 2rem;
   position: relative;
   z-index: 900; /* Higher z-index to ensure settings are visible */
+  margin-bottom: 30px;
 }
 
 /* Player Settings - ensure they're not overlapped */
@@ -720,20 +717,6 @@ input {
   100% {
     transform: translateY(-10px);
   }
-}
-
-.speech-bubble {
-  flex: 1;
-  font-size: 1.1rem;
-  animation: fade-in 0.5s ease-out;
-  color: #333;
-  font-weight: 500;
-  padding-right: 1rem;
-}
-
-/* Remove the speech bubble triangle since it's in the same container */
-.speech-bubble::before {
-  display: none;
 }
 
 @keyframes fade-in {
@@ -1087,6 +1070,9 @@ body {
   width: 100%;
   padding-bottom: 10px;
   min-height: fit-content;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 /* Settings button with avatar */
@@ -1166,7 +1152,8 @@ body {
   padding: 1rem 0;
 }
 
-.menu-content button {
+.menu-content button,
+.menu-content a[role="button"] {
   background-color: #f5f5f5;
   border: none;
   border-radius: 0.5rem;
@@ -1175,16 +1162,21 @@ body {
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
-.menu-content button:hover {
+.menu-content button:hover,
+.menu-content a[role="button"]:hover {
   background-color: var(--accent-color);
   transform: translateX(5px);
 }
 
-.menu-content button.active {
-  background-color: var(--primary-color);
-  color: white;
+.menu-content button.active,
+.menu-content a[role="button"].active {
+  background-color: var(--accent-color);
+  color: white !important;
   font-weight: bold;
 }
 
