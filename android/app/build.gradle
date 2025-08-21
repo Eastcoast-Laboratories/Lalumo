@@ -11,7 +11,7 @@ android {
         // - versionCode wird bei jedem Build inkrementiert
         // - versionName wird aus package.json übernommen (mit erhöhter Patch-Version x.y.z)
         // Manuelle Änderungen hier werden beim nächsten Build überschrieben
-        versionCode 33
+        versionCode 34
         versionName "5.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
@@ -20,6 +20,17 @@ android {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    
+    signingConfigs {
+        fdroidRelease {
+            // Separate F-Droid release key (NOT your Play Store key)
+            storeFile file('fdroid-release.keystore')
+            storePassword 'fdroidpass'
+            keyAlias 'fdroidkey'
+            keyPassword 'fdroidpass'
+        }
+    }
+    
     buildTypes {
         release {
             // Enable minification by default (Android Studio), disable for F-Droid builds
@@ -27,6 +38,9 @@ android {
             
             // Enable resource shrinking by default (Android Studio), disable for F-Droid builds
             shrinkResources project.hasProperty('fdroid') ? false : true
+            
+            // Use F-Droid release signing for F-Droid builds, no signing for regular builds
+            signingConfig project.hasProperty('fdroid') ? signingConfigs.fdroidRelease : null
             
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
