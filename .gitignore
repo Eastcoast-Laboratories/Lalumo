@@ -109,3 +109,4 @@ yarn-error.log*
 /app/icons/icon-192.png
 /app/icons/icon-512.png
 	
+/dev/fdroid_example_drinkable_app.yaml

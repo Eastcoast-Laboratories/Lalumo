@@ -39,11 +39,6 @@ android {
             // Enable resource shrinking by default (Android Studio), disable for F-Droid builds
             shrinkResources project.hasProperty('fdroid') ? false : true
             
-            // Use F-Droid release signing for F-Droid builds, no signing for regular builds
-            if (project.hasProperty('fdroid')) {
-                signingConfig signingConfigs.fdroidRelease
-            }
-            
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
