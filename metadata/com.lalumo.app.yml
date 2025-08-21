@@ -16,7 +16,7 @@ Repo: https://github.com/Eastcoast-Laboratories/Lalumo
 Builds:
   - versionName: '5.3'
     versionCode: 34
-    commit: 24b21f7cf21c703ffe2892a146875083881beb75
+    commit: 5686590178abe7a61e79a83be85fe110242f5575
     subdir: android
     sudo:
       - apt-get update
@@ -34,14 +34,17 @@ Builds:
       - echo "// Empty cordova variables" > android/capacitor-cordova-android-plugins/cordova.variables.gradle
       - bash mobile-build.sh
       - cd android/app
-      - keytool -genkey -v -keystore fdroid-release.keystore -storepass fdroidpass -alias fdroidkey -keypass fdroidpass -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=F-Droid Release,O=Lalumo,C=US"
-    build:
-      - mkdir -p build/outputs/apk
-      - find app/build/outputs/apk -name "*.apk" -exec cp {} build/outputs/apk/ \;
+      - rm -f fdroid-release.keystore
+      - keytool -genkey -v -keystore fdroid-release.keystore -storepass fdroidpass
+        -alias fdroidkey -keypass fdroidpass -keyalg RSA -keysize 2048 -validity 10000
+        -dname "CN=F-Droid Release,O=Lalumo,C=US"
     scanignore:
       - node_modules/@capacitor/cli/assets/capacitor-cordova-android-plugins.tar.gz
     scandelete:
       - node_modules
+    build:
+      - mkdir -p build/outputs/apk
+      - find app/build/outputs/apk -name "*.apk" -exec cp {} build/outputs/apk/ \;
     gradleprops:
       - fdroid
 

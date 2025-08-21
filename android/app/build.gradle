@@ -23,7 +23,7 @@ android {
     
     signingConfigs {
         fdroidRelease {
-            // Separate F-Droid release key (NOT your Play Store key)
+            // Separate F-Droid release key (NOT the Play Store key)
             storeFile file('fdroid-release.keystore')
             storePassword 'fdroidpass'
             keyAlias 'fdroidkey'
@@ -40,7 +40,9 @@ android {
             shrinkResources project.hasProperty('fdroid') ? false : true
             
             // Use F-Droid release signing for F-Droid builds, no signing for regular builds
-            signingConfig project.hasProperty('fdroid') ? signingConfigs.fdroidRelease : null
+            if (project.hasProperty('fdroid')) {
+                signingConfig signingConfigs.fdroidRelease
+            }
             
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
