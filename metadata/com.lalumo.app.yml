@@ -16,7 +16,7 @@ Repo: https://github.com/Eastcoast-Laboratories/Lalumo
 Builds:
   - versionName: '5.3'
     versionCode: 33
-    commit: todo
+    commit: 24b21f7cf21c703ffe2892a146875083881beb75
     subdir: android
     sudo:
       - apt-get update
