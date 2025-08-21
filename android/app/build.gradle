@@ -34,15 +34,9 @@ android {
 }
 
 repositories {
-    // Local Maven repository for Capacitor Cordova plugins
-    maven {
-        url "${project(':capacitor-cordova-android-plugins').projectDir}/src/main/libs"
-    }
-    
-    // Local libs directory
-    maven {
-        url "libs"
-    }
+    // F-Droid compatible repositories only
+    google()
+    mavenCentral()
 }
 
 dependencies {
