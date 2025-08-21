@@ -153,7 +153,6 @@
   /* Keep pointer-events but prevent actual clicks via JavaScript */
 }
 
-
 /* Locked activity styling */
 .locked-activity {
   opacity: 0.9;
@@ -174,11 +173,6 @@ html body.dev-mode .debug-element {
   opacity: 0.7 !important;
   visibility: visible !important;
   pointer-events: auto !important;
-}
-
-/* Custom icon styles */
-.custom-icon {
-  color-scheme: light only;
 }
 
 /* Modal Overlay with welcome message */
@@ -271,7 +265,7 @@ html body.dev-mode .debug-element {
   margin: 1rem 0;
 }
 
-.welcome-message .intro-message {
+.welcome-message {
   width: 100px;
   height: 100px;
   margin-bottom: 1rem;
@@ -318,16 +312,6 @@ html body.dev-mode .debug-element {
   opacity: 0.8;
 }
 
-/* User profile */
-.user-profile {
-  display: flex;
-  align-items: center;
-  margin: 1rem 0;
-  padding: 0.8rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 0.8rem;
-}
-
 .user-avatar, .profile-avatar {
   width: 40px;
   height: 40px;
@@ -341,16 +325,6 @@ html body.dev-mode .debug-element {
   font-weight: bold;
   font-size: 1.2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.user-name {
-  font-weight: bold;
-  font-size: 1rem;
-  color: white;
-}
-
-.settings-header {
-  margin-top: 1.5rem;
 }
 
 /* Settings page */
@@ -399,7 +373,6 @@ html body.dev-mode .debug-element {
   padding-top: 20px;
   border-top: 1px solid var(--color-accent-light);
 }
-
 
 .help-text {
   font-size: 0.9rem;
@@ -541,64 +514,6 @@ html body.dev-mode .debug-element {
   margin-bottom: 30px;
 }
 
-/* Player Settings - ensure they're not overlapped */
-.settings-panel, 
-.player-settings, 
-.export-section {
-  position: relative;
-  z-index: 1000; /* Higher than menu */
-  margin-left: auto; /* Center content away from menu width */
-  margin-right: auto;
-  width: calc(100% - 240px); /* Leave space for menu width */
-  background: white;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.sett.pitch-card {
-  background-color: white;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  margin: 0.5rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  user-select: none;
-  touch-action: manipulation;
-}
-
-.sett.pitch-card h3 {
-  margin-top: 0;
-  color: var(--primary-color);
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-}
-
-.profile-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.large-avatar {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: var(--primary-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 1rem;
-  color: white;
-  font-weight: bold;
-  font-size: 1.8rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
 .profile-name h4 {
   margin: 0;
   font-size: 1rem;
@@ -609,11 +524,6 @@ html body.dev-mode .debug-element {
   margin: 0.3rem 0 0 0;
   font-size: 1.2rem;
   font-weight: bold;
-}
-
-.save-code-container {
-  margin-top: 1rem;
-  animation: fade-slide-down 0.5s ease-out;
 }
 
 @keyframes fade-slide-down {
@@ -627,87 +537,12 @@ html body.dev-mode .debug-element {
   }
 }
 
-/* Save game code display */
-.save-code {
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
-  padding: 0.8rem;
-  border-radius: 0.5rem;
-  font-family: monospace;
-  font-size: 0.9rem;
-  overflow: auto;
-  white-space: nowrap;
-  margin: 1rem 0;
-  max-width: 100%;
-  word-break: break-all;
-}
-
-.export-textarea, .import-textarea {
-  width: 100%;
-  height: 80px;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 8px;
-  background-color: var(--color-background-lighter);
-  font-family: monospace;
-  color: var(--text-color);
-  resize: vertical;
-}
-
 input, textarea {
   border: 2px solid var(--color-accent-light);
 }
 
 input {
   max-width: 360px;
-}
-
-
-.code-input {
-  width: 100%;
-  min-height: 80px;
-  padding: 0.8rem;
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
-  font-family: monospace;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-  resize: vertical;
-}
-
-.load-result {
-  margin-top: 1rem;
-  padding: 0.8rem;
-  border-radius: 0.5rem;
-  font-weight: bold;
-  animation: fade-in 0.5s ease-out;
-}
-
-/* Help and speech bubble */
-.welcome-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  background-color: #eec98f;
-  border-radius: 1.5rem;
-  padding: 1rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.welcome-wrapper {
-  animation: bob 3s infinite alternate ease-in-out;
-  margin-right: 1rem;
-}
-
-.intro-message {
-  width: 100px;
-  height: auto; /* Let height adjust to maintain aspect ratio */
-  cursor: pointer;
-  position: relative;
-  z-index: 10;
-  display: block;
-  border-radius: 1rem;
 }
 
 @keyframes bob {
@@ -731,33 +566,6 @@ input {
 }
 
 /* Progress garden visualization */
-.progress-garden {
-  margin: 1rem 0;
-  background-color: #f0f9e8;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  position: relative;
-  border: 2px solid #9de089;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.progress-label {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  color: #4b7a47;
-  font-size: 1rem;
-}
-
-.garden-plants {
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-end;
-  height: 80px;
-  background: linear-gradient(to top, #a6d969, #f0f9e8);
-  border-radius: 0.3rem;
-  overflow: hidden;
-  padding: 0 0.5rem;
-}
 
 .garden-plant {
   width: 40px;
@@ -1254,7 +1062,6 @@ main {
   display: none; /* Hide the old navigation */
 }
 
-
 /* Section transitions */
 section {
   background-color: white;
@@ -1360,37 +1167,6 @@ section h2 {
 /* Lazy-load Background Images */
 .lazyload-bg {
   transition: background-image 0.3s ease-in-out;
-}
-
-/* Pitches Component Styles */
-.mode-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  justify-content: center;
-}
-
-.mode-tabs button {
-  background-color: #e0e0e0;
-  color: var(--text-color);
-  border: none;
-  border-radius: 1rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.mode-tabs button.active {
-  background-color: var(--secondary-color);
-  color: white;
-  font-weight: bold;
-}
-
-.mode-tabs button:hover {
-  background-color: var(--accent-color);
-  transform: translateY(-2px);
 }
 
 .activity-container {
@@ -1575,7 +1351,6 @@ section h2 {
   width: 100%;
 }
 
-
 .activity-container h3 {
   color: var(--primary-color);
   text-align: center;
@@ -1583,13 +1358,6 @@ section h2 {
 }
 
 /* Pitch Grid - for listen and match modes */
-.pitch-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-auto-rows: 100px;
-  gap: 1rem;
-  margin: 1.5rem 0;
-}
 
 .pitch-card {
   border-radius: 1rem;
@@ -1609,12 +1377,12 @@ section h2 {
 }
 
 /* Taller pitch cards when fewer options are unlocked */
-.pitch-grid.limited-options .pitch-card {
+.pitch-card {
   height: 135px;
 }
 
 /* Special case for 'down' card when frog is not unlocked yet */
-.pitch-grid.no-frog .pitch-card.down-extended {
+.pitch-card.down-extended {
   grid-row: span 2;
   height: 210px; /* Etwas höher als 2 Zeilen für bessere Sichtbarkeit */
 }
@@ -1997,8 +1765,6 @@ section h2 {
   transform: scale(0.95);
 }
 
-
-
 @keyframes pulse {
   0% {
     box-shadow: 0 0 15px var(--primary-color);
@@ -2167,15 +1933,6 @@ section h2 {
   touch-action: none; /* Prevent scrolling on touch devices */
 }
 
-.melody-feedback{
-  position: fixed;
-  bottom: 60px;
-  left: max(-11px, min(30%, calc(-477px + 94vw)));
-  background-color: rgba(255, 255, 255, 0.5);
-  padding: 10px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
 /* Styles für die Melodie-Nachzeichnen-Funktion */
 .reference-melody {
   display: flex;
@@ -2285,23 +2042,6 @@ section h2 {
   transform: translateX(-50%) translateY(-3px);
 }
 
-.clear-button {
-  background-color: #dfe6e9;
-  color: var(--text-color);
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.6rem 1rem;
-  font-size: 0.9rem;
-  cursor: pointer;
-  display: block;
-  margin: 1rem auto;
-  transition: all 0.2s ease;
-}
-
-.clear-button:hover {
-  background-color: #b2bec3;
-}
-
 /* Guessing mode */
 .play-button {
   background-color: var(--secondary-color);
@@ -2321,47 +2061,6 @@ section h2 {
   background-color: #5f50e0;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.guess-options {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin: 2rem 0;
-}
-
-.guess-button {
-  background-color: white;
-  border: 2px solid var(--primary-color);
-  border-radius: 0.7rem;
-  padding: 1rem 2rem;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: bold;
-}
-
-.guess-button.up {
-  border-color: #ff9ff3;
-  color: #ff9ff3;
-}
-
-.guess-button.down {
-  border-color: #48dbfb;
-  color: #48dbfb;
-}
-
-.guess-button.up:hover {
-  background-color: #ff9ff3;
-  color: white;
-}
-
-.guess-button.down:hover {
-  background-color: #48dbfb;
-  color: white;
 }
 
 /* Memory mode */
@@ -2444,34 +2143,6 @@ section h2 {
   animation: shake-element 0.5s ease-in-out;
 }
 
-.memory-button:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.memory-button:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.memory-button::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  pointer-events: none;
-}
-
-.memory-button:active::after {
-  animation: memory-ripple 0.6s ease-out;
-}
-
 @keyframes memory-ripple {
   0% {
     width: 0;
@@ -2483,27 +2154,6 @@ section h2 {
     height: 200%;
     opacity: 0;
   }
-}
-
-.memory-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transform: skewX(-25deg);
-  transition: all 0.75s;
-}
-
-.memory-button:hover::before {
-  left: 100%;
 }
 
 /* Navigation menu reset button styling */
@@ -2587,17 +2237,8 @@ section h2 {
     margin-bottom: 0.5rem;
   }
   
-  .tone-grid, .pitch-grid {
+  .tone-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .mode-tabs {
-    flex-direction: column;
-  }
-  
-  .guess-options {
-    flex-direction: column;
-    gap: 1rem;
   }
   
   /* High or Low mobile styles */
@@ -2742,50 +2383,6 @@ section h2 {
   align-items: center;
   justify-content: center;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Reset activity button styling */
-.reset-activity-btn {
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #ff6b35;
-  border: 2px solid #ff6b35;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  margin-left: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.reset-activity-btn:hover {
-  background-color: #ff6b35;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.reset-activity-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.reset-activity-btn:focus {
-  outline: 3px solid rgba(255, 107, 53, 0.5);
-  outline-offset: 2px;
-}
-
-/* Mode header layout to accommodate reset button */
-.mode-header {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 10px;
-  gap: 10px;
 }
 
 .back-to-main {
