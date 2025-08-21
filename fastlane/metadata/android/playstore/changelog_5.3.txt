@@ -1,4 +1,4 @@
-# Play Store Changelogs für Version 5.2
+# Play Store Changelogs für Version 5.3
 
 <en-GB>
 - "Draw a Melody": A snake crawls along the drawn path and plays the tones

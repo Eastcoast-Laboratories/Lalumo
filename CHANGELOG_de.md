@@ -2,7 +2,7 @@
 =========
 
 
-## Version 5.2 (2025-08-20)
+## Version 5.3 (2025-08-21)
 - "Draw a Melody": Eine Schlange kriecht entlang des gezeichneten Pfades und spielt die Töne
 - Lalumo jetzt auf F-Droid verfügbar
 

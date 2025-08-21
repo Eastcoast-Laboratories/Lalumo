@@ -98,29 +98,29 @@ update_version() {
   echo "Updating package-lock.json..."
   npm install --package-lock-only --quiet
   
-  # Version für Android verwenden (immer nur Major.Minor Format)
+  # Android version (always only Major.Minor format)
   ANDROID_VERSION="$NEW_VERSION"
   
   echo "###### 2.1 Updating version in build.gradle"
   if [ -f "$GRADLE_FILE" ]; then
-    # Extrahiere aktuelle versionCode
+    # Extract current versionCode
     CURRENT_CODE=$(grep -oP 'versionCode\s+\K\d+' "$GRADLE_FILE")
     
     if [ -n "$CURRENT_CODE" ]; then
-      # versionCode inkrementieren
+      # versionCode increment
       NEW_CODE=$((CURRENT_CODE + 1))
       echo "Updating Android versionCode: $CURRENT_CODE → $NEW_CODE"
       
-      # versionCode in gradle file ersetzen
+      # versionCode in gradle file replace
       
-      # versionCode auch in package.json einfügen für Web-App
+      # versionCode also in package.json add for Web-App
       echo "Injecting versionCode into package.json: $NEW_CODE"
-      # Prüfe ob versionCode bereits existiert
+      # check if versionCode already exists
       if grep -q "versionCode" "$PACKAGE_FILE"; then
-        # Ersetze bestehende versionCode
+        # replace existing versionCode
         sed -i "s/\"versionCode\":\s*[0-9]*/\"versionCode\": $NEW_CODE/" "$PACKAGE_FILE"
       else
-        # Füge versionCode nach version hinzu
+        # add versionCode after version
         sed -i "/"version":/a\  "versionCode": $NEW_CODE," "$PACKAGE_FILE"
       fi
       sed -i "s/versionCode $CURRENT_CODE/versionCode $NEW_CODE/" "$GRADLE_FILE"
@@ -136,25 +136,25 @@ update_version() {
     echo "Android gradle file not found at $GRADLE_FILE"
   fi
   
-  # Version in add_changelog.sh aktualisieren
+  # Update version in add_changelog.sh
   echo "###### 2.2 Updating version in dev/add_changelog.sh"
   if [ -f "$CHANGELOG_GENERATOR_FILE" ]; then
     echo "New version in changelog generator: $ANDROID_VERSION"
-    # Ersetze die VERSION_NAME-Zeile in der add_changelog.sh
+    # replace the VERSION_NAME-Zeile in der add_changelog.sh
     sed -i "s/VERSION_NAME=[0-9.]\+/VERSION_NAME=$ANDROID_VERSION/" "$CHANGELOG_GENERATOR_FILE"
   else
     echo "Changelog generator file not found at $CHANGELOG_GENERATOR_FILE"
   fi
   
-  # F-Droid metadata aktualisieren
+  # Update version in F-Droid metadata
   echo "###### 2.3 Updating version in F-Droid metadata"
   FDROID_METADATA_FILE="metadata/com.lalumo.app.yml"
   if [ -f "$FDROID_METADATA_FILE" ]; then
     echo "New F-Droid version: $ANDROID_VERSION (versionCode: $NEW_CODE)"
-    # Ersetze versionName und versionCode in der Build-Sektion
-    sed -i "s/versionName: '[0-9.]\+'/versionName: '$ANDROID_VERSION'/" "$FDROID_METADATA_FILE"
-    sed -i "s/versionCode: [0-9]\+/versionCode: $NEW_CODE/" "$FDROID_METADATA_FILE"
-    # Ersetze CurrentVersion und CurrentVersionCode am Ende der Datei
+    # replace versionName and versionCode in the Build section (first occurrences)
+    sed -i "0,/versionName: '[0-9.]\+'/s//versionName: '$ANDROID_VERSION'/" "$FDROID_METADATA_FILE"
+    sed -i "0,/versionCode: [0-9]\+/s//versionCode: $NEW_CODE/" "$FDROID_METADATA_FILE"
+    # replace CurrentVersion and CurrentVersionCode at the end of the file (second and last occurrences)
     sed -i "s/CurrentVersion: '[0-9.]\+'/CurrentVersion: '$ANDROID_VERSION'/" "$FDROID_METADATA_FILE"
     sed -i "s/CurrentVersionCode: [0-9]\+/CurrentVersionCode: $NEW_CODE/" "$FDROID_METADATA_FILE"
   else
