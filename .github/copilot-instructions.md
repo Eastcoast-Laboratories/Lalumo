@@ -62,6 +62,12 @@ Lalumo is a child-friendly music understanding app with animal friends, melodies
   bash mobile-build.sh --help     # Show all options
   ```
 
+### F-Droid Build Configuration
+- **F-Droid uses `-Pfdroid` flag to disable Android minification for transparency**
+- **Impact:** The -Pfdroid minification deactivation has practically no influence on APK size or performance. The JavaScript code makes up 95%+ of the app logic and is minified by Webpack anyway.
+- **Android code:** Only ~356 lines total (MainActivity + tests), minimal custom code
+- **JavaScript bundle:** ~710 KB (main app logic), always minified by webpack in production mode
+
 ### Testing
 - **Playwright testing is configured but browser installation may fail due to download issues.**
 - Test files are located in the `tests/` directory including:

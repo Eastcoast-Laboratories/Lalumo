@@ -24,3 +24,4 @@ merke dir:
 - jede activity muss einen progress im localstorage haben, der auch im globalen reset, activity reset, im-und export berücksichtigt wird
 - die meisten activities haben einen free- und einen game-mode, in dem man die sounds ausprobieren kann (free) oder das game spielt, bei dem man die richtigen buttons drücken muss, der die richtigen effekte zeigt aus `feedback.js`
 - in den srings.xml dateien texte , die einen apostrophe (') enthalten immer mit backslash maskiereen. (\')
+- Wenn ein File bereits in einer Sprache ist, dann in derselben Sprache weiterbearbeiten. Das gilt für alle Dateitypen - Markdown, Code-Kommentare, Dokumentation, etc.
