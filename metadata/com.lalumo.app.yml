@@ -1,5 +1,6 @@
 Categories:
   - Multimedia
+  - Music Practice Tool
   - Science & Education
 License: GPL-3.0-or-later
 AuthorName: Ruben Barkow-Kuder
@@ -16,13 +17,11 @@ Repo: https://github.com/Eastcoast-Laboratories/Lalumo
 Builds:
   - versionName: '5.3'
     versionCode: 34
-    commit: todo
+    commit: f687cec4ff8689ef64bfb8b80ae93fda583d3b45
     subdir: android/app
     sudo:
       - apt-get update
-      - apt-get install -y openjdk-17-jdk-headless
       - apt-get install -y npm
-      - update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
     gradle:
       - yes
     prebuild:
