@@ -186,3 +186,10 @@ npx playwright test
 
 The main test files include:
 - `hash-navigation.spec.js`: Tests navigation between activities using URL hash changes
+
+# License
+
+This project is licensed under the GNU General Public License, version 3.0 or later (GPL-3.0-or-later).
+
+See the full license text in the [LICENSE](LICENSE) file.
+
