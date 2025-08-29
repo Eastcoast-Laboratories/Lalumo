@@ -12,6 +12,12 @@
   background-color: rgba(76, 175, 80, 0.2) !important;
 }
 
+/* Special fix for 1_4 activity buttons to prevent jumping */
+.animal-card.correct-button-highlight {
+  margin-top: -2px;
+  margin-left: -2px;
+}
+
 @keyframes correctButtonPulse {
   0% { 
     transform: scale(1);
