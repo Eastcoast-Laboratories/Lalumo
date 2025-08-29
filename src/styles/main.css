@@ -1352,6 +1352,16 @@ section h2 {
   cursor: pointer;
 }
 
+/* Make highlighting visible on 2_5 buttons without changing positions */
+#button_2_5_1_major.correct-button-highlight, 
+#button_2_5_1_minor.correct-button-highlight, 
+#button_2_5_1_augmented.correct-button-highlight, 
+#button_2_5_1_diminished.correct-button-highlight {
+  opacity: 0.8 !important;
+  background-color: rgba(34, 197, 94, 0.3) !important;
+  border: 3px solid #22c55e !important;
+}
+
 #button_2_5_1_major:hover, #button_2_5_1_minor:hover, #button_2_5_1_augmented:hover, #button_2_5_1_diminished:hover{
   opacity: 0.05;
 }

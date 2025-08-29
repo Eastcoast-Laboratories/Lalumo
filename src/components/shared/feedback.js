@@ -449,9 +449,11 @@ export function highlightCorrectButton(correctElement, options = {}) {
   }
   
   debugLog('FEEDBACK', `CORRECT_HIGHLIGHT: Highlighting correct element for ${duration}ms`);
+  debugLog('FEEDBACK', `CORRECT_HIGHLIGHT: Element found: ${element.tagName}#${element.id}, classes: ${element.className}`);
   
   // Add highlight class
   element.classList.add(highlightClass);
+  debugLog('FEEDBACK', `CORRECT_HIGHLIGHT: Added class '${highlightClass}', new classes: ${element.className}`);
   
   // Remove highlight class after duration
   setTimeout(() => {
