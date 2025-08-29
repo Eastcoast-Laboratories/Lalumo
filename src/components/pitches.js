@@ -4061,11 +4061,8 @@ export function pitches() {
         
         // Highlight the correct piano key
         const correctNote = this.currentSequence[this.userSequence.length - 1];
-        const correctKeySelector = `.piano-key[data-note='${correctNote}']`;
-        debugLog('FEEDBACK', `MEMORY_GAME_CORRECT_HINT: Highlighting correct key for note: ${correctNote}`);
-        setTimeout(() => {
-          highlightCorrectButton(correctKeySelector);
-        }, 800);
+        // Memory game uses color feedback instead of highlighting
+        debugLog('FEEDBACK', `MEMORY_GAME_ERROR: Wrong note ${clickedNote}, correct was ${correctNote}`);
         
         // Play error sound using the central audio engine
         audioEngine.playNote('try_again', 1.0);
