@@ -295,6 +295,8 @@ if (typeof window !== 'undefined') {
   window.showActivityIntroMessage = showActivityIntroMessage;
   window.resetShownIntroMessages = resetShownIntroMessages;
   window.clearFeedbackTimer = clearFeedbackTimer;
+  window.highlightCorrectButton = highlightCorrectButton;
+  window.showErrorWithCorrectHint = showErrorWithCorrectHint;
 }
 
 /**
@@ -423,6 +425,60 @@ export function getLastInteractedElement() {
   }
   
   return null;
+}
+
+/**
+ * Highlight the correct button/element with a brief visual effect
+ * @param {HTMLElement|string} correctElement - The correct element to highlight, or CSS selector
+ * @param {Object} options - Configuration options
+ * @param {number} [options.duration=1000] - Duration of highlight effect in milliseconds
+ * @param {string} [options.highlightClass='correct-button-highlight'] - CSS class for highlighting
+ */
+export function highlightCorrectButton(correctElement, options = {}) {
+  const { duration = 1000, highlightClass = 'correct-button-highlight' } = options;
+  
+  // Get the element (either passed directly or by selector)
+  let element = correctElement;
+  if (typeof correctElement === 'string') {
+    element = document.querySelector(correctElement);
+  }
+  
+  if (!element) {
+    debugLog(['FEEDBACK', 'WARN'], 'CORRECT_HIGHLIGHT: Element not found for highlighting');
+    return;
+  }
+  
+  debugLog('FEEDBACK', `CORRECT_HIGHLIGHT: Highlighting correct element for ${duration}ms`);
+  
+  // Add highlight class
+  element.classList.add(highlightClass);
+  
+  // Remove highlight class after duration
+  setTimeout(() => {
+    element.classList.remove(highlightClass);
+    debugLog('FEEDBACK', 'CORRECT_HIGHLIGHT: Highlight effect removed');
+  }, duration);
+}
+
+/**
+ * Enhanced error feedback that shows the correct button after an error
+ * @param {HTMLElement} [errorElement] - Element that was incorrectly pressed (optional)
+ * @param {HTMLElement|string} [correctElement] - The correct element to highlight (optional)
+ * @param {Object} [options] - Configuration options
+ * @param {number} [options.highlightDelay=800] - Delay before showing correct button highlight
+ */
+export function showErrorWithCorrectHint(errorElement = null, correctElement = null, options = {}) {
+  const { highlightDelay = 800 } = options;
+  
+  // Show the standard error feedback first
+  showSmartError(errorElement);
+  
+  // If a correct element is provided, highlight it after a delay
+  if (correctElement) {
+    setTimeout(() => {
+      highlightCorrectButton(correctElement);
+    }, highlightDelay);
+  }
 }
 
 /**

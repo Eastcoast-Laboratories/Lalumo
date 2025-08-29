@@ -4,6 +4,29 @@
   color-scheme: light only;
 }
 
+/* Correct Button Highlight Effect */
+.correct-button-highlight {
+  animation: correctButtonPulse 1s ease-in-out;
+  box-shadow: 0 0 20px #4CAF50 !important;
+  border: 3px solid #4CAF50 !important;
+  background-color: rgba(76, 175, 80, 0.2) !important;
+}
+
+@keyframes correctButtonPulse {
+  0% { 
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(76, 175, 80, 0.7);
+  }
+  50% { 
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.9);
+  }
+  100% { 
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.7);
+  }
+}
+
 /* Force Portrait Mode */
 @media screen and (orientation: landscape) {
   body {

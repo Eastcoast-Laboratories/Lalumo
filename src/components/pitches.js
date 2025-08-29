@@ -17,6 +17,8 @@ import { drawSnakeAnimation, initSnakeAnimation } from './pitches/1_3_draw_melod
 
 // Import shared feedback utilities
 import { 
+  showFeedbackMessage, 
+  showActivityIntroMessage, 
   showRainbowSuccess, 
   showBigRainbowSuccess, 
   showShakeError, 
@@ -24,7 +26,9 @@ import {
   showCompleteBigSuccess, 
   showCompleteError,
   showActivityProgressBar,
-  hideActivityProgressBar
+  hideActivityProgressBar,
+  highlightCorrectButton,
+  showErrorWithCorrectHint
 } from '../components/shared/feedback.js';
 
 // Import shared UI helpers
@@ -1289,6 +1293,15 @@ export function pitches() {
         audioEngine.playNote('try_again', 1.0);
         debugLog('PITCHES', 'AUDIO: Playing try_again feedback sound with audio engine');
         
+        // Highlight the correct button
+        const correctButtonSelector = correctHiOrLowAnswer === 'high' ? 
+          '.high-choice' : '.low-choice';
+        
+        debugLog('FEEDBACK', `HIGH_OR_LOW_CORRECT_HINT: Highlighting correct button for answer: ${correctHiOrLowAnswer}`);
+        setTimeout(() => {
+          highlightCorrectButton(correctButtonSelector);
+        }, 800);
+        
         // play tone again after 2 seconds
         setTimeout(() => {
           this.playHighOrLowTone();
@@ -1676,6 +1689,15 @@ export function pitches() {
         
         // Show the feedback message
         Alpine.store('feedback').showMessage(message);
+        
+        // Highlight the correct button
+        const correctButtonSelector = this.correctAnswer === 'ascending' ? 
+          '.ascending-choice, [data-direction="ascending"]' : 
+          '.descending-choice, [data-direction="descending"]';
+        debugLog('FEEDBACK', `MATCH_SOUNDS_CORRECT_HINT: Highlighting correct button for answer: ${this.correctAnswer}`);
+        setTimeout(() => {
+          highlightCorrectButton(correctButtonSelector);
+        }, 800);
       }
       
       // Trigger sound feedback using the central audio engine
@@ -4036,6 +4058,14 @@ export function pitches() {
           }, 500);
         }
         
+        // Highlight the correct piano key
+        const correctNote = this.currentSequence[this.userSequence.length - 1];
+        const correctKeySelector = `.piano-key[data-note='${correctNote}']`;
+        debugLog('FEEDBACK', `MEMORY_GAME_CORRECT_HINT: Highlighting correct key for note: ${correctNote}`);
+        setTimeout(() => {
+          highlightCorrectButton(correctKeySelector);
+        }, 800);
+        
         // Play error sound using the central audio engine
         audioEngine.playNote('try_again', 1.0);
         
@@ -5367,6 +5397,15 @@ export function pitches() {
         } else {
           feedbackMessage = language === 'de' ? 'Die Melodie war richtig. Versuche es noch einmal!' : 'The melody was correct. Try again!';
         }
+        
+        // Highlight the correct button
+        const correctButtonSelector = this.melodyHasWrongNote ? 
+          '.sounds-wrong-choice, [data-answer="false"]' : 
+          '.sounds-right-choice, [data-answer="true"]';
+        debugLog('FEEDBACK', `SOUND_JUDGMENT_CORRECT_HINT: Highlighting correct button for melody state: ${this.melodyHasWrongNote ? 'wrong' : 'right'}`);
+        setTimeout(() => {
+          highlightCorrectButton(correctButtonSelector);
+        }, 800);
       }
       
       // Display feedback message using global feedback system
