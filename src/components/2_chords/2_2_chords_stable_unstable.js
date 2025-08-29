@@ -12,11 +12,15 @@ import audioEngine from '../audio-engine.js';
 
 // Import feedback utilities
 import { 
+  showFeedbackMessage, 
+  showActivityIntroMessage, 
   showRainbowSuccess, 
   showBigRainbowSuccess, 
   showShakeError, 
   showCompleteSuccess, 
-  showCompleteError 
+  showCompleteError,
+  highlightCorrectButton,
+  showErrorWithCorrectHint
 } from '../shared/feedback.js';
 
 // Initialize global Alpine.js feedback variables
@@ -704,6 +708,14 @@ export function checkStableUnstableMatch(selectedType, component) {
       // Show error feedback
       showShakeError();
       audioEngine.playNote('try_again');
+      
+      // Highlight the correct button
+      const correctButtonSelector = currentChordType === 'stable' ? 
+        '#button_2_2_stable' : '#button_2_2_unstable';
+      debugLog('FEEDBACK', `STABLE_UNSTABLE_CORRECT_HINT: Highlighting correct button for chord type: ${currentChordType}`);
+      setTimeout(() => {
+        highlightCorrectButton(correctButtonSelector);
+      }, 800);
       
       // Update Alpine.js feedback variables
       if (component) {

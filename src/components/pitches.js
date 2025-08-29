@@ -1691,9 +1691,10 @@ export function pitches() {
         Alpine.store('feedback').showMessage(message);
         
         // Highlight the correct button
-        const correctButtonSelector = this.correctAnswer === 'ascending' ? 
-          '.ascending-choice, [data-direction="ascending"]' : 
-          '.descending-choice, [data-direction="descending"]';
+        const correctButtonSelector = this.correctAnswer === 'up' ? 
+          '.up-card' : this.correctAnswer === 'down' ? 
+          '.down-card' : this.correctAnswer === 'wave' ? 
+          '.wave-card' : '.jump-card';
         debugLog('FEEDBACK', `MATCH_SOUNDS_CORRECT_HINT: Highlighting correct button for answer: ${this.correctAnswer}`);
         setTimeout(() => {
           highlightCorrectButton(correctButtonSelector);
@@ -5400,8 +5401,7 @@ export function pitches() {
         
         // Highlight the correct button
         const correctButtonSelector = this.melodyHasWrongNote ? 
-          '.sounds-wrong-choice, [data-answer="false"]' : 
-          '.sounds-right-choice, [data-answer="true"]';
+          '.animal-card.unhappy' : '.animal-card.happy';
         debugLog('FEEDBACK', `SOUND_JUDGMENT_CORRECT_HINT: Highlighting correct button for melody state: ${this.melodyHasWrongNote ? 'wrong' : 'right'}`);
         setTimeout(() => {
           highlightCorrectButton(correctButtonSelector);

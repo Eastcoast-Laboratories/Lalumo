@@ -17,6 +17,8 @@ export { testCommonModuleImport } from './2_chords/common.js';
 
 // Import shared feedback utilities
 import { 
+  showFeedbackMessage, 
+  showActivityIntroMessage, 
   showRainbowSuccess, 
   showBigRainbowSuccess, 
   showShakeError, 
@@ -24,7 +26,9 @@ import {
   showCompleteBigSuccess, 
   showCompleteError,
   showActivityProgressBar,
-  hideActivityProgressBar
+  hideActivityProgressBar,
+  highlightCorrectButton,
+  showErrorWithCorrectHint
 } from '../components/shared/feedback.js';
 
 // Import shared UI helpers
@@ -1655,6 +1659,13 @@ export function chords() {
             selectedButton.classList.remove('shake-animation');
           }, 500);
         }
+        
+        // Highlight the correct button
+        const correctButtonSelector = `#button_2_5_1_${this.currentChordType}`;
+        debugLog('FEEDBACK', `CHORD_CHARACTERS_CORRECT_HINT: Highlighting correct button for chord: ${this.currentChordType}`);
+        setTimeout(() => {
+          highlightCorrectButton(correctButtonSelector);
+        }, 800);
         
         // Hide feedback after delay
         setTimeout(() => {
