@@ -31,6 +31,30 @@ The app playfully teaches preschool children a basic understanding of music – 
  - Character Matching: (2_5_chords_characters)
  - Harmony Gardens: (2_6_chords_harmony-gardens)
 
+##### Implementation of with Tone.js
+
+Die klangliche Umsetzung der Module basiert auf der zentralen Audio-Engine mit Tone.js, die folgende Features bietet:
+
+###### Zentrale Audio-Engine-Architektur
+- **Singleton Audio-Engine**: Alle Klangmodule nutzen dieselbe zentrale Audio-Engine-Instanz. Diese Implementierung stellt sicher, dass alle Aktivitäten konsistent klingen, auf allen Zielplattformen funktionieren und ein kindgerechtes Audioerlebnis bieten.
+
+- **Plattformübergreifende Kompabilität**: Einheitliche API für PC (Firefox/Chrome) und mobile Geräte (Android/iOS)
+
+###### programmierter Code umsetzung
+- **playChord(notes, options)**: Spielt mehrere Töne gleichzeitig als Akkord ab
+  - Unterstützt dynamische Zusammenstellung von Akkorden aus Einzeltönen
+  - Erlaubt Steuerung von Dauer, Lautstärke und Anschlag pro Akkord
+  - Ermöglicht visuelle Rückkopplung durch Callback-Funktionen
+
+- **stopAll()**: Stoppt alle aktiven Töne und Akkorde sofort
+  - Wichtig für Aktivitätswechsel und Benutzerinteraktionen
+
+###### Kindgerechte Audio-Features
+- **Adaptive Klangstärke**: Automatische Anpassung der Lautstärke an Gerät und Umgebung
+- **Sicherheit**: Automatische Lautstärkebegrenzung zum Gehörschutz
+- **Fehlertoleranz**: Robuste Fehlerbehandlung bei fehlenden Audio-Ressourcen oder Browser-Beschränkungen
+
+
 ### 1. Pitches & Melodies
 
 Tones going up, down, waves, jumps: Children recognize tone movements and assign them to images (e.g., a rocket for ascending tones).
@@ -45,7 +69,7 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
 [x] the available notes should be 3 octaves
 [x] the up and down melodies should start at a random note
 
-[ ] **1.1. "High or low?":** (1_1_pitches_high_or_low)
+[x] **1.1. "High or low?":** (1_1_pitches_high_or_low)
     Kinder sollen den Unterschied zwischen einer hohen und einer tiefen Note durch Hören erkennen – ohne musikalische Vorkenntnisse, rein intuitiv.
 
     🧠 **Pädagogisches Prinzip**
@@ -144,7 +168,7 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
   Major chords are represented by bright colors, minor chords by cooler or darker colors. Children listen to a chord and select which color best matches what they hear, developing emotional understanding of harmony.
     - sound geht noch nicht
 
-[ ] **Stable or Unstable Chords: (2_2_chords_stable_unstable)**
+[x] **Stable or Unstable Chords: (2_2_chords_stable_unstable)**
   This activity helps children develop their ear for consonance and dissonance by distinguishing between stable (consonant) and unstable (dissonant) chords. 
   
   **Activity Flow:**
@@ -175,7 +199,7 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
   A chord is played with one note missing. Children must identify which note completes the chord by selecting from options, developing their ear for harmony.
     - Geht schon, aber viel zu schwer für kleine Kinder
 
-[ ] **Chord Story Characters: (2_5_chords_characters)**
+[x] **Chord Story Characters: (2_5_chords_characters)**
   Different chord types are represented by distinct characters with matching personalities (e.g. a happy dog character for major, mysterious octopus character for diminished). Children match characters to the chords they hear.
   1. When entering the activity, users can freely click any chord character to hear what it sounds like (free play mode)
   2. When ready to begin the learning game, click the owl button
@@ -187,43 +211,6 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
   Children plant and grow virtual flowers by selecting chord sequences. Different chord combinations create different garden patterns, visualizing how harmonies work together in music.
     - sound geht noch nicht
 
-##### 2.7 Implementation of Chord Sounds with Tone.js
-
-Die klangliche Umsetzung der Akkord-Module basiert auf der zentralen Audio-Engine mit Tone.js, die folgende Features bietet:
-
-###### Zentrale Audio-Engine-Architektur
-- **Singleton Audio-Engine**: Alle Klangmodule nutzen dieselbe zentrale Audio-Engine-Instanz
-- **Asynchrone Initialisierung**: Audio-Engine wird nur bei Bedarf initialisiert und vermeidet multiple AudioContext-Instanzen
-- **Plattformübergreifende Kompabilität**: Einheitliche API für PC (Firefox/Chrome) und mobile Geräte (Android/iOS)
-
-###### Akkord-spezifische Funktionen
-- **playChord(notes, options)**: Spielt mehrere Töne gleichzeitig als Akkord ab
-  - Unterstützt dynamische Zusammenstellung von Akkorden aus Einzeltönen
-  - Erlaubt Steuerung von Dauer, Lautstärke und Anschlag pro Akkord
-  - Ermöglicht visuelle Rückkopplung durch Callback-Funktionen
-
-- **stopAll()**: Stoppt alle aktiven Töne und Akkorde sofort
-  - Wichtig für Aktivitätswechsel und Benutzerinteraktionen
-
-###### Technische Implementierungsdetails
-- **Akkordaufbau**: Töne werden dynamisch aus der Grundtonhöhe und Intervallen berechnet
-  - Beispiel: C-Dur = ["C4", "E4", "G4"] durch Root "C4" + Intervalle [0, 4, 7]
-  
-- **Klangfarben-Variation**: Verschiedene Instrumentenklänge für unterschiedliche Akkordtypen
-  - Major-Akkorde: Heller, wärmerer Klang (z.B. Piano oder Vibraphone)
-  - Minor-Akkorde: Weicherer, dunklerer Klang 
-  - Verminderte/übermäßige Akkorde: Charakteristische Klangfarben für bessere Wiedererkennung
-
-- **Visuelle Synchronisation**: Farbgebung und Animation synchron zur Akkordwiedergabe
-  - Timing-Events für Beginn und Ende der Klangwiedergabe
-  - Nahtlose Integration von Audio und visuellen Effekten
-
-###### Kindgerechte Audio-Features
-- **Adaptive Klangstärke**: Automatische Anpassung der Lautstärke an Gerät und Umgebung
-- **Sicherheit**: Automatische Lautstärkebegrenzung zum Gehörschutz
-- **Fehlertoleranz**: Robuste Fehlerbehandlung bei fehlenden Audio-Ressourcen oder Browser-Beschränkungen
-
-Diese Implementierung stellt sicher, dass alle sechs Chord-Module konsistent klingen, auf allen Zielplattformen funktionieren und ein kindgerechtes Audioerlebnis bieten.
 
 ### 3. Discovering Timbres
 

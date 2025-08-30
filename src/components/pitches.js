@@ -1410,7 +1410,7 @@ export function pitches() {
           debugLog('PITCHES', 'SOUND JUDGMENT: In free mode, playing from free shuffle');
           // Generate melody using free mode shuffle
           if (generateNew) {
-            this.generateSoundHighOrLowMelodyFreeMode();
+            this.generate_1_4_MelodyFreeMode();
           }
           // Play the melody without switching to game mode
           if (this.currentSequence && this.currentSequence.length > 0) {
@@ -1441,7 +1441,7 @@ export function pitches() {
           // Select new random animal images only when generating a new melody
           // This ensures the animals only change when the user answers correctly or enters the activity
           this.selectRandomAnimalImages();
-          if (!this.generateSoundHighOrLowMelody()) {
+          if (!this.generateMelody()) {
             debugLog(['PITCHES', 'ERROR'], 'AUDIO_ERROR: Failed to generate sound judgment melody');
             
             // UI-Status zurücksetzen
@@ -1466,7 +1466,7 @@ export function pitches() {
           debugLog(['PITCHES', 'ERROR'], 'AUDIO_ERROR: No sequence to play for sound judgment activity');
           
           // Try to generate a melody as fallback
-          if (this.generateSoundHighOrLowMelody()) {
+          if (this.generateMelody()) {
             this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
           } else {
             // Reset UI if we can't play anything
@@ -1654,7 +1654,7 @@ export function pitches() {
         
         // Play notes in sequence
         const noteArray = [...pattern];
-        this.playNoteSequence(noteArray, 0);
+        this.playSequence(noteArray, 0);
       }
     },
     
@@ -2177,8 +2177,8 @@ export function pitches() {
      * @param {Array} noteArray - Array mit Noten, die abgespielt werden sollen
      * @param {number} index - Aktuelle Position im Array
      */
-    playNoteSequence(noteArray, index) {
-      debugLog('PITCHES', `DEBUG: playNoteSequence called with index ${index}/${noteArray.length}`);
+    playSequence(noteArray, index) {
+      debugLog('PITCHES', `DEBUG: playSequence called with index ${index}/${noteArray.length}`);
       
       if (index >= noteArray.length) {
         // Am Ende der Sequenz angekommen, Wiedergabe beenden
@@ -2215,7 +2215,7 @@ export function pitches() {
           debugLog('PITCHES', `DEBUG: Removed executed timeout from melodyTimeouts, ${this.melodyTimeouts.length} remaining`);
         }
         
-        this.playNoteSequence(noteArray, index + 1);
+        this.playSequence(noteArray, index + 1);
       }, 750); // 750ms zwischen den Noten für klarere Trennung
       
       // Timeout-ID im Array speichern, damit es bei stopCurrentSound gelöscht werden kann
@@ -2420,7 +2420,7 @@ export function pitches() {
       const noteArray = [...pattern]; // Kopie erstellen, um die originale Sequence nicht zu verändern
       
       // Play notes in sequence
-      this.playNoteSequence(noteArray, 0);
+      this.playSequence(noteArray, 0);
       
       // Cleanup after pattern finishes playing
       const totalDuration = noteArray.length * 750 + 100; // 750ms pro Note + ein wenig extra
@@ -4398,7 +4398,7 @@ export function pitches() {
     });
       
       // Generate a melody in preparation for game mode
-      this.generateSoundHighOrLowMelody();
+      this.generateMelody();
       
       // In practice mode, we don't automatically play the melody
       if (playSound && this.gameMode) {
@@ -4492,7 +4492,7 @@ export function pitches() {
       debugLog('PITCHES', 'SOUND JUDGMENT: Generating practice melody without wrong notes');
       
       // Generate a melody without wrong notes for practice mode
-      // Similar to generateSoundHighOrLowMelody but without wrong notes
+      // Similar to generateMelody but without wrong notes
       
       // Use free mode shuffle for practice melodies too
       const selectedMelodyId = this.getNextShuffledMelody('free');
@@ -4606,7 +4606,7 @@ export function pitches() {
      * Generates a melody for free mode in "Does It Sound Right?" activity
      * Always generates correct melodies (no wrong notes) and uses free mode shuffle
      */
-    generateSoundHighOrLowMelodyFreeMode() {
+    generate_1_4_MelodyFreeMode() {
       // Get all melody keys
       const melodyKeys = Object.keys(this.knownMelodies);
       if (melodyKeys.length === 0) {
@@ -4722,7 +4722,7 @@ export function pitches() {
      * - Level 6: Es gibt nur eine falsche Note, Pause möglich, Fehler max. 2 Halbtöne
      * - Level 7: Es gibt nur eine falsche Note, Pause möglich, Fehler max. 1 Halbton
      */
-    generateSoundHighOrLowMelody() {
+    generateMelody() {
       // Get all melody keys
       const melodyKeys = Object.keys(this.knownMelodies);
       if (melodyKeys.length === 0) {
@@ -4893,84 +4893,6 @@ export function pitches() {
       return true;
     },
 
-    /**
-     * Plays a melody sequence for the "Does It Sound Right?" activity
-     * Uses the shared playAudioSequence function for consistent audio behavior
-     * @param {Array} notes - Array of notes to play, can include duration modifiers (e.g. 'C4:h')
-     * @param {string} context - The context in which this melody is played
-     * @param {string} melodyId - Optional ID of the melody being played (to get quarterNoteDuration)
-     * @returns {Function} Cleanup function
-     */
-    playAudioSequence(notes, sequenceContext = 'general', options = {}) {
-      if (!notes || notes.length === 0) {
-        debugLog(['PITCHES', 'WARN'], `AUDIO: Attempted to play empty sequence for '${sequenceContext}'`);
-        return () => {}; // Return empty cleanup function
-      }
-      
-      // If already playing, stop the previous sound
-      if (this.isPlaying) {
-        this.stopCurrentSound();
-      }
-      
-      this.isPlaying = true;
-      this.currentSequenceContext = sequenceContext;
-      
-      // Default callback when complete
-      const onComplete = options.onComplete || function() {};
-      
-      // Merge default options with provided options
-      const mergedOptions = {
-        ...{
-          tempo: 120,
-          loop: false,
-          highlightKeys: false,
-          transpose: 0,
-        },
-        ...options
-      };
-      
-      // For sequence playback, we need to know the base quarter note duration
-      // This helps us calculate the actual duration for modified notes like half notes, eighth notes, etc.
-      const baseQuarterNoteDuration = options.noteDuration || 600; // Default 600ms for a quarter note
-      
-      // Create a clone of the notes array to avoid modifying the original
-      const noteArray = [...notes];
-      
-      // Set up options for the central audio engine
-      const audioEngineOptions = {
-        tempo: mergedOptions.tempo,
-        noteDuration: baseQuarterNoteDuration / 1000, // Convert from ms to seconds for the audio engine
-        onNoteStart: (note, time, index) => {
-          // Handle note highlighting or animations if needed
-          if (mergedOptions.highlightKeys && this.highlightPianoKey) {
-            this.highlightPianoKey(note);
-          }
-          
-          // Log the note playback for debugging
-          debugLog('PITCHES', `AUDIO: Playing note ${index + 1}/${noteArray.length}: ${note} in context ${sequenceContext}`);
-        },
-        onSequenceEnd: () => {
-          // Sequence playback completed
-          this.isPlaying = false;
-          debugLog('PITCHES', `AUDIO: Sequence complete for '${sequenceContext}', resetting state`);
-          
-          // Call the completion handler
-          onComplete();
-        }
-      };
-      
-      // Play the sequence using the central audio engine
-      debugLog('PITCHES', `AUDIO: Starting sequence playback for '${sequenceContext}' with audio engine`);
-      const sequenceController = audioEngine.playNoteSequence(noteArray, audioEngineOptions);
-      
-      // Return a cleanup function that can be called to cancel the sequence
-      return () => {
-        debugLog('PITCHES', `AUDIO: Externally canceling sequence for ${sequenceContext}`);
-        sequenceController.stop();
-        this.isPlaying = false;
-      };
-    },
-    
     playMelodySequence(notes, context = 'sound-judgment', melodyId = null, options = {}) {
       debugLog('PITCHES', `AUDIO: Playing melody sequence for '${context}' with ${notes.length} notes`);
       

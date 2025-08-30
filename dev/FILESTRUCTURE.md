@@ -84,33 +84,6 @@ Die aktuelle pitches.js-Datei ist sehr umfangreich und enthält die Logik für a
    - Grundlegende Audio-Funktionen
    - Note-Mapping und Konvertierungsfunktionen
 
-2. **high-or-low.js** (1_1):
-   - `generateHighOrLowPuzzle()`
-   - `checkHighOrLowAnswer()`
-   - `updateHighOrLowProgress()`
-
-3. **match-sounds.js** (1_2):
-   - `generateMatchSoundsExercise()`
-   - `checkMatchSoundsAnswer()`
-   - `updateMatchSoundsProgress()`
-
-4. **draw-melody.js** (1_3):
-   - `generateDrawMelodyExercise()`
-   - `checkDrawMelodyAnswer()`
-   - `updateDrawMelodyProgress()`
-   - `drawMelodyShowFeedback()`
-
-5. **sound-judgment.js** (1_4):
-   - `generateSoundHighOrLowMelody()`
-   - `checkSoundJudgmentAnswer()`
-   - `update_progress_display()`
-   - `updateSoundJudgmentProgress()`
-
-6. **memory-game.js** (1_5):
-   - `generateMemoryGame()`
-   - `checkMemoryGameAnswer()`
-   - `updateMemoryGameProgress()`
-
 ### Modulare Import-Struktur
 
 Die Module würden über eine zentrale `index.js`-Datei exportiert:
