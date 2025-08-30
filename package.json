@@ -5,7 +5,6 @@
   "description": "Child-friendly music understanding app",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "sync-strings": "mkdir -p public/android/app/src/main/res/values public/android/app/src/main/res/values-de && cp android/app/src/main/res/values/strings.xml public/android/app/src/main/res/values/ && cp android/app/src/main/res/values-de/strings.xml public/android/app/src/main/res/values-de/",
     "watch": "npm run sync-strings && webpack serve --mode development",
     "build": "npm run sync-strings && webpack --mode production",
@@ -40,9 +39,9 @@
   "dependencies": {
     "@capacitor/android": "^6.1.2",
     "@capacitor/cli": "^6.1.2",
-    "@capacitor/core": "^6.1.2",
+    "@capacitor/core": "^6.2.1",
     "@capacitor/ios": "^6.1.2",
-    "@capacitor/splash-screen": "^6.0.2",
+    "@capacitor/splash-screen": "^6.0.3",
     "alpinejs": "^3.14.1",
     "tone": "^15.0.4"
   }

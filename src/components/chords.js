@@ -37,8 +37,12 @@ import { update_progress_display } from '../components/shared/ui-helpers.js';
 // 2_1 Chord Color Matching Module
 import { 
   testChordColorMatchingModuleImport,
-  newColorMatchingQuestion,
-  checkColorAnswer
+  start2_1ColorMatching,
+  start2_1GameMode,
+  generate2_1Chord,
+  playCurrent2_1Chord,
+  checkColorMatch,
+  reset2_1ProgressToCurrentLevel
 } from './2_chords/2_1_chord_color_matching.js';
 
 // 2_2 Chord Stable or Unstable Module
@@ -129,6 +133,9 @@ export function chords() {
     feedbackMessage: '',
     showFeedback: false,
     progress: null,
+    
+    // 2_1 Chord Color Matching state
+    is2_1FreePlayMode: true,
     
     /**
      * Initialize the component
@@ -615,12 +622,18 @@ export function chords() {
         window.Alpine.store('chordMode', mode);
       }
       
-      // Aktivität initialisieren, wenn zur Farb-Matching-Aktivität gewechselt wird
+      // Initialize 2_1 Color Matching activity
       if (mode === '2_1_chords_color-matching') {
-        debugLog('CHORDS_2_1_DEBUG', `Starting color matching activity from setMode`);
-        this.startColorMatching();
-        debugLog('CHORDS_2_1_DEBUG', `After startColorMatching: currentChordType=${this.currentChordType}`);
-        debugLog('CHORDS', 'Initialized color matching activity with a new chord');
+        debugLog('CHORDS', 'Initializing 2_1 color matching activity');
+        
+        // Show intro message for this activity
+        window.showActivityIntroMessage('2_1_chords_color-matching', this);
+        
+        // Always ensure we start in free play mode when entering the activity
+        this.is2_1FreePlayMode = true;
+        
+        // Generate first chord for free play
+        window.generate2_1Chord(this);
       } else if (mode === '2_2_chords_stable_unstable') {
         // Initialize Stable or Unstable activity
         debugLog('CHORDS_2_2_DEBUG', 'Initializing Stable or Unstable activity');
@@ -1805,6 +1818,7 @@ export function chords() {
         }, delay);
         delay += 1000; // 1 second between chords
       });
-    }
+    },
+
   };
 }

@@ -73,7 +73,9 @@
     <!-- Chords - Color Matching Activity -->
     <string name="chord_color_matching_title">Ordne Farben zu Akkorden zu</string>
     <string name="chord_color_matching_intro">Höre den Akkord und wähle die Farbe, die am besten dazu passt.</string>
+    <string name="chord_color_matching_2_1_intro">Ordne magische Waldelemente zu den Akkorden zu, die du hörst! 🌲✨</string>
     <string name="play_chord">Akkord spielen</string>
+    <string name="start_game">Spiel-Modus starten</string>
     
     <!-- Chords - Stable or Unstable Activity -->
     <string name="chords_stable_unstable_intro">Einige Akkorde sind harmonisch und ruhig, während andere Akkorde unharmonisch und unruhig klingen.</string>

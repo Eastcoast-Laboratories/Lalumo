@@ -1362,6 +1362,63 @@ section h2 {
   border: 3px solid #22c55e !important;
 }
 
+/* 2_1 Magical Elements Grid */
+.magical-element-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.magical-element {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.magical-element:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+.magical-element div {
+  font-size: 2em;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* 2_1 Button highlighting */
+#button_2_1_fruit.correct-button-highlight,
+#button_2_1_mushroom.correct-button-highlight,
+#button_2_1_crystal.correct-button-highlight,
+#button_2_1_flower.correct-button-highlight,
+#button_2_1_rune.correct-button-highlight,
+#button_2_1_feather.correct-button-highlight,
+#button_2_1_acorn.correct-button-highlight,
+#button_2_1_lantern.correct-button-highlight {
+  background-color: rgba(34, 197, 94, 0.4) !important;
+  border: 3px solid #22c55e !important;
+  transform: scale(1.1) !important;
+}
+
+/* 2_1 Progress display */
+.progress_2_1 {
+  text-align: center;
+  margin: 20px 0;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
 #button_2_5_1_major:hover, #button_2_5_1_minor:hover, #button_2_5_1_augmented:hover, #button_2_5_1_diminished:hover{
   opacity: 0.05;
 }
