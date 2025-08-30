@@ -1603,6 +1603,30 @@ section h2 {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+.feedback-close-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.8rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.feedback-close-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
 /* on wide screens, feedback must be positioned from the right border */
 @media (min-width: 1024px) {
   .feedback-message {

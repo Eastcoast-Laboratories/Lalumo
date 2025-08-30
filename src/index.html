@@ -1086,6 +1086,7 @@
     <div class="feedback-message" id="unified-feedback-message" 
          x-show="$store.feedback.showFeedback" 
          :class="{'correct': $store.feedback.isCorrect === true, 'incorrect': $store.feedback.isCorrect === false}">
+      <button class="feedback-close-button" @click="$store.feedback.showFeedback = false" title="Close">×</button>
       <p x-text="$store.feedback.feedbackMessage"></p>
     </div>
     
