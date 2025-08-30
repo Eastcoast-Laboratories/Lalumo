@@ -59,23 +59,54 @@ export function start2_1GameMode(component) {
 }
 
 /**
- * Generate a new chord for 2_1 activity
- * Creates random chord type and root note for both free play and game modes
+ * Generate a new chord for 2_1 activity with level-based logic
+ * Level 1 (0-10): No transposition, avoid same chord type
+ * Level 2 (>10): Random transposition, avoid exact same chord
  * @param {Object} component - Alpine.js component
  * @activity 2_1_chords_color-matching
  * @used_by start2_1ColorMatching, start2_1GameMode, checkColorMatch
  */
 export function generate2_1Chord(component) {
   const chordTypes = ['major', 'minor', 'diminished', 'augmented', 'dominant7', 'major7', 'sus2', 'sus4'];
-  const rootNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'];
+  const progress = component.progress?.['2_1'] || 0;
   
-  const chordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
-  const rootNote = rootNotes[Math.floor(Math.random() * rootNotes.length)];
+  let chordType, rootNote;
   
+  if (progress <= 10) {
+    // Level 1: No transposition, avoid same chord type
+    rootNote = 'C4'; // Fixed root note
+    
+    // Avoid repeating the same chord type
+    let availableChords = chordTypes.filter(type => type !== component.previous2_1ChordType);
+    if (availableChords.length === 0) availableChords = chordTypes; // Fallback
+    
+    chordType = availableChords[Math.floor(Math.random() * availableChords.length)];
+    
+    debugLog('CHORDS_2_1_DEBUG', `Level 1: Generated ${chordType} with fixed root ${rootNote}, avoided: ${component.previous2_1ChordType}`);
+  } else {
+    // Level 2: Random transposition, avoid exact same chord
+    const rootNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'];
+    
+    // Generate new chord, avoiding exact same combination
+    let attempts = 0;
+    do {
+      chordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
+      rootNote = rootNotes[Math.floor(Math.random() * rootNotes.length)];
+      attempts++;
+    } while (
+      attempts < 20 && 
+      chordType === component.previous2_1ChordType && 
+      rootNote === component.previous2_1RootNote
+    );
+    
+    debugLog('CHORDS_2_1_DEBUG', `Level 2: Generated ${chordType} with root ${rootNote}, avoided: ${component.previous2_1ChordType}/${component.previous2_1RootNote}`);
+  }
+  
+  // Store current chord for replay functionality
   component.currentChordType = chordType;
   component.currentTransposeRootNote = rootNote;
   
-  debugLog('CHORDS', `Generated 2_1 chord: ${chordType} with root ${rootNote}`);
+  debugLog('CHORDS', `Generated 2_1 chord: ${chordType} with root ${rootNote} (Progress: ${progress})`);
   
   // Auto-play in game mode
   if (!component.is2_1FreePlayMode && typeof component.playChordByType === 'function') {
@@ -84,12 +115,18 @@ export function generate2_1Chord(component) {
 }
 
 /**
- * Play current 2_1 chord
+ * Play current 2_1 chord - replays stored chord without changing it
+ * Maintains current chord type and transposition for consistent replay
  * @param {Object} component - Alpine.js component
+ * @activity 2_1_chords_color-matching
+ * @used_by HTML play button click
  */
 export function playCurrent2_1Chord(component) {
   if (component.currentChordType && component.currentTransposeRootNote && typeof component.playChordByType === 'function') {
+    debugLog('CHORDS_2_1_DEBUG', `Replaying current chord: ${component.currentChordType} with root ${component.currentTransposeRootNote}`);
     component.playChordByType(component.currentChordType, component.currentTransposeRootNote);
+  } else {
+    debugLog('CHORDS_2_1_DEBUG', 'Cannot replay chord - missing chord data or playChordByType function');
   }
 }
 
@@ -150,6 +187,10 @@ export function checkColorMatch(selectedElement, component) {
     // Show success feedback
     showRainbowSuccess();
     audioEngine.playNote('success');
+    
+    // Store previous chord for avoidance logic
+    component.previous2_1ChordType = component.currentChordType;
+    component.previous2_1RootNote = component.currentTransposeRootNote;
     
     // Generate next chord after delay
     setTimeout(() => {

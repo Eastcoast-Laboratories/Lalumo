@@ -218,8 +218,8 @@ reset-button:
   - 
 2_1_chord_color_matching:
   - auf dem handy funktioniert der grüne hinweis effekt nicht der auf dem richtigen button grün leuchten soll
-  - erneutes klicken auf den play button im game mode soll den akkord erneut abspielen (dabei muss sich der aktuelle akkkord gemerkt werden. )
- - add two levels: first 10 progress: keep the transposition on the chord, make sure, that not the same chord type is played twice after a success
+  - ✅ erneutes klicken auf den play button im game mode soll den akkord erneut abspielen (dabei muss sich der aktuelle akkkord gemerkt werden. )
+  - ✅ add two levels: first 10 progress: keep the transposition on the chord, make sure, that not the same chord type is played twice after a success
  second level (> 10 progress): random transposition, make sure, that not the same exact chord is played twice after a success (same chord type is allowed)
 
 
