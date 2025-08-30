@@ -1,15 +1,20 @@
 /**
- * 2_1_chord_color_matching.js - Module for the "Match Colors to Chords" activity
+ * 2_1_chord_color_matching.js - Studio Ghibli Style Chord Color Matching Activity
+ * Based on 2_5 structure with 8 chord types and magical forest elements
  */
 
 // Import debug utilities
 import { debugLog } from '../../utils/debug.js';
 
-// Import Tone.js for audio processing
-import Tone from 'tone';
-
 // Import audio engine
 import audioEngine from '../audio-engine.js';
+
+// Import shared feedback functions
+import {
+  showShakeError,
+  showRainbowSuccess,
+  highlightCorrectButton
+} from '../shared/feedback.js';
 
 /**
  * Test function to verify module import is working correctly
@@ -20,157 +25,177 @@ export function testChordColorMatchingModuleImport() {
   return true;
 }
 
+/**
+ * Start 2_1 Color Matching activity - similar to 2_5 start function
+ * @param {Object} component - Alpine.js component
+ */
+export function start2_1ColorMatching(component) {
+  debugLog('CHORDS', 'Starting 2_1 Color Matching activity');
+  
+  // Initialize free play mode
+  component.is2_1FreePlayMode = true;
+  
+  // Generate first chord for free play
+  generate2_1Chord(component);
+}
 
 /**
- * Hilfsfunktion, um einen zufälligen Grundton zu generieren
- * @returns {string} Ein zufälliger Grundton (z.B. 'C4')
+ * Start game mode for 2_1 activity
+ * @param {Object} component - Alpine.js component
  */
-function getRandomRootNote() {
+export function start2_1GameMode(component) {
+  debugLog('CHORDS', 'Starting 2_1 game mode');
+  
+  component.is2_1FreePlayMode = false;
+  
+  // Generate first game chord
+  generate2_1Chord(component);
+}
+
+/**
+ * Generate a new chord for 2_1 activity
+ * @param {Object} component - Alpine.js component
+ */
+export function generate2_1Chord(component) {
+  const chordTypes = ['major', 'minor', 'diminished', 'augmented', 'dominant7', 'major7', 'sus2', 'sus4'];
   const rootNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'];
-  return rootNotes[Math.floor(Math.random() * rootNotes.length)];
-}
-
-/**
- * Hilfsfunktion, um einen zufälligen Akkordtyp zu generieren
- * @returns {string} Ein zufälliger Akkordtyp (major, minor, etc.)
- */
-function getRandomChordType() {
-  const chordTypes = [
-    'major',
-    'minor',
-    'diminished',
-    'augmented',
-    'major7',
-    'minor7',
-    'dominant7'
-  ];
-  return chordTypes[Math.floor(Math.random() * chordTypes.length)];
-}
-
-/**
- * Generate a new color matching question
- * Plays a random chord and sets it as the current chord type
- * @param {Object} component - Reference to the Alpine.js component
- */
-export function newColorMatchingQuestion(component) {
-  try {
-    // Verify component has the required playChordByType method
-    if (typeof component.playChordByType !== 'function') {
-      debugLog('CHORDS', 'Error: component.playChordByType is not a function');
-      return;
-    }
-    
-    // Zufälligen Akkordtyp und Grundton generieren
-    const chordType = getRandomChordType();
-    const rootNote = getRandomRootNote();
-    
-    debugLog('CHORDS_2_1_DEBUG', `newColorMatchingQuestion: Generated chordType=${chordType}, rootNote=${rootNote}, component=${!!component}, caller=${new Error().stack.split('\n')[2]}`);
-    
-    if (!component) {
-      debugLog('CHORDS_2_1_DEBUG', 'CRITICAL: Component is null in newColorMatchingQuestion');
-      return;
-    }
-    
-    // Erweitere das Debugging mit mehr Details über den component-Zustand
-    debugLog('CHORDS_2_1_DEBUG', `newColorMatchingQuestion: BEFORE update - component details: mode=${component.mode}, currentComponent type=${typeof component}, props=${Object.keys(component).join(',')}`);
-    
-    // Set the currentChordType on the component so we can use it in the UI
-    debugLog('CHORDS_2_1_DEBUG', `newColorMatchingQuestion: Setting component.currentChordType to ${chordType}`);
-    component.currentChordType = chordType;
-    component.currentRootNote = rootNote;
-    component.totalQuestions++;
-    
-    debugLog('CHORDS_2_1_DEBUG', `newColorMatchingQuestion: AFTER update, component state: currentChordType=${component.currentChordType}, totalQuestions=${component.totalQuestions}`);
-    
-    // Direkter Test, ob der currentChordType tatsächlich gesetzt wurde
-    if (!component.currentChordType) {
-      debugLog('CHORDS_2_1_DEBUG', 'WARNING: component.currentChordType ist immer noch null nach Zuweisung! component Zone/Scope möglicherweise fehlerhaft.');
-    }
-    
-    // Play the chord
-    debugLog('CHORDS', `Playing new chord of type: ${chordType}`);
-    component.playChordByType(chordType, rootNote, { duration: 2 });
-  } catch (error) {
-    debugLog('CHORDS', `Error in newColorMatchingQuestion: ${error.message}`);
+  
+  const chordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
+  const rootNote = rootNotes[Math.floor(Math.random() * rootNotes.length)];
+  
+  component.currentChordType = chordType;
+  component.currentTransposeRootNote = rootNote;
+  
+  debugLog('CHORDS', `Generated 2_1 chord: ${chordType} with root ${rootNote}`);
+  
+  // Auto-play in game mode
+  if (!component.is2_1FreePlayMode) {
+    component.playChordByType(chordType, rootNote);
   }
 }
 
 /**
- * Check if the selected color matches the current chord
- * @param {Object} component - Reference to the Alpine.js component
- * @param {string} selectedColor - The color selected by the user
+ * Play current 2_1 chord
+ * @param {Object} component - Alpine.js component
  */
-export function checkColorAnswer(component, selectedColor) {
-  debugLog('CHORDS_2_1_DEBUG', `checkColorAnswer called with currentChordType=${component?.currentChordType}`);
-  debugLog('CHORDS', `Checking color answer: Selected ${selectedColor} for chord type ${component.currentChordType}`);
+export function playCurrent2_1Chord(component) {
+  if (component.currentChordType && component.currentTransposeRootNote) {
+    component.playChordByType(component.currentChordType, component.currentTransposeRootNote);
+  }
+}
+
+/**
+ * Check color match for 2_1 activity
+ * @param {string} selectedElement - Selected magical element
+ * @param {Object} component - Alpine.js component
+ */
+export function checkColorMatch(selectedElement, component) {
+  debugLog('CHORDS', `Checking color match: ${selectedElement} vs ${component.currentChordType}`);
   
-  // Check if currentChordType is defined
-  if (!component.currentChordType) {
-    debugLog('CHORDS', 'No current chord type defined, generating new question');
-    newColorMatchingQuestion(component);
+  if (component.is2_1FreePlayMode) {
+    // In free play mode, just play the corresponding chord
+    const chordMapping = {
+      'fruit': 'major',
+      'mushroom': 'minor', 
+      'crystal': 'diminished',
+      'flower': 'augmented',
+      'rune': 'dominant7',
+      'feather': 'major7',
+      'acorn': 'sus2',
+      'lantern': 'sus4'
+    };
+    
+    const chordType = chordMapping[selectedElement];
+    if (chordType) {
+      component.playChordByType(chordType, 'C4');
+    }
     return;
   }
   
-  // Make sure the chord type exists in the chords object
-  if (!component.chords[component.currentChordType]) {
-    debugLog('CHORDS', `Invalid chord type: ${component.currentChordType}, generating new question`);
-    newColorMatchingQuestion(component);
-    return;
-  }
-  
-  const correctColor = component.chords[component.currentChordType].color;
-  const isCorrect = selectedColor === correctColor;
-  
-  debugLog('CHORDS', `Color answer check: selected=${selectedColor}, correct=${correctColor}, result=${isCorrect}`);
-  
-  // Increment counters regardless of correct/incorrect
-  component.totalQuestions++;
+  // Game mode logic
+  const correctElement = getElementForChordType(component.currentChordType);
+  const isCorrect = selectedElement === correctElement;
   
   if (isCorrect) {
-    component.correctAnswers++;
-    const successMessage = 'Great job! That\'s the right color!';
-    console.log('CHORD_2_1_FEEDBACK: Showing success message:', successMessage);
-    const store = window.Alpine?.store;
-    if (store && store.feedback) {
-      store.feedback.isCorrect = true;
-    }
-    window.showFeedbackMessage(successMessage, {
-      activityId: '2_1_chords_color_matching',
-      isIntroMessage: false,
-      delaySeconds: 3,
-      component: component
-    });
+    // Correct answer
+    component.progress['2_1'] = (component.progress['2_1'] || 0) + 1;
+    
+    // Save progress
+    const chordsProgressData = JSON.parse(localStorage.getItem('lalumo_chords_progress') || '{}');
+    chordsProgressData['2_1'] = component.progress['2_1'];
+    localStorage.setItem('lalumo_chords_progress', JSON.stringify(chordsProgressData));
+    
+    // Show success feedback
+    showRainbowSuccess();
+    audioEngine.playNote('success');
+    
+    // Generate next chord after delay
+    setTimeout(() => {
+      generate2_1Chord(component);
+    }, 2000);
+    
   } else {
-    const errorMessage = 'Not quite! Let\'s try another one.';
-    console.log('CHORD_2_1_FEEDBACK: Showing fail message:', errorMessage);
-    const store = window.Alpine?.store;
-    if (store && store.feedback) {
-      store.feedback.isCorrect = false;
+    // Wrong answer
+    const selectedButton = document.querySelector(`#button_2_1_${selectedElement}`);
+    if (selectedButton) {
+      selectedButton.classList.add('shake-animation');
+      setTimeout(() => {
+        selectedButton.classList.remove('shake-animation');
+      }, 500);
     }
-    window.showFeedbackMessage(errorMessage, {
-      activityId: '2_1_chords_color_matching',
-      isIntroMessage: false,
-      delaySeconds: 3,
-      component: component
-    });
+    
+    // Highlight correct button
+    const correctButtonSelector = `#button_2_1_${correctElement}`;
+    setTimeout(() => {
+      highlightCorrectButton(correctButtonSelector);
+    }, 800);
+    
+    // Show error feedback
+    showShakeError();
+    audioEngine.playNote('try_again');
+    
+    // Replay chord after delay
+    setTimeout(() => {
+      component.playChordByType(component.currentChordType, component.currentTransposeRootNote);
+    }, 1500);
   }
-  
-  // Save progress to localStorage
-  if (component.progress && component.mode) {
-    component.progress[component.mode] = component.totalQuestions;
-    localStorage.setItem('lalumo_chords_progress', JSON.stringify(component.progress));
-    debugLog('CHORDS', `Saved progress for ${component.mode}: ${component.totalQuestions}`);
-  }
-  
-  // Local feedback removed - using global feedback system
-  setTimeout(() => {
-    newColorMatchingQuestion(component);
-  }, 2000);
 }
 
-/* *************************************************** *
-make variables global available, 
-e.g. for diagnosis purposes to be used in the developer console
-*******************************************************/
-window.checkColorAnswer = checkColorAnswer;
-window.newColorMatchingQuestion = newColorMatchingQuestion;
+/**
+ * Get magical element for chord type
+ * @param {string} chordType - The chord type
+ * @returns {string} The corresponding magical element
+ */
+function getElementForChordType(chordType) {
+  const mapping = {
+    'major': 'fruit',
+    'minor': 'mushroom',
+    'diminished': 'crystal', 
+    'augmented': 'flower',
+    'dominant7': 'rune',
+    'major7': 'feather',
+    'sus2': 'acorn',
+    'sus4': 'lantern'
+  };
+  return mapping[chordType] || 'fruit';
+}
+
+/**
+ * Reset progress to current level for 2_1
+ * @param {Object} component - Alpine.js component
+ */
+export function reset2_1ProgressToCurrentLevel(component) {
+  // Simple reset - no levels in 2_1
+  const chordsProgressData = JSON.parse(localStorage.getItem('lalumo_chords_progress') || '{}');
+  chordsProgressData['2_1'] = Math.max(0, (chordsProgressData['2_1'] || 0) - 1);
+  localStorage.setItem('lalumo_chords_progress', JSON.stringify(chordsProgressData));
+  
+  component.progress['2_1'] = chordsProgressData['2_1'];
+  debugLog('CHORDS', `Reset 2_1 progress to ${component.progress['2_1']}`);
+}
+
+/* Global exports for console access */
+window.start2_1ColorMatching = start2_1ColorMatching;
+window.start2_1GameMode = start2_1GameMode;
+window.checkColorMatch = checkColorMatch;
+window.playCurrent2_1Chord = playCurrent2_1Chord;
