@@ -166,7 +166,51 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
 
 [ ] **Chord Color Matching: (2_1_chords_color-matching)**
   Major chords are represented by bright colors, minor chords by cooler or darker colors. Children listen to a chord and select which color best matches what they hear, developing emotional understanding of harmony.
-    - sound geht noch nicht
+    - this is nearly the same as 2_5 but with more chords and far too complicated for children, but maybe a chellenge for adutlts, so suggest a background image in the style of Studio Ghibli, that would be more for adults than children
+  
+  # technical
+  - delete all code from the current 2_1 activity
+  - look at 2_5 how the activity is managed.
+  - make all reusable code parts of 2_5 reusable for 2_1 as common functions 
+  - implement all common functions in 2_1
+  - make sure to reuse those functionalities from 2_5:
+    - free mode and play mode
+    - progress is saved
+    - reset functionality in the nav button works
+    - reset all progress function works
+    - success rainbow and success sound
+    - error sound
+    - show correct correct button in green
+    - copy the background image from 2_5, i'll replace it with a new image laterr
+    - make sure it is included in game export and import in the settings screen (maybe nothing to do, cause all localstroage data is exported anyway)
+    - make sure the progress works and is saved
+    - make sure the progress is shown in the bottom text
+    - make sure the help info message appears
+    - cheatcode works in settings
+  - don't add this from 2_5
+   - no background changes
+   - no progress steps like 10, 20, 30, 40, 50, 60
+   - no level 1, 2, 3, 4, 5, 6
+   - nothing to freischalten
+  - change this:
+   - 8 chord-buttons instead of max 4 in 2_5
+   - 
+  
+  # benutzter Prompt für den Hintergrud:
+    A Studio Ghibli style digital painting of a whimsical mystical forest. Each chord type is represented by exactly one magical element, placed naturally in the scene:
+    - 1. A bright blue fruit (Major).
+    - 2. A dark green mushroom (Minor).
+    - 3. A cracked violet crystal (Diminished).
+    - 4. An orange flower with too many petals (Augmented).
+    - 5. A glowing red rune stone (Dominant7).
+    - 6. A shimmering golden feather on the ground (Major7).
+    - 7. A dark acorn with small cracks (Suspended2).
+    - 8. A dim dark-blue lantern (Suspended4).
+    Only one of each element, clearly visible and not duplicated. The scene is calm, magical, and whimsical, painted in soft Studio Ghibli colors. In the top right corner, perched on a branch, is a large gentle owl, slightly glowing, acting as a clearly visible “Start button.”
+
+  # test driven
+  - teste zuerst, ob dieser test noch funktioniert: @match-sounds.spec.js#L1-73  
+  - wenn ja benutze ihn als basis ür einen neuen playwright test für 2_1 und teste ihn ausführlich, bis alles geht
 
 [x] **Stable or Unstable Chords: (2_2_chords_stable_unstable)**
   This activity helps children develop their ear for consonance and dissonance by distinguishing between stable (consonant) and unstable (dissonant) chords. 
