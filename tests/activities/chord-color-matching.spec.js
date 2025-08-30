@@ -201,8 +201,24 @@ test.describe('Lalumo 2_1 Chord Color Matching Activity Tests', () => {
     
     // Get current chord type for testing
     const currentChordType = await page.evaluate(() => {
+      // Try multiple methods to access Alpine component data
       const element = document.querySelector('[id="2_1_chords_color-matching"]');
-      return element && element._x_dataStack ? element._x_dataStack[0].currentChordType : null;
+      if (element) {
+        // Method 1: Try _x_dataStack
+        if (element._x_dataStack && element._x_dataStack[0]) {
+          return element._x_dataStack[0].currentChordType;
+        }
+        // Method 2: Try Alpine.$data
+        if (element._x_dataStack && element._x_dataStack.length > 0) {
+          const data = element._x_dataStack.find(stack => stack.currentChordType !== undefined);
+          if (data) return data.currentChordType;
+        }
+        // Method 3: Try window.chordsComponent fallback
+        if (window.chordsComponent && window.chordsComponent.currentChordType) {
+          return window.chordsComponent.currentChordType;
+        }
+      }
+      return null;
     });
     
     debugLog('CHORD_COLOR_MATCHING_SPEC', `Current chord type: ${currentChordType}`);

@@ -122,19 +122,8 @@ export function generate2_1Chord(component) {
  * @used_by HTML play button click
  */
 export function playCurrent2_1Chord(component) {
-  // Get component from window if not passed directly (for HTML button calls)
-  const activeComponent = component || window.chordsComponent;
-  
-  if (activeComponent && activeComponent.currentChordType && activeComponent.currentTransposeRootNote && typeof activeComponent.playChordByType === 'function') {
-    debugLog('CHORDS_2_1_DEBUG', `Replaying current chord: ${activeComponent.currentChordType} with root ${activeComponent.currentTransposeRootNote}`);
-    activeComponent.playChordByType(activeComponent.currentChordType, activeComponent.currentTransposeRootNote);
-  } else {
-    debugLog('CHORDS_2_1_DEBUG', 'Cannot replay chord - missing chord data or playChordByType function', {
-      component: !!activeComponent,
-      currentChordType: activeComponent?.currentChordType,
-      currentTransposeRootNote: activeComponent?.currentTransposeRootNote,
-      playChordByType: typeof activeComponent?.playChordByType
-    });
+  if (component.currentChordType && component.currentTransposeRootNote && typeof component.playChordByType === 'function') {
+    component.playChordByType(component.currentChordType, component.currentTransposeRootNote);
   }
 }
 

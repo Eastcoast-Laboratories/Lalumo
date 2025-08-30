@@ -59,6 +59,7 @@ Follow this comprehensive checklist based on the proven 2_5 activity pattern:
 
 #### HTML Integration
 - **Alpine.js Data**: Add activity state variables to main component
+ - in index.html the component object is given to functions with `functionCall($data)` instead of `functionCall(this)`
 - **Mode Switching**: Use `x-show` directives for free play/game mode visibility
 - **Button Handlers**: Connect to exported functions via `@click` directives
 - **Progress Display**: Include progress counter with shared styling
