@@ -42,7 +42,7 @@ import {
   generate2_1Chord,
   playCurrent2_1Chord,
   checkColorMatch,
-  reset2_1ProgressToCurrentLevel
+  reset_2_1_Progress
 } from './2_chords/2_1_chord_color_matching.js';
 
 // 2_2 Chord Stable or Unstable Module

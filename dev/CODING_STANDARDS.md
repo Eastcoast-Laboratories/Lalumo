@@ -2,31 +2,105 @@
 
 ## Activity Visual & Audio Feedback Standards
 
-### to create a new activity:
-reuse those functionalities from 2_5:
+### How to Create a New Activity:
+Follow this comprehensive checklist based on the proven 2_5 activity pattern:
 
-- each activity has a free play mode where you just click buttons and listen and a game mode where you have to listen and click the right buttons
-- reset functionality in the nav button works
-- reset all progress function works
-- success rainbow and success sound
-- when pressing the wrong button
- - play the error melody and show the shake error animation
- - show correct correct button in green
-- make sure the progress works and is saved
-- make sure the progress is shown in the bottom text
-- make sure progress is included in game export and import in the settings screen (maybe nothing to do, cause all localstroage data is exported anyway)
-- copy the background image from 2_5, i'll replace it with a new image laterr
-- add a  helpMessage to the help message system
-  - cheatcode works in settings
-- klick auf den play button startet den game mode
-- ereutes klicken auf den play button soll den akkord erneut abspielen ohne ihn zu ändern.
-- falschen button click triggert die error effekte und spielt dann erneut den akkord (wie beim erneuten klicken des start buttons)
+#### Core Activity Structure
+- **Dual Mode System**: Implement both free play mode (exploration) and game mode (challenges)
+  - Free play: Click buttons to hear sounds without scoring
+  - Game mode: Listen and select correct answers with progress tracking
+- **Start Button**: Use this button to transition from free play to game mode
+- **Play Button**: Replay current challenge without changing it (e.g. keep the transposition) (game mode only)
 
-Free Play & Game Mode: Wie in 2_5, mit 🦉 Start-Button
-Progress System: Speichert Fortschritt in localStorage unter '2_1' Key
-Feedback System: Rainbow Success, Shake Error, Correct Button Highlighting
-Reset Funktionalität: Funktioniert mit Navigation-Button Reset
-Audio Integration: Verwendet zentrales Audio-System
+#### Audio & Feedback Integration
+- **Central Audio Engine**: Use `playChordByType()` or equivalent from shared audio system
+- **Success Feedback**: 
+  - Rainbow success animation (`showRainbowSuccess()`)
+  - Success sound effect
+  - Progress increment
+- **Error Feedback**:
+  - Shake error animation (`showShakeError()`)
+  - Error melody playback
+  - Highlight correct button in green (`highlightCorrectButton()`)
+  - Auto-replay current challenge after delay (1500ms)
+- **Audio Management**: Call `stopAllSounds()` before playing new sounds
+
+#### Progress System Implementation
+- **Storage**: Save progress in localStorage under activity key (e.g., '2_1', '2_5')
+- **Display**: Show progress count in bottom text using shared progress display
+- **Levels**: Implement progressive difficulty if applicable (see `get_2_5_level()` pattern)
+- **Export/Import**: Progress automatically included in settings export/import (localStorage based)
+
+#### Reset Functionality
+- **Activity Reset**: Implement `reset_X_Progress(component)` function
+- **Integration Points**: Add reset function to:
+  - `pitches/common.js` resetMethods object (both short and long keys)
+  - `pitches/common.js` resetAllProgress() function
+  - Import statement in common.js
+  - Export from activity module and add to window object
+
+#### Help System Integration
+- **Intro Messages**: Add activity to `showActivityIntroMessage()` system
+  - Add entry to stringKeyMap in `feedback.js`
+  - Add fallback messages for EN/DE
+  - Add strings to `strings.xml` files
+- **Settings Integration**: Ensure cheat codes work in settings screen
+
+#### File Structure & Exports
+- **Module File**: Create `X_activity_name.js` in appropriate folder
+- **Required Exports**:
+  - `startXActivityName(component)` - Initialize free play mode
+  - `startXGameMode(component)` - Switch to game mode  
+  - `generateXChallenge(component)` - Create new challenge
+  - `playCurrentXChallenge(component)` - Replay current challenge
+  - `checkXAnswer(selection, component)` - Validate user input
+  - `reset_X_Progress(component)` - Reset activity progress
+- **Global Window Exports**: Make functions available for HTML Alpine.js calls
+
+#### HTML Integration
+- **Alpine.js Data**: Add activity state variables to main component
+- **Mode Switching**: Use `x-show` directives for free play/game mode visibility
+- **Button Handlers**: Connect to exported functions via `@click` directives
+- **Progress Display**: Include progress counter with shared styling
+- **Background**: Copy background from 2_5 initially, replace later
+- **Localization** Add all strings to `strings.xml` files
+- 
+
+#### Testing Requirements
+- use the existing playwright test `chord-color-matching.spec.js` as template, how to create new tests
+- try to work in a test-driven development way
+- **Playwright Tests**: Create comprehensive test file covering:
+  - Navigation to activity
+   - check help message appears on top in the same manner as in 2_5
+  - Free play mode functionality
+  - Game mode transitions
+  - Correct/incorrect answer handling
+  - check if the correct sounds are played
+  - check if the correct feedback is shown:
+   - success:
+    - rainbow
+    - success sound
+   - error:
+    - shake
+    - error sound
+    - highlight correct button in green
+  - Progress tracking
+  - Reset functionality
+
+#### Import Dependencies
+```javascript
+// Standard imports for new activities
+import { debugLog } from '../../utils/debug.js';
+import audioEngine from '../audio-engine.js';
+import {
+  showShakeError,
+  showRainbowSuccess,
+  highlightCorrectButton,
+  showActivityIntroMessage
+} from '../shared/feedback.js';
+```
+
+This checklist ensures consistent architecture, user experience, and maintainability across all activities.
 
 ### Required Feedback Elements
 
@@ -67,29 +141,6 @@ Every activity MUST implement consistent feedback mechanisms:
 - **Shared Module**: `/src/components/shared/feedback.js`
 - **Purpose**: Centralized feedback functions used across all chapters
 - **Exports**: `showRainbowSuccess()`, `showShakeError()`, `playSuccessSound()`, `playErrorSound()`
-
-#### Activity Structure
-```javascript
-// Each activity should follow this pattern:
-export class Activity {
-  handleSuccess() {
-    // 1. Update progress/localStorage
-    // 2. Show visual feedback
-    showRainbowSuccess();
-    // 3. Play audio feedback  
-    playSuccessSound();
-    // 4. Provide user messaging
-  }
-  
-  handleError() {
-    // 1. Show visual feedback on specific element
-    showShakeError(targetElement);
-    // 2. Play audio feedback
-    playErrorSound();
-    // 3. Provide helpful guidance
-  }
-}
-```
 
 #### Consistency Rules
 - **NO custom feedback variations** - use shared utilities only

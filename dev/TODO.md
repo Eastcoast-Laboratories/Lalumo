@@ -217,15 +217,10 @@ reset-button:
     * STATUS: Playwright tests working but REAL INTERMITTENT BUG still exists in normal usage - need to use working test infrastructure to reproduce actual race conditions
   - 
 2_1_chord_color_matching:
-  - @2_1_chord_color_matching.js#L168 Replay chord after delay funktioniert noch nicht: Es soll im play mode nach dem falschen button nach einem delay der akkord automatisch wiederholt werden, sowie auch  beim erneuten klick auf den start button. dabei muss sich der aktuelle akkkord gemerkt werden. 
-  - auf dem handy funktioniert der grrüne hinweis effekt nicht auf dem richtigen button
-  - ereutes klicken auf den play button soll den akkord erneut abspielen
-
-  - 2. und der free mode funktioniert nicht korrekt, es solte dort beim drücken auf einen button der entsprechende akkord gespielt werden, wobei bei jedem klich ein neuer in einner neuen hhe generiert werden soll, also dort nicht merken.
-
- - reset2_1ProgressToCurrentLevel ist noch nirgends aufgerufen, daher funktioinert der reset btton in der navi noch nicht
-
-loese das mit einer erweiterung des playwrigt tests
+  - auf dem handy funktioniert der grüne hinweis effekt nicht der auf dem richtigen button grün leuchten soll
+  - erneutes klicken auf den play button im game mode soll den akkord erneut abspielen (dabei muss sich der aktuelle akkkord gemerkt werden. )
+ - add two levels: first 10 progress: keep the transposition on the chord, make sure, that not the same chord type is played twice after a success
+ second level (> 10 progress): random transposition, make sure, that not the same exact chord is played twice after a success (same chord type is allowed)
 
 
 2_2_chords_stable_unstable:

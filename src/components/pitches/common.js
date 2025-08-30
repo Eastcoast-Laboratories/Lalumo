@@ -11,6 +11,7 @@ import { reset_1_2_MatchSounds_Progress } from './1_2_match_sounds.js';
 import { reset_1_3_DrawMelody_Progress } from './1_3_draw_melody.js';
 import { reset_1_4_SoundJudgment_Progress } from './1_4_sound_judgment.js';
 import { reset_1_5_MemoryGame_Progress } from './1_5_memory_game.js';
+import { reset_2_1_Progress } from '../2_chords/2_1_chord_color_matching.js';
 import { reset_2_2_Progress } from '../2_chords/2_2_chords_stable_unstable.js';
 import { reset_2_5_Progress } from '../2_chords/2_5_chord_characters.js';
 
@@ -135,6 +136,7 @@ export function resetCurrentActivity(currentMode) {
     '1_3': () => reset_1_3_DrawMelody_Progress(window.pitchesComponent),
     '1_4': () => reset_1_4_SoundJudgment_Progress(window.pitchesComponent),
     '1_5': () => reset_1_5_MemoryGame_Progress(window.pitchesComponent),
+    '2_1': () => reset_2_1_Progress(window.chordsComponent),
     '2_2': () => reset_2_2_Progress(window.chordsComponent),
     '2_5': () => reset_2_5_Progress(window.chordsComponent),
     // Legacy support for old keys (backward compatibility)
@@ -143,6 +145,7 @@ export function resetCurrentActivity(currentMode) {
     '1_3_pitches_draw-melody': () => reset_1_3_DrawMelody_Progress(window.pitchesComponent),
     '1_4_pitches_does-it-sound-right': () => reset_1_4_SoundJudgment_Progress(window.pitchesComponent),
     '1_5_pitches_memory-game': () => reset_1_5_MemoryGame_Progress(window.pitchesComponent),
+    '2_1_chords_color-matching': () => reset_2_1_Progress(window.chordsComponent),
     '2_2_chords_stable_unstable': () => reset_2_2_Progress(window.chordsComponent),
     '2_5_chords_characters': () => reset_2_5_Progress(window.chordsComponent)
   };
@@ -249,6 +252,9 @@ export function resetAllProgress(component) {
   
   debugLog('PITCHES', 'RESET_ALL: Resetting Memory Game activity');
   reset_1_5_MemoryGame_Progress(window.pitchesComponent);
+  
+  debugLog('PITCHES', 'RESET_ALL: Resetting Color Matching activity');
+  reset_2_1_Progress(window.chordsComponent);
   
   debugLog('PITCHES', 'RESET_ALL: Resetting Stable or Unstable Chords activity');
   reset_2_2_Progress(window.chordsComponent);

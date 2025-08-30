@@ -215,10 +215,10 @@ function getElementForChordType(chordType) {
  * @activity 2_1_chords_color-matching
  * @used_by reset functionality
  */
-export function reset2_1ProgressToCurrentLevel(component) {
+export function reset_2_1_Progress(component) {
   // Simple reset - no levels in 2_1
   const chordsProgressData = JSON.parse(localStorage.getItem('lalumo_chords_progress') || '{}');
-  chordsProgressData['2_1'] = Math.max(0, (chordsProgressData['2_1'] || 0) - 1);
+  chordsProgressData['2_1'] = 0;
   localStorage.setItem('lalumo_chords_progress', JSON.stringify(chordsProgressData));
   
   component.progress['2_1'] = chordsProgressData['2_1'];
@@ -237,4 +237,4 @@ window.checkColorMatch = (selectedElement, component) => {
 };
 window.playCurrent2_1Chord = playCurrent2_1Chord;
 window.generate2_1Chord = generate2_1Chord;
-window.reset2_1ProgressToCurrentLevel = reset2_1ProgressToCurrentLevel;
+window.reset_2_1_Progress = reset_2_1_Progress;
