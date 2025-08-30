@@ -178,6 +178,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       '1_3_pitches_draw': 'intro_1_3_pitches_draw',
       '1_4_pitches_does-it-sound-right': 'intro_1_4_pitches_does_it_sound_right',
       '1_5_pitches_memory': 'intro_1_5_pitches_memory',
+      '2_1_chords_color-matching': 'intro_2_1_chords_color_matching',
       '2_2_chords_stable_unstable': 'intro_2_2_chords_stable_unstable',
       '2_5_chords_characters': 'intro_2_5_chords_characters'
     };
@@ -197,6 +198,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       '1_3_pitches_draw': 'intro_1_3_pitches_draw',
       '1_4_pitches_does-it-sound-right': 'intro_1_4_pitches_does_it_sound_right',
       '1_5_pitches_memory': 'intro_1_5_pitches_memory',
+      '2_1_chords_color-matching': 'intro_2_1_chords_color_matching',
       '2_2_chords_stable_unstable': 'intro_2_2_chords_stable_unstable',
       '2_5_chords_characters': 'intro_2_5_chords_characters'
     };
@@ -231,6 +233,10 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       '1_5_pitches_memory-game': {
         'en': 'Listen carefully and remember the melody! Can you play it back?',
         'de': 'Höre genau hin und merke dir die Melodie! Kannst du sie nachspielen?'
+      },
+      '2_1_chords_color-matching': {
+        'en': 'Match magical forest elements to the chords you hear! 🌲✨',
+        'de': 'Ordne magische Waldelemente den Akkorden zu! 🌲✨'
       },
       '2_2_chords_stable_unstable': {
         'en': 'Listen to the chord, does it sound stable or unstable? Click on the matching part of the forest',

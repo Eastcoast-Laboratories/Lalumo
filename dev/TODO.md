@@ -218,6 +218,7 @@ reset-button:
   - 
 2_1_chord_color_matching:
   - @2_1_chord_color_matching.js#L168 Replay chord after delay fiktioniert noch nicht: Es soll im play mode nach dem falschen button nach einem delay der akkord automatisch wiederholt werden, sowie auch  beim erneuten klick auf den start button. dabei muss sich der aktuelle akkkord gemerkt werden. 
+  - auf dem handy funktioniert der grrüne hinweis effekt nicht auf dem richtigen button
 
   - 2. und der free mode funktioniert nicht korrekt, es solte dort beim drücken auf einen button der entsprechende akkord gespielt werden, wobei bei jedem klich ein neuer in einner neuen hhe generiert werden soll, also dort nicht merken.
 

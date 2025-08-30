@@ -74,6 +74,17 @@
     <string name="chord_color_matching_title">Ordne Farben zu Akkorden zu</string>
     <string name="chord_color_matching_intro">Höre den Akkord und wähle die Farbe, die am besten dazu passt.</string>
     <string name="chord_color_matching_2_1_intro">Ordne magische Waldelemente zu den Akkorden zu, die du hörst! 🌲✨</string>
+    <string name="intro_2_1_chords_color_matching">Ordne magische Waldelemente den Akkorden zu, die du hörst! 🌲✨</string>
+    
+    <!-- Chord Element Tooltips -->
+    <string name="chord_element_fruit_major">Hellblaue Frucht (Dur)</string>
+    <string name="chord_element_mushroom_minor">Dunkelgrüner Pilz (Moll)</string>
+    <string name="chord_element_crystal_diminished">Rissiger violetter Kristall (Vermindert)</string>
+    <string name="chord_element_flower_augmented">Orange Blume (Übermäßig)</string>
+    <string name="chord_element_flame_dominant7">Glühender roter Runenstein (Dominantseptakkord)</string>
+    <string name="chord_element_water_major7">Schimmernde goldene Feder (Dur-Septakkord)</string>
+    <string name="chord_element_acorn_sus2">Dunkle Eichel (Sus2)</string>
+    <string name="chord_element_lantern_sus4">Schwach leuchtende dunkelblaue Laterne (Sus4)</string>
     <string name="play_chord">Akkord spielen</string>
     <string name="start_game">Spiel-Modus starten</string>
     

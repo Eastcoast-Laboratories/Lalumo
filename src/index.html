@@ -787,9 +787,6 @@
         <!-- 2_1 Chords - Studio Ghibli Color Matching Activity -->
         <div id="2_1_chords_color-matching" x-show="mode === '2_1_chords_color-matching'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg">
           
-          <!-- Help text -->
-          <div class="activity-help-text" style="color: black; text-shadow: none; text-align: center; margin: 20px; font-size: 1.2em;" x-text="$store.strings?.chord_color_matching_2_1_intro || 'Match magical forest elements to the chords you hear! 🌲✨'"></div>
-          
           <!-- start-button, shown in free play mode -->
           <button id="start-game-mode-2_1" @click="is2_1FreePlayMode = false; window.start2_1GameMode($data); $event.stopPropagation();" @touchstart.prevent @touchend.prevent="$el.click();" class="play-button" x-show="is2_1FreePlayMode" style="font-size: 2em; cursor: pointer;" :title="$store.strings?.start_game || 'Start Game Mode'">🦉</button>
           
@@ -804,35 +801,35 @@
             
             <div class="magical-element-grid">
               <div id="button_2_1_fruit" class="magical-element activity-button-blocker" @click="window.checkColorMatch('fruit', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div title="Bright Blue Fruit (Major)">🫐</div>
+                <div :title="$store.strings?.chord_element_fruit_major || 'Bright Blue Fruit (Major)'">🫐</div>
               </div>
               
               <div id="button_2_1_mushroom" class="magical-element activity-button-blocker" @click="window.checkColorMatch('mushroom', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div title="Dark Green Mushroom (Minor)">🍄</div>
+                <div :title="$store.strings?.chord_element_mushroom_minor || 'Dark Green Mushroom (Minor)'">🍄</div>
               </div>
               
               <div id="button_2_1_crystal" class="magical-element activity-button-blocker" @click="window.checkColorMatch('crystal', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div title="Cracked Violet Crystal (Diminished)">💎</div>
+                <div :title="$store.strings?.chord_element_crystal_diminished || 'Cracked Violet Crystal (Diminished)'">💎</div>
               </div>
               
               <div id="button_2_1_flower" class="magical-element activity-button-blocker" @click="window.checkColorMatch('flower', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div title="Orange Flower (Augmented)">🌸</div>
+                <div :title="$store.strings?.chord_element_flower_augmented || 'Orange Flower (Augmented)'">🌸</div>
               </div>
               
               <div id="button_2_1_flame" class="magical-element activity-button-blocker" @click="window.checkColorMatch('flame', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div title="Glowing Red Rune Stone (Dominant7)">🪨</div>
+                <div :title="$store.strings?.chord_element_flame_dominant7 || 'Glowing Red Rune Stone (Dominant7)'">🪨</div>
               </div>
               
               <div id="button_2_1_water" class="magical-element activity-button-blocker" @click="window.checkColorMatch('water', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div title="Shimmering Golden Feather (Major7)">🪶</div>
+                <div :title="$store.strings?.chord_element_water_major7 || 'Shimmering Golden Feather (Major7)'">🪶</div>
               </div>
               
               <div id="button_2_1_acorn" class="magical-element activity-button-blocker" @click="window.checkColorMatch('acorn', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div title="Dark Acorn (Sus2)">🌰</div>
+                <div :title="$store.strings?.chord_element_acorn_sus2 || 'Dark Acorn (Sus2)'">🌰</div>
               </div>
               
               <div id="button_2_1_lantern" class="magical-element activity-button-blocker" @click="window.checkColorMatch('lantern', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div title="Dim Dark-Blue Lantern (Sus4)">🏮</div>
+                <div :title="$store.strings?.chord_element_lantern_sus4 || 'Dim Dark-Blue Lantern (Sus4)'">🏮</div>
               </div>
             </div>
             
