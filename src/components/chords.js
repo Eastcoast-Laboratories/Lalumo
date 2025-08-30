@@ -335,7 +335,10 @@ export function chords() {
      */
     /**
      * Generate a new transpose amount for chords at progress level >= 30
+     * Creates random transposition to increase difficulty at higher levels
      * @returns {Object} Object with rootNote and transposeAmount
+     * @activity common
+     * @used_by 2_5_chords_characters
      */
     generateTranspose() {
       // Get the progress level
@@ -389,6 +392,15 @@ export function chords() {
       return { rootNote, transposeAmount };
     },
     
+    /**
+     * Play a chord by type with specified root note
+     * Central chord playback function used across multiple chord activities
+     * @param {string} chordType - The type of chord (major, minor, etc.)
+     * @param {string} rootNote - The root note of the chord (e.g., 'C4')
+     * @param {Object} options - Playback options including duration
+     * @activity common
+     * @used_by 2_1_chords_color-matching, 2_5_chords_characters, 2_2_chords_stable_unstable
+     */
     async playChordByType(chordType, rootNote = 'C4', options = { duration: 2 }) {
       this.stopAllSounds();
       debugLog('CHORDS', 'playChord called with chordType:', chordType, 'rootNote:', rootNote);
@@ -570,6 +582,9 @@ export function chords() {
     
     /**
      * Stop all currently playing sounds using the central audio engine
+     * Critical for preventing audio overlap between chord playbacks
+     * @activity common
+     * @used_by 2_1_chords_color-matching, 2_5_chords_characters, 2_2_chords_stable_unstable
      */
     async stopAllSounds() {
       try {

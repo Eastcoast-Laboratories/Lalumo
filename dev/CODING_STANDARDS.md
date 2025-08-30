@@ -2,6 +2,32 @@
 
 ## Activity Visual & Audio Feedback Standards
 
+### to create a new activity:
+reuse those functionalities from 2_5:
+
+- each activity has a free play mode where you just click buttons and listen and a game mode where you have to listen and click the right buttons
+- reset functionality in the nav button works
+- reset all progress function works
+- success rainbow and success sound
+- when pressing the wrong button
+ - play the error melody and show the shake error animation
+ - show correct correct button in green
+- make sure the progress works and is saved
+- make sure the progress is shown in the bottom text
+- make sure progress is included in game export and import in the settings screen (maybe nothing to do, cause all localstroage data is exported anyway)
+- copy the background image from 2_5, i'll replace it with a new image laterr
+- add a  helpMessage to the help message system
+  - cheatcode works in settings
+- klick auf den play button startet den game mode
+- ereutes klicken auf den play button soll den akkord erneut abspielen ohne ihn zu ändern.
+- falschen button click triggert die error effekte und spielt dann erneut den akkord (wie beim erneuten klicken des start buttons)
+
+Free Play & Game Mode: Wie in 2_5, mit 🦉 Start-Button
+Progress System: Speichert Fortschritt in localStorage unter '2_1' Key
+Feedback System: Rainbow Success, Shake Error, Correct Button Highlighting
+Reset Funktionalität: Funktioniert mit Navigation-Button Reset
+Audio Integration: Verwendet zentrales Audio-System
+
 ### Required Feedback Elements
 
 Every activity MUST implement consistent feedback mechanisms:

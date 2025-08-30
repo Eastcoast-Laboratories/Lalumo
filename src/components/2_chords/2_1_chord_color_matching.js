@@ -27,7 +27,10 @@ export function testChordColorMatchingModuleImport() {
 
 /**
  * Start 2_1 Color Matching activity - similar to 2_5 start function
+ * Initializes free play mode and generates first chord
  * @param {Object} component - Alpine.js component
+ * @activity 2_1_chords_color-matching
+ * @used_by chords.js initialization
  */
 export function start2_1ColorMatching(component) {
   debugLog('CHORDS', 'Starting 2_1 Color Matching activity');
@@ -41,7 +44,10 @@ export function start2_1ColorMatching(component) {
 
 /**
  * Start game mode for 2_1 activity
+ * Switches from free play to game mode and generates first challenge chord
  * @param {Object} component - Alpine.js component
+ * @activity 2_1_chords_color-matching
+ * @used_by HTML button click, chords.js
  */
 export function start2_1GameMode(component) {
   debugLog('CHORDS', 'Starting 2_1 game mode');
@@ -54,7 +60,10 @@ export function start2_1GameMode(component) {
 
 /**
  * Generate a new chord for 2_1 activity
+ * Creates random chord type and root note for both free play and game modes
  * @param {Object} component - Alpine.js component
+ * @activity 2_1_chords_color-matching
+ * @used_by start2_1ColorMatching, start2_1GameMode, checkColorMatch
  */
 export function generate2_1Chord(component) {
   const chordTypes = ['major', 'minor', 'diminished', 'augmented', 'dominant7', 'major7', 'sus2', 'sus4'];
@@ -200,8 +209,11 @@ function getElementForChordType(chordType) {
 }
 
 /**
- * Reset progress to current level for 2_1
+ * Reset progress to current level for 2_1 activity
+ * Resets progress within current difficulty level
  * @param {Object} component - Alpine.js component
+ * @activity 2_1_chords_color-matching
+ * @used_by reset functionality
  */
 export function reset2_1ProgressToCurrentLevel(component) {
   // Simple reset - no levels in 2_1

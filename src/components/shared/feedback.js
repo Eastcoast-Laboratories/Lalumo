@@ -9,11 +9,13 @@
  * Unified feedback message system for both help messages and game feedback
  * @param {string} message - The message to display and speak
  * @param {Object} options - Options for controlling feedback behavior
- * @param {string} [options.activityId] - Activity identifier for logging
- * @param {boolean} [options.isIntroMessage=true] - Whether this is an intro/help message (respects settings) or game feedback (always shown)
- * @param {boolean} [options.isCorrect=null] - For game feedback: correct (true), incorrect (false), or neutral (null)
- * @param {number} [options.delaySeconds=10] - Delay in seconds before hiding the message
- * @param {Object} [options.component=null] - The Alpine.js component instance for speaking
+ * @param {string} options.activityId - Activity identifier for logging
+ * @param {boolean} options.isIntroMessage - Whether this is an intro/help message (respects settings) or game feedback (always shown)
+ * @param {boolean} options.isCorrect - For game feedback: correct (true), incorrect (false), or neutral (null)
+ * @param {number} options.delaySeconds - Delay in seconds before hiding the message
+ * @param {Object} options.component - The Alpine.js component instance for speaking
+ * @activity common
+ * @used_by 2_1_chords_color-matching, 2_5_chords_characters, 2_2_chords_stable_unstable, all_pitch_activities
  */
 export function showFeedbackMessage(message, options = {}) {
   // Default options
@@ -155,6 +157,8 @@ export function clearFeedbackTimer() {
  * @param {Object} component - The Alpine.js component instance (optional)
  * @param {number} delaySeconds - Delay before hiding message (default: 10)
  * @param {boolean} force - Force showing message even if already shown (default: false)
+ * @activity common
+ * @used_by 2_1_chords_color-matching, 2_5_chords_characters, 2_2_chords_stable_unstable, 1_1_pitches_high_or_low, 1_2_pitches_match-sounds, 1_3_pitches_draw, 1_4_pitches_does-it-sound-right, 1_5_pitches_memory
  */
 export function showActivityIntroMessage(activityMode, component = null, delaySeconds = 10, force = true /* TODO: should be false before release */) {
   debugLog('LOG_INTRO_MESSAGE', 'activity: \'' + activityMode + '\', delaySeconds: ' + delaySeconds + ', force: ' + force);
