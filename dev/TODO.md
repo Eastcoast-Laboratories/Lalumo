@@ -217,10 +217,15 @@ reset-button:
     * STATUS: Playwright tests working but REAL INTERMITTENT BUG still exists in normal usage - need to use working test infrastructure to reproduce actual race conditions
   - 
 2_1_chord_color_matching:
-  - @2_1_chord_color_matching.js#L168 Replay chord after delay fiktioniert noch nicht, weder automatisch, noch beim erneuten klick auf den start button. dabei muss sich der aktuelle akkkord gemerkt werden.
+  - @2_1_chord_color_matching.js#L168 Replay chord after delay fiktioniert noch nicht: Es soll im play mode nach dem falschen button nach einem delay der akkord automatisch wiederholt werden, sowie auch  beim erneuten klick auf den start button. dabei muss sich der aktuelle akkkord gemerkt werden. 
 
   - 2. und der free mode funktioniert nicht korrekt, es solte dort beim drücken auf einen button der entsprechende akkord gespielt werden, wobei bei jedem klich ein neuer in einner neuen hhe generiert werden soll, also dort nicht merken.
 
+
+loese das mit eier erweiterung des playwrigt tests
+
+
+analysiere, welche funktionen alle von 2_1 und 2_5 gemeinsam benutz werden und notiere das im javadoc der funktionionen unter @used_by
 
 2_2_chords_stable_unstable:
   - # bereit zur veröffentlichung

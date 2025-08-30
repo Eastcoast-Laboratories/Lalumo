@@ -216,7 +216,13 @@ export function reset2_1ProgressToCurrentLevel(component) {
 /* Global exports for console access and direct HTML usage */
 window.start2_1ColorMatching = start2_1ColorMatching;
 window.start2_1GameMode = start2_1GameMode;
-window.checkColorMatch = checkColorMatch;
+window.checkColorMatch = (selectedElement, component) => {
+  if (component) {
+    return checkColorMatch(selectedElement, component);
+  } else {
+    debugLog('CHORDS_2_1_DEBUG', 'No Alpine component provided, cannot check color match');
+  }
+};
 window.playCurrent2_1Chord = playCurrent2_1Chord;
 window.generate2_1Chord = generate2_1Chord;
 window.reset2_1ProgressToCurrentLevel = reset2_1ProgressToCurrentLevel;

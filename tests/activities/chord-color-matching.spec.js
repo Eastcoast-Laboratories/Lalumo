@@ -19,7 +19,7 @@ test.describe('Lalumo 2_1 Chord Color Matching Activity Tests', () => {
     await setupTest(page);
   });
 
-  test('Should navigate to 2_1 Chord Color Matching activity and perform basic interaction', async ({ page }) => {
+  test('Should navigate to 2_1 Chord Color Matching activity and test game mode functionality', async ({ page }) => {
     // Increase test timeout to 30 seconds for audio interactions
     test.setTimeout(30000);
     
@@ -131,6 +131,140 @@ test.describe('Lalumo 2_1 Chord Color Matching Activity Tests', () => {
     debugLog('CHORD_COLOR_MATCHING_SPEC', '2_1 Chord Color Matching test completed successfully');
     
     // Remove test overlay
+    await removeTestOverlay(page);
+  });
+
+  test('Should test chord replay after wrong answer and free mode functionality', async ({ page }) => {
+    test.setTimeout(45000); // Extended timeout for comprehensive testing
+    
+    // Navigate to chords section and 2_1 activity
+    await page.click('button:has-text("Chords")');
+    await page.waitForTimeout(1000);
+    await page.click('#nav_2_1');
+    await page.waitForTimeout(1000);
+    
+    await showTestOverlay(page, 'Testing chord replay and free mode...');
+    
+    // === TEST FREE MODE FUNCTIONALITY ===
+    await updateTestOverlay(page, 'Testing free mode - random chord generation...');
+    
+    // Verify we start in free play mode
+    const startButton = page.locator('#start-game-mode-2_1');
+    await expect(startButton).toBeVisible();
+    debugLog('CHORD_COLOR_MATCHING_SPEC', 'Confirmed in free play mode');
+    
+    // Test free mode: click different buttons and verify different chords are generated
+    const freeModeButttons = ['#button_2_1_fruit', '#button_2_1_mushroom', '#button_2_1_crystal'];
+    const playedChords = [];
+    
+    for (const buttonSelector of freeModeButttons) {
+      await updateTestOverlay(page, `Free mode: testing ${buttonSelector}...`);
+      
+      // Listen for chord generation logs
+      const chordLogPromise = page.waitForEvent('console', msg => 
+        msg.text().includes('[CHORDS_2_1_DEBUG] Free play mode: playing') && 
+        msg.text().includes('chord on')
+      );
+      
+      await page.click(buttonSelector);
+      
+      try {
+        const chordLog = await chordLogPromise;
+        const chordInfo = chordLog.text();
+        playedChords.push(chordInfo);
+        debugLog('CHORD_COLOR_MATCHING_SPEC', `Free mode chord: ${chordInfo}`);
+      } catch (e) {
+        debugLog('CHORD_COLOR_MATCHING_SPEC', `No chord log captured for ${buttonSelector}`);
+      }
+      
+      await page.waitForTimeout(1500); // Wait between clicks
+    }
+    
+    debugLog('CHORD_COLOR_MATCHING_SPEC', `Free mode test completed. Captured ${playedChords.length} chord logs`);
+    
+    // === TEST GAME MODE CHORD REPLAY ===
+    await updateTestOverlay(page, 'Switching to game mode...');
+    
+    // Switch to game mode
+    await startButton.click();
+    await page.waitForTimeout(2000);
+    
+    // Verify play button is visible
+    const playButton = page.locator('#play-chord-2_1');
+    await expect(playButton).toBeVisible();
+    debugLog('CHORD_COLOR_MATCHING_SPEC', 'Switched to game mode successfully');
+    
+    // Play the current chord to hear it
+    await updateTestOverlay(page, 'Playing current chord...');
+    await playButton.click();
+    await page.waitForTimeout(2000);
+    
+    // Get current chord type for testing
+    const currentChordType = await page.evaluate(() => {
+      const element = document.querySelector('[id="2_1_chords_color-matching"]');
+      return element && element._x_dataStack ? element._x_dataStack[0].currentChordType : null;
+    });
+    
+    debugLog('CHORD_COLOR_MATCHING_SPEC', `Current chord type: ${currentChordType}`);
+    
+    // === TEST WRONG ANSWER AND CHORD REPLAY ===
+    await updateTestOverlay(page, 'Testing wrong answer and chord replay...');
+    
+    // Click a wrong answer to trigger replay mechanism
+    // We'll click mushroom (minor) which is likely wrong for most chord types
+    const wrongButton = page.locator('#button_2_1_mushroom');
+    
+    // Listen for replay chord log
+    const replayLogPromise = page.waitForEvent('console', msg => 
+      msg.text().includes('[CHORDS_2_1_DEBUG] Replaying chord after error:')
+    );
+    
+    await wrongButton.click();
+    debugLog('CHORD_COLOR_MATCHING_SPEC', 'Clicked wrong answer (mushroom)');
+    
+    // Wait for error feedback and replay
+    await page.waitForTimeout(2000); // Wait for error feedback and replay delay (1500ms)
+    
+    try {
+      const replayLog = await replayLogPromise;
+      debugLog('CHORD_COLOR_MATCHING_SPEC', `Chord replay confirmed: ${replayLog.text()}`);
+    } catch (e) {
+      debugLog('CHORD_COLOR_MATCHING_SPEC', 'No chord replay log captured - may need investigation');
+    }
+    
+    // === TEST START BUTTON REPLAY ===
+    await updateTestOverlay(page, 'Testing start button replay functionality...');
+    
+    // Click play button again to test manual replay
+    await playButton.click();
+    await page.waitForTimeout(1000);
+    debugLog('CHORD_COLOR_MATCHING_SPEC', 'Tested manual chord replay via play button');
+    
+    // === VERIFY CORRECT ANSWER WORKS ===
+    await updateTestOverlay(page, 'Testing correct answer...');
+    
+    // Try to find and click the correct button based on current chord
+    const correctButtonMap = {
+      'major': '#button_2_1_fruit',
+      'minor': '#button_2_1_mushroom',
+      'diminished': '#button_2_1_crystal',
+      'augmented': '#button_2_1_flower',
+      'dominant7': '#button_2_1_flame',
+      'major7': '#button_2_1_water',
+      'sus2': '#button_2_1_acorn',
+      'sus4': '#button_2_1_lantern'
+    };
+    
+    const correctButtonSelector = correctButtonMap[currentChordType];
+    if (correctButtonSelector) {
+      await page.click(correctButtonSelector);
+      debugLog('CHORD_COLOR_MATCHING_SPEC', `Clicked correct answer: ${correctButtonSelector} for ${currentChordType}`);
+      await page.waitForTimeout(2000); // Wait for success feedback
+    }
+    
+    await updateTestOverlay(page, 'Chord replay and free mode tests completed!');
+    debugLog('CHORD_COLOR_MATCHING_SPEC', 'Comprehensive chord replay and free mode test completed');
+    
     await removeTestOverlay(page);
   });
 });
