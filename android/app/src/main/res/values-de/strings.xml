@@ -82,7 +82,7 @@
     <string name="chord_element_crystal_diminished">Rissiger violetter Kristall (Vermindert)</string>
     <string name="chord_element_flower_augmented">Orange Blume (Übermäßig)</string>
     <string name="chord_element_flame_dominant7">Glühender roter Runenstein (Dominantseptakkord)</string>
-    <string name="chord_element_water_major7">Schimmernde goldene Feder (Dur-Septakkord)</string>
+    <string name="chord_element_feather_major7">Schimmernde goldene Feder (Dur-Septakkord)</string>
     <string name="chord_element_acorn_sus2">Dunkle Eichel (Sus2)</string>
     <string name="chord_element_lantern_sus4">Schwach leuchtende dunkelblaue Laterne (Sus4)</string>
     <string name="play_chord">Akkord spielen</string>

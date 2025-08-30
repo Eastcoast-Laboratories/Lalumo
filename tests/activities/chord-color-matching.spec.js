@@ -250,7 +250,7 @@ test.describe('Lalumo 2_1 Chord Color Matching Activity Tests', () => {
       'diminished': '#button_2_1_crystal',
       'augmented': '#button_2_1_flower',
       'dominant7': '#button_2_1_flame',
-      'major7': '#button_2_1_water',
+      'major7': '#button_2_1_feather',
       'sus2': '#button_2_1_acorn',
       'sus4': '#button_2_1_lantern'
     };

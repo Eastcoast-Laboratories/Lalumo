@@ -122,11 +122,19 @@ export function generate2_1Chord(component) {
  * @used_by HTML play button click
  */
 export function playCurrent2_1Chord(component) {
-  if (component.currentChordType && component.currentTransposeRootNote && typeof component.playChordByType === 'function') {
-    debugLog('CHORDS_2_1_DEBUG', `Replaying current chord: ${component.currentChordType} with root ${component.currentTransposeRootNote}`);
-    component.playChordByType(component.currentChordType, component.currentTransposeRootNote);
+  // Get component from window if not passed directly (for HTML button calls)
+  const activeComponent = component || window.chordsComponent;
+  
+  if (activeComponent && activeComponent.currentChordType && activeComponent.currentTransposeRootNote && typeof activeComponent.playChordByType === 'function') {
+    debugLog('CHORDS_2_1_DEBUG', `Replaying current chord: ${activeComponent.currentChordType} with root ${activeComponent.currentTransposeRootNote}`);
+    activeComponent.playChordByType(activeComponent.currentChordType, activeComponent.currentTransposeRootNote);
   } else {
-    debugLog('CHORDS_2_1_DEBUG', 'Cannot replay chord - missing chord data or playChordByType function');
+    debugLog('CHORDS_2_1_DEBUG', 'Cannot replay chord - missing chord data or playChordByType function', {
+      component: !!activeComponent,
+      currentChordType: activeComponent?.currentChordType,
+      currentTransposeRootNote: activeComponent?.currentTransposeRootNote,
+      playChordByType: typeof activeComponent?.playChordByType
+    });
   }
 }
 
@@ -151,7 +159,7 @@ export function checkColorMatch(selectedElement, component) {
       'crystal': 'diminished',
       'flower': 'augmented',
       'flame': 'dominant7',
-      'water': 'major7',
+      'feather': 'major7',
       'acorn': 'sus2',
       'lantern': 'sus4'
     };
@@ -241,7 +249,7 @@ function getElementForChordType(chordType) {
     'minor': 'mushroom',
     'diminished': 'crystal', 
     'augmented': 'flower',
-    'dominant7': 'rune',
+    'dominant7': 'flame',
     'major7': 'feather',
     'sus2': 'acorn',
     'sus4': 'lantern'
