@@ -73,7 +73,9 @@
     <!-- Chords - Color Matching Activity -->
     <string name="chord_color_matching_title">Match Colors to Chords</string>
     <string name="chord_color_matching_intro">Listen to the chord and select the color that matches how it sounds to you.</string>
+    <string name="chord_color_matching_2_1_intro">Match magical forest elements to the chords you hear! 🌲✨</string>
     <string name="play_chord">Play Chord</string>
+    <string name="start_game">Start Game Mode</string>
     
     <!-- Chords - Stable or Unstable Activity -->
     <string name="chords_stable_unstable_intro">Some chords are stable and peaceful, while others are unstable and restless.</string>

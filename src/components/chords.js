@@ -633,7 +633,7 @@ export function chords() {
         this.is2_1FreePlayMode = true;
         
         // Generate first chord for free play
-        this.generate2_1Chord();
+        window.generate2_1Chord(this);
       } else if (mode === '2_2_chords_stable_unstable') {
         // Initialize Stable or Unstable activity
         debugLog('CHORDS_2_2_DEBUG', 'Initializing Stable or Unstable activity');
@@ -1820,48 +1820,5 @@ export function chords() {
       });
     },
 
-    // === 2_1 Color Matching Functions ===
-    
-    /**
-     * Start 2_1 Color Matching activity
-     */
-    start2_1ColorMatching() {
-      return start2_1ColorMatching(this);
-    },
-    
-    /**
-     * Start 2_1 game mode
-     */
-    start2_1GameMode() {
-      return start2_1GameMode(this);
-    },
-    
-    /**
-     * Generate new 2_1 chord
-     */
-    generate2_1Chord() {
-      return generate2_1Chord(this);
-    },
-    
-    /**
-     * Play current 2_1 chord
-     */
-    playCurrent2_1Chord() {
-      return playCurrent2_1Chord(this);
-    },
-    
-    /**
-     * Check color match for 2_1
-     */
-    checkColorMatch(selectedElement) {
-      return checkColorMatch(selectedElement, this);
-    },
-    
-    /**
-     * Reset 2_1 progress
-     */
-    reset2_1ProgressToCurrentLevel() {
-      return reset2_1ProgressToCurrentLevel(this);
-    }
   };
 }

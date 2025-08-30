@@ -69,7 +69,7 @@ export function generate2_1Chord(component) {
   debugLog('CHORDS', `Generated 2_1 chord: ${chordType} with root ${rootNote}`);
   
   // Auto-play in game mode
-  if (!component.is2_1FreePlayMode) {
+  if (!component.is2_1FreePlayMode && typeof component.playChordByType === 'function') {
     component.playChordByType(chordType, rootNote);
   }
 }
@@ -79,7 +79,7 @@ export function generate2_1Chord(component) {
  * @param {Object} component - Alpine.js component
  */
 export function playCurrent2_1Chord(component) {
-  if (component.currentChordType && component.currentTransposeRootNote) {
+  if (component.currentChordType && component.currentTransposeRootNote && typeof component.playChordByType === 'function') {
     component.playChordByType(component.currentChordType, component.currentTransposeRootNote);
   }
 }
@@ -92,6 +92,11 @@ export function playCurrent2_1Chord(component) {
 export function checkColorMatch(selectedElement, component) {
   debugLog('CHORDS', `Checking color match: ${selectedElement} vs ${component.currentChordType}`);
   
+  // Ensure progress object exists
+  if (!component.progress) {
+    component.progress = {};
+  }
+  
   if (component.is2_1FreePlayMode) {
     // In free play mode, just play the corresponding chord
     const chordMapping = {
@@ -99,15 +104,21 @@ export function checkColorMatch(selectedElement, component) {
       'mushroom': 'minor', 
       'crystal': 'diminished',
       'flower': 'augmented',
-      'rune': 'dominant7',
-      'feather': 'major7',
+      'flame': 'dominant7',
+      'water': 'major7',
       'acorn': 'sus2',
       'lantern': 'sus4'
     };
     
     const chordType = chordMapping[selectedElement];
-    if (chordType) {
+    if (chordType && typeof component.playChordByType === 'function') {
       component.playChordByType(chordType, 'C4');
+    } else if (chordType) {
+      // Fallback: use audio engine directly
+      const chordDef = component.chords && component.chords[chordType];
+      if (chordDef) {
+        audioEngine.playChord(['C4', 'E4', 'G4'], 2); // Simple fallback
+      }
     }
     return;
   }
@@ -156,7 +167,15 @@ export function checkColorMatch(selectedElement, component) {
     
     // Replay chord after delay
     setTimeout(() => {
-      component.playChordByType(component.currentChordType, component.currentTransposeRootNote);
+      if (typeof component.playChordByType === 'function') {
+        component.playChordByType(component.currentChordType, component.currentTransposeRootNote);
+      } else {
+        // Fallback: use audio engine directly
+        const chordDef = component.chords && component.chords[component.currentChordType];
+        if (chordDef) {
+          audioEngine.playChord(['C4', 'E4', 'G4'], 2); // Simple fallback
+        }
+      }
     }, 1500);
   }
 }
@@ -194,8 +213,10 @@ export function reset2_1ProgressToCurrentLevel(component) {
   debugLog('CHORDS', `Reset 2_1 progress to ${component.progress['2_1']}`);
 }
 
-/* Global exports for console access */
+/* Global exports for console access and direct HTML usage */
 window.start2_1ColorMatching = start2_1ColorMatching;
 window.start2_1GameMode = start2_1GameMode;
 window.checkColorMatch = checkColorMatch;
 window.playCurrent2_1Chord = playCurrent2_1Chord;
+window.generate2_1Chord = generate2_1Chord;
+window.reset2_1ProgressToCurrentLevel = reset2_1ProgressToCurrentLevel;

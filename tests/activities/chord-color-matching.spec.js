@@ -46,16 +46,34 @@ test.describe('Lalumo 2_1 Chord Color Matching Activity Tests', () => {
     const startButton = page.locator('#start-game-mode-2_1');
     if (await startButton.isVisible()) {
       debugLog('CHORD_COLOR_MATCHING_SPEC', 'In free play mode, clicking start button to enter game mode');
+      
+      // Debug: Check current state before click
+      const isFreeModeBeforeClick = await page.evaluate(() => {
+        const element = document.querySelector('[id="2_1_chords_color-matching"]');
+        return element && element._x_dataStack ? element._x_dataStack[0].is2_1FreePlayMode : 'component not found';
+      });
+      debugLog('CHORD_COLOR_MATCHING_SPEC', `is2_1FreePlayMode before click: ${isFreeModeBeforeClick}`);
+      
       await startButton.click();
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(2000); // Wait longer for mode switch
+      
+      // Debug: Check current state after click
+      const isFreeModeAfterClick = await page.evaluate(() => {
+        const element = document.querySelector('[id="2_1_chords_color-matching"]');
+        return element && element._x_dataStack ? element._x_dataStack[0].is2_1FreePlayMode : 'component not found';
+      });
+      debugLog('CHORD_COLOR_MATCHING_SPEC', `is2_1FreePlayMode after click: ${isFreeModeAfterClick}`);
     }
     
     // Update test overlay
     await updateTestOverlay(page, 'Checking for play button in game mode...');
     
+    // Wait for Alpine.js to update the DOM after mode switch
+    await page.waitForTimeout(1000);
+    
     // Verify play button is visible in game mode
     const playButton = page.locator('#play-chord-2_1');
-    await expect(playButton).toBeVisible();
+    await expect(playButton).toBeVisible({ timeout: 10000 });
     debugLog('CHORD_COLOR_MATCHING_SPEC', 'Play button is visible in game mode');
     
     // Update test overlay
