@@ -98,7 +98,7 @@ export function checkColorMatch(selectedElement, component) {
   }
   
   if (component.is2_1FreePlayMode) {
-    // In free play mode, just play the corresponding chord
+    // In free play mode, play the corresponding chord with new random pitch each time
     const chordMapping = {
       'fruit': 'major',
       'mushroom': 'minor', 
@@ -111,13 +111,15 @@ export function checkColorMatch(selectedElement, component) {
     };
     
     const chordType = chordMapping[selectedElement];
-    if (chordType && typeof component.playChordByType === 'function') {
-      component.playChordByType(chordType, 'C4');
-    } else if (chordType) {
-      // Fallback: use audio engine directly
-      const chordDef = component.chords && component.chords[chordType];
-      if (chordDef) {
-        audioEngine.playChord(['C4', 'E4', 'G4'], 2); // Simple fallback
+    if (chordType) {
+      // Generate new random root note for free play mode
+      const rootNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'];
+      const randomRoot = rootNotes[Math.floor(Math.random() * rootNotes.length)];
+      
+      debugLog('CHORDS_2_1_DEBUG', `Free play mode: playing ${chordType} chord on ${randomRoot}`);
+      
+      if (typeof component.playChordByType === 'function') {
+        component.playChordByType(chordType, randomRoot);
       }
     }
     return;
@@ -165,16 +167,14 @@ export function checkColorMatch(selectedElement, component) {
     showShakeError();
     audioEngine.playNote('try_again');
     
-    // Replay chord after delay
+    // Replay chord after delay - store current chord to ensure consistency
+    const chordToReplay = component.currentChordType;
+    const rootToReplay = component.currentTransposeRootNote;
+    
     setTimeout(() => {
-      if (typeof component.playChordByType === 'function') {
-        component.playChordByType(component.currentChordType, component.currentTransposeRootNote);
-      } else {
-        // Fallback: use audio engine directly
-        const chordDef = component.chords && component.chords[component.currentChordType];
-        if (chordDef) {
-          audioEngine.playChord(['C4', 'E4', 'G4'], 2); // Simple fallback
-        }
+      if (chordToReplay && rootToReplay && typeof component.playChordByType === 'function') {
+        debugLog('CHORDS_2_1_DEBUG', `Replaying chord after error: ${chordToReplay} on ${rootToReplay}`);
+        component.playChordByType(chordToReplay, rootToReplay);
       }
     }, 1500);
   }
