@@ -1243,7 +1243,7 @@ section h2 {
 #\32 _5_chords_characters 
 */
 
-.play-button_2_2, .replay-button_2_2 {
+.play-button_2_2, .replay-button_2_2, .play-button_2_6, .replay-button_2_6 {
   opacity: 0;
   width: 100%;
   height: min(48vw, 320px);
@@ -1255,11 +1255,11 @@ section h2 {
   transition: opacity 0.2s ease;
 }
 
-.replay-button_2_2 {
+.replay-button_2_2, .replay-button_2_6 {
   z-index: 100;
 }
 
-.play-button_2_2:hover, .replay-button_2_2:hover {
+.play-button_2_2:hover, .replay-button_2_2:hover, .play-button_2_6:hover, .replay-button_2_6:hover {
   opacity: 0.05;
 }
 
@@ -1275,7 +1275,7 @@ section h2 {
 }
 
 #button_2_2_stable,
-#button_2_2_unstable {
+#button_2_2_unstable, #button_2_6_one, #button_2_6_many {
   position: absolute;
   width: 50%;
   height: min(701px, 93vw);
@@ -1293,23 +1293,23 @@ section h2 {
   color: transparent;
 }
 
-#button_2_2_stable {
+#button_2_2_stable, #button_2_6_one {
   left:0;
 }
 
-#button_2_2_unstable {
+#button_2_2_unstable, #button_2_6_many {
   right:0;
 }
 
 #button_2_2_stable:hover,
-#button_2_2_unstable:hover {
+#button_2_2_unstable:hover, #button_2_6_one:hover, #button_2_6_many:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   background-color: rgba(255, 255, 255, 0.1)
 }
 
 #button_2_2_stable:active,
-#button_2_2_unstable:active {
+#button_2_2_unstable:active, #button_2_6_one:active, #button_2_6_many:active {
   transform: translateY(0);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }

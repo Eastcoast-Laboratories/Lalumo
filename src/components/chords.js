@@ -798,9 +798,9 @@ export function chords() {
         
         // Alpine.js übernimmt die Anzeige der Fortschrittsnachrichten über die x-text-Bindungen
       } else if (mode === '2_6_chords_one_or_many') {
-        // Initialisierung für Harmony Gardens
-        debugLog('CHORDS', 'Initializing harmony gardens activity');
-        // Hier den Init-Code für diese Aktivität einfügen
+        // Initialisierung für One or Many activity
+        debugLog('CHORDS', 'Initializing one or many activity');
+        // Initialize 2_6 One or Many activity
       }
       
       // Always show the intro message for the current mode (like pitches.js does)
@@ -842,8 +842,8 @@ export function chords() {
           'Listen to the chord and choose the matching character!';
       } else if (this.mode === '2_6_chords_one_or_many') {
         message = language === 'german' ? 
-          'Erkunde die Harmonie-Gärten! Höre die Akkorde und entdecke ihre Geheimnisse!' : 
-          'Explore the Harmony Gardens! Listen to chords and discover their secrets!';
+          'Kannst du hören, ob es eine Note oder viele Noten sind?' : 
+          'Can you hear if it is one note or many notes?';
       }
       
       // Show the intro message using the feedback system
@@ -2012,3 +2012,182 @@ if (typeof window !== 'undefined') {
     window.reset_2_4_Progress = module.reset_2_4_Progress;
   });
 }
+
+// 2_6 One or Many Activity Functions
+let current2_6Challenge = null;
+let is2_6GameMode = false;
+
+/**
+ * Start the 2_6 One or Many game mode
+ */
+function start2_6GameMode() {
+  console.log('ONE_OR_MANY_2_6: Starting game mode');
+  is2_6GameMode = true;
+  
+  // Hide start button, show replay button
+  const startButton = document.getElementById('start-game-2_6');
+  const replayButton = document.getElementById('replay-button-2_6');
+  
+  if (startButton) startButton.style.display = 'none';
+  if (replayButton) replayButton.style.display = 'block';
+  
+  // Generate first challenge
+  generate2_6Challenge();
+}
+
+/**
+ * Generate a new one or many challenge
+ */
+function generate2_6Challenge() {
+  console.log('ONE_OR_MANY_2_6: Generating new challenge');
+  
+  const progressData = JSON.parse(localStorage.getItem('lalumo_progress') || '{}');
+  const currentProgress = progressData['2_6'] || 0;
+  
+  // Determine difficulty based on progress
+  let difficulty = 1;
+  if (currentProgress >= 10) difficulty = 2;
+  if (currentProgress >= 20) difficulty = 3;
+  
+  // Generate challenge based on difficulty
+  const isOneNote = Math.random() < 0.5;
+  
+  if (isOneNote) {
+    // Single note challenge
+    const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'];
+    const note = notes[Math.floor(Math.random() * notes.length)];
+    
+    current2_6Challenge = {
+      type: 'one',
+      notes: [note],
+      correctAnswer: 'one'
+    };
+  } else {
+    // Chord challenge
+    let chordNotes;
+    
+    if (difficulty === 1) {
+      // Simple major/minor chords
+      const chords = [
+        ['C4', 'E4', 'G4'], // C major
+        ['C4', 'Eb4', 'G4'], // C minor
+        ['F4', 'A4', 'C5'], // F major
+        ['G4', 'B4', 'D5']  // G major
+      ];
+      chordNotes = chords[Math.floor(Math.random() * chords.length)];
+    } else if (difficulty === 2) {
+      // Closer intervals
+      const chords = [
+        ['C4', 'D4', 'E4'], // Close intervals
+        ['F4', 'G4', 'A4'],
+        ['C4', 'F4', 'G4'], // Fourth and fifth
+        ['D4', 'F#4', 'A4'] // D major
+      ];
+      chordNotes = chords[Math.floor(Math.random() * chords.length)];
+    } else {
+      // Complex harmonies
+      const chords = [
+        ['C4', 'E4', 'G4', 'B4'], // Cmaj7
+        ['C4', 'Eb4', 'G4', 'Bb4'], // Cm7
+        ['C4', 'D4'], // Second interval
+        ['C4', 'F#4'] // Tritone
+      ];
+      chordNotes = chords[Math.floor(Math.random() * chords.length)];
+    }
+    
+    current2_6Challenge = {
+      type: 'many',
+      notes: chordNotes,
+      correctAnswer: 'many'
+    };
+  }
+  
+  console.log('ONE_OR_MANY_2_6: Generated challenge:', current2_6Challenge);
+  
+  // Auto-play the challenge
+  playCurrent2_6Challenge();
+}
+
+/**
+ * Play the current 2_6 challenge
+ */
+function playCurrent2_6Challenge() {
+  if (!current2_6Challenge) {
+    console.log('ONE_OR_MANY_2_6: No challenge to play');
+    return;
+  }
+  
+  console.log('ONE_OR_MANY_2_6: Playing challenge:', current2_6Challenge);
+  
+  if (current2_6Challenge.type === 'one') {
+    // Play single note
+    audioEngine.playNote(current2_6Challenge.notes[0]);
+  } else {
+    // Play chord (all notes simultaneously)
+    audioEngine.playChord(current2_6Challenge.notes);
+  }
+}
+
+/**
+ * Check the user's answer for 2_6 activity
+ */
+function checkOneOrManyMatch(answer, data) {
+  console.log('ONE_OR_MANY_2_6: Checking answer:', answer);
+  
+  if (!current2_6Challenge) {
+    console.log('ONE_OR_MANY_2_6: No challenge active');
+    return;
+  }
+  
+  const isCorrect = answer === current2_6Challenge.correctAnswer;
+  
+  if (isCorrect) {
+    console.log('ONE_OR_MANY_2_6: Correct answer!');
+    
+    // Update progress
+    const progressData = JSON.parse(localStorage.getItem('lalumo_progress') || '{}');
+    progressData['2_6'] = (progressData['2_6'] || 0) + 1;
+    localStorage.setItem('lalumo_progress', JSON.stringify(progressData));
+    
+    // Show success feedback
+    const feedbackText = answer === 'one' ? 
+      (window.Alpine?.store('strings')?.correct_one_note || 'Correct! It was one note!') :
+      (window.Alpine?.store('strings')?.correct_many_notes || 'Correct! It was many notes!');
+    
+    window.showFeedbackMessage(feedbackText, 'success', {
+      activityId: '2_6',
+      isCorrect: true,
+      delaySeconds: 2
+    });
+    
+    // Generate next challenge after delay
+    setTimeout(() => {
+      generate2_6Challenge();
+    }, 2000);
+    
+  } else {
+    console.log('ONE_OR_MANY_2_6: Incorrect answer');
+    
+    // Show error feedback
+    const feedbackText = answer === 'one' ? 
+      (window.Alpine?.store('strings')?.incorrect_was_many || 'No, it was many notes!') :
+      (window.Alpine?.store('strings')?.incorrect_was_one || 'No, it was one note!');
+    
+    window.showFeedbackMessage(feedbackText, 'error', {
+      activityId: '2_6',
+      isCorrect: false,
+      delaySeconds: 2
+    });
+    
+    // Replay the challenge after delay
+    setTimeout(() => {
+      playCurrent2_6Challenge();
+    }, 2000);
+  }
+}
+
+// Make 2_6 functions available globally
+window.start2_6GameMode = start2_6GameMode;
+window.generate2_6Challenge = generate2_6Challenge;
+window.playCurrent2_6Challenge = playCurrent2_6Challenge;
+window.checkOneOrManyMatch = checkOneOrManyMatch;

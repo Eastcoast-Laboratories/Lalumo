@@ -244,9 +244,10 @@ reset-button:
   - die Eule macht die Augen auf, wenn man das Spiel startet 
 
 2_6:
-- passe den stil in der index.html an den von 2_5 an, kopiere erstmal den background von 2_5 führe alles aus wie hier beschrieben: @CODING_STANDARDS.md#L3-96  benutze @CODING_STANDARDS.md#L3-96  als checkliste
-IDEE: One or many: (2_6_chords_one_or_many)
-  Children hear one note or a chord and have to select if it is one note or a chord.
+- Übernehme die programmierung für   showShakeError,
+  showRainbowSuccess,
+  highlightCorrectButton,
+  showActivityIntroMessage aus 2_2. mache alles genau so wie dort. auch den progress genauso wie bei 2_2
 
 
 

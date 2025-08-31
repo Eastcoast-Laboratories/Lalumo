@@ -74,7 +74,7 @@ export function app() {
           '2_3_chords_chord-building': 'Chord Building',
           '2_4_chords_missing-note': 'Missing Note',
           '2_5_chords_characters': 'Chord Characters',
-          '2_6_chords_one_or_many': 'Harmony Gardens'
+          '2_6_chords_one_or_many': 'One or Many'
         },
       },
       '3_timbres': {
@@ -574,7 +574,7 @@ export function app() {
         '2_3': 'chord-building',      // → '2_3_chords_chord-building'
         '2_4': 'missing-note',        // → '2_4_chords_missing-note'
         '2_5': 'characters',          // → '2_5_chords_characters'
-        '2_6': 'harmony-gardens'      // → '2_6_chords_one_or_many'
+        '2_6': 'one_or_many'          // → '2_6_chords_one_or_many'
       };
       return modeMap[activityId] || 'high_or_low';
     },
@@ -2244,7 +2244,7 @@ export function app() {
      *    - 2_3:XX - Sets chord building progress to XX (stored in lalumo_chords_progress JSON)
      *    - 2_4:XX - Sets chord missing note progress to XX (stored in lalumo_chords_progress JSON)
      *    - 2_5:XX - Sets chord character matching progress to XX (stored in lalumo_chords_progress JSON)
-     *    - 2_6:XX - Sets harmony gardens progress to XX (stored in lalumo_chords_progress JSON)
+     *    - 2_6:XX - Sets one or many progress to XX (stored in lalumo_chords_progress JSON)
      * 
      * 2. Combined values (with secondary values):
      *    - 1_3:5s3 - Sets draw melody level to 5 and success counter to 3
