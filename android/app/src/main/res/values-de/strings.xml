@@ -408,4 +408,11 @@
     <string name="sound_judgment_level_5">Level 5: 1 falsche Note, max. 3 Halbtöne Abstand</string>
     <string name="sound_judgment_level_6">Level 6: 1 falsche Note, max. 2 Halbtöne Abstand</string>
     <string name="sound_judgment_level_7">Level 7: 1 falsche Note, max. 1 Halbton Abstand</string>
+    
+    <!-- 2_6 One or Many Activity Feedback Messages (German) -->
+    <string name="correct_one_note">Richtig! Es war eine Note!</string>
+    <string name="correct_many_notes">Richtig! Es waren mehrere Noten!</string>
+    <string name="incorrect_was_one">Nein, es war eine Note!</string>
+    <string name="incorrect_was_many">Nein, es waren mehrere Noten!</string>
+    <string name="intro_2_6_chords_one_or_many">Kannst du hören, ob es eine Note oder mehrere Noten sind?</string>
 </resources>

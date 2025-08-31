@@ -407,4 +407,11 @@
     <string name="sound_judgment_level_5">Level 5: 1 wrong note, max. 3 semitones distance</string>
     <string name="sound_judgment_level_6">Level 6: 1 wrong note, max. 2 semitones distance</string>
     <string name="sound_judgment_level_7">Level 7: 1 wrong note, max. 1 semitone distance</string>
+    
+    <!-- 2_6 One or Many Activity Feedback Messages -->
+    <string name="correct_one_note">Correct! It was one note!</string>
+    <string name="correct_many_notes">Correct! It were many notes!</string>
+    <string name="incorrect_was_one">No, it was one note!</string>
+    <string name="incorrect_was_many">No, it were many notes!</string>
+    <string name="intro_2_6_chords_one_or_many">Can you hear if it is one note or many notes?</string>
 </resources>

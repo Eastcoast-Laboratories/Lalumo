@@ -342,11 +342,13 @@ export function playSuccessSound() {
     debugLog(['FEEDBACK', 'SOUND'], 'FEEDBACK_UTILITIES: Using window.app.playSuccessSound');
     window.app.playSuccessSound();
   } else {
-    debugLog(['FEEDBACK', 'ERROR'], 'FEEDBACK_UTILITIES: App instance not available for success sound');
+    debugLog(['FEEDBACK', 'WARNING'], 'FEEDBACK_UTILITIES: App instance not available for success sound');
     // Fallback to direct audio engine if available
     if (window.audioEngine && typeof window.audioEngine.playNote === 'function') {
       debugLog(['FEEDBACK', 'SOUND'], 'FEEDBACK_UTILITIES: Using fallback audioEngine for success sound');
       window.audioEngine.playNote('success', 1, undefined, 0.4);
+    }else{
+      debugLog(['FEEDBACK', 'ERROR'], 'FEEDBACK_UTILITIES: AudioEngine not available for success sound');
     }
   }
 }
@@ -362,11 +364,13 @@ export function playErrorSound() {
     debugLog(['FEEDBACK', 'SOUND'], 'FEEDBACK_UTILITIES: Using window.app.playErrorSound');
     window.app.playErrorSound();
   } else {
-    debugLog(['FEEDBACK', 'ERROR'], 'FEEDBACK_UTILITIES: App instance not available for error sound');
+    debugLog(['FEEDBACK', 'WARNING'], 'FEEDBACK_UTILITIES: App instance not available for error sound');
     // Fallback to direct audio engine if available
     if (window.audioEngine && typeof window.audioEngine.playNote === 'function') {
       debugLog(['FEEDBACK', 'SOUND'], 'FEEDBACK_UTILITIES: Using fallback audioEngine for error sound');
       window.audioEngine.playNote('try_again', 1, undefined, 0.4);
+    }else{
+      debugLog(['FEEDBACK', 'ERROR'], 'FEEDBACK_UTILITIES: AudioEngine not available for error sound');
     }
   }
 }

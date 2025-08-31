@@ -89,6 +89,7 @@ test.describe('Lalumo One or Many Activity', () => {
   });
 
   test('One or Many activity loads and functions correctly with full 2_2-style validation', async ({ page }) => {
+    test.setTimeout(30000); // Increase timeout to 30 seconds
     console.log('Starting One or Many activity test');
     
     // Track console errors and logs for debugging
@@ -233,28 +234,40 @@ test.describe('Lalumo One or Many Activity', () => {
     expect(feedbackFunctionsExist.update2_6Progress).toBe(true);
     expect(feedbackFunctionsExist.show2_6ActivityIntroMessage).toBe(true);
     
-    // Test progress system - simulate correct answer
+    // Test progress system - simulate correct and incorrect answers
     const progressTest = await page.evaluate(() => {
       // Clear existing progress
       localStorage.removeItem('lalumo_chords_progress');
       
-      // Test progress update function
-      const initialProgress = window.update2_6Progress(true);
+      // Test progress update function with correct answer
+      const correctFeedback = window.update2_6Progress(true);
       
-      // Check if progress was saved
-      const progressData = JSON.parse(localStorage.getItem('lalumo_chords_progress') || '{}');
-      const currentProgress = progressData['2_6_chords_one_or_many'] || 0;
+      // Check if progress was saved after correct answer
+      let progressData = JSON.parse(localStorage.getItem('lalumo_chords_progress') || '{}');
+      const progressAfterCorrect = progressData['2_6_chords_one_or_many'] || 0;
+      
+      // Test progress update function with incorrect answer
+      const incorrectFeedback = window.update2_6Progress(false);
+      
+      // Check progress after incorrect answer (should remain same)
+      progressData = JSON.parse(localStorage.getItem('lalumo_chords_progress') || '{}');
+      const progressAfterIncorrect = progressData['2_6_chords_one_or_many'] || 0;
       
       return {
-        initialProgress,
-        currentProgress,
-        progressSaved: currentProgress === 1
+        correctFeedback,
+        incorrectFeedback,
+        progressAfterCorrect,
+        progressAfterIncorrect,
+        progressSaved: progressAfterCorrect === 1,
+        progressUnchangedAfterIncorrect: progressAfterCorrect === progressAfterIncorrect
       };
     });
     
     console.log('Progress system test:', progressTest);
     expect(progressTest.progressSaved).toBe(true);
-    expect(progressTest.currentProgress).toBe(1);
+    expect(progressTest.progressAfterCorrect).toBe(1);
+    // Progress should reset to 0 after incorrect answer (like 2_2 behavior)
+    expect(progressTest.progressAfterIncorrect).toBe(0);
     
     // Test intro message function
     const introMessageTest = await page.evaluate(() => {

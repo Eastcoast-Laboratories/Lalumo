@@ -244,10 +244,7 @@ reset-button:
   - die Eule macht die Augen auf, wenn man das Spiel startet 
 
 2_6:
-- Übernehme die programmierung für   showShakeError,
-  showRainbowSuccess,
-  highlightCorrectButton,
-  showActivityIntroMessage aus 2_2. mache alles genau so wie dort. auch den progress genauso wie bei 2_2
+- Übernehme die programmierung für  Progress aus 2_2. mache alles genau so wie dort. auch den progress genauso wie bei 2_2. 
 
 
 

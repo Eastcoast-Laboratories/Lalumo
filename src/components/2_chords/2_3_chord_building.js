@@ -6,14 +6,6 @@
 import { debugLog } from '../../utils/debug.js';
 import { showRainbowSuccess, showShakeError, highlightCorrectButton, showCompleteSuccess, playSuccessSound, playErrorSound } from '../shared/feedback.js';
 
-/**
- * Test function to verify module import is working correctly
- * @returns {boolean} True if import successful
- */
-export function testChordBuildingModuleImport() {
-  debugLog('CHORDS', 'Chord Building module successfully imported');
-  return true;
-}
 
 /**
  * Play the currently built chord in 2_3 activity

@@ -93,15 +93,6 @@ export function update2_5ButtonsVisibility(component) {
 }
 
 /**
- * Test function to verify module import is working correctly
- * @returns {boolean} True if import successful
- */
-export function testChordCharactersModuleImport() {
-  debugLog('CHORDS', 'Chord Characters module successfully imported');
-  return true;
-}
-
-/**
  * Updates the background image based on progress in the character matching activity
  * @param {Object} component - The Alpine component instance
  */

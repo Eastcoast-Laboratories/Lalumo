@@ -252,8 +252,10 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
 
 [ ] **One or many: (2_6_chords_one_or_many)
   Children hear one note or a chord and have to select if it is one note or a chord.
+  # Prompt for the background image:
+    A mystical forest scene at night but bright and colorfull in a green tone, vertical format 9:16, Studio Ghibli style. In the upper third on the right, a wise tawny owl (Waldkauz) sits quietly on a crooked mossy branch, glowing silver moonlight illuminating the fine texture of its feathers, with a few tiny fireflies flickering around it and faint silhouettes of small birds in the background. In the middle third, the left side shows a single lonely deer standing still in the bluish shadows, its breath faintly visible in the cold night air. On the middle right, dozens of bats are emerging from a large jagged dark cave, their wings catching faint glints of moonlight. The forest floor is rich with moss, mushrooms glowing faintly, and scattered fallen leaves. The atmosphere is mysterious, magical, and slightly eerie, with soft beams of moonlight cutting through drifting mist and deep forest tones. all very colorful and magical, glowing
 
-#### in details:
+#### Chapter 3 - Timbres in details:
 
 [ ] **Sound Character Matching: (3_1_timbres_sound-character-matching)**
   Children listen to different instrument sounds and match them to descriptive characters (e.g., "warm" for cello, "bright" for trumpet, "soft" for flute). Visual aids show expressive animals or elements representing each timbre quality.

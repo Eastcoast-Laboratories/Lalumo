@@ -39,7 +39,6 @@ import { update_progress_display } from '../components/shared/ui-helpers.js';
 
 // 2_1 Chord Color Matching Module
 import { 
-  testChordColorMatchingModuleImport,
   start2_1ColorMatching,
   start2_1GameMode,
   generate2_1Chord,
@@ -56,19 +55,10 @@ import {
   reset2_2ToFreePlayMode
 } from './2_chords/2_2_chords_stable_unstable.js';
 
-// 2_3 Chord Building Module
-import { testChordBuildingModuleImport } from './2_chords/2_3_chord_building.js';
-
-// 2_4 Missing Note Module
-import { testMissingNoteModuleImport } from './2_chords/2_4_missing_note.js';
-
 // 2_5 Chord Characters Module
 import { 
   update_2_5Background 
 } from './2_chords/2_5_chord_characters.js';
-
-// 2_6 Chord Characters Module
-import { test2_6_harmmony_gardenModuleImport } from './2_chords/2_6_harmmony_garden.js';
 
 // Import the audio engine
 import audioEngine from './audio-engine.js';
@@ -76,8 +66,6 @@ import audioEngine from './audio-engine.js';
 // Import chord styles
 import '../styles/2_chords.css';
 
-// test-chords-module.js
-import { testChordsModuleImport } from './test-chords-modules.js';
 
 // Define constants for the chord activities
 const CHORD_CHARACTERS_LEVEL_STEP = 10; // Level progression step for 2_5_chords_characters
@@ -2120,11 +2108,11 @@ function playCurrent2_6Challenge() {
   console.log('ONE_OR_MANY_2_6: Playing challenge:', current2_6Challenge);
   
   if (current2_6Challenge.type === 'one') {
-    // Play single note
-    audioEngine.playNote(current2_6Challenge.notes[0]);
+    // Play single note with same duration as chord (2.5 seconds like 2_2)
+    audioEngine.playNote(current2_6Challenge.notes[0], 2.5);
   } else {
-    // Play chord (all notes simultaneously)
-    audioEngine.playChord(current2_6Challenge.notes);
+    // Play chord (all notes simultaneously) with 2.5 second duration
+    audioEngine.playChord(current2_6Challenge.notes, 2.5);
   }
 }
 
@@ -2146,7 +2134,7 @@ function checkOneOrManyMatch(answer, data) {
     const feedback = update2_6Progress(isCorrect);
     
     if (isCorrect) {
-      debugLog('CHORDS_2_6', 'Correct answer! Showing success feedback');
+      debugLog(['CHORDS_2_6', 'FEEDBACK'], 'Correct answer! Showing success feedback');
       
       // Show complete success feedback like 2_2 (visual + audio)
       showCompleteSuccess();
@@ -2154,6 +2142,16 @@ function checkOneOrManyMatch(answer, data) {
       // Highlight correct button like 2_2
       const correctButtonId = answer === 'one' ? '#button_2_6_one' : '#button_2_6_many';
       highlightCorrectButton(correctButtonId);
+      
+      // Update component's progress state like 2_2
+      if (data && data.progress) {
+        data.progress['2_6_chords_one_or_many'] = JSON.parse(localStorage.getItem('lalumo_chords_progress') || '{}')['2_6_chords_one_or_many'] || 0;
+        debugLog(['CHORDS_2_6', 'PROGRESS_DEBUG'], 
+          `Progress updated in component after correct answer: ${data.progress['2_6_chords_one_or_many']}`);
+      } else {
+        debugLog(['CHORDS_2_6', 'PROGRESS_DEBUG', 'ERROR'], 
+          'Component or component.progress not available, progress UI may not update');
+      }
       
       // Show feedback using global system like 2_2
       if (window.showFeedbackMessage) {
@@ -2165,7 +2163,7 @@ function checkOneOrManyMatch(answer, data) {
           activityId: '2_6_chords_one_or_many',
           isIntroMessage: false,
           delaySeconds: 3,
-          component: this
+          component: data
         });
       }
       
@@ -2189,6 +2187,18 @@ function checkOneOrManyMatch(answer, data) {
       setTimeout(() => {
         highlightCorrectButton(correctButtonId);
       }, 800);
+      
+      // Update component's progress state like 2_2 (also for incorrect answers due to reset)
+      if (data && data.progress) {
+        data.progress['2_6_chords_one_or_many'] = JSON.parse(localStorage.getItem('lalumo_chords_progress') || '{}')['2_6_chords_one_or_many'] || 0;
+        // Trigger Alpine.js update like 2_2
+        data.$nextTick();
+        debugLog(['CHORDS_2_6', 'PROGRESS_DEBUG'], 
+          `Progress updated in component after incorrect answer: ${data.progress['2_6_chords_one_or_many']}`);
+      } else {
+        debugLog(['CHORDS_2_6', 'PROGRESS_DEBUG', 'ERROR'], 
+          'Component or component.progress not available, progress UI may not update');
+      }
       
       // Show feedback using global system like 2_2
       if (window.showFeedbackMessage) {
@@ -2223,31 +2233,50 @@ function update2_6Progress(isCorrect) {
   const progressData = JSON.parse(localStorage.getItem('lalumo_chords_progress') || '{}');
   const currentProgress = progressData['2_6_chords_one_or_many'] || 0;
   
+  debugLog(['CHORDS_2_6', 'PROGRESS_DEBUG'], `Current progress before update: ${currentProgress}, isCorrect: ${isCorrect}`);
+  
   if (isCorrect) {
-    // Increment progress like 2_2
-    progressData['2_6_chords_one_or_many'] = currentProgress + 1;
+    // Increment progress like 2_2 - THIS IS WHERE PROGRESS IS COUNTED UP
+    const newProgress = currentProgress + 1;
+    progressData['2_6_chords_one_or_many'] = newProgress;
     localStorage.setItem('lalumo_chords_progress', JSON.stringify(progressData));
     
-    debugLog('CHORDS_2_6', `Progress updated: ${currentProgress + 1}`);
+    debugLog(['CHORDS_2_6', 'PROGRESS_DEBUG'], `Progress incremented from ${currentProgress} to ${newProgress}`);
+    debugLog(['CHORDS_2_6', 'PROGRESS_DEBUG'], `Progress saved to localStorage:`, progressData);
     
     // Return success feedback like 2_2
     const feedbackMessages = {
       'one': window.Alpine?.store('strings')?.correct_one_note || 'Correct! It was one note!',
-      'many': window.Alpine?.store('strings')?.correct_many_notes || 'Correct! It was many notes!'
+      'many': window.Alpine?.store('strings')?.correct_many_notes || 'Correct! It were many notes!'
     };
     
     // Handle case when no challenge is active (for testing)
     const correctAnswer = current2_6Challenge?.correctAnswer || 'one';
+    debugLog(['CHORDS_2_6', 'PROGRESS_DEBUG'], `Returning success feedback for answer: ${correctAnswer}`);
     return feedbackMessages[correctAnswer] || 'Correct!';
   } else {
+    // Reset progress to the beginning of the current level (like 2_2)
+    const currentLevel = Math.floor(currentProgress / 10);
+    const newProgress = currentLevel * 10;
+    
+    // Only reset if we're past the start of a level
+    if (currentProgress > newProgress) {
+      progressData['2_6_chords_one_or_many'] = newProgress;
+      localStorage.setItem('lalumo_chords_progress', JSON.stringify(progressData));
+      debugLog(['CHORDS_2_6', 'PROGRESS_DEBUG'], `Progress reset from ${currentProgress} to ${newProgress} (level ${currentLevel})`);
+    } else {
+      debugLog(['CHORDS_2_6', 'PROGRESS_DEBUG'], `Progress unchanged at level threshold: ${currentProgress}`);
+    }
+    
     // Return error feedback like 2_2
     const feedbackMessages = {
       'one': window.Alpine?.store('strings')?.incorrect_was_one || 'No, it was one note!',
-      'many': window.Alpine?.store('strings')?.incorrect_was_many || 'No, it was many notes!'
+      'many': window.Alpine?.store('strings')?.incorrect_was_many || 'No, it were many notes!'
     };
     
     // Handle case when no challenge is active (for testing)
     const correctAnswer = current2_6Challenge?.correctAnswer || 'one';
+    debugLog(['CHORDS_2_6', 'PROGRESS_DEBUG'], `Returning error feedback for answer: ${correctAnswer}`);
     return feedbackMessages[correctAnswer] || 'Try again!';
   }
 }

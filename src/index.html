@@ -597,11 +597,10 @@
               x-data="{ isActive: false }"
               x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_6_chords_one_or_many')"
               :class="{ 'active': isActive }"
-              class="debug-element"
               role="button"
               tabindex="0"
             >
-              🌸 <span x-text="$store.strings?.one_or_many || 'One or Many'"></span>
+              🦇 <span x-text="$store.strings?.one_or_many || 'One or Many'"></span>
             </a>
           </div>
         </template>
@@ -1285,7 +1284,7 @@
         </div>
         
         <!-- 2_6 Chords - One or Many Activity -->
-        <div id="2_6_chords_one_or_many" x-show="mode === '2_6_chords_one_or_many'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_2_chords_stable_unstable-1.jpg">
+        <div id="2_6_chords_one_or_many" x-show="mode === '2_6_chords_one_or_many'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_6_deer_bats_colorful.jpg">
           
           <!-- Play buttons -->
           <div class="play-buttons-container-2_6">
@@ -1312,11 +1311,11 @@
           <div class="chords-container">            
             <!-- Progress display -->
             <div class="progress-display progress_2_6">
-              <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['2_6'] || 0)"></p>
-              <p x-show="(progress['2_6'] || 0) < 10" x-text="$store.strings?.one_or_many_level1 || 'Can you hear if it is one note or many notes?'"></p>
-              <p x-show="(progress['2_6'] || 0) >= 10 && (progress['2_6'] || 0) < 20" x-text="$store.strings?.one_or_many_level2 || 'Great job! Now with closer intervals! 🎵'"></p>
-              <p x-show="(progress['2_6'] || 0) >= 20 && (progress['2_6'] || 0) < 30" x-text="$store.strings?.one_or_many_level3 || 'Level 3: Complex harmonies vs. single tones! 🎼'"></p>
-              <p x-show="(progress['2_6'] || 0) >= 30" x-text="$store.strings?.one_or_many_master || 'You are a One or Many Master! 🎉'"></p>
+              <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['2_6_chords_one_or_many'] || 0)"></p>
+              <p x-show="(progress['2_6_chords_one_or_many'] || 0) < 10" x-text="$store.strings?.one_or_many_level1 || 'Can you hear if it is one note or many notes?'"></p>
+              <p x-show="(progress['2_6_chords_one_or_many'] || 0) >= 10 && (progress['2_6_chords_one_or_many'] || 0) < 20" x-text="$store.strings?.one_or_many_level2 || 'Great job! Now with closer intervals! 🎵'"></p>
+              <p x-show="(progress['2_6_chords_one_or_many'] || 0) >= 20 && (progress['2_6_chords_one_or_many'] || 0) < 30" x-text="$store.strings?.one_or_many_level3 || 'Level 3: Complex harmonies vs. single tones! 🎼'"></p>
+              <p x-show="(progress['2_6_chords_one_or_many'] || 0) >= 30" x-text="$store.strings?.one_or_many_master || 'You are a One or Many Master! 🎉'"></p>
             </div>
             
             <div class="button_2_6_grid">

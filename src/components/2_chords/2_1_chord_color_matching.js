@@ -17,15 +17,6 @@ import {
 } from '../shared/feedback.js';
 
 /**
- * Test function to verify module import is working correctly
- * @returns {boolean} True if import successful
- */
-export function testChordColorMatchingModuleImport() {
-  debugLog('CHORDS', 'Chord Color Matching module successfully imported');
-  return true;
-}
-
-/**
  * Start 2_1 Color Matching activity - similar to 2_5 start function
  * Initializes free play mode and generates first chord
  * @param {Object} component - Alpine.js component
