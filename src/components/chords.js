@@ -2148,8 +2148,8 @@ function checkOneOrManyMatch(answer, data) {
     if (isCorrect) {
       debugLog('CHORDS_2_6', 'Correct answer! Showing success feedback');
       
-      // Show rainbow success like 2_2
-      showRainbowSuccess();
+      // Show complete success feedback like 2_2 (visual + audio)
+      showCompleteSuccess();
       
       // Highlight correct button like 2_2
       const correctButtonId = answer === 'one' ? '#button_2_6_one' : '#button_2_6_many';
@@ -2177,11 +2177,11 @@ function checkOneOrManyMatch(answer, data) {
     } else {
       debugLog('CHORDS_2_6', 'Incorrect answer! Showing error feedback');
       
-      // Show shake error on incorrect button like 2_2
+      // Show complete error feedback like 2_2 (visual + audio)
       const incorrectButtonId = answer === 'one' ? '#button_2_6_one' : '#button_2_6_many';
       const incorrectButton = document.querySelector(incorrectButtonId);
       if (incorrectButton) {
-        showShakeError(incorrectButton);
+        showCompleteError(incorrectButton);
       }
       
       // Highlight correct button after delay like 2_2
