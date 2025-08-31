@@ -228,16 +228,9 @@ reset-button:
 2_3_chords_building
 
 2_4:
-- ergänz einen play button, der den gebauten akkord abspielt.
+- wenn man lange auf einen button drückt, dann soll der titel tag mit javascript als kleines overlay angezeigt werden, damit man das auch auf dem hany ermitteln kann
 
-- also es soll ja so:
-
-    - im game mode:
-    die 5 buttons machen irgendwie keinen sinn. man soll ja errrraten, welche note fehlt, also muss einem ja z.b. gesagt werden, "dies ist ein major7 akkord, welche note fehlt?" dann muss er 3 der 4 major 7 noten spielen. das icon soll zeigen, dass jetzt ein major 7 akkord kommt und man braucht 3 oder 4 buttons, je nach akkord, um zu sagen, welche stufe fehlt, dabei darf auch der grundton fehlen
-
-    aendere die buttons so, dass diese sich an den zufällig gewählten akkord anpassen.
-
-  - im free mode sollen alle 4 stufen buttons sichtbar sein und wenn man auf einen drueckt, wählt er einen zufälligen akkord aus den 8 möglichen aus und lässt dann den ton der gedrückten stufe weg
+- im free mode bleibt der erste akkord auf stufe 0 anscheinend hängen, also es wird immer der selbe ausgewählt, erst , wenn man einen anderen button drückt, dann wird auch der erste ab dann immer zufällig
 
 - wenn mögllich arbeite test-driven wie in @CODING_STANDARDS.md#L77-96 beschrieben
 -  benutze die unittests

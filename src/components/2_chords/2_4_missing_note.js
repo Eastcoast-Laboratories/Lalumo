@@ -584,6 +584,7 @@ export function convertDegreeToInterval(degree, component) {
   
   switch (degree) {
     case 'root':
+    case 0:
       return 0;
     case 'third':
       // Find the third in the chord (could be 3 or 4)

@@ -97,6 +97,185 @@
     .activity-container { padding: 12px; }
     .welcome-message { display: flex; align-items: center; margin: 10px 0; }
   </style>
+  <!-- Long-press tooltip script -->
+  <script>
+    // Long-press tooltip functionality - inline to ensure immediate availability
+    let longPressTimer = null;
+    let tooltipElement = null;
+    let isLongPressActive = false;
+    let mouseDownStartTime = null;
+
+    function startLongPress(event, text) {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+      }
+      isLongPressActive = false;
+      longPressTimer = setTimeout(() => {
+        // Get tooltip text at the time of showing, not at the time of starting
+        let tooltipText = text || event.target.title || event.target.getAttribute('title');
+        
+        // Debug: log what we're getting
+        console.log('Tooltip debug:', {
+          text: text,
+          title: event.target.title,
+          getAttribute: event.target.getAttribute('title'),
+          textContent: event.target.textContent,
+          innerHTML: event.target.innerHTML
+        });
+        
+        // Fallback: use the button's text content if no title is available
+        if (!tooltipText || tooltipText.trim() === '') {
+          const span = event.target.querySelector('span');
+          tooltipText = span ? span.textContent : event.target.textContent;
+        }
+        
+        showTooltip(event, tooltipText);
+        isLongPressActive = true;
+      }, 500);
+    }
+
+    function startMouseLongPress(event, text) {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+      }
+      isLongPressActive = false;
+      mouseDownStartTime = Date.now();
+      longPressTimer = setTimeout(() => {
+        // Get tooltip text at the time of showing, not at the time of starting
+        let tooltipText = text || event.target.title || event.target.getAttribute('title');
+        
+        // Fallback: use the button's text content if no title is available
+        if (!tooltipText || tooltipText.trim() === '') {
+          const span = event.target.querySelector('span');
+          tooltipText = span ? span.textContent : event.target.textContent;
+        }
+        
+        showTooltip(event, tooltipText);
+        isLongPressActive = true;
+      }, 500);
+    }
+
+    function endLongPress(event) {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+      hideTooltip();
+      if (isLongPressActive) {
+        event.preventDefault();
+        event.stopPropagation();
+        isLongPressActive = false;
+        return false;
+      }
+      if (!isLongPressActive) {
+        setTimeout(() => {
+          event.target.click();
+        }, 10);
+      }
+    }
+
+    function endMouseLongPress(event) {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+      hideTooltip();
+      if (isLongPressActive) {
+        event.preventDefault();
+        event.stopPropagation();
+        isLongPressActive = false;
+        return false;
+      }
+      mouseDownStartTime = null;
+    }
+
+    function cancelLongPress(event) {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+      hideTooltip();
+      isLongPressActive = false;
+    }
+
+    function cancelMouseLongPress(event) {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+      hideTooltip();
+      isLongPressActive = false;
+      mouseDownStartTime = null;
+    }
+
+    function showTooltip(event, text) {
+      hideTooltip();
+      tooltipElement = document.createElement('div');
+      tooltipElement.className = 'longpress-tooltip';
+      tooltipElement.textContent = text;
+      
+      Object.assign(tooltipElement.style, {
+        position: 'fixed',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        color: 'white',
+        padding: '8px 12px',
+        borderRadius: '6px',
+        fontSize: '14px',
+        fontFamily: 'sans-serif',
+        zIndex: '10000',
+        pointerEvents: 'none',
+        whiteSpace: 'nowrap',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+        opacity: '0',
+        transition: 'opacity 0.2s ease-in-out'
+      });
+      
+      document.body.appendChild(tooltipElement);
+      
+      let clientX, clientY;
+      if (event.touches && event.touches.length > 0) {
+        const touch = event.touches[0] || event.changedTouches[0];
+        clientX = touch.clientX;
+        clientY = touch.clientY;
+      } else {
+        clientX = event.clientX;
+        clientY = event.clientY;
+      }
+      
+      const rect = tooltipElement.getBoundingClientRect();
+      let x = clientX - rect.width / 2;
+      let y = clientY - rect.height - 10;
+      
+      if (x < 10) x = 10;
+      if (x + rect.width > window.innerWidth - 10) x = window.innerWidth - rect.width - 10;
+      if (y < 10) y = clientY + 10;
+      
+      tooltipElement.style.left = x + 'px';
+      tooltipElement.style.top = y + 'px';
+      
+      setTimeout(() => {
+        if (tooltipElement) {
+          tooltipElement.style.opacity = '1';
+        }
+      }, 10);
+    }
+
+    function hideTooltip() {
+      if (tooltipElement) {
+        tooltipElement.remove();
+        tooltipElement = null;
+      }
+    }
+
+    // Make functions globally available
+    window.startLongPress = startLongPress;
+    window.endLongPress = endLongPress;
+    window.cancelLongPress = cancelLongPress;
+    window.startMouseLongPress = startMouseLongPress;
+    window.endMouseLongPress = endMouseLongPress;
+    window.cancelMouseLongPress = cancelMouseLongPress;
+  </script>
+  
   <!-- Scripts and more styles will be injected by webpack -->
   <!-- Cache busting wird durch webpack erledigt -->
   
@@ -934,7 +1113,14 @@
             </div>
             
             <!-- Chord Display -->
-            <div class="chord-display-container" @click="playCompleteChord2_4($data)" style="cursor: pointer;" :title="$store.strings?.play_complete_chord || 'Play complete chord'">
+            <div class="chord-display-container" @click="playCompleteChord2_4($data)" style="cursor: pointer;" 
+                 :title="$store.strings?.play_complete_chord || 'Play complete chord'"
+                 @touchstart.prevent="startLongPress($event)" 
+                 @touchend.prevent="endLongPress($event)" 
+                 @touchmove.prevent="cancelLongPress($event)"
+                 @mousedown="startMouseLongPress($event)"
+                 @mouseup="endMouseLongPress($event)"
+                 @mouseleave="cancelMouseLongPress($event)">
               <div id="chord-display-2_4" class="chord-icon" data-chord-type=""></div>
             </div>
             
@@ -944,16 +1130,44 @@
               <!-- Free Play Mode: Show all 4 basic degree buttons (always visible) -->
               <template x-if="is2_4FreePlayMode">
                 <div class="free-play-buttons">
-                  <button id="button_2_4_root" @click="check2_4Answer(0, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
+                  <button id="button_2_4_root" @click="check2_4Answer(0, $data)" class="note-button activity-button-blocker" 
+                    :title="$store.strings?.root || 'Root'"
+                    @touchstart.prevent="startLongPress($event)" 
+                    @touchend.prevent="endLongPress($event)" 
+                    @touchmove.prevent="cancelLongPress($event)"
+                    @mousedown="startMouseLongPress($event)"
+                    @mouseup="endMouseLongPress($event)"
+                    @mouseleave="cancelMouseLongPress($event)">
                     <span x-text="$store.strings?.root || 'Root'">Root</span>
                   </button>
-                  <button id="button_2_4_third" @click="check2_4Answer('third', $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
+                  <button id="button_2_4_third" @click="check2_4Answer('third', $data)" class="note-button activity-button-blocker" 
+                    :title="$store.strings?.third || 'Third'"
+                    @touchstart.prevent="startLongPress($event)" 
+                    @touchend.prevent="endLongPress($event)" 
+                    @touchmove.prevent="cancelLongPress($event)"
+                    @mousedown="startMouseLongPress($event)"
+                    @mouseup="endMouseLongPress($event)"
+                    @mouseleave="cancelMouseLongPress($event)">
                     <span x-text="$store.strings?.third || 'Third'">Third</span>
                   </button>
-                  <button id="button_2_4_fifth" @click="check2_4Answer('fifth', $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
+                  <button id="button_2_4_fifth" @click="check2_4Answer('fifth', $data)" class="note-button activity-button-blocker" 
+                    :title="$store.strings?.fifth || 'Fifth'"
+                    @touchstart.prevent="startLongPress($event)" 
+                    @touchend.prevent="endLongPress($event)" 
+                    @touchmove.prevent="cancelLongPress($event)"
+                    @mousedown="startMouseLongPress($event)"
+                    @mouseup="endMouseLongPress($event)"
+                    @mouseleave="cancelMouseLongPress($event)">
                     <span x-text="$store.strings?.fifth || 'Fifth'">Fifth</span>
                   </button>
-                  <button id="button_2_4_seventh" @click="check2_4Answer('seventh', $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
+                  <button id="button_2_4_seventh" @click="check2_4Answer('seventh', $data)" class="note-button activity-button-blocker" 
+                    :title="$store.strings?.seventh || 'Seventh'"
+                    @touchstart.prevent="startLongPress($event)" 
+                    @touchend.prevent="endLongPress($event)" 
+                    @touchmove.prevent="cancelLongPress($event)"
+                    @mousedown="startMouseLongPress($event)"
+                    @mouseup="endMouseLongPress($event)"
+                    @mouseleave="cancelMouseLongPress($event)">
                     <span x-text="$store.strings?.seventh || 'Seventh'">Seventh</span>
                   </button>
                 </div>
@@ -964,13 +1178,18 @@
                 <div class="game-mode-buttons">
                   <template x-for="interval in current2_4ChordIntervals || []" :key="interval">
                     <button 
-                      :id="'button_2_4_interval_' + interval" 
+                      :id="'button_2_4_' + interval" 
                       @click="check2_4Answer(interval, $data)" 
-                      class="note-button activity-button-blocker" 
-                      @touchstart.prevent 
-                      @touchend.prevent="$el.click();"
-                      x-text="window.getIntervalName(interval)"
-                    ></button>
+                      class="note-button activity-button-blocker"
+                      :title="getIntervalName(interval)"
+                      @touchstart.prevent="startLongPress($event)" 
+                      @touchend.prevent="endLongPress($event)" 
+                      @touchmove.prevent="cancelLongPress($event)"
+                      @mousedown="startMouseLongPress($event)"
+                      @mouseup="endMouseLongPress($event)"
+                      @mouseleave="cancelMouseLongPress($event)">
+                      <span x-text="getIntervalName(interval)"></span>
+                    </button>
                   </template>
                 </div>
               </template>
