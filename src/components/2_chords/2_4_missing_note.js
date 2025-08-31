@@ -384,10 +384,32 @@ export function check2_4Answer(selectedInterval, component) {
         window.audioEngine.playErrorMelody();
       }
       
-      // Highlight correct button
-      const correctButton = document.querySelector(`[onclick*="check2_4Answer(${current2_4Challenge.missingNote}"]`);
+      // Highlight correct button - use ID-based selector since Alpine.js uses @click, not onclick
+      let correctButton = null;
+      
+      // Map intervals to button IDs
+      const intervalToButtonId = {
+        3: 'button_2_4_minor_third',
+        4: 'button_2_4_major_third', 
+        6: 'button_2_4_diminished_fifth',
+        7: 'button_2_4_perfect_fifth',
+        8: 'button_2_4_augmented_fifth'
+      };
+      
+      const buttonId = intervalToButtonId[current2_4Challenge.missingNote];
+      if (buttonId) {
+        correctButton = document.getElementById(buttonId);
+      }
+      
+      debugLog(['MISSING_NOTE_2_4', 'CORRECT_HIGHLIGHT'], `Searching for button with interval ${current2_4Challenge.missingNote}, buttonId: ${buttonId}, found: ${correctButton}`);
+      
       if (correctButton) {
-        highlightCorrectButton(correctButton);
+        // Add a small delay to ensure the error animation has time to play
+        setTimeout(() => {
+          highlightCorrectButton(correctButton);
+        }, 1000);
+      } else {
+        debugLog(['MISSING_NOTE_2_4', 'CORRECT_HIGHLIGHT'], `No button found for interval ${current2_4Challenge.missingNote}`);
       }
       
       // Replay challenge after delay

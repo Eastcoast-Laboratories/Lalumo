@@ -408,7 +408,7 @@ export function getLastInteractedElement() {
 }
 
 /**
- * Highlight the correct button/element with a brief visual effect
+ * Highlight the correct button/element with a brief visual effect (green border)
  * @param {HTMLElement|string} correctElement - The correct element to highlight, or CSS selector
  * @param {Object} options - Configuration options
  * @param {number} [options.duration=1000] - Duration of highlight effect in milliseconds

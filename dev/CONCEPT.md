@@ -180,7 +180,7 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
     - reset all progress function works
     - success rainbow and success sound
     - error sound
-    - show correct correct button in green
+    - show correct correct button in green (highlightCorrectButton())
     - copy the background image from 2_5, i'll replace it with a new image laterr
     - make sure it is included in game export and import in the settings screen (maybe nothing to do, cause all localstroage data is exported anyway)
     - make sure the progress works and is saved

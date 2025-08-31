@@ -233,8 +233,7 @@ reset-button:
 - passe den stil in der index.html an den von 2_5 an, kopiere erstmal den background von 2_5 setze den satz "Höre den unvollständigen Akkord und wähle aus, welche Note fehlt." in die help-message wie bei 2_5. führe alles aus wie hier beschrieben: @CODING_STANDARDS.md#L3-96  benutze @CODING_STANDARDS.md#L3-96  als checkliste, und hake dort mit grünen Haken ab, was erledigt ist für 2_4.
 - wenn mögllich arbeite test-driven wie in @CODING_STANDARDS.md#L77-96 beschrieben
 - die introMessage wird noch nicht angezeigt, schaue genau, wie es bei 2_5 funktioniert und mache es genau so
-- zeige an, was als nächstes freigeschaltet werden kann bei wieviel progress
-  benutze die unittests
+-  benutze die unittests
 
 -------
 
