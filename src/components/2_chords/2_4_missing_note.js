@@ -136,8 +136,18 @@ export function generate2_4FreePlayChallenge(component) {
   const level = get_2_4_level(component);
   
   // Define possible chord types based on level - include augmented for comprehensive testing
-  const chordTypes = level >= 2 ? ['major', 'minor', 'diminished', 'augmented'] : ['major', 'minor'];
+  let chordTypes = ['major', 'minor'];
+  if (level >= 1) chordTypes = ['major', 'minor'];
+  if (level >= 2) chordTypes.push('diminished');
+  if (level >= 3) chordTypes.push('augmented');
+  if (level >= 4) chordTypes.push('dominant7');
+  if (level >= 5) chordTypes.push('major7');
+  if (level >= 6) chordTypes.push('sus2');
+  if (level >= 7) chordTypes.push('sus4');
   const chordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
+  
+
+  
   
   // Define possible missing notes (intervals)
   const possibleMissingNotes = [3, 4, 6, 7, 8]; // minor 3rd, major 3rd, dim 5th, perfect 5th, aug 5th
@@ -252,8 +262,12 @@ export function generate2_4Challenge(component) {
   
   const level = get_2_4_level(component);
   
-  // Define possible chord types based on level - include augmented for comprehensive testing
-  const chordTypes = level >= 2 ? ['major', 'minor', 'diminished', 'augmented'] : ['major', 'minor'];
+  // Define possible chord types based on level - include all basic types for testing
+  let chordTypes = ['major', 'minor', 'diminished', 'augmented'];
+  if (level >= 2) chordTypes.push('dominant7');
+  if (level >= 3) chordTypes.push('major7');
+  if (level >= 4) chordTypes.push('sus2');
+  if (level >= 5) chordTypes.push('sus4');
   const chordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
   
   // Define possible missing notes (intervals)

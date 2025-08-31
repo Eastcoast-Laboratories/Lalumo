@@ -216,42 +216,10 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
     }
   }
   
-  // Use the messages from strings.xml that we added
   if (!message) {
     debugLog('LOG_INTRO_MESSAGE', 'Using direct strings.xml messages for:', activityMode);
     const messages = {
-      '1_1_pitches_high_or_low': {
-        'en': 'Listen to the Note and choose if it is of a high or low pitch!',
-        'de': 'Höre dir die Note an und wähle, ob sie hoch oder tief ist!'
-      },
-      '1_2_pitches_match-sounds': {
-        'en': 'Listen to the Melody and choose if it is ascending or descending!',
-        'de': 'Höre dir die Melodie an und wähle, ob sie auf- oder absteigend ist!'
-      },
-      'draw': {
-        'en': 'Draw and listen – your line becomes music!',
-        'de': 'Male und hör zu – deine Linie wird zu Musik!'
-      },
-      '1_4_pitches_does-it-sound-right': {
-        'en': 'Listen to the melody! Does it sound right? Or is there a wrong note?',
-        'de': 'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?'
-      },
-      '1_5_pitches_memory-game': {
-        'en': 'Listen carefully and remember the melody! Can you play it back?',
-        'de': 'Höre genau hin und merke dir die Melodie! Kannst du sie nachspielen?'
-      },
-      '2_1_chords_color-matching': {
-        'en': 'Match magical forest elements to the chords you hear! 🌲✨',
-        'de': 'Ordne magische Waldelemente den Akkorden zu! 🌲✨'
-      },
-      '2_2_chords_stable_unstable': {
-        'en': 'Listen to the chord, does it sound stable or unstable? Click on the matching part of the forest',
-        'de': 'Höre dir den Akkord an, klingt er stabil oder instabil? Klicke auf die passende Seite im Wald'
-      },
-      '2_5_chords_characters': {
-        'en': 'Listen to the chord and match it to the right character!',
-        'de': 'Höre dir die Akkord-Art an und wähle das passende Tier!'
-      }
+     // Use the messages from strings.xml that we added
     };
     
     const activityMessages = messages[activityMode] || 'no such mode ' + activityMode;

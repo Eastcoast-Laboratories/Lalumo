@@ -99,9 +99,13 @@
     <string name="missing_note_title">Finde die fehlende Note</string>
     <string name="missing_note_intro">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
     <string name="missing_note_help">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
-    <string name="missing_note_level1">Kannst du erkennen, welche Note im Akkord fehlt?</string>
-    <string name="missing_note_level2">Gut gemacht! Jetzt probieren wir komplexere Akkorde! 🎵</string>
-    <string name="missing_note_level3">Stufe 3: Erweiterte Harmonien mit fehlenden Noten! 🎼</string>
+    <string name="missing_note_level1">Kannst du erkennen, welche Note im Akkord fehlt? Nur Dur- und Moll-Akkorde!</string>
+    <string name="missing_note_level2">Gut gemacht! Jetzt probieren wir verminderte Akkorde! 🎵</string>
+    <string name="missing_note_level3">Stufe 3: Übermäßige Akkorde freigeschaltet! ✨</string>
+    <string name="missing_note_level4">Stufe 4: Dominantseptakkorde! 🎼</string>
+    <string name="missing_note_level5">Stufe 5: Dur-Septakkorde! 🎶</string>
+    <string name="missing_note_level6">Stufe 6: Sus2-Akkorde! 🎸</string>
+    <string name="missing_note_level7">Stufe 7: Sus4-Akkorde! 🎹</string>
     <string name="missing_note_master">Du bist ein Meister der fehlenden Noten! 🎉</string>
     <string name="intro_2_4_missing_note">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
     <string name="minor_third">Kleine Terz</string>

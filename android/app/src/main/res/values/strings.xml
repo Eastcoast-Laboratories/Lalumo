@@ -99,9 +99,13 @@
     <string name="missing_note_title">Find the Missing Note</string>
     <string name="missing_note_intro">Listen to the incomplete chord and select which note is missing.</string>
     <string name="missing_note_help">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
-    <string name="missing_note_level1">Can you identify which note is missing from the chord?</string>
-    <string name="missing_note_level2">Great job! Now trying more complex chords! 🎵</string>
-    <string name="missing_note_level3">Level 3: Extended harmonies with missing notes! 🎼</string>
+    <string name="missing_note_level1">Can you identify which note is missing from the chord? Major and minor chords only!</string>
+    <string name="missing_note_level2">Great job! Now trying diminished chords! 🎵</string>
+    <string name="missing_note_level3">Level 3: Augmented chords unlocked! ✨</string>
+    <string name="missing_note_level4">Level 4: Dominant 7th chords! 🎼</string>
+    <string name="missing_note_level5">Level 5: Major 7th harmonies! 🎶</string>
+    <string name="missing_note_level6">Level 6: Sus2 chords! 🎸</string>
+    <string name="missing_note_level7">Level 7: Sus4 chords! 🎹</string>
     <string name="missing_note_master">You are a Missing Note Master! 🎉</string>
     <string name="intro_2_4_missing_note">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
     <string name="minor_third">Minor 3rd</string>
