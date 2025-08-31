@@ -779,7 +779,18 @@ export function chords() {
       } else if (mode === '2_4_chords_missing-note') {
         // Initialisierung für Missing Note
         debugLog('CHORDS', 'Initializing missing note activity');
-        // Hier den Init-Code für diese Aktivität einfügen
+        
+        // Show intro message for this activity
+        window.showActivityIntroMessage('2_4_chords_missing-note', this);
+        
+        // Always ensure we start in free play mode when entering the activity
+        this.is2_4FreePlayMode = true;
+        debugLog('CHORDS', '[2_4] Reset to free play mode on activity entry');
+        
+        // Initialize 2_4 activity in free play mode
+        if (window.start2_4MissingNote) {
+          window.start2_4MissingNote(this);
+        }
       } else if (mode === '2_5_chords_characters') {
         // Initialisierung für Character Matching
         debugLog('CHORDS', 'Initializing character matching activity');
@@ -1409,6 +1420,13 @@ export function chords() {
     is2_5FreePlayMode: true,
     
     /**
+     * Free play mode flag for 2_4_missing_note
+     * When true, pressing note buttons plays individual notes without checking answers
+     * When false (game mode), the regular game logic applies
+     */
+    is2_4FreePlayMode: true,
+    
+    /**
      * Store the previous transposition amount to avoid direct repetition
      */
     previousTransposeAmount: 0,
@@ -1931,5 +1949,15 @@ if (typeof window !== 'undefined') {
     window.playBuiltChord = module.playBuiltChord;
     window.show2_3IntroMessage = module.show2_3IntroMessage;
     window.toggleNoteInChord = module.toggleNoteInChord;
+  });
+  
+  // Make 2_4 functions available globally
+  import('./2_chords/2_4_missing_note.js').then(module => {
+    window.start2_4MissingNote = module.start2_4MissingNote;
+    window.start2_4GameMode = module.start2_4GameMode;
+    window.generate2_4Challenge = module.generate2_4Challenge;
+    window.playCurrent2_4Challenge = module.playCurrent2_4Challenge;
+    window.check2_4Answer = module.check2_4Answer;
+    window.reset_2_4_Progress = module.reset_2_4_Progress;
   });
 }

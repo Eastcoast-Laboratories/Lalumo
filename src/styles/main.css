@@ -1034,7 +1034,7 @@ body {
 @media (min-width: 1024px) {
   /* Container layout modifications */
   .container {
-    padding-left: 325px; /* Increased space for the menu plus margin */
+    padding-left: 130px; /* Increased space for the menu plus margin */
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;

@@ -98,6 +98,16 @@
     <!-- Chords - Missing Note Activity -->
     <string name="missing_note_title">Find the Missing Note</string>
     <string name="missing_note_intro">Listen to the incomplete chord and select which note is missing.</string>
+    <string name="missing_note_help">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
+    <string name="missing_note_level1">Can you identify which note is missing from the chord?</string>
+    <string name="missing_note_level2">Great job! Now trying more complex chords! 🎵</string>
+    <string name="missing_note_level3">Level 3: Extended harmonies with missing notes! 🎼</string>
+    <string name="missing_note_master">You are a Missing Note Master! 🎉</string>
+    <string name="intro_2_4_missing_note">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
+    <string name="minor_third">Minor 3rd</string>
+    <string name="major_third">Major 3rd</string>
+    <string name="perfect_fifth">Perfect 5th</string>
+    <string name="diminished_fifth">Diminished 5th</string>
     <string name="play_incomplete_chord">Play Incomplete Chord</string>
         
     <!-- Chords - Harmony Gardens Activity -->

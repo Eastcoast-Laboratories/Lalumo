@@ -184,6 +184,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       '1_5_pitches_memory': 'intro_1_5_pitches_memory',
       '2_1_chords_color-matching': 'intro_2_1_chords_color_matching',
       '2_2_chords_stable_unstable': 'intro_2_2_chords_stable_unstable',
+      '2_4_chords_missing-note': 'intro_2_4_missing_note',
       '2_5_chords_characters': 'intro_2_5_chords_characters'
     };
     
@@ -204,6 +205,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       '1_5_pitches_memory': 'intro_1_5_pitches_memory',
       '2_1_chords_color-matching': 'intro_2_1_chords_color_matching',
       '2_2_chords_stable_unstable': 'intro_2_2_chords_stable_unstable',
+      '2_4_chords_missing-note': 'intro_2_4_missing_note',
       '2_5_chords_characters': 'intro_2_5_chords_characters'
     };
     

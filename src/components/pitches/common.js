@@ -14,6 +14,7 @@ import { reset_1_5_MemoryGame_Progress } from './1_5_memory_game.js';
 import { reset_2_1_Progress } from '../2_chords/2_1_chord_color_matching.js';
 import { reset_2_2_Progress } from '../2_chords/2_2_chords_stable_unstable.js';
 import { reset_2_5_Progress } from '../2_chords/2_5_chord_characters.js';
+import { reset_2_4_Progress } from '../2_chords/2_4_missing_note.js';
 
 
 // Exportiere eine Testfunktion für Import-Tests
@@ -138,6 +139,7 @@ export function resetCurrentActivity(currentMode) {
     '1_5': () => reset_1_5_MemoryGame_Progress(window.pitchesComponent),
     '2_1': () => reset_2_1_Progress(window.chordsComponent),
     '2_2': () => reset_2_2_Progress(window.chordsComponent),
+    '2_4': () => reset_2_4_Progress(window.chordsComponent),
     '2_5': () => reset_2_5_Progress(window.chordsComponent),
     // Legacy support for old keys (backward compatibility)
     '1_1_pitches_high_or_low': () => reset_1_1_HighOrLow_Progress(window.pitchesComponent),
@@ -147,6 +149,7 @@ export function resetCurrentActivity(currentMode) {
     '1_5_pitches_memory-game': () => reset_1_5_MemoryGame_Progress(window.pitchesComponent),
     '2_1_chords_color-matching': () => reset_2_1_Progress(window.chordsComponent),
     '2_2_chords_stable_unstable': () => reset_2_2_Progress(window.chordsComponent),
+    '2_4_chords_missing-note': () => reset_2_4_Progress(window.chordsComponent),
     '2_5_chords_characters': () => reset_2_5_Progress(window.chordsComponent)
   };
   
@@ -258,6 +261,9 @@ export function resetAllProgress(component) {
   
   debugLog('PITCHES', 'RESET_ALL: Resetting Stable or Unstable Chords activity');
   reset_2_2_Progress(window.chordsComponent);
+  
+  debugLog('PITCHES', 'RESET_ALL: Resetting Missing Note activity');
+  reset_2_4_Progress(window.chordsComponent);
   
   debugLog('PITCHES', 'RESET_ALL: Resetting Chord Characters activity');
   reset_2_5_Progress(window.chordsComponent);
