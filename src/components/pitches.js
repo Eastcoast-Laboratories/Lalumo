@@ -1234,7 +1234,7 @@ export function pitches() {
         
         // Play success sound
         audioEngine.playNote('success', 1, undefined, 0.4);
-        debugLog('PITCHES', 'AUDIO: Playing success feedback sound with audio engine');
+        debugLog(['PITCHES', 'FEEDBACK'], 'AUDIO: Playing success feedback sound with audio engine');
         
         // Create and show rainbow success animation
         

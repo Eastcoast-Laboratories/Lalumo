@@ -4,6 +4,7 @@
 
 // Import debug utilities
 import { debugLog } from '../../utils/debug.js';
+import { showRainbowSuccess, showShakeError, highlightCorrectButton, showCompleteSuccess, playSuccessSound, playErrorSound } from '../shared/feedback.js';
 
 /**
  * Test function to verify module import is working correctly

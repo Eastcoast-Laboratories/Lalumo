@@ -6,6 +6,7 @@
 import { debugLog } from '../../utils/debug.js';
 import { preloadBackgroundImage } from '../shared/image-utils.js';
 import { getChordMapping, getElementFromChordType, getChordIntervals, getElementForChordType } from '../shared/chord-mapping.js';
+import { showRainbowSuccess, showShakeError, highlightCorrectButton, showCompleteSuccess, playSuccessSound, playErrorSound } from '../shared/feedback.js';
 
 /**
  * Convert intervals to note names
@@ -77,11 +78,6 @@ function getFullChordIntervals(chordType) {
       return [0, 4, 7]; // Default to major
   }
 }
-
-import { getActivityProgress } from '../shared/progress-utils.js';
-
-// Import feedback system
-import { showRainbowSuccess, showShakeError, highlightCorrectButton, showCompleteSuccess } from '../shared/feedback.js';
 
 /**
  * Current challenge data for 2_4 Missing Note activity
@@ -355,10 +351,8 @@ export function check2_4Answer(selectedInterval, component) {
       // Show success feedback
       showRainbowSuccess();
       
-      // Play success sound and increment progress
-      if (window.audioEngine && window.audioEngine.playSuccessSound) {
-        window.audioEngine.playSuccessSound();
-      }
+      // Play success sound 
+      playSuccessSound();
       
       // Increment progress
       if (!component.progress) component.progress = {};
@@ -380,9 +374,7 @@ export function check2_4Answer(selectedInterval, component) {
       showShakeError();
       
       // Play error sound
-      if (window.audioEngine && window.audioEngine.playErrorMelody) {
-        window.audioEngine.playErrorMelody();
-      }
+      playErrorSound();
       
       // Highlight correct button - use ID-based selector since Alpine.js uses @click, not onclick
       let correctButton = null;

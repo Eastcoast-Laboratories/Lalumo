@@ -1644,6 +1644,7 @@ export function app() {
      * Play a success sound (ascending arpeggio)
      */
     playSuccessSound() {
+      debugLog(['APP', 'FEEDBACK'], 'Playing success sound');
       const frequencies = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
       this.playToneSequence(frequencies, [0.2, 0.2, 0.2, 0.3], 0.15);
     },
@@ -1652,6 +1653,7 @@ export function app() {
      * Play an error sound (descending minor third)
      */
     playErrorSound() {
+      debugLog(['APP', 'FEEDBACK'], 'Playing error sound');
       const frequencies = [329.63, 261.63]; // E4, C4
       this.playToneSequence(frequencies, [0.3, 0.5], 0.3);
     },
