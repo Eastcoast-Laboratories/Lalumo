@@ -626,3 +626,18 @@ export function hideActivityProgressBar(progressClass = 'activity-progress') {
     debugLog('FEEDBACK', `PROGRESS_BAR: Removed progress bar with class: ${progressClass}`);
   }
 }
+
+// Make functions available globally
+if (typeof window !== 'undefined') {
+  window.showFeedbackMessage = showFeedbackMessage;
+  window.showActivityIntroMessage = showActivityIntroMessage;
+  window.showRainbowSuccess = showRainbowSuccess;
+  window.showBigRainbowSuccess = showBigRainbowSuccess;
+  window.showShakeError = showShakeError;
+  window.showCompleteSuccess = showCompleteSuccess;
+  window.showCompleteBigSuccess = showCompleteBigSuccess;
+  window.showCompleteError = showCompleteError;
+  window.highlightCorrectButton = highlightCorrectButton;
+  window.showActivityProgressBar = showActivityProgressBar;
+  window.hideActivityProgressBar = hideActivityProgressBar;
+}

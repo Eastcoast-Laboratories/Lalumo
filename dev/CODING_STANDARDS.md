@@ -7,10 +7,17 @@ Follow this comprehensive checklist based on the proven 2_5 activity pattern:
 
 #### Core Activity Structure
 - **Dual Mode System**: Implement both free play mode (exploration) and game mode (challenges)
-  - Free play: Click buttons to hear sounds without scoring
-  - Game mode: Listen and select correct answers with progress tracking
-- **Start Button**: Use this button to transition from free play to game mode
-- **Play Button**: Replay current challenge without changing it (e.g. keep the transposition) (game mode only)
+  - Free play:
+    - first show the **Intro Messages**
+    - Click buttons to hear sounds without scoring and rogress
+    - each button plays a random sound in the scope of the activity with
+  - **Start Button**: Use this button to transition from free play to game mode
+    - the **Start button** becomes the **Play Button**
+  - Game mode: Listen and select correct answers with
+    - progress tracking
+    - a replay function, that replays the current challenge without changing it (e.g. keep the transposition) triggerred by:
+      - the **Play Button**
+      - a wrong answer after a short delay
 
 #### Audio & Feedback Integration
 - **Central Audio Engine**: Use `playChordByType()` or equivalent from shared audio system

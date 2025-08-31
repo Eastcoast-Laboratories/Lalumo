@@ -15,6 +15,9 @@ import { debugLog } from '../utils/debug';
 // Common Module
 export { testCommonModuleImport } from './2_chords/common.js';
 
+// 2_3 Chord Building Module
+export { playBuiltChord, show2_3IntroMessage, toggleNoteInChord } from './2_chords/2_3_chord_building.js';
+
 // Import shared feedback utilities
 import { 
   showFeedbackMessage, 
@@ -89,6 +92,9 @@ export function chords() {
     oscillators: {},
     activeChord: null,
     isPlaying: false,
+    
+    // 2_3 Chord Building Activity state
+    builtNotes: [],
     
     // Constants for activity configuration
     LEVEL_STEP: CHORD_CHARACTERS_LEVEL_STEP,
@@ -308,6 +314,15 @@ export function chords() {
         
         // Import and initialize the central audio engine
         const audioEngine = (await import('./audio-engine.js')).default;
+        
+        // Make audioEngine globally available for components that need direct access
+        window.audioEngine = audioEngine;
+        
+        // Add playNote method to component for 2_3 chord building
+        this.playNote = (noteName, duration = 0.5) => {
+          debugLog('CHORDS_AUDIO', `Component playNote called: ${noteName}, duration: ${duration}`);
+          return audioEngine.playNote(noteName, duration);
+        };
         
         if (!audioEngine._isInitialized) {
           debugLog('CHORDS', 'Initializing central audio engine for chord playback');
@@ -543,6 +558,77 @@ export function chords() {
       }
     },
     
+    /**
+     * Play chord from intervals array
+     * @param {Array} intervals - Array of semitone intervals from root
+     * @param {string} rootNote - Root note (e.g., 'C4')
+     * @param {Object} options - Playback options
+     */
+    async playChordFromIntervals(intervals, rootNote = 'C4', options = { duration: 2 }) {
+      debugLog('CHORDS_AUDIO', `playChordFromIntervals called with intervals: [${intervals.join(', ')}], root: ${rootNote}`);
+      
+      if (!intervals || intervals.length === 0) {
+        debugLog('CHORDS_AUDIO', 'No intervals provided - cannot play chord');
+        return;
+      }
+      
+      this.stopAllSounds();
+      
+      try {
+        // Force Tone.js to start if needed
+        if (Tone.context.state !== "running") {
+          debugLog('CHORDS_AUDIO', 'Starting Tone.js context for chord playback');
+          await Tone.start();
+        }
+        
+        // Parse the root note
+        const rootMatch = rootNote.match(/([A-G][#b]?)([0-9])/);
+        if (!rootMatch) {
+          debugLog('CHORDS_AUDIO', `ERROR: Cannot parse root note format: ${rootNote}`);
+          return;
+        }
+        
+        const rootLetter = rootMatch[1];
+        const octave = parseInt(rootMatch[2]);
+        
+        // Define chromatic scale
+        const chromaticScale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        
+        // Find root note index
+        let rootIndex = chromaticScale.indexOf(rootLetter);
+        if (rootIndex === -1) {
+          // Handle enharmonic equivalents
+          if (rootLetter === 'Bb') rootIndex = chromaticScale.indexOf('A#');
+          else if (rootLetter === 'Eb') rootIndex = chromaticScale.indexOf('D#');
+          
+          if (rootIndex === -1) {
+            debugLog('CHORDS_AUDIO', `ERROR: Cannot find note ${rootLetter} in chromatic scale`);
+            return;
+          }
+        }
+        
+        // Calculate note names from intervals
+        const noteNames = [];
+        intervals.forEach((interval) => {
+          const noteIndex = (rootIndex + interval) % 12;
+          let noteOctave = octave + Math.floor((rootIndex + interval) / 12);
+          const noteName = `${chromaticScale[noteIndex]}${noteOctave}`;
+          noteNames.push(noteName);
+        });
+        
+        debugLog('CHORDS_AUDIO', `Playing chord notes from intervals: ${noteNames.join(', ')}`);
+        
+        // Play chord using audio engine
+        audioEngine.playChord(noteNames, { duration: options.duration || 2 });
+        
+        this.isPlaying = true;
+        debugLog('CHORDS_AUDIO', `Successfully played chord from intervals using audioEngine`);
+        
+      } catch (error) {
+        debugLog('CHORDS_AUDIO', `ERROR playing chord from intervals: ${error.message}`);
+      }
+    },
+
     /**
      * Play a single note at the specified frequency using the central audio engine
      * @param {number} frequency - The frequency in Hz
@@ -1836,4 +1922,14 @@ export function chords() {
     },
 
   };
+}
+
+// Make 2_3 functions available globally
+if (typeof window !== 'undefined') {
+  // Import the functions first
+  import('./2_chords/2_3_chord_building.js').then(module => {
+    window.playBuiltChord = module.playBuiltChord;
+    window.show2_3IntroMessage = module.show2_3IntroMessage;
+    window.toggleNoteInChord = module.toggleNoteInChord;
+  });
 }

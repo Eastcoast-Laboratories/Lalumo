@@ -237,7 +237,6 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
 
 [ ] **Chord Building: (2_3_chords_chord-building)**
   Children stack blocks representing different notes to build their own chords. As they add each note, the sound plays, teaching how chords are constructed from individual tones.
-    - sound geht, aber biher nur der letzte Ton. Es fehlt ein Button um den gebauten Akkord zu hören
 
 [ ] **Guess the Missing Note: (2_4_chords_missing-note)**
   A chord is played with one note missing. Children must identify which note completes the chord by selecting from options, developing their ear for harmony.

@@ -891,27 +891,24 @@
         </div>
         
         <!-- 2_3 Chords - Chord Building Activity -->
-        <div x-show="mode === '2_3_chords_chord-building'" class="chord-activity">
+        <div id="2_3_chords_chord-building" x-show="mode === '2_3_chords_chord-building'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg">
           
+          <!-- Play button to play the built chord -->
+          <button id="play-chord-2_3" @click="window.playBuiltChord($data)" @touchstart.prevent @touchend.prevent="$el.click();" class="play-button" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
+
           <div class="chords-container">
-            <h2 x-text="$store.strings?.chord_building_title || 'Build Your Own Chords'">Build Your Own Chords</h2>
-            
-            <div class="chord-building-explanation">
-              <p x-text="$store.strings?.chord_building_intro || 'Stack blocks to build different chords. Add each note to hear how the chord changes!'">Stack blocks to build different chords. Add each note to hear how the chord changes!</p>
-            </div>
-            
             <div class="chord-building-area">
               <div class="chord-blocks">
                 <!-- Blocks will be added here as notes are selected -->
               </div>
               
               <div class="note-selector">
-                <button @click="addNoteToChord(0); blurElement($event)" class="note-button">Root</button>
-                <button @click="addNoteToChord(3); blurElement($event)" class="note-button">Minor 3rd</button>
-                <button @click="addNoteToChord(4)" class="note-button">Major 3rd</button>
-                <button @click="addNoteToChord(7)" class="note-button">Perfect 5th</button>
-                <button @click="addNoteToChord(6)" class="note-button">Diminished 5th</button>
-                <button @click="addNoteToChord(8)" class="note-button">Augmented 5th</button>
+                <button @click="toggleNoteInChord(0, $data); blurElement($event)" class="note-button" :class="{'active': builtNotes && builtNotes.includes(0)}">Root</button>
+                <button @click="toggleNoteInChord(3, $data); blurElement($event)" class="note-button" :class="{'active': builtNotes && builtNotes.includes(3)}">Minor 3rd</button>
+                <button @click="toggleNoteInChord(4, $data); blurElement($event)" class="note-button" :class="{'active': builtNotes && builtNotes.includes(4)}">Major 3rd</button>
+                <button @click="toggleNoteInChord(7, $data); blurElement($event)" class="note-button" :class="{'active': builtNotes && builtNotes.includes(7)}">Perfect 5th</button>
+                <button @click="toggleNoteInChord(6, $data); blurElement($event)" class="note-button" :class="{'active': builtNotes && builtNotes.includes(6)}">Diminished 5th</button>
+                <button @click="toggleNoteInChord(8, $data); blurElement($event)" class="note-button" :class="{'active': builtNotes && builtNotes.includes(8)}">Augmented 5th</button>
               </div>
             </div>
           </div>

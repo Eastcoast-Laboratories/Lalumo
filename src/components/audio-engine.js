@@ -456,7 +456,7 @@ export class AudioEngine {
    * @param {string} instrument - Instrument to use ('violin', 'flute', 'tuba', 'default')
    * @param {Object} options - Zusätzliche Optionen (NICHT mehr für Instrument verwenden!)
    */
-  playNote(noteName, duration = 0.5, time, velocity = 0.75, instrument = 'default', options = {}) {
+  async playNote(noteName, duration = 0.5, time, velocity = 0.75, instrument = 'default', options = {}) {
     if (!this._isInitialized) {
       debugLog(['AUDIO_ENGINE', 'WARN'], 'Audio-Engine wurde noch nicht initialisiert!');
       return;
@@ -489,15 +489,9 @@ export class AudioEngine {
     // INTEGRATION POINT: Use our toneJsSampler instruments based on the instrument type
     let played = false;
     
-    // First check if the requested instrument is ready
+    // Check if the requested instrument is ready (for logging only)
     const instrumentReady = isInstrumentReady(instrument.toLowerCase());
-    if (!instrumentReady) {
-      debugLog('INSTRUMENT', `Instrument ${instrument} is not ready yet. Initializing...`);
-      // Give some time for instrument to initialize if not ready
-      setTimeout(() => {
-        debugLog('INSTRUMENT', `Delayed check for ${instrument} readiness: ${isInstrumentReady(instrument.toLowerCase())}`);
-      }, 500);
-    }
+    debugLog('INSTRUMENT_CHECK', `Instrument ${instrument} ready: ${instrumentReady}`);
     
     // Use the right instrument type from toneJsSampler
     switch(instrument.toLowerCase()) {
@@ -517,13 +511,30 @@ export class AudioEngine {
         played = playBrassNote(parsedNote, durationInSeconds, velocity);
         break;
       default:
-        // For backwards compatibility, use the internal synth for non-matched instruments
+        // For default instrument or when other instruments fail, use the internal synth
         try {
-          // Always use the direct instrument parameter
-          this.useInstrument(instrument);
+          debugLog('INSTRUMENT', `Using internal synth for instrument: ${instrument}`);
+          
+          // Ensure we have a synth available
+          if (!this._synth) {
+            debugLog('INSTRUMENT', 'Creating new default synth');
+            this.useInstrument('default');
+          }
+          
+          if (!this._synth) {
+            debugLog(['INSTRUMENT', 'ERROR'], 'Failed to create synth - cannot play note');
+            return false;
+          }
+          
+          // Force Tone.js to start if needed
+          if (Tone.context.state !== "running") {
+            debugLog('INSTRUMENT', 'Starting Tone.js context for note playback');
+            await Tone.start();
+          }
           
           // Note spielen mit musikalischer Zeitnotation
-          this._synth.triggerAttackRelease(parsedNote, duration, time, velocity);
+          debugLog('INSTRUMENT', `Playing note ${parsedNote} with synth, duration: ${durationInSeconds}s`);
+          this._synth.triggerAttackRelease(parsedNote, durationInSeconds, time, velocity);
           
           // Note als aktiv markieren
           this._notesPlaying.add(parsedNote);
@@ -538,6 +549,7 @@ export class AudioEngine {
           }, cleanupTime);
           
           played = true;
+          debugLog('INSTRUMENT', `Successfully played note ${parsedNote} with internal synth`);
         } catch (err) {
           debugLog(['INSTRUMENT', 'ERROR'], `Error playing with legacy synth: ${err.message || err}`);
           played = false;

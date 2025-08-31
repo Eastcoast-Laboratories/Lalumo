@@ -1,5 +1,84 @@
 /* Chords module styles */
 
+/* 2_3 Chord Building Activity Styles */
+.note-button {
+  background-color: #f0f0f0;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  color: #333;
+}
+
+.note-button:hover {
+  background-color: #e0e0e0;
+  border-color: #999;
+  transform: translateY(-2px);
+}
+
+.note-button.active {
+  background-color: #4CAF50;
+  border-color: #45a049;
+  color: white;
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.note-button.active:hover {
+  background-color: #45a049;
+  border-color: #3d8b40;
+}
+
+.chord-building-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.chord-blocks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 60px;
+  padding: 10px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chord-block {
+  background-color: #2196F3;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  animation: blockAppear 0.3s ease;
+}
+
+@keyframes blockAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.note-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 600px;
+}
+
 /* Play buttons container */
 .play-buttons-container-2_2 {
   position: absolute;
