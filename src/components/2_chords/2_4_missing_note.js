@@ -5,6 +5,7 @@
 // Import debug utilities
 import { debugLog } from '../../utils/debug.js';
 import { preloadBackgroundImage } from '../shared/image-utils.js';
+import { getChordMapping, getElementFromChordType, getChordIntervals, getElementForChordType } from '../shared/chord-mapping.js';
 
 /**
  * Convert intervals to note names
@@ -36,10 +37,51 @@ function convertIntervalsToNotes(intervals, rootNote) {
   });
 }
 
+/**
+ * Convert note name to frequency
+ * @param {string} noteName - Note name (e.g., 'C4')
+ * @returns {number} Frequency in Hz
+ */
+function noteNameToFrequency(noteName) {
+  const noteMatch = noteName.match(/([A-G][#b]?)([0-9])/);
+  if (!noteMatch) return 440; // Default to A4
+  
+  const noteLetter = noteMatch[1];
+  const octave = parseInt(noteMatch[2]);
+  
+  // A4 = 440Hz, MIDI note 69
+  const noteToMidi = {
+    'C': 0, 'C#': 1, 'D': 2, 'D#': 3, 'E': 4, 'F': 5,
+    'F#': 6, 'G': 7, 'G#': 8, 'A': 9, 'A#': 10, 'B': 11,
+    'Bb': 10, 'Eb': 3
+  };
+  
+  const midiNote = (octave + 1) * 12 + (noteToMidi[noteLetter] || 0);
+  return 440 * Math.pow(2, (midiNote - 69) / 12);
+}
+
+/**
+ * Get full chord intervals for a chord type
+ * @param {string} chordType - The chord type (major, minor, diminished)
+ * @returns {Array<number>} Array of intervals
+ */
+function getFullChordIntervals(chordType) {
+  switch (chordType) {
+    case 'major':
+      return [0, 4, 7]; // Root, Major 3rd, Perfect 5th
+    case 'minor':
+      return [0, 3, 7]; // Root, Minor 3rd, Perfect 5th
+    case 'diminished':
+      return [0, 3, 6]; // Root, Minor 3rd, Diminished 5th
+    default:
+      return [0, 4, 7]; // Default to major
+  }
+}
+
 import { getActivityProgress } from '../shared/progress-utils.js';
 
 // Import feedback system
-import { showRainbowSuccess, showShakeError, highlightCorrectButton } from '../shared/feedback.js';
+import { showRainbowSuccess, showShakeError, highlightCorrectButton, showCompleteSuccess } from '../shared/feedback.js';
 
 /**
  * Current challenge data for 2_4 Missing Note activity
@@ -124,6 +166,63 @@ export function generate2_4FreePlayChallenge(component) {
   };
   
   debugLog('MISSING_NOTE_2_4', `Generated free play challenge: ${chordType} chord missing interval ${missingNote}, incomplete chord: [${incompleteChord.join(', ')}]`);
+  
+  // Update chord display
+  updateChordDisplay(component);
+}
+
+/**
+ * Update the chord display with the current chord type icon
+ * @param {Object} component - The Alpine component instance
+ */
+export function updateChordDisplay(component) {
+  const chordIcon = getElementFromChordType(current2_4Challenge.chordType);
+  
+  if (chordIcon) {
+    // Update the chord display element
+    const chordDisplayElement = document.getElementById('chord-display-2_4');
+    if (chordDisplayElement) {
+      chordDisplayElement.className = `chord-icon ${chordIcon}`;
+      chordDisplayElement.setAttribute('data-chord-type', current2_4Challenge.chordType);
+      
+      // Set title attribute with translated chord name
+      const chordTitle = getChordDisplayTitle();
+      if (chordTitle) {
+        chordDisplayElement.setAttribute('title', chordTitle);
+      }
+      
+      debugLog('MISSING_NOTE_2_4', `Updated chord display: ${chordIcon} for ${current2_4Challenge.chordType} with title: ${chordTitle}`);
+    } else {
+      debugLog('MISSING_NOTE_2_4', 'Chord display element not found');
+    }
+    
+    // Store in component for Alpine.js reactivity
+    component.currentChordIcon = chordIcon;
+    component.currentChordType = current2_4Challenge.chordType;
+  }
+}
+
+/**
+ * Get chord display title for 2_4 activity
+ * @returns {string} Translated chord type title
+ */
+export function getChordDisplayTitle() {
+  if (!current2_4Challenge || !current2_4Challenge.chordType) {
+    return '';
+  }
+  
+  const chordTypeTranslations = {
+    'major': window.Alpine?.store('strings')?.major_chord || 'Major Chord',
+    'minor': window.Alpine?.store('strings')?.minor_chord || 'Minor Chord', 
+    'diminished': window.Alpine?.store('strings')?.diminished_chord || 'Diminished Chord',
+    'augmented': window.Alpine?.store('strings')?.augmented_chord || 'Augmented Chord',
+    'dominant7': window.Alpine?.store('strings')?.dominant7_chord || 'Dominant 7th Chord',
+    'major7': window.Alpine?.store('strings')?.major7_chord || 'Major 7th Chord',
+    'sus2': window.Alpine?.store('strings')?.sus2_chord || 'Sus2 Chord',
+    'sus4': window.Alpine?.store('strings')?.sus4_chord || 'Sus4 Chord'
+  };
+  
+  return chordTypeTranslations[current2_4Challenge.chordType] || current2_4Challenge.chordType;
 }
 
 /**
@@ -182,6 +281,9 @@ export function generate2_4Challenge(component) {
   };
   
   debugLog('MISSING_NOTE_2_4', `Generated challenge: ${chordType} chord missing interval ${missingNote}, incomplete chord: [${incompleteChord.join(', ')}]`);
+  
+  // Update chord display with icon and title
+  updateChordDisplay(component);
   
   // Auto-play the incomplete chord
   playCurrent2_4Challenge(component);
@@ -276,12 +378,34 @@ export function check2_4Answer(selectedInterval, component) {
       }, 1500);
     }
   } else {
-    // Free play mode - just play the selected note
-    debugLog('MISSING_NOTE_2_4', `Free play mode: playing interval ${selectedInterval}`);
+    // Free play mode - generate new chord and play it
+    debugLog('MISSING_NOTE_2_4', `Free play mode: button ${selectedInterval} pressed`);
     
-    if (window.audioEngine && window.audioEngine.playNoteFromInterval) {
-      window.audioEngine.playNoteFromInterval(selectedInterval, 'C4', 1.0);
+    // Generate new challenge for free play mode
+    generate2_4FreePlayChallenge(component);
+    
+    // Log current chord information
+    const noteNames = convertIntervalsToNotes(current2_4Challenge.incompleteChord, current2_4Challenge.rootNote);
+    const missingNoteName = convertIntervalsToNotes([current2_4Challenge.missingNote], current2_4Challenge.rootNote)[0];
+    const fullChordIntervals = getFullChordIntervals(current2_4Challenge.chordType);
+    const fullChordNotes = convertIntervalsToNotes(fullChordIntervals, current2_4Challenge.rootNote);
+    
+    debugLog('MISSING_NOTE_2_4', `Generated chord: ${current2_4Challenge.chordType} chord with notes [${fullChordNotes.join(', ')}]`);
+    debugLog('MISSING_NOTE_2_4', `Incomplete chord notes (missing note removed): [${noteNames.join(', ')}]`);
+    debugLog('MISSING_NOTE_2_4', `Missing note: ${missingNoteName} (interval ${current2_4Challenge.missingNote})`);
+    
+    // Play the incomplete chord (not just a single note)
+    if (component && typeof component.playChordFromIntervals === 'function') {
+      component.playChordFromIntervals(current2_4Challenge.incompleteChord, current2_4Challenge.rootNote, { duration: 2.0 });
+      debugLog('MISSING_NOTE_2_4', `Played incomplete chord successfully via audioEngine: [${noteNames.join(', ')}]`);
+    } else if (window.audioEngine && window.audioEngine.playChord) {
+      window.audioEngine.playChord(noteNames, { duration: 2.0 });
+      debugLog('MISSING_NOTE_2_4', `Played incomplete chord successfully via audioEngine: [${noteNames.join(', ')}]`);
+    } else {
+      debugLog('MISSING_NOTE_2_4', 'No audio playback method available for chord');
     }
+    
+    // In free play mode, no answer checking - just play the chord
   }
 }
 

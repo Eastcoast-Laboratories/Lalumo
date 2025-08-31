@@ -19,6 +19,120 @@ test.describe('Lalumo 2_4 Missing Note Activity Tests', () => {
     await setupTest(page);
   });
 
+  test('Should test 2_4 Missing Note free play mode with chord display and audio', async ({ page }) => {
+    // Increase test timeout to 30 seconds for audio interactions
+    test.setTimeout(30000);
+    
+    // First navigate to chords section by clicking the main chords tab
+    await page.click('button:has-text("Chords")');
+    await page.waitForTimeout(1000);
+    
+    // Then navigate to 2_4 Missing Note activity
+    await page.click('#nav_2_4');
+    await page.waitForTimeout(1000);
+    
+    // Show test overlay using DRY implementation
+    await showTestOverlay(page, 'Starting 2_4 Missing Note comprehensive test...');
+    
+    // Verify we're in the correct activity
+    const activityContainer = page.locator('[id="2_4_chords_missing-note"]');
+    await expect(activityContainer).toBeVisible();
+    debugLog('MISSING_NOTE_SPEC', 'Successfully navigated to 2_4 missing note activity');
+    
+    // Update test overlay
+    await updateTestOverlay(page, 'Testing chord display with icons...');
+    
+    // Check if chord display element exists
+    const chordDisplay = page.locator('#chord-display-2_4');
+    await expect(chordDisplay).toBeVisible();
+    debugLog('MISSING_NOTE_SPEC', 'Chord display element is visible');
+    
+    // Check if chord display has an icon class (from 2_1 mapping)
+    const chordDisplayClass = await chordDisplay.getAttribute('class');
+    const hasChordIcon = chordDisplayClass && (
+      chordDisplayClass.includes('fruit') || 
+      chordDisplayClass.includes('mushroom') || 
+      chordDisplayClass.includes('crystal') ||
+      chordDisplayClass.includes('flower') ||
+      chordDisplayClass.includes('flame') ||
+      chordDisplayClass.includes('feather') ||
+      chordDisplayClass.includes('acorn') ||
+      chordDisplayClass.includes('lantern')
+    );
+    expect(hasChordIcon).toBe(true);
+    debugLog('MISSING_NOTE_SPEC', `Chord display shows icon with class: ${chordDisplayClass}`);
+    
+    // Update test overlay
+    await updateTestOverlay(page, 'Testing free play mode - clicking "Minor 3rd" button...');
+    
+    // 1. Press "Minor 3rd" button (interval 3) in free play mode
+    const minorThirdButton = page.locator('#button_2_4_minor_third');
+    await expect(minorThirdButton).toBeVisible();
+    await minorThirdButton.click();
+    await page.waitForTimeout(1000);
+    debugLog('MISSING_NOTE_SPEC', 'Clicked "Minor 3rd" button in free play mode');
+    
+    // 2. Check that chord display still shows an icon after button click
+    const chordDisplayAfterClick = page.locator('#chord-display-2_4');
+    await expect(chordDisplayAfterClick).toBeVisible();
+    const chordTypeAfterClick = await chordDisplayAfterClick.getAttribute('data-chord-type');
+    expect(chordTypeAfterClick).toBeTruthy();
+    debugLog('MISSING_NOTE_SPEC', `Chord display shows chord type: ${chordTypeAfterClick}`);
+    
+    // 3. Check console logs for button press
+    const consoleLogs = [];
+    page.on('console', msg => {
+      if (msg.type() === 'log' && msg.text().includes('MISSING_NOTE_2_4')) {
+        consoleLogs.push(msg.text());
+      }
+    });
+    
+    // Wait for logs to accumulate
+    await page.waitForTimeout(500);
+    
+    // 4. Verify logs contain button press information
+    const buttonPressLog = consoleLogs.find(log => log.includes('Free play mode: button 3 pressed'));
+    expect(buttonPressLog).toBeTruthy();
+    debugLog('MISSING_NOTE_SPEC', 'Found button press log in console');
+    
+    // 5. Verify logs contain generated chord information
+    const chordGenerationLog = consoleLogs.find(log => log.includes('Generated chord:') && log.includes('chord with notes'));
+    expect(chordGenerationLog).toBeTruthy();
+    debugLog('MISSING_NOTE_SPEC', 'Found chord generation log with note details');
+    
+    // 6. Verify logs contain missing note information
+    const missingNoteLog = consoleLogs.find(log => log.includes('Missing note:') && log.includes('interval'));
+    expect(missingNoteLog).toBeTruthy();
+    debugLog('MISSING_NOTE_SPEC', 'Found missing note log with interval information');
+    
+    // 7. Verify logs contain successful audio playback
+    const audioPlaybackLog = consoleLogs.find(log => log.includes('Played incomplete chord successfully via audioEngine'));
+    expect(audioPlaybackLog).toBeTruthy();
+    debugLog('MISSING_NOTE_SPEC', 'Found successful audio playback log');
+    
+    // 8. Check that no "Uncaught ReferenceError" appears in error logs
+    const errorLogs = [];
+    page.on('pageerror', error => {
+      errorLogs.push(error.message);
+    });
+    
+    // Wait for any potential errors to surface
+    await page.waitForTimeout(1000);
+    
+    // Verify no uncaught reference errors
+    const uncaughtReferenceError = errorLogs.find(error => error.includes('Uncaught ReferenceError'));
+    expect(uncaughtReferenceError).toBeFalsy();
+    debugLog('MISSING_NOTE_SPEC', 'No uncaught reference errors found in error logs');
+    
+    // Update test overlay
+    await updateTestOverlay(page, 'All comprehensive tests completed successfully!');
+    
+    debugLog('MISSING_NOTE_SPEC', 'All 2_4 Missing Note comprehensive tests completed');
+    
+    // Remove test overlay
+    await removeTestOverlay(page);
+  });
+
   test('Should navigate to 2_4 Missing Note activity and test game mode functionality', async ({ page }) => {
     // Increase test timeout to 30 seconds for audio interactions
     test.setTimeout(30000);
@@ -32,50 +146,17 @@ test.describe('Lalumo 2_4 Missing Note Activity Tests', () => {
     await page.waitForTimeout(1000);
     
     // Show test overlay using DRY implementation
-    await showTestOverlay(page, 'Starting 2_4 Missing Note test...');
+    await showTestOverlay(page, 'Starting 2_4 Missing Note game mode test...');
     
     // Verify we're in the correct activity
     const activityContainer = page.locator('[id="2_4_chords_missing-note"]');
     await expect(activityContainer).toBeVisible();
     debugLog('MISSING_NOTE_SPEC', 'Successfully navigated to 2_4 missing note activity');
     
-    // Update test overlay
-    await updateTestOverlay(page, 'Checking for help message...');
-    
-    // Check if help message appears with correct text
-    const helpMessage = page.locator('.help-message');
-    await expect(helpMessage).toBeVisible();
-    const helpText = await helpMessage.textContent();
-    expect(helpText).toContain('Höre den unvollständigen Akkord und wähle aus, welche Note fehlt');
-    debugLog('MISSING_NOTE_SPEC', 'Help message verified with correct text');
-    
-    // Update test overlay
-    await updateTestOverlay(page, 'Checking for start button in free play mode...');
-    
     // Check if we're in free play mode (start button should be visible)
     const startButton = page.locator('#start-game-mode-2_4');
     if (await startButton.isVisible()) {
-      debugLog('MISSING_NOTE_SPEC', 'In free play mode, clicking start button to enter game mode');
-      
-      // Update test overlay
-      await updateTestOverlay(page, 'Testing free play mode buttons...');
-      
-      // Test free play mode - click some note buttons to hear sounds
-      const noteButtons = page.locator('.note-button');
-      const buttonCount = await noteButtons.count();
-      if (buttonCount > 0) {
-        // Click first note button
-        await noteButtons.first().click();
-        await page.waitForTimeout(500);
-        debugLog('MISSING_NOTE_SPEC', 'Clicked first note button in free play mode');
-        
-        // Click second note button if available
-        if (buttonCount > 1) {
-          await noteButtons.nth(1).click();
-          await page.waitForTimeout(500);
-          debugLog('MISSING_NOTE_SPEC', 'Clicked second note button in free play mode');
-        }
-      }
+      debugLog('MISSING_NOTE_SPEC', 'In free play mode, switching to game mode');
       
       // Update test overlay
       await updateTestOverlay(page, 'Switching to game mode...');

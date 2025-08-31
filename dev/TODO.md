@@ -233,6 +233,32 @@ reset-button:
 - passe den stil in der index.html an den von 2_5 an, kopiere erstmal den background von 2_5 setze den satz "Höre den unvollständigen Akkord und wähle aus, welche Note fehlt." in die help-message wie bei 2_5. führe alles aus wie hier beschrieben: @CODING_STANDARDS.md#L3-96  benutze @CODING_STANDARDS.md#L3-96  als checkliste, und hake dort mit grünen Haken ab, was erledigt ist für 2_4.
 - wenn mögllich arbeite test-driven wie in @CODING_STANDARDS.md#L77-96 beschrieben
 
+- jetzt kommen zwar immer töne, aber der aufbau der akkorde ist noch falsch:
+
+beim Button "Kleine Terz" kommt nur ein ton, es sollte aber ein akkord kommen wo die kleine terz zfehlt. dazu muss der akkord natürlich erratbar sien ohne die kleine terz. also muss in einer div angezeigt werden, welcher akkord gemeint ist und dann dieser ohne die note abgespielt werden.
+
+beue ein display für den akkord ein mit den selben icons, wie bei 2_1: @2_1_chord_color_matching.js#L145-154  (DRY - extrahiere die definition aus 2_1 in eine fnktion und benutze diese auch dort) dann teste sowohl den unittest für 2_1 chord-color-matching.spec.js	, als auch den neuen für 2_4 und baue dort ein, dass dies getestet wird:
+1. auf den "kleinen terz" button im free mode drcken, 
+2.schauen ob ein Akkord in derr neuen akkord anzeige angezeigt wird mit den icons, wie in 2_1, 
+3. log überprüfen, ob der button gedrckt wurde
+4. im log schauen, welcher akkord generiert wurde mit welchen noten genau
+5. im log scheuen, welche note weggelassen wurde
+6. im log testen, ob alle noten erfolgreich mit der audio engine
+
+  1.
+  2_1 : diese muss auch noch verschoben werden in chord-mapping.js
+
+  2. es fehlt die div, die den chordtype als symbol mit übersetztem title tag in 2_4 anzeigt, der gerade gespielt wird. (soll genauso aussehen, wie die buttons in 2_1)
+
+  3. ausserdem startet 2_4 immer noch nicht im richtigen free mode:
+
+  zeige mir genau die code stellen, wo der free mode initialisiert wird, oder wo halt kein mode initialisiert wird und dann erlutere mir das verhalten das ohne game-mode initialisierung in 2_4 abläuft.
+
+  es soll so werden, dass im free mode keine answer vgecheckt wird, sondern nur der chord mit fehlender note abgespielt wird.
+
+  benutze die unittests
+
+-------
 
 2_5_chords_color_matching:
   - # bereit zur veröffentlichung

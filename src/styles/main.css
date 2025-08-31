@@ -1376,7 +1376,7 @@ section h2 {
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 15px;
-  padding: 15px;
+  padding: 20px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -1386,15 +1386,69 @@ section h2 {
   justify-content: center;
 }
 
+.magical-element div {
+  font-size: 2em;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
 .magical-element:hover {
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.5);
   transform: scale(1.05);
 }
 
-.magical-element div {
+/* 2_4 Chord Display */
+.chord-display-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.chord-icon {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  min-height: 80px;
+  min-width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 2em;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.chord-icon.fruit::before {
+  content: "🫐";
+}
+
+.chord-icon.mushroom::before {
+  content: "🍄";
+}
+
+.chord-icon.crystal::before {
+  content: "💎";
+}
+
+.chord-icon.flower::before {
+  content: "🌸";
+}
+
+.chord-icon.flame::before {
+  content: "🔥";
+}
+
+.chord-icon.feather::before {
+  content: "🪶";
+}
+
+.chord-icon.acorn::before {
+  content: "🌰";
+}
+
+.chord-icon.lantern::before {
+  content: "🏮";
 }
 
 /* 2_1 Button highlighting */

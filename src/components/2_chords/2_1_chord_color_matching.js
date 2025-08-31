@@ -5,9 +5,9 @@
 
 // Import debug utilities
 import { debugLog } from '../../utils/debug.js';
-
-// Import audio engine
-import audioEngine from '../audio-engine.js';
+import { preloadBackgroundImage } from '../shared/image-utils.js';
+import { getActivityProgress } from '../shared/progress-utils.js';
+import { getChordMapping, getElementFromChordType, getChordIntervals, getElementForChordType } from '../shared/chord-mapping.js';
 
 // Import shared feedback functions
 import {
@@ -142,16 +142,7 @@ export function checkColorMatch(selectedElement, component) {
   
   if (component.is2_1FreePlayMode) {
     // In free play mode, play the corresponding chord with new random pitch each time
-    const chordMapping = {
-      'fruit': 'major',
-      'mushroom': 'minor', 
-      'crystal': 'diminished',
-      'flower': 'augmented',
-      'flame': 'dominant7',
-      'feather': 'major7',
-      'acorn': 'sus2',
-      'lantern': 'sus4'
-    };
+    const chordMapping = getChordMapping();
     
     const chordType = chordMapping[selectedElement];
     if (chordType) {
@@ -227,24 +218,6 @@ export function checkColorMatch(selectedElement, component) {
   }
 }
 
-/**
- * Get magical element for chord type
- * @param {string} chordType - The chord type
- * @returns {string} The corresponding magical element
- */
-function getElementForChordType(chordType) {
-  const mapping = {
-    'major': 'fruit',
-    'minor': 'mushroom',
-    'diminished': 'crystal', 
-    'augmented': 'flower',
-    'dominant7': 'flame',
-    'major7': 'feather',
-    'sus2': 'acorn',
-    'sus4': 'lantern'
-  };
-  return mapping[chordType] || 'fruit';
-}
 
 /**
  * Reset progress to current level for 2_1 activity

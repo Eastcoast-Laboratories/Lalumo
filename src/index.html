@@ -933,22 +933,27 @@
               <p x-show="(progress['2_4'] || 0) >= 30" x-text="$store.strings?.missing_note_master || 'You are a Missing Note Master! 🎉'"></p>
             </div>
             
+            <!-- Chord Display -->
+            <div class="chord-display-container">
+              <div id="chord-display-2_4" class="chord-icon" data-chord-type=""></div>
+            </div>
+            
             <!-- Help message -->
             <div class="help-message" x-show="is2_4FreePlayMode">
               <p x-text="$store.strings?.missing_note_help || 'Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.'"></p>
             </div>
             
             <div class="note-options">
-              <button @click="check2_4Answer(3, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
+              <button id="button_2_4_minor_third" @click="check2_4Answer(3, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
                 <span x-text="$store.strings?.minor_third || 'Minor 3rd'">Minor 3rd</span>
               </button>
-              <button @click="check2_4Answer(4, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
+              <button id="button_2_4_major_third" @click="check2_4Answer(4, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
                 <span x-text="$store.strings?.major_third || 'Major 3rd'">Major 3rd</span>
               </button>
-              <button @click="check2_4Answer(7, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
+              <button id="button_2_4_perfect_fifth" @click="check2_4Answer(7, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
                 <span x-text="$store.strings?.perfect_fifth || 'Perfect 5th'">Perfect 5th</span>
               </button>
-              <button @click="check2_4Answer(6, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
+              <button id="button_2_4_diminished_fifth" @click="check2_4Answer(6, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
                 <span x-text="$store.strings?.diminished_fifth || 'Diminished 5th'">Diminished 5th</span>
               </button>
             </div>
