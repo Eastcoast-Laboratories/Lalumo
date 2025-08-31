@@ -88,14 +88,17 @@ test.describe('Lalumo One or Many Activity', () => {
     });
   });
 
-  test('should navigate to 2_6 activity and test one or many functionality', async ({ page }) => {
+  test('One or Many activity loads and functions correctly with full 2_2-style validation', async ({ page }) => {
     console.log('Starting One or Many activity test');
     
-    // Set up console error monitoring
+    // Track console errors and logs for debugging
     const consoleErrors = [];
+    const consoleLogs = [];
     page.on('console', msg => {
       if (msg.type() === 'error') {
         consoleErrors.push(msg.text());
+      } else if (msg.type() === 'log' && (msg.text().includes('CHORDS_2_6') || msg.text().includes('FEEDBACK'))) {
+        consoleLogs.push(msg.text());
       }
     });
     
@@ -208,9 +211,101 @@ test.describe('Lalumo One or Many Activity', () => {
     // Wait briefly for any final animations
     await page.waitForTimeout(500);
     
+    // Test feedback system - check for showRainbowSuccess function
+    const feedbackFunctionsExist = await page.evaluate(() => {
+      return {
+        showRainbowSuccess: typeof window.showRainbowSuccess === 'function',
+        showShakeError: typeof window.showShakeError === 'function',
+        highlightCorrectButton: typeof window.highlightCorrectButton === 'function',
+        update2_6Progress: typeof window.update2_6Progress === 'function',
+        show2_6ActivityIntroMessage: typeof window.show2_6ActivityIntroMessage === 'function'
+      };
+    });
+    
+    console.log('Feedback functions check:', feedbackFunctionsExist);
+    expect(feedbackFunctionsExist.showRainbowSuccess).toBe(true);
+    expect(feedbackFunctionsExist.showShakeError).toBe(true);
+    expect(feedbackFunctionsExist.highlightCorrectButton).toBe(true);
+    expect(feedbackFunctionsExist.update2_6Progress).toBe(true);
+    expect(feedbackFunctionsExist.show2_6ActivityIntroMessage).toBe(true);
+    
+    // Test progress system - simulate correct answer
+    const progressTest = await page.evaluate(() => {
+      // Clear existing progress
+      localStorage.removeItem('lalumo_chords_progress');
+      
+      // Test progress update function
+      const initialProgress = window.update2_6Progress(true);
+      
+      // Check if progress was saved
+      const progressData = JSON.parse(localStorage.getItem('lalumo_chords_progress') || '{}');
+      const currentProgress = progressData['2_6_chords_one_or_many'] || 0;
+      
+      return {
+        initialProgress,
+        currentProgress,
+        progressSaved: currentProgress === 1
+      };
+    });
+    
+    console.log('Progress system test:', progressTest);
+    expect(progressTest.progressSaved).toBe(true);
+    expect(progressTest.currentProgress).toBe(1);
+    
+    // Test intro message function
+    const introMessageTest = await page.evaluate(() => {
+      // Mock showFeedbackMessage to capture calls
+      let capturedMessage = null;
+      let capturedOptions = null;
+      
+      window.showFeedbackMessage = (message, options) => {
+        capturedMessage = message;
+        capturedOptions = options;
+      };
+      
+      // Call intro message function
+      window.show2_6ActivityIntroMessage();
+      
+      return {
+        messageCaptured: capturedMessage !== null,
+        isIntroMessage: capturedOptions?.isIntroMessage === true,
+        activityId: capturedOptions?.activityId,
+        delaySeconds: capturedOptions?.delaySeconds
+      };
+    });
+    
+    console.log('Intro message test:', introMessageTest);
+    expect(introMessageTest.messageCaptured).toBe(true);
+    expect(introMessageTest.isIntroMessage).toBe(true);
+    expect(introMessageTest.activityId).toBe('2_6_chords_one_or_many');
+    expect(introMessageTest.delaySeconds).toBe(10);
+    
     // Verify that the activity is working by checking for the container
     const containerExists = await page.isVisible('[id="2_6_chords_one_or_many"]');
     expect(containerExists).toBe(true);
+    
+    // Test CSS classes are applied correctly like 2_2
+    const cssTest = await page.evaluate(() => {
+      const oneButton = document.querySelector('#button_2_6_one');
+      const manyButton = document.querySelector('#button_2_6_many');
+      const playButton = document.querySelector('.play-button_2_6');
+      const replayButton = document.querySelector('.replay-button_2_6');
+      
+      return {
+        oneButtonExists: oneButton !== null,
+        manyButtonExists: manyButton !== null,
+        playButtonExists: playButton !== null,
+        replayButtonExists: replayButton !== null,
+        oneButtonHasCorrectStyles: oneButton && window.getComputedStyle(oneButton).position === 'absolute',
+        manyButtonHasCorrectStyles: manyButton && window.getComputedStyle(manyButton).position === 'absolute'
+      };
+    });
+    
+    console.log('CSS styling test:', cssTest);
+    expect(cssTest.oneButtonExists).toBe(true);
+    expect(cssTest.manyButtonExists).toBe(true);
+    expect(cssTest.oneButtonHasCorrectStyles).toBe(true);
+    expect(cssTest.manyButtonHasCorrectStyles).toBe(true);
     
     // Log the result
     console.log('Container visibility check:', containerExists ? 'PASSED' : 'FAILED');
@@ -221,6 +316,6 @@ test.describe('Lalumo One or Many Activity', () => {
     }
     expect(consoleErrors.length).toBe(0);
     
-    console.log('One or Many activity test completed successfully');
+    console.log('One or Many activity test completed successfully with full validation');
   });
 });

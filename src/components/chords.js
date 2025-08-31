@@ -2129,60 +2129,144 @@ function playCurrent2_6Challenge() {
 }
 
 /**
- * Check the user's answer for 2_6 activity
+ * Check the user's answer for 2_6 activity - following 2_2 pattern exactly
  */
 function checkOneOrManyMatch(answer, data) {
-  console.log('ONE_OR_MANY_2_6: Checking answer:', answer);
+  debugLog('CHORDS_2_6', `User selected ${answer}, checking answer`);
   
   if (!current2_6Challenge) {
-    console.log('ONE_OR_MANY_2_6: No challenge active');
+    debugLog('CHORDS_2_6', 'No challenge active');
     return;
   }
   
   const isCorrect = answer === current2_6Challenge.correctAnswer;
   
+  try {
+    // Update progress and get feedback message - following 2_2 pattern
+    const feedback = update2_6Progress(isCorrect);
+    
+    if (isCorrect) {
+      debugLog('CHORDS_2_6', 'Correct answer! Showing success feedback');
+      
+      // Show rainbow success like 2_2
+      showRainbowSuccess();
+      
+      // Highlight correct button like 2_2
+      const correctButtonId = answer === 'one' ? '#button_2_6_one' : '#button_2_6_many';
+      highlightCorrectButton(correctButtonId);
+      
+      // Show feedback using global system like 2_2
+      if (window.showFeedbackMessage) {
+        const store = window.Alpine?.store;
+        if (store && store.feedback) {
+          store.feedback.isCorrect = true;
+        }
+        window.showFeedbackMessage(feedback, {
+          activityId: '2_6_chords_one_or_many',
+          isIntroMessage: false,
+          delaySeconds: 3,
+          component: this
+        });
+      }
+      
+      // Generate next challenge after delay
+      setTimeout(() => {
+        generate2_6Challenge();
+      }, 2000);
+      
+    } else {
+      debugLog('CHORDS_2_6', 'Incorrect answer! Showing error feedback');
+      
+      // Show shake error on incorrect button like 2_2
+      const incorrectButtonId = answer === 'one' ? '#button_2_6_one' : '#button_2_6_many';
+      const incorrectButton = document.querySelector(incorrectButtonId);
+      if (incorrectButton) {
+        showShakeError(incorrectButton);
+      }
+      
+      // Highlight correct button after delay like 2_2
+      const correctButtonId = current2_6Challenge.correctAnswer === 'one' ? '#button_2_6_one' : '#button_2_6_many';
+      setTimeout(() => {
+        highlightCorrectButton(correctButtonId);
+      }, 800);
+      
+      // Show feedback using global system like 2_2
+      if (window.showFeedbackMessage) {
+        const store = window.Alpine?.store;
+        if (store && store.feedback) {
+          store.feedback.isCorrect = false;
+        }
+        window.showFeedbackMessage(feedback, {
+          activityId: '2_6_chords_one_or_many',
+          isIntroMessage: false,
+          delaySeconds: 3,
+          component: this
+        });
+      }
+      
+      // Replay the challenge after delay like 2_2
+      setTimeout(() => {
+        playCurrent2_6Challenge();
+      }, 1500);
+    }
+    
+  } catch (error) {
+    debugLog(['CHORDS', 'ERROR'], `Error checking one or many answer: ${error.message || error}`);
+  }
+}
+
+/**
+ * Update progress for 2_6 activity and return feedback message - following 2_2 pattern exactly
+ */
+function update2_6Progress(isCorrect) {
+  // Get current progress like 2_2
+  const progressData = JSON.parse(localStorage.getItem('lalumo_chords_progress') || '{}');
+  const currentProgress = progressData['2_6_chords_one_or_many'] || 0;
+  
   if (isCorrect) {
-    console.log('ONE_OR_MANY_2_6: Correct answer!');
+    // Increment progress like 2_2
+    progressData['2_6_chords_one_or_many'] = currentProgress + 1;
+    localStorage.setItem('lalumo_chords_progress', JSON.stringify(progressData));
     
-    // Update progress
-    const progressData = JSON.parse(localStorage.getItem('lalumo_progress') || '{}');
-    progressData['2_6'] = (progressData['2_6'] || 0) + 1;
-    localStorage.setItem('lalumo_progress', JSON.stringify(progressData));
+    debugLog('CHORDS_2_6', `Progress updated: ${currentProgress + 1}`);
     
-    // Show success feedback
-    const feedbackText = answer === 'one' ? 
-      (window.Alpine?.store('strings')?.correct_one_note || 'Correct! It was one note!') :
-      (window.Alpine?.store('strings')?.correct_many_notes || 'Correct! It was many notes!');
+    // Return success feedback like 2_2
+    const feedbackMessages = {
+      'one': window.Alpine?.store('strings')?.correct_one_note || 'Correct! It was one note!',
+      'many': window.Alpine?.store('strings')?.correct_many_notes || 'Correct! It was many notes!'
+    };
     
-    window.showFeedbackMessage(feedbackText, 'success', {
-      activityId: '2_6',
-      isCorrect: true,
-      delaySeconds: 2
-    });
-    
-    // Generate next challenge after delay
-    setTimeout(() => {
-      generate2_6Challenge();
-    }, 2000);
-    
+    // Handle case when no challenge is active (for testing)
+    const correctAnswer = current2_6Challenge?.correctAnswer || 'one';
+    return feedbackMessages[correctAnswer] || 'Correct!';
   } else {
-    console.log('ONE_OR_MANY_2_6: Incorrect answer');
+    // Return error feedback like 2_2
+    const feedbackMessages = {
+      'one': window.Alpine?.store('strings')?.incorrect_was_one || 'No, it was one note!',
+      'many': window.Alpine?.store('strings')?.incorrect_was_many || 'No, it was many notes!'
+    };
     
-    // Show error feedback
-    const feedbackText = answer === 'one' ? 
-      (window.Alpine?.store('strings')?.incorrect_was_many || 'No, it was many notes!') :
-      (window.Alpine?.store('strings')?.incorrect_was_one || 'No, it was one note!');
-    
-    window.showFeedbackMessage(feedbackText, 'error', {
-      activityId: '2_6',
-      isCorrect: false,
-      delaySeconds: 2
-    });
-    
-    // Replay the challenge after delay
-    setTimeout(() => {
-      playCurrent2_6Challenge();
-    }, 2000);
+    // Handle case when no challenge is active (for testing)
+    const correctAnswer = current2_6Challenge?.correctAnswer || 'one';
+    return feedbackMessages[correctAnswer] || 'Try again!';
+  }
+}
+
+/**
+ * Show activity intro message for 2_6 - following 2_2 pattern exactly
+ */
+function show2_6ActivityIntroMessage() {
+  debugLog('CHORDS', 'LOG_CONTEXT_MESSAGE: Showing intro message for activity: 2_6_chords_one_or_many');
+  
+  if (window.showFeedbackMessage) {
+    window.showFeedbackMessage(
+      window.Alpine?.store('strings')?.intro_2_6_one_or_many || 'Can you hear if it is one note or many notes?',
+      {
+        activityId: '2_6_chords_one_or_many',
+        isIntroMessage: true,
+        delaySeconds: 10
+      }
+    );
   }
 }
 
@@ -2191,3 +2275,5 @@ window.start2_6GameMode = start2_6GameMode;
 window.generate2_6Challenge = generate2_6Challenge;
 window.playCurrent2_6Challenge = playCurrent2_6Challenge;
 window.checkOneOrManyMatch = checkOneOrManyMatch;
+window.update2_6Progress = update2_6Progress;
+window.show2_6ActivityIntroMessage = show2_6ActivityIntroMessage;
