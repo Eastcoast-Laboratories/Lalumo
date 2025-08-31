@@ -939,21 +939,41 @@
             </div>
             
             <div class="note-options">
-              <button id="button_2_4_minor_third" @click="check2_4Answer(3, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
-                <span x-text="$store.strings?.minor_third || 'Minor 3rd'">Minor 3rd</span>
-              </button>
-              <button id="button_2_4_major_third" @click="check2_4Answer(4, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
-                <span x-text="$store.strings?.major_third || 'Major 3rd'">Major 3rd</span>
-              </button>
-              <button id="button_2_4_perfect_fifth" @click="check2_4Answer(7, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
-                <span x-text="$store.strings?.perfect_fifth || 'Perfect 5th'">Perfect 5th</span>
-              </button>
-              <button id="button_2_4_diminished_fifth" @click="check2_4Answer(6, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
-                <span x-text="$store.strings?.diminished_fifth || 'Diminished 5th'">Diminished 5th</span>
-              </button>
-              <button id="button_2_4_augmented_fifth" @click="check2_4Answer(8, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
-                <span x-text="$store.strings?.augmented_fifth || 'Augmented 5th'">Augmented 5th</span>
-              </button>
+              <!-- Dynamic buttons based on current chord type and mode -->
+              
+              <!-- Free Play Mode: Show all 4 basic degree buttons (always visible) -->
+              <template x-if="is2_4FreePlayMode">
+                <div class="free-play-buttons">
+                  <button id="button_2_4_root" @click="check2_4Answer(0, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
+                    <span x-text="$store.strings?.root || 'Root'">Root</span>
+                  </button>
+                  <button id="button_2_4_third" @click="check2_4Answer('third', $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
+                    <span x-text="$store.strings?.third || 'Third'">Third</span>
+                  </button>
+                  <button id="button_2_4_fifth" @click="check2_4Answer('fifth', $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
+                    <span x-text="$store.strings?.fifth || 'Fifth'">Fifth</span>
+                  </button>
+                  <button id="button_2_4_seventh" @click="check2_4Answer('seventh', $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
+                    <span x-text="$store.strings?.seventh || 'Seventh'">Seventh</span>
+                  </button>
+                </div>
+              </template>
+              
+              <!-- Game Mode: Show buttons for current chord's intervals -->
+              <template x-if="!is2_4FreePlayMode">
+                <div class="game-mode-buttons">
+                  <template x-for="interval in current2_4ChordIntervals || []" :key="interval">
+                    <button 
+                      :id="'button_2_4_interval_' + interval" 
+                      @click="check2_4Answer(interval, $data)" 
+                      class="note-button activity-button-blocker" 
+                      @touchstart.prevent 
+                      @touchend.prevent="$el.click();"
+                      x-text="window.getIntervalName(interval)"
+                    ></button>
+                  </template>
+                </div>
+              </template>
             </div>
             
             <!-- Individual feedback-message div removed - now using unified div -->

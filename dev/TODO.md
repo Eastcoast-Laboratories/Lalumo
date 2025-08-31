@@ -230,7 +230,15 @@ reset-button:
 2_4:
 - ergänz einen play button, der den gebauten akkord abspielt.
 
-- passe den stil in der index.html an den von 2_5 an, kopiere erstmal den background von 2_5 setze den satz "Höre den unvollständigen Akkord und wähle aus, welche Note fehlt." in die help-message wie bei 2_5. führe alles aus wie hier beschrieben: @CODING_STANDARDS.md#L3-96  benutze @CODING_STANDARDS.md#L3-96  als checkliste, und hake dort mit grünen Haken ab, was erledigt ist für 2_4.
+- also es soll ja so:
+
+    - im game mode:
+    die 5 buttons machen irgendwie keinen sinn. man soll ja errrraten, welche note fehlt, also muss einem ja z.b. gesagt werden, "dies ist ein major7 akkord, welche note fehlt?" dann muss er 3 der 4 major 7 noten spielen. das icon soll zeigen, dass jetzt ein major 7 akkord kommt und man braucht 3 oder 4 buttons, je nach akkord, um zu sagen, welche stufe fehlt, dabei darf auch der grundton fehlen
+
+    aendere die buttons so, dass diese sich an den zufällig gewählten akkord anpassen.
+
+  - im free mode sollen alle 4 stufen buttons sichtbar sein und wenn man auf einen drueckt, wählt er einen zufälligen akkord aus den 8 möglichen aus und lässt dann den ton der gedrückten stufe weg
+
 - wenn mögllich arbeite test-driven wie in @CODING_STANDARDS.md#L77-96 beschrieben
 -  benutze die unittests
 
@@ -241,6 +249,10 @@ reset-button:
   - es soll der erfolgssound kommen
   - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte
   - die Eule macht die Augen auf, wenn man das Spiel startet 
+
+2_6:
+- passe den stil in der index.html an den von 2_5 an, kopiere erstmal den background von 2_5 führe alles aus wie hier beschrieben: @CODING_STANDARDS.md#L3-96  benutze @CODING_STANDARDS.md#L3-96  als checkliste
+
 
 
 # mobile-build.sh:

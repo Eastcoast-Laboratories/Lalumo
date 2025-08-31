@@ -112,7 +112,17 @@
     <string name="major_third">Major 3rd</string>
     <string name="perfect_fifth">Perfect 5th</string>
     <string name="diminished_fifth">Diminished 5th</string>
+    <string name="augmented_fifth">Augmented 5th</string>
     <string name="play_incomplete_chord">Play Incomplete Chord</string>
+    <string name="root">Root</string>
+    <string name="third">Third</string>
+    <string name="fifth">Fifth</string>
+    <string name="seventh">Seventh</string>
+    <string name="major_second">Major 2nd</string>
+    <string name="perfect_fourth">Perfect 4th</string>
+    <string name="minor_seventh">Minor 7th</string>
+    <string name="major_seventh">Major 7th</string>
+    <string name="play_complete_chord">Play Complete Chord</string>
         
     <!-- Chords - Harmony Gardens Activity -->
     <string name="harmony_gardens_title">Harmony Gardens</string>

@@ -112,7 +112,17 @@
     <string name="major_third">Große Terz</string>
     <string name="perfect_fifth">Reine Quinte</string>
     <string name="diminished_fifth">Verminderte Quinte</string>
+    <string name="augmented_fifth">Übermäßige Quinte</string>
     <string name="play_incomplete_chord">Unvollständigen Akkord spielen</string>
+    <string name="root">Grundton</string>
+    <string name="third">Terz</string>
+    <string name="fifth">Quinte</string>
+    <string name="seventh">Septime</string>
+    <string name="major_second">Große Sekunde</string>
+    <string name="perfect_fourth">Reine Quarte</string>
+    <string name="minor_seventh">Kleine Septime</string>
+    <string name="major_seventh">Große Septime</string>
+    <string name="play_complete_chord">Vollständigen Akkord spielen</string>
     
     <!-- Chords - Harmony Gardens Activity -->
     <string name="harmony_gardens_title">Harmonie-Gärten</string>

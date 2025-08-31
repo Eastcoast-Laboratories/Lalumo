@@ -179,6 +179,9 @@ export function generate2_4FreePlayChallenge(component) {
   
   // Update chord display
   updateChordDisplay(component);
+  
+  // Update button data for dynamic rendering
+  updateChordButtonData(component);
 }
 
 /**
@@ -189,39 +192,14 @@ export function generate2_4FreePlayChallenge(component) {
 export function generate2_4FreePlayChallengeWithMissingNote(component, missingInterval) {
   debugLog('MISSING_NOTE_2_4', `Generating free play challenge with missing interval: ${missingInterval}`);
   
-  const level = get_2_4_level(component);
-  
-  // Define possible chord types that contain the missing interval
-  let validChordTypes = [];
-  
-  // Check which chord types contain the missing interval
-  const chordTypeIntervals = {
-    'major': [0, 4, 7],
-    'minor': [0, 3, 7],
-    'diminished': [0, 3, 6],
-    'augmented': [0, 4, 8]
-  };
-  
-  for (const [type, intervals] of Object.entries(chordTypeIntervals)) {
-    if (intervals.includes(missingInterval)) {
-      validChordTypes.push(type);
-    }
-  }
-  
-  // If no valid chord types found, fallback to major
-  if (validChordTypes.length === 0) {
-    debugLog('MISSING_NOTE_2_4', `No chord types contain interval ${missingInterval}, using major chord`);
-    validChordTypes = ['major'];
-  }
-  
-  // Select random chord type from valid ones
-  const chordType = validChordTypes[Math.floor(Math.random() * validChordTypes.length)];
-  const fullChord = chordTypeIntervals[chordType] || [0, 4, 7];
+  // Use the chord type selected by convertDegreeToInterval
+  const chordType = component.selectedChordTypeForFreePlay || 'major';
+  const fullChord = getChordIntervals(chordType);
   
   // Remove the specific missing note from the chord
   const incompleteChord = fullChord.filter(note => note !== missingInterval);
   
-  debugLog('MISSING_NOTE_2_4', `Button ${missingInterval} pressed | ${chordType} Full chord (semitones): [${fullChord.join(', ')}], Missing note: ${missingInterval}, Incomplete chord: [${incompleteChord.join(', ')}]`);
+  debugLog('MISSING_NOTE_2_4', `Free Play: Button ${missingInterval} pressed | ${chordType} Full chord (semitones): [${fullChord.join(', ')}], Missing note: ${missingInterval}, Incomplete chord: [${incompleteChord.join(', ')}]`);
   
   // Store challenge data
   current2_4Challenge = {
@@ -235,6 +213,12 @@ export function generate2_4FreePlayChallengeWithMissingNote(component, missingIn
   
   // Update chord display
   updateChordDisplay(component);
+  
+  // Update button data for dynamic rendering
+  updateChordButtonData(component);
+  
+  // Auto-play the incomplete chord in free play mode
+  playCurrent2_4Challenge(component);
 }
 
 /**
@@ -316,7 +300,7 @@ export function generate2_4Challenge(component) {
   
   const level = get_2_4_level(component);
   
-  // Define possible chord types based on level - include all basic types for testing
+  // Define possible chord types based on level
   let chordTypes = ['major', 'minor', 'diminished', 'augmented'];
   if (level >= 2) chordTypes.push('dominant7');
   if (level >= 3) chordTypes.push('major7');
@@ -324,27 +308,16 @@ export function generate2_4Challenge(component) {
   if (level >= 5) chordTypes.push('sus4');
   const chordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
   
-  // Create full chord based on chord type
-  let fullChord = [0]; // Always include root
+  // Get full chord intervals using shared function
+  const fullChord = getChordIntervals(chordType);
   
-  if (chordType === 'major') {
-    fullChord = [0, 4, 7]; // Root, Major 3rd, Perfect 5th
-  } else if (chordType === 'minor') {
-    fullChord = [0, 3, 7]; // Root, Minor 3rd, Perfect 5th
-  } else if (chordType === 'diminished') {
-    fullChord = [0, 3, 6]; // Root, Minor 3rd, Diminished 5th
-  } else if (chordType === 'augmented') {
-    fullChord = [0, 4, 8]; // Root, Major 3rd, Augmented 5th
-  }
-  
-  // Choose missing note from the actual chord intervals (excluding root)
-  const chordIntervalsWithoutRoot = fullChord.slice(1); // Remove root (0)
-  const missingNote = chordIntervalsWithoutRoot[Math.floor(Math.random() * chordIntervalsWithoutRoot.length)];
+  // Choose missing note from ALL chord intervals (including root now)
+  const missingNote = fullChord[Math.floor(Math.random() * fullChord.length)];
   
   // Remove the missing note from the chord
   const incompleteChord = fullChord.filter(note => note !== missingNote);
   
-  debugLog('MISSING_NOTE_2_4', `Full chord: [${fullChord.join(', ')}], Missing note: ${missingNote}, Incomplete chord: [${incompleteChord.join(', ')}]`);
+  debugLog('MISSING_NOTE_2_4', `Game Mode: ${chordType} chord | Full chord: [${fullChord.join(', ')}], Missing note: ${missingNote}, Incomplete chord: [${incompleteChord.join(', ')}]`);
   
   // Store challenge data
   current2_4Challenge = {
@@ -358,6 +331,9 @@ export function generate2_4Challenge(component) {
   
   // Update chord display with icon and title
   updateChordDisplay(component);
+  
+  // Update button data for dynamic rendering
+  updateChordButtonData(component);
   
   // Auto-play the incomplete chord
   playCurrent2_4Challenge(component);
@@ -396,7 +372,7 @@ export function playCurrent2_4Challenge(component) {
 
 /**
  * Check user's answer for 2_4 Missing Note activity
- * @param {number} selectedInterval - The interval selected by the user
+ * @param {number|string} selectedInterval - The interval selected by the user (number for game mode, string for free play)
  * @param {Object} component - The Alpine component instance
  */
 export function check2_4Answer(selectedInterval, component) {
@@ -436,22 +412,12 @@ export function check2_4Answer(selectedInterval, component) {
       // Play error sound
       playErrorSound();
       
-      // Highlight correct button - use ID-based selector since Alpine.js uses @click, not onclick
+      // Highlight correct button - use dynamic ID for game mode
       let correctButton = null;
       
-      // Map intervals to button IDs
-      const intervalToButtonId = {
-        3: 'button_2_4_minor_third',
-        4: 'button_2_4_major_third', 
-        6: 'button_2_4_diminished_fifth',
-        7: 'button_2_4_perfect_fifth',
-        8: 'button_2_4_augmented_fifth'
-      };
-      
-      const buttonId = intervalToButtonId[current2_4Challenge.missingNote];
-      if (buttonId) {
-        correctButton = document.getElementById(buttonId);
-      }
+      // In game mode, buttons have dynamic IDs based on intervals
+      const buttonId = `button_2_4_interval_${current2_4Challenge.missingNote}`;
+      correctButton = document.getElementById(buttonId);
       
       debugLog(['MISSING_NOTE_2_4', 'CORRECT_HIGHLIGHT'], `Searching for button with interval ${current2_4Challenge.missingNote}, buttonId: ${buttonId}, found: ${correctButton}`);
       
@@ -471,10 +437,13 @@ export function check2_4Answer(selectedInterval, component) {
     }
   } else {
     // Free play mode - generate chord with specific missing note based on button press
-    debugLog('MISSING_NOTE_2_4', `Free play mode: button ${selectedInterval} pressed - generating chord missing this interval`);
+    debugLog('MISSING_NOTE_2_4', `Free play mode: button ${selectedInterval} pressed - generating chord missing this degree`);
     
-    // Generate chord with the pressed button as the missing note
-    generate2_4FreePlayChallengeWithMissingNote(component, selectedInterval);
+    // Convert degree name to interval and generate chord
+    const missingInterval = convertDegreeToInterval(selectedInterval, component);
+    if (missingInterval !== null) {
+      generate2_4FreePlayChallengeWithMissingNote(component, missingInterval);
+    }
     
     // Log current chord information
     const noteNames = convertIntervalsToNotes(current2_4Challenge.incompleteChord, current2_4Challenge.rootNote);
@@ -562,10 +531,123 @@ export function playCompleteChord2_4(component) {
 }
 
 /**
+ * Convert degree name to interval number
+ * @param {string|number} degree - Degree name ('root', 'third', 'fifth', 'seventh') or interval number
+ * @param {Object} component - The Alpine component instance
+ * @returns {number|null} Interval number or null if invalid
+ */
+export function convertDegreeToInterval(degree, component) {
+  if (typeof degree === 'number') {
+    return degree; // Already an interval
+  }
+  
+  // For free play mode, randomly select a chord type that contains the requested degree
+  let validChordTypes = [];
+  const allChordTypes = ['major', 'minor', 'diminished', 'augmented', 'dominant7', 'major7', 'sus2', 'sus4'];
+  
+  // Filter chord types that have the requested degree
+  for (const chordType of allChordTypes) {
+    const intervals = getChordIntervals(chordType);
+    let hasRequestedDegree = false;
+    
+    switch (degree) {
+      case 'root':
+        hasRequestedDegree = intervals.includes(0);
+        break;
+      case 'third':
+        hasRequestedDegree = intervals.includes(3) || intervals.includes(4);
+        break;
+      case 'fifth':
+        hasRequestedDegree = intervals.includes(6) || intervals.includes(7) || intervals.includes(8);
+        break;
+      case 'seventh':
+        hasRequestedDegree = intervals.includes(10) || intervals.includes(11);
+        break;
+    }
+    
+    if (hasRequestedDegree) {
+      validChordTypes.push(chordType);
+    }
+  }
+  
+  if (validChordTypes.length === 0) {
+    debugLog('MISSING_NOTE_2_4', `No chord types found for degree ${degree}, using major`);
+    validChordTypes = ['major'];
+  }
+  
+  // Select random chord type from valid ones
+  const randomChordType = validChordTypes[Math.floor(Math.random() * validChordTypes.length)];
+  const chordIntervals = getChordIntervals(randomChordType);
+  
+  // Store the selected chord type for the challenge
+  component.selectedChordTypeForFreePlay = randomChordType;
+  
+  switch (degree) {
+    case 'root':
+      return 0;
+    case 'third':
+      // Find the third in the chord (could be 3 or 4)
+      return chordIntervals.find(interval => interval === 3 || interval === 4) || 4;
+    case 'fifth':
+      // Find the fifth in the chord (could be 6, 7, or 8)
+      return chordIntervals.find(interval => interval === 6 || interval === 7 || interval === 8) || 7;
+    case 'seventh':
+      // Find the seventh in the chord (could be 10 or 11)
+      return chordIntervals.find(interval => interval === 10 || interval === 11) || null;
+    default:
+      debugLog('MISSING_NOTE_2_4', `Unknown degree: ${degree}`);
+      return null;
+  }
+}
+
+/**
+ * Get interval name for display
+ * @param {number} interval - Interval in semitones
+ * @returns {string} Display name for the interval
+ */
+export function getIntervalName(interval) {
+  const intervalNames = {
+    0: window.Alpine?.store('strings')?.root || 'Root',
+    2: window.Alpine?.store('strings')?.major_second || 'Major 2nd',
+    3: window.Alpine?.store('strings')?.minor_third || 'Minor 3rd',
+    4: window.Alpine?.store('strings')?.major_third || 'Major 3rd',
+    5: window.Alpine?.store('strings')?.perfect_fourth || 'Perfect 4th',
+    6: window.Alpine?.store('strings')?.diminished_fifth || 'Diminished 5th',
+    7: window.Alpine?.store('strings')?.perfect_fifth || 'Perfect 5th',
+    8: window.Alpine?.store('strings')?.augmented_fifth || 'Augmented 5th',
+    10: window.Alpine?.store('strings')?.minor_seventh || 'Minor 7th',
+    11: window.Alpine?.store('strings')?.major_seventh || 'Major 7th'
+  };
+  
+  return intervalNames[interval] || `Interval ${interval}`;
+}
+
+/**
+ * Update component data for dynamic button rendering
+ * @param {Object} component - The Alpine component instance
+ */
+export function updateChordButtonData(component) {
+  if (!current2_4Challenge) return;
+  
+  const chordIntervals = getChordIntervals(current2_4Challenge.chordType);
+  
+  // Set component data for Alpine.js reactivity
+  component.current2_4ChordIntervals = chordIntervals;
+  component.current2_4ChordHasSeventh = chordIntervals.length > 3;
+  
+  debugLog('MISSING_NOTE_2_4', `Updated button data: chord type ${current2_4Challenge.chordType}, intervals [${chordIntervals.join(', ')}], has seventh: ${component.current2_4ChordHasSeventh}`);
+}
+
+/**
  * Test function to verify module import is working correctly
  * @returns {boolean} True if import successful
  */
 export function testMissingNoteModuleImport() {
   debugLog('MISSING_NOTE_2_4', 'Missing Note module successfully imported');
   return true;
+}
+
+// Make getIntervalName available globally for Alpine.js templates
+if (typeof window !== 'undefined') {
+  window.getIntervalName = getIntervalName;
 }
