@@ -727,9 +727,6 @@ export function chords() {
       if (mode === '2_1_chords_color-matching') {
         debugLog('CHORDS', 'Initializing 2_1 color matching activity');
         
-        // Show intro message for this activity
-        window.showActivityIntroMessage('2_1_chords_color-matching', this);
-        
         // Always ensure we start in free play mode when entering the activity
         this.is2_1FreePlayMode = true;
         
@@ -738,9 +735,6 @@ export function chords() {
       } else if (mode === '2_2_chords_stable_unstable') {
         // Initialize Stable or Unstable activity
         debugLog('CHORDS_2_2_DEBUG', 'Initializing Stable or Unstable activity');
-        
-        // Show intro message for this activity
-        window.showActivityIntroMessage('2_2_chords_stable_unstable', this);
         
         this.currentStableUnstableChord = null;
         // Local feedback variables removed - using global feedback system
@@ -780,9 +774,6 @@ export function chords() {
         // Initialisierung für Missing Note
         debugLog('CHORDS', 'Initializing missing note activity');
         
-        // Show intro message for this activity
-        window.showActivityIntroMessage('2_4_chords_missing-note', this);
-        
         // Always ensure we start in free play mode when entering the activity
         this.is2_4FreePlayMode = true;
         debugLog('CHORDS', '[2_4] Reset to free play mode on activity entry');
@@ -794,9 +785,6 @@ export function chords() {
       } else if (mode === '2_5_chords_characters') {
         // Initialisierung für Character Matching
         debugLog('CHORDS', 'Initializing character matching activity');
-        
-        // Show intro message for this activity
-        window.showActivityIntroMessage('2_5_chords_characters', this);
         
         // Always ensure we start in free play mode when entering the activity
         this.is2_5FreePlayMode = true;
@@ -815,11 +803,73 @@ export function chords() {
         // Hier den Init-Code für diese Aktivität einfügen
       }
       
+      // Always show the intro message for the current mode (like pitches.js does)
+      this.showContextMessage();
+      
       debugLog('CHORDS', `Switched to ${mode} mode`);
     },
     
     /**
-     * Reset the current activity state
+     * Shows context-specific messages based on current activity and mode
+     * Similar to pitches.js showContextMessage() for consistent behavior
+     * @activity common
+     * @used-by all activities
+     */
+    showContextMessage() {
+      const language = localStorage.getItem('lalumo_language') || 'english';
+      let message = '';
+      
+      // Handle different chord activities with appropriate intro messages
+      if (this.mode === '2_1_chords_color-matching') {
+        message = language === 'german' ? 
+          'Höre den Akkord und wähle die passende Farbe!' : 
+          'Listen to the chord and choose the matching color!';
+      } else if (this.mode === '2_2_chords_stable_unstable') {
+        message = language === 'german' ? 
+          'Höre den Akkord! Ist er stabil oder instabil?' : 
+          'Listen to the chord! Is it stable or unstable?';
+      } else if (this.mode === '2_3_chords_chord-building') {
+        message = language === 'german' ? 
+          'Baue den Akkord nach! Höre zu und spiele die richtigen Noten!' : 
+          'Build the chord! Listen and play the right notes!';
+      } else if (this.mode === '2_4_chords_missing-note') {
+        message = language === 'german' ? 
+          'Höre den Akkord und finde die fehlende Note!' : 
+          'Listen to the chord and find the missing note!';
+      } else if (this.mode === '2_5_chords_characters') {
+        message = language === 'german' ? 
+          'Höre den Akkord und wähle den passenden Charakter!' : 
+          'Listen to the chord and choose the matching character!';
+      } else if (this.mode === '2_6_chords_harmony-gardens') {
+        message = language === 'german' ? 
+          'Erkunde die Harmonie-Gärten! Höre die Akkorde und entdecke ihre Geheimnisse!' : 
+          'Explore the Harmony Gardens! Listen to chords and discover their secrets!';
+      }
+      
+      // Show the intro message using the feedback system
+      if (message) {
+        debugLog('CHORDS', 'LOG_CONTEXT_MESSAGE: Showing intro message for activity:', this.mode);
+        window.showFeedbackMessage(message, {
+          activityId: this.mode,
+          isIntroMessage: true,
+          delaySeconds: 10,
+          component: this
+        });
+      } else {
+        // Fallback to central intro message function
+        debugLog('CHORDS', 'LOG_CONTEXT_MESSAGE: Using central intro message for activity:', this.mode);
+        if (window.showActivityIntroMessage) {
+          window.showActivityIntroMessage(this.mode, this);
+        } else {
+          debugLog('ERROR', 'showActivityIntroMessage not available for ' + this.mode);
+        }
+      }
+    },
+    
+    /**
+     * Reset activity state when switching between activities
+     * @activity common
+     * @used-by all activities
      */
     resetActivity() {
       // Don't reset currentChordType to avoid "Unknown chord type: null" errors
