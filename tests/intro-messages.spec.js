@@ -72,7 +72,7 @@ test.describe('Lalumo Intro Messages Tests', () => {
       { id: '2_2', mode: '2_2_chords_stable_unstable', expectedLog: '2_2_chords_stable_unstable' },
       { id: '2_3', mode: '2_3_chords_chord-building', expectedLog: '2_3_chords_chord-building' },
       { id: '2_4', mode: '2_4_chords_missing-note', expectedLog: '2_4_chords_missing-note' },
-      { id: '2_6', mode: '2_6_chords_harmony-gardens', expectedLog: '2_6_chords_harmony-gardens' }
+      { id: '2_6', mode: '2_6_chords_one_or_many', expectedLog: '2_6_chords_one_or_many' }
       // Note: 2_5 is locked by default and requires progress to unlock
     ];
 

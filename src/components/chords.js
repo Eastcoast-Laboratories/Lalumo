@@ -243,7 +243,7 @@ export function chords() {
             '2_3_chords_chord-building': 0,
             '2_4_chords_missing-note': 0,
             '2_5_chords_characters': 0,
-            '2_6_chords_harmony-gardens': 0
+            '2_6_chords_one_or_many': 0
           };
         }
       } catch (e) {
@@ -797,7 +797,7 @@ export function chords() {
         update_2_5Background(this);
         
         // Alpine.js übernimmt die Anzeige der Fortschrittsnachrichten über die x-text-Bindungen
-      } else if (mode === '2_6_chords_harmony-gardens') {
+      } else if (mode === '2_6_chords_one_or_many') {
         // Initialisierung für Harmony Gardens
         debugLog('CHORDS', 'Initializing harmony gardens activity');
         // Hier den Init-Code für diese Aktivität einfügen
@@ -840,7 +840,7 @@ export function chords() {
         message = language === 'german' ? 
           'Höre den Akkord und wähle den passenden Charakter!' : 
           'Listen to the chord and choose the matching character!';
-      } else if (this.mode === '2_6_chords_harmony-gardens') {
+      } else if (this.mode === '2_6_chords_one_or_many') {
         message = language === 'german' ? 
           'Erkunde die Harmonie-Gärten! Höre die Akkorde und entdecke ihre Geheimnisse!' : 
           'Explore the Harmony Gardens! Listen to chords and discover their secrets!';
@@ -1898,7 +1898,7 @@ export function chords() {
         return;
       }
       
-      // Show small rainbow effect for 2_6_harmony_gardens when adding a chord
+      // Show small rainbow effect for 2_6_one_or_many when adding a chord
       showRainbowSuccess();
       
       // Add the chord to the sequence
@@ -1970,7 +1970,7 @@ export function chords() {
         return;
       }
       
-      // Show big rainbow success when playing a complete chord sequence in 2_6_harmony_gardens
+      // Show big rainbow success when playing a complete chord sequence in 2_6_one_or_manys
       showBigRainbowSuccess();
       
       // Stop any playing sounds

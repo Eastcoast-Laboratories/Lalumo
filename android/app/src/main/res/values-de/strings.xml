@@ -68,7 +68,7 @@
     <string name="chord_building">Akkorde Bauen</string>
     <string name="missing_note">Rate die fehlende Note</string>
     <string name="chord_characters">Akkord-Charaktere</string>
-    <string name="harmony_gardens">Harmonie-Gärten</string>
+    <string name="one_or_many">Ein Ton oder Viele</string>
     
     <!-- Chords - Color Matching Activity -->
     <string name="chord_color_matching_title">Ordne Farben zu Akkorden zu</string>
@@ -129,9 +129,9 @@
     <string name="major_seventh">Große Septime</string>
     <string name="play_complete_chord">Vollständigen Akkord spielen</string>
     
-    <!-- Chords - Harmony Gardens Activity -->
-    <string name="harmony_gardens_title">Harmonie-Gärten</string>
-    <string name="harmony_gardens_intro">Erschaffe einen wunderschönen Garten, indem du verschiedene Akkordsequenzen auswählst. Jeder Akkordtyp lässt andere Pflanzen wachsen!</string>
+    <!-- Chords - 2_6 Ein Ton oder Viele Activity -->
+    <string name="one_or_many_title">Ein Ton oder Viele</string>
+    <string name="one_or_many_intro">Hör genau hin und entscheide ob du einen Ton oder einen Akkord hörst!</string>
     <string name="play_sequence">Sequenz abspielen</string>
     
     <!-- Progressive Difficulty Messages -->

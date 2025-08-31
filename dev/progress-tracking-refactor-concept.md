@@ -421,7 +421,7 @@ export function resetActivityProgress(component, id) {
 | ⏳ | `'2_3_chords_chord-building'` | `'2_3'` | All components |
 | ⏳ | `'2_4_chords_missing-note'` | `'2_4'` | All components |
 | ✅ | `'2_5_chords_characters'` | `'2_5'` | All components |
-| ⏳ | `'2_6_chords_harmony-gardens'` | `'2_6'` | All components |
+| ⏳ | `'2_6_chords_one_or_many'` | `'2_6'` | All components |
 
 ### Variable References to Replace
 | Status | Old Variable | New Function Call | Location |
@@ -456,7 +456,7 @@ export function resetActivityProgress(component, id) {
   - `'2_3_chords_chord-building'` → `'2_3'`
   - `'2_4_chords_missing-note'` → `'2_4'`
   - `'2_5_chords_characters'` → `'2_5'`
-  - `'2_6_chords_harmony-gardens'` → `'2_6'`
+  - `'2_6_chords_one_or_many'` → `'2_6'`
 
 ### Functions to Modify
 

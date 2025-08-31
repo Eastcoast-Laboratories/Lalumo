@@ -29,7 +29,7 @@ The app playfully teaches preschool children a basic understanding of music – 
  - Chord Building: (2_3_chords_chord-building)
  - Missing Note: (2_4_chords_missing-note)
  - Character Matching: (2_5_chords_characters)
- - Harmony Gardens: (2_6_chords_harmony-gardens)
+ - One or Many: (2_6_chords_one_or_many)
 
 ##### Implementation of with Tone.js
 
@@ -164,7 +164,7 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
 
 #### in details:
 
-[ ] **Chord Color Matching: (2_1_chords_color-matching)**
+[x] **Chord Color Matching: (2_1_chords_color-matching)**
   Major chords are represented by bright colors, minor chords by cooler or darker colors. Children listen to a chord and select which color best matches what they hear, developing emotional understanding of harmony.
     - this is nearly the same as 2_5 but with more chords and far too complicated for children, but maybe a chellenge for adutlts, so suggest a background image in the style of Studio Ghibli, that would be more for adults than children
   
@@ -235,10 +235,10 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
   - **Level 5 (41-50 points):** Impressionistic harmonies with color tones vs. microtonal variations and quarter-tone dissonances
   - **Level 6 (51+ points):** Complex extended harmonies with subtle tensions vs. highly sophisticated dissonances requiring nuanced listening
 
-[ ] **Chord Building: (2_3_chords_chord-building)**
+[x] **Chord Building: (2_3_chords_chord-building)**
   Children stack blocks representing different notes to build their own chords. As they add each note, the sound plays, teaching how chords are constructed from individual tones.
 
-[ ] **Guess the Missing Note: (2_4_chords_missing-note)**
+[x] **Guess the Missing Note: (2_4_chords_missing-note)**
   A chord is played with one note missing. Children must identify which note completes the chord by selecting from options, developing their ear for harmony.
     - Geht schon, aber viel zu schwer für kleine Kinder
 
@@ -250,14 +250,8 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
   4. The game provides automatic chord progression after correct answers
 
 
-[ ] **Harmony Gardens: (2_6_chords_harmony-gardens)**
-  Children plant and grow virtual flowers by selecting chord sequences. Different chord combinations create different garden patterns, visualizing how harmonies work together in music.
-    - sound geht noch nicht
-
-
-### 3. Discovering Timbres
-
-Children hear different sounds (e.g., warm, cold, sharp, soft) and learn to distinguish them. They playfully select, for example, "the softest tone."
+[ ] **One or many: (2_6_chords_one_or_many)
+  Children hear one note or a chord and have to select if it is one note or a chord.
 
 #### in details:
 

@@ -593,15 +593,15 @@
               Debug 🎭 <span x-text="$store.strings?.chord_characters || 'Character Matching'"></span>
             </a>
             <a href="#2_6" id="nav_2_6"
-              @click="isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_6_chords_harmony-gardens'}); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_6_chords_one_or_many'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_6_chords_harmony-gardens')"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_6_chords_one_or_many')"
               :class="{ 'active': isActive }"
               class="debug-element"
               role="button"
               tabindex="0"
             >
-              🌸 <span x-text="$store.strings?.harmony_gardens || 'Harmony Gardens'"></span>
+              🌸 <span x-text="$store.strings?.one_or_manys || 'Harmony Gardens'"></span>
             </a>
           </div>
         </template>
@@ -1285,13 +1285,13 @@
         </div>
         
         <!-- 2_6 Chords - Harmony Gardens Activity -->
-        <div x-show="mode === '2_6_chords_harmony-gardens'" class="chord-activity">
+        <div x-show="mode === '2_6_chords_one_or_many'" class="chord-activity">
           
           <div class="chords-container">
-            <h2 x-text="$store.strings?.harmony_gardens_title || 'Harmony Gardens'">Harmony Gardens</h2>
+            <h2 x-text="$store.strings?.one_or_manys_title || 'Harmony Gardens'">Harmony Gardens</h2>
             
             <div class="harmony-gardens-explanation">
-              <p x-text="$store.strings?.harmony_gardens_intro || 'Create a beautiful garden by choosing different chord sequences. Each chord type grows different plants!'">Create a beautiful garden by choosing different chord sequences. Each chord type grows different plants!</p>
+              <p x-text="$store.strings?.one_or_manys_intro || 'Create a beautiful garden by choosing different chord sequences. Each chord type grows different plants!'">Create a beautiful garden by choosing different chord sequences. Each chord type grows different plants!</p>
             </div>
             
             <div class="garden-viewer">

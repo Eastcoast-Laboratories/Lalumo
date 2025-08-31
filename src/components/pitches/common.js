@@ -40,7 +40,7 @@ function getActivityNames(isGerman) {
     '2_3_chords_chord-building': isGerman ? 'Akkord-Bau' : 'Chord Building',
     '2_4_chords_missing-note': isGerman ? 'Fehlende Noten' : 'Missing Note',
     '2_5_chords_characters': isGerman ? 'Akkord-Charaktere' : 'Chord Characters',
-    '2_6_chords_harmony-gardens': isGerman ? 'Harmonie Garten' : 'Harmony Gardens'
+    '2_6_chords_one_or_many': isGerman ? 'Harmonie Garten' : 'Harmony Gardens'
   };
 }
 

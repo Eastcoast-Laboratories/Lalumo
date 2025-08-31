@@ -33,7 +33,7 @@ TODO
 
   - **2_5_chords_characters**:
    
-  - **2_6_chords_harmony-gardens**:
+  - **2_6_chords_one_or_many**:
    - es spielt noch kein sound
    - Aktiviere Audio-Wiedergabe für Akkordsequenzen
 
@@ -245,6 +245,9 @@ reset-button:
 
 2_6:
 - passe den stil in der index.html an den von 2_5 an, kopiere erstmal den background von 2_5 führe alles aus wie hier beschrieben: @CODING_STANDARDS.md#L3-96  benutze @CODING_STANDARDS.md#L3-96  als checkliste
+IDEE: One or many: (2_6_chords_one_or_many)
+  Children hear one note or a chord and have to select if it is one note or a chord.
+
 
 
 

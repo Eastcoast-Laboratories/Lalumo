@@ -74,7 +74,7 @@ export function app() {
           '2_3_chords_chord-building': 'Chord Building',
           '2_4_chords_missing-note': 'Missing Note',
           '2_5_chords_characters': 'Chord Characters',
-          '2_6_chords_harmony-gardens': 'Harmony Gardens'
+          '2_6_chords_one_or_many': 'Harmony Gardens'
         },
       },
       '3_timbres': {
@@ -574,7 +574,7 @@ export function app() {
         '2_3': 'chord-building',      // → '2_3_chords_chord-building'
         '2_4': 'missing-note',        // → '2_4_chords_missing-note'
         '2_5': 'characters',          // → '2_5_chords_characters'
-        '2_6': 'harmony-gardens'      // → '2_6_chords_harmony-gardens'
+        '2_6': 'harmony-gardens'      // → '2_6_chords_one_or_many'
       };
       return modeMap[activityId] || 'high_or_low';
     },
@@ -2413,7 +2413,7 @@ export function app() {
         '2_3_chords_chord-building': '2_3',
         '2_4_chords_missing-note': '2_4',
         '2_5_chords_characters': '2_5',
-        '2_6_chords_harmony-gardens': '2_6'
+        '2_6_chords_one_or_many': '2_6'
       };
       return modeMapping[mode] || mode;
     },

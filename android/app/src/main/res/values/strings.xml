@@ -68,7 +68,7 @@
     <string name="chord_building">Chord Building</string>
     <string name="missing_note">Guess the Missing Note</string>
     <string name="chord_characters">Chord Story Characters</string>
-    <string name="harmony_gardens">Harmony Gardens</string>
+    <string name="one_or_many">One or Many</string>
     
     <!-- Chords - Color Matching Activity -->
     <string name="chord_color_matching_title">Match Colors to Chords</string>
@@ -129,9 +129,9 @@
     <string name="major_seventh">Major 7th</string>
     <string name="play_complete_chord">Play Complete Chord</string>
         
-    <!-- Chords - Harmony Gardens Activity -->
-    <string name="harmony_gardens_title">Harmony Gardens</string>
-    <string name="harmony_gardens_intro">Create a beautiful garden by choosing different chord sequences. Each chord type grows different plants!</string>
+    <!-- Chords - 2_6 Activity -->
+    <string name="one_or_many_title">One or Many</string>
+    <string name="one_or_many_intro">Listening carefully do you hear a single note or a chord?</string>
     <string name="play_sequence">Play Sequence</string>
     
     <!-- Progressive Difficulty Messages -->
