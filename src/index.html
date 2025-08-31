@@ -708,7 +708,13 @@
             <div class="pitch-card low-choice activity-button-blocker" 
                  @click="checkHighOrLowAnswer('low'); blurElement($event)" 
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')"
-                 :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')">
+                 :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')"
+                 @touchstart.prevent="startLongPress($event)" 
+                 @touchend.prevent="endLongPress($event)" 
+                 @touchmove.prevent="cancelLongPress($event)"
+                 @mousedown="startMouseLongPress($event)"
+                 @mouseup="endMouseLongPress($event)"
+                 @mouseleave="cancelMouseLongPress($event)">
               <div class="pitch-icon low-icon">
                 <img src="images/x.gif" alt="Low pitch" />
                 <span class="choice-label" 
@@ -720,7 +726,13 @@
             <div class="pitch-card high-choice activity-button-blocker" 
                  @click="checkHighOrLowAnswer('high'); blurElement($event)" 
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')"
-                 :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')">
+                 :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')"
+                 @touchstart.prevent="startLongPress($event)" 
+                 @touchend.prevent="endLongPress($event)" 
+                 @touchmove.prevent="cancelLongPress($event)"
+                 @mousedown="startMouseLongPress($event)"
+                 @mouseup="endMouseLongPress($event)"
+                 @mouseleave="cancelMouseLongPress($event)">
               <div class="pitch-icon high-icon">
                 <img src="images/x.gif" alt="High pitch" />
                 <span class="choice-label" 
@@ -766,14 +778,28 @@
           <!-- Grid-Container für Match-Sounds mit richtigem rowspan-Verhalten -->
           <div class="match-sounds-container">
             <!-- Up pattern (immer sichtbar) - oben links -->
-            <div class="pitch-card up-card activity-button-blocker" @click="checkMatch('up'); blurElement($event)" @mousedown="startLongPress('up')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
+            <div class="pitch-card up-card activity-button-blocker" @click="checkMatch('up'); blurElement($event)" 
+                 :title="$store.strings?.up_pattern || 'Up pattern'"
+                 @touchstart.prevent="startLongPress($event)" 
+                 @touchend.prevent="endLongPress($event)" 
+                 @touchmove.prevent="cancelLongPress($event)"
+                 @mousedown="startMouseLongPress($event)"
+                 @mouseup="endMouseLongPress($event)"
+                 @mouseleave="cancelMouseLongPress($event)">
               <div class="pitch-icon up">
                 <img src="images/1x1.gif" alt="Rocket going up" />
               </div>
             </div>
             
             <!-- Down pattern (immer sichtbar) - rechts mit möglichem rowspan -->
-            <div class="pitch-card down-card activity-button-blocker" @click="checkMatch('down'); blurElement($event)" @mousedown="startLongPress('down')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
+            <div class="pitch-card down-card activity-button-blocker" @click="checkMatch('down'); blurElement($event)" 
+                 :title="$store.strings?.down_pattern || 'Down pattern'"
+                 @touchstart.prevent="startLongPress($event)" 
+                 @touchend.prevent="endLongPress($event)" 
+                 @touchmove.prevent="cancelLongPress($event)"
+                 @mousedown="startMouseLongPress($event)"
+                 @mouseup="endMouseLongPress($event)"
+                 @mouseleave="cancelMouseLongPress($event)">
               <div class="pitch-icon down">
                 <img src="images/1x1.gif" alt="Slide going down" />
               </div>
@@ -874,14 +900,28 @@
 
             <!-- Animal choice buttons -->
             <div class="sound-judgment-options">
-              <div class="pitch-card animal-card happy activity-button-blocker" @click="checkSoundHighOrLow(true); blurElement($event)" @touchstart.prevent @touchend.prevent="$el.click();" aria-label="Sounds good" title="Sounds good">
-                <div class="pitch-icon animal-icon" title="Sounds good!">
-                  <img src="images/1_5_pitches_good_cat.png" alt="Happy cat">
+              <div class="pitch-card animal-card happy activity-button-blocker" @click="checkSoundHighOrLow(true); blurElement($event)" 
+                   @touchstart.prevent="startLongPress($event)" 
+                   @touchend.prevent="endLongPress($event)" 
+                   @touchmove.prevent="cancelLongPress($event)"
+                   @mousedown="startMouseLongPress($event)"
+                   @mouseup="endMouseLongPress($event)"
+                   @mouseleave="cancelMouseLongPress($event)"
+                   :aria-label="$store.strings?.sounds_good || 'Sounds good'" :title="$store.strings?.sounds_good || 'Sounds good'">
+                <div class="pitch-icon animal-icon">
+                  <img src="images/1_5_pitches_good_cat.png">
                 </div>
               </div>
-              <div class="pitch-card animal-card unhappy activity-button-blocker" @click="checkSoundHighOrLow(false); blurElement($event)" @touchstart.prevent @touchend.prevent="$el.click();" aria-label="Sounds wrong" title="Sounds wrong">
-                <div class="pitch-icon animal-icon" title="Sounds wrong!">
-                  <img src="images/1_5_pitches_bad_snake.png" alt="Unhappy snake">
+              <div class="pitch-card animal-card unhappy activity-button-blocker" @click="checkSoundHighOrLow(false); blurElement($event)" 
+                   @touchstart.prevent="startLongPress($event)" 
+                   @touchend.prevent="endLongPress($event)" 
+                   @touchmove.prevent="cancelLongPress($event)"
+                   @mousedown="startMouseLongPress($event)"
+                   @mouseup="endMouseLongPress($event)"
+                   @mouseleave="cancelMouseLongPress($event)"
+                   :aria-label="$store.strings?.sounds_wrong || 'Sounds wrong'" :title="$store.strings?.sounds_wrong || 'Sounds wrong'">
+                <div class="pitch-icon animal-icon">
+                  <img src="images/1_5_pitches_bad_snake.png">
                 </div>
               </div>
             </div>

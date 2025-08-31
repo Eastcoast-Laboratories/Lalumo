@@ -2864,12 +2864,24 @@ export function pitches() {
           <button id="challenge-button" onclick="blur()"
             class="draw-melody-button"
             title="${this.$store.strings.challenge_mode_activate}" 
-            alt="${this.$store.strings.challenge_mode}_a11y">
+            alt="${this.$store.strings.challenge_mode}_a11y"
+            ontouchstart="startLongPress(event)"
+            ontouchend="endLongPress(event)"
+            ontouchmove="cancelLongPress(event)"
+            onmousedown="startMouseLongPress(event)"
+            onmouseup="endMouseLongPress(event)"
+            onmouseleave="cancelMouseLongPress(event)">
           </button>
           <button id="new-melody-button" onclick="blur()" 
             class="draw-melody-button"
             title="${this.$store.strings.generate_melody}" 
-            alt="${this.$store.strings.new_melody}_a11y">
+            alt="${this.$store.strings.new_melody}_a11y"
+            ontouchstart="startLongPress(event)"
+            ontouchend="endLongPress(event)"
+            ontouchmove="cancelLongPress(event)"
+            onmousedown="startMouseLongPress(event)"
+            onmouseup="endMouseLongPress(event)"
+            onmouseleave="cancelMouseLongPress(event)">
           </button>
         `;
         
