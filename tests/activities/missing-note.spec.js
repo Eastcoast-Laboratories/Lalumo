@@ -239,6 +239,21 @@ test.describe('Lalumo 2_4 Missing Note Activity Tests', () => {
     }
     
     // Update test overlay
+    await updateTestOverlay(page, 'Testing chord display click functionality...');
+    
+    // Test chord display click to play complete chord
+    const chordDisplay = page.locator('.chord-display-container');
+    if (await chordDisplay.isVisible()) {
+      await chordDisplay.click();
+      await page.waitForTimeout(1000);
+      debugLog('MISSING_NOTE_SPEC', 'Clicked chord display to play complete chord');
+      
+      // Wait for delay and check if functionality works
+      await page.waitForTimeout(3000); // Wait for delay + some buffer
+      debugLog('MISSING_NOTE_SPEC', 'Chord display click functionality tested');
+    }
+    
+    // Update test overlay
     await updateTestOverlay(page, 'Testing progress tracking...');
     
     // Check if progress is displayed (specific to 2_4 activity)

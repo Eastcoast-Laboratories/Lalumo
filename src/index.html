@@ -934,7 +934,7 @@
             </div>
             
             <!-- Chord Display -->
-            <div class="chord-display-container">
+            <div class="chord-display-container" @click="playCompleteChord2_4($data)" style="cursor: pointer;" :title="$store.strings?.play_complete_chord || 'Play complete chord'">
               <div id="chord-display-2_4" class="chord-icon" data-chord-type=""></div>
             </div>
             

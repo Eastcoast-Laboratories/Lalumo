@@ -1958,6 +1958,7 @@ if (typeof window !== 'undefined') {
     window.generate2_4Challenge = module.generate2_4Challenge;
     window.playCurrent2_4Challenge = module.playCurrent2_4Challenge;
     window.check2_4Answer = module.check2_4Answer;
+    window.playCompleteChord2_4 = module.playCompleteChord2_4;
     window.reset_2_4_Progress = module.reset_2_4_Progress;
   });
 }

@@ -432,6 +432,48 @@ export function reset_2_4_Progress(component) {
 }
 
 /**
+ * Play the complete chord (with missing note) when chord display is clicked
+ * @param {Object} component - The Alpine component instance
+ */
+export function playCompleteChord2_4(component) {
+  if (!current2_4Challenge) {
+    debugLog('MISSING_NOTE_2_4', 'No current challenge to play complete chord for');
+    return;
+  }
+  
+  debugLog('MISSING_NOTE_2_4', 'Playing complete chord on chord display click');
+  
+  // Get the complete chord (including the missing note)
+  let fullChord = [0]; // Always include root
+  
+  if (current2_4Challenge.chordType === 'major') {
+    fullChord = [0, 4, 7]; // Root, Major 3rd, Perfect 5th
+  } else if (current2_4Challenge.chordType === 'minor') {
+    fullChord = [0, 3, 7]; // Root, Minor 3rd, Perfect 5th
+  } else if (current2_4Challenge.chordType === 'diminished') {
+    fullChord = [0, 3, 6]; // Root, Minor 3rd, Diminished 5th
+  } else if (current2_4Challenge.chordType === 'augmented') {
+    fullChord = [0, 4, 8]; // Root, Major 3rd, Augmented 5th
+  }
+  
+  debugLog('MISSING_NOTE_2_4', `Playing complete ${current2_4Challenge.chordType} chord: [${fullChord.join(', ')}]`);
+  
+  // Play the complete chord
+  if (component && typeof component.playChordFromIntervals === 'function') {
+    component.playChordFromIntervals(fullChord, current2_4Challenge.rootNote, { duration: 2.0 });
+    debugLog('MISSING_NOTE_2_4', `Played complete chord via component: [${fullChord.join(', ')}] from root ${current2_4Challenge.rootNote}`);
+  } else {
+    debugLog('MISSING_NOTE_2_4', 'No audio playback method available for complete chord');
+  }
+  
+  // After a short delay, play the incomplete chord again
+  setTimeout(() => {
+    debugLog('MISSING_NOTE_2_4', 'Playing incomplete chord after delay');
+    playCurrent2_4Challenge(component);
+  }, 2500); // 2.5 second delay to let complete chord finish
+}
+
+/**
  * Test function to verify module import is working correctly
  * @returns {boolean} True if import successful
  */
