@@ -135,12 +135,12 @@ export function generate2_4FreePlayChallenge(component) {
   
   const level = get_2_4_level(component);
   
-  // Define possible chord types based on level
-  const chordTypes = level >= 2 ? ['major', 'minor', 'diminished'] : ['major', 'minor'];
+  // Define possible chord types based on level - include augmented for comprehensive testing
+  const chordTypes = level >= 2 ? ['major', 'minor', 'diminished', 'augmented'] : ['major', 'minor'];
   const chordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
   
   // Define possible missing notes (intervals)
-  const possibleMissingNotes = [3, 4, 6, 7]; // minor 3rd, major 3rd, dim 5th, perfect 5th
+  const possibleMissingNotes = [3, 4, 6, 7, 8]; // minor 3rd, major 3rd, dim 5th, perfect 5th, aug 5th
   const missingNote = possibleMissingNotes[Math.floor(Math.random() * possibleMissingNotes.length)];
   
   // Create incomplete chord based on chord type and missing note
@@ -152,6 +152,8 @@ export function generate2_4FreePlayChallenge(component) {
     fullChord = [0, 3, 7]; // Root, Minor 3rd, Perfect 5th
   } else if (chordType === 'diminished') {
     fullChord = [0, 3, 6]; // Root, Minor 3rd, Diminished 5th
+  } else if (chordType === 'augmented') {
+    fullChord = [0, 4, 8]; // Root, Major 3rd, Augmented 5th
   }
   
   // Remove the missing note from the chord
@@ -250,12 +252,12 @@ export function generate2_4Challenge(component) {
   
   const level = get_2_4_level(component);
   
-  // Define possible chord types based on level
-  const chordTypes = level >= 2 ? ['major', 'minor', 'diminished'] : ['major', 'minor'];
+  // Define possible chord types based on level - include augmented for comprehensive testing
+  const chordTypes = level >= 2 ? ['major', 'minor', 'diminished', 'augmented'] : ['major', 'minor'];
   const chordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
   
   // Define possible missing notes (intervals)
-  const possibleMissingNotes = [3, 4, 6, 7]; // minor 3rd, major 3rd, dim 5th, perfect 5th
+  const possibleMissingNotes = [3, 4, 6, 7, 8]; // minor 3rd, major 3rd, dim 5th, perfect 5th, aug 5th
   const missingNote = possibleMissingNotes[Math.floor(Math.random() * possibleMissingNotes.length)];
   
   // Create incomplete chord based on chord type and missing note
@@ -267,6 +269,8 @@ export function generate2_4Challenge(component) {
     fullChord = [0, 3, 7]; // Root, Minor 3rd, Perfect 5th
   } else if (chordType === 'diminished') {
     fullChord = [0, 3, 6]; // Root, Minor 3rd, Diminished 5th
+  } else if (chordType === 'augmented') {
+    fullChord = [0, 4, 8]; // Root, Major 3rd, Augmented 5th
   }
   
   // Remove the missing note from the chord

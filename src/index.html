@@ -956,6 +956,9 @@
               <button id="button_2_4_diminished_fifth" @click="check2_4Answer(6, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
                 <span x-text="$store.strings?.diminished_fifth || 'Diminished 5th'">Diminished 5th</span>
               </button>
+              <button id="button_2_4_augmented_fifth" @click="check2_4Answer(8, $data)" class="note-button activity-button-blocker" @touchstart.prevent @touchend.prevent="$el.click();">
+                <span x-text="$store.strings?.augmented_fifth || 'Augmented 5th'">Augmented 5th</span>
+              </button>
             </div>
             
             <!-- Individual feedback-message div removed - now using unified div -->

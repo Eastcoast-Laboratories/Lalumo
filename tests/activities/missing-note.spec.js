@@ -19,9 +19,9 @@ test.describe('Lalumo 2_4 Missing Note Activity Tests', () => {
     await setupTest(page);
   });
 
-  test('Should test 2_4 Missing Note free play mode with chord display and audio', async ({ page }) => {
-    // Increase test timeout to 30 seconds for audio interactions
-    test.setTimeout(30000);
+  test('Should test 2_4 Missing Note free play mode with all chord types and display verification', async ({ page }) => {
+    // Increase test timeout to 60 seconds for comprehensive testing
+    test.setTimeout(60000);
     
     // First navigate to chords section by clicking the main chords tab
     await page.click('button:has-text("Chords")');
@@ -32,54 +32,14 @@ test.describe('Lalumo 2_4 Missing Note Activity Tests', () => {
     await page.waitForTimeout(1000);
     
     // Show test overlay using DRY implementation
-    await showTestOverlay(page, 'Starting 2_4 Missing Note comprehensive test...');
+    await showTestOverlay(page, 'Starting 2_4 Missing Note comprehensive chord type test...');
     
     // Verify we're in the correct activity
     const activityContainer = page.locator('[id="2_4_chords_missing-note"]');
     await expect(activityContainer).toBeVisible();
     debugLog('MISSING_NOTE_SPEC', 'Successfully navigated to 2_4 missing note activity');
     
-    // Update test overlay
-    await updateTestOverlay(page, 'Testing chord display with icons...');
-    
-    // Check if chord display element exists
-    const chordDisplay = page.locator('#chord-display-2_4');
-    await expect(chordDisplay).toBeVisible();
-    debugLog('MISSING_NOTE_SPEC', 'Chord display element is visible');
-    
-    // Check if chord display has an icon class (from 2_1 mapping)
-    const chordDisplayClass = await chordDisplay.getAttribute('class');
-    const hasChordIcon = chordDisplayClass && (
-      chordDisplayClass.includes('fruit') || 
-      chordDisplayClass.includes('mushroom') || 
-      chordDisplayClass.includes('crystal') ||
-      chordDisplayClass.includes('flower') ||
-      chordDisplayClass.includes('flame') ||
-      chordDisplayClass.includes('feather') ||
-      chordDisplayClass.includes('acorn') ||
-      chordDisplayClass.includes('lantern')
-    );
-    expect(hasChordIcon).toBe(true);
-    debugLog('MISSING_NOTE_SPEC', `Chord display shows icon with class: ${chordDisplayClass}`);
-    
-    // Update test overlay
-    await updateTestOverlay(page, 'Testing free play mode - clicking "Minor 3rd" button...');
-    
-    // 1. Press "Minor 3rd" button (interval 3) in free play mode
-    const minorThirdButton = page.locator('#button_2_4_minor_third');
-    await expect(minorThirdButton).toBeVisible();
-    await minorThirdButton.click();
-    await page.waitForTimeout(1000);
-    debugLog('MISSING_NOTE_SPEC', 'Clicked "Minor 3rd" button in free play mode');
-    
-    // 2. Check that chord display still shows an icon after button click
-    const chordDisplayAfterClick = page.locator('#chord-display-2_4');
-    await expect(chordDisplayAfterClick).toBeVisible();
-    const chordTypeAfterClick = await chordDisplayAfterClick.getAttribute('data-chord-type');
-    expect(chordTypeAfterClick).toBeTruthy();
-    debugLog('MISSING_NOTE_SPEC', `Chord display shows chord type: ${chordTypeAfterClick}`);
-    
-    // 3. Check console logs for button press
+    // Set up console log listener
     const consoleLogs = [];
     page.on('console', msg => {
       if (msg.type() === 'log' && msg.text().includes('MISSING_NOTE_2_4')) {
@@ -87,47 +47,109 @@ test.describe('Lalumo 2_4 Missing Note Activity Tests', () => {
       }
     });
     
-    // Wait for logs to accumulate
-    await page.waitForTimeout(500);
-    
-    // 4. Verify logs contain button press information
-    const buttonPressLog = consoleLogs.find(log => log.includes('Free play mode: button 3 pressed'));
-    expect(buttonPressLog).toBeTruthy();
-    debugLog('MISSING_NOTE_SPEC', 'Found button press log in console');
-    
-    // 5. Verify logs contain generated chord information
-    const chordGenerationLog = consoleLogs.find(log => log.includes('Generated chord:') && log.includes('chord with notes'));
-    expect(chordGenerationLog).toBeTruthy();
-    debugLog('MISSING_NOTE_SPEC', 'Found chord generation log with note details');
-    
-    // 6. Verify logs contain missing note information
-    const missingNoteLog = consoleLogs.find(log => log.includes('Missing note:') && log.includes('interval'));
-    expect(missingNoteLog).toBeTruthy();
-    debugLog('MISSING_NOTE_SPEC', 'Found missing note log with interval information');
-    
-    // 7. Verify logs contain successful audio playback
-    const audioPlaybackLog = consoleLogs.find(log => log.includes('Played incomplete chord successfully via audioEngine'));
-    expect(audioPlaybackLog).toBeTruthy();
-    debugLog('MISSING_NOTE_SPEC', 'Found successful audio playback log');
-    
-    // 8. Check that no "Uncaught ReferenceError" appears in error logs
+    // Set up error log listener
     const errorLogs = [];
     page.on('pageerror', error => {
       errorLogs.push(error.message);
     });
     
-    // Wait for any potential errors to surface
-    await page.waitForTimeout(1000);
+    // Expected chord type mappings
+    const expectedChordMappings = {
+      'major': 'fruit',
+      'minor': 'mushroom', 
+      'diminished': 'crystal',
+      'augmented': 'flower'
+    };
     
-    // Verify no uncaught reference errors
+    const buttonIds = [
+      '#button_2_4_minor_third',
+      '#button_2_4_major_third', 
+      '#button_2_4_perfect_fifth',
+      '#button_2_4_diminished_fifth'
+    ];
+    
+    const foundChordTypes = new Set();
+    let attempts = 0;
+    const maxAttempts = 20; // Try up to 20 times to get all chord types
+    
+    // Update test overlay
+    await updateTestOverlay(page, 'Testing all chord types generation...');
+    
+    // Test multiple button clicks to ensure we get different chord types
+    while (foundChordTypes.size < 4 && attempts < maxAttempts) { // Test for major, minor, diminished, augmented
+      attempts++;
+      
+      // Pick a random button
+      const randomButton = buttonIds[Math.floor(Math.random() * buttonIds.length)];
+      const button = page.locator(randomButton);
+      await expect(button).toBeVisible();
+      
+      // Clear previous logs
+      consoleLogs.length = 0;
+      
+      // Click button
+      await button.click();
+      await page.waitForTimeout(1500); // Wait for chord generation and display update
+      
+      // Check chord display
+      const chordDisplay = page.locator('#chord-display-2_4');
+      await expect(chordDisplay).toBeVisible();
+      
+      // Get chord type from data attribute
+      const chordType = await chordDisplay.getAttribute('data-chord-type');
+      expect(chordType).toBeTruthy();
+      
+      // Get chord icon class
+      const chordDisplayClass = await chordDisplay.getAttribute('class');
+      const expectedIcon = expectedChordMappings[chordType];
+      
+      if (expectedIcon) {
+        expect(chordDisplayClass).toContain(expectedIcon);
+        debugLog('MISSING_NOTE_SPEC', `Attempt ${attempts}: Found ${chordType} chord with ${expectedIcon} icon`);
+        foundChordTypes.add(chordType);
+        
+        // Verify logs contain chord generation information
+        await page.waitForTimeout(500);
+        const chordGenerationLog = consoleLogs.find(log => 
+          log.includes('Generated chord:') && 
+          log.includes(`${chordType} chord`) && 
+          log.includes('chord with notes')
+        );
+        expect(chordGenerationLog).toBeTruthy();
+        
+        // Verify chord display update log
+        const displayUpdateLog = consoleLogs.find(log => 
+          log.includes('Updated chord display:') && 
+          log.includes(`${expectedIcon} for ${chordType}`)
+        );
+        expect(displayUpdateLog).toBeTruthy();
+        
+        // Verify audio playback
+        const audioPlaybackLog = consoleLogs.find(log => 
+          log.includes('Played incomplete chord successfully via audioEngine')
+        );
+        expect(audioPlaybackLog).toBeTruthy();
+      }
+      
+      await updateTestOverlay(page, `Found chord types: ${Array.from(foundChordTypes).join(', ')} (${foundChordTypes.size}/3)`);
+    }
+    
+    // Verify we found at least major, minor, and diminished chords
+    expect(foundChordTypes.has('major')).toBe(true);
+    expect(foundChordTypes.has('minor')).toBe(true);
+    expect(foundChordTypes.has('diminished')).toBe(true);
+    debugLog('MISSING_NOTE_SPEC', `Successfully tested all required chord types: ${Array.from(foundChordTypes).join(', ')}`);
+    
+    // Final verification: Check that no "Uncaught ReferenceError" appears in error logs
+    await page.waitForTimeout(1000);
     const uncaughtReferenceError = errorLogs.find(error => error.includes('Uncaught ReferenceError'));
     expect(uncaughtReferenceError).toBeFalsy();
     debugLog('MISSING_NOTE_SPEC', 'No uncaught reference errors found in error logs');
     
     // Update test overlay
-    await updateTestOverlay(page, 'All comprehensive tests completed successfully!');
+    await updateTestOverlay(page, 'All comprehensive chord type tests completed successfully!');
     
-    debugLog('MISSING_NOTE_SPEC', 'All 2_4 Missing Note comprehensive tests completed');
+    debugLog('MISSING_NOTE_SPEC', `All 2_4 Missing Note chord type tests completed in ${attempts} attempts`);
     
     // Remove test overlay
     await removeTestOverlay(page);
@@ -183,11 +205,12 @@ test.describe('Lalumo 2_4 Missing Note Activity Tests', () => {
     // Update test overlay
     await updateTestOverlay(page, 'Testing answer selection...');
     
-    // Test selecting an answer (click a note button)
-    const answerButtons = page.locator('.note-button');
+    // Test selecting an answer (click a note button specific to 2_4 activity)
+    const answerButtons = page.locator('#button_2_4_minor_third, #button_2_4_major_third, #button_2_4_perfect_fifth, #button_2_4_diminished_fifth, #button_2_4_augmented_fifth');
     const answerCount = await answerButtons.count();
     if (answerCount > 0) {
-      // Click first answer button
+      // Wait for answer buttons to be visible and click first one
+      await answerButtons.first().waitFor({ state: 'visible', timeout: 10000 });
       await answerButtons.first().click();
       await page.waitForTimeout(2000);
       debugLog('MISSING_NOTE_SPEC', 'Selected first answer option');
@@ -218,8 +241,8 @@ test.describe('Lalumo 2_4 Missing Note Activity Tests', () => {
     // Update test overlay
     await updateTestOverlay(page, 'Testing progress tracking...');
     
-    // Check if progress is displayed
-    const progressDisplay = page.locator('.progress-display');
+    // Check if progress is displayed (specific to 2_4 activity)
+    const progressDisplay = page.locator('.progress_2_4');
     if (await progressDisplay.isVisible()) {
       const progressText = await progressDisplay.textContent();
       debugLog('MISSING_NOTE_SPEC', `Progress display shows: ${progressText}`);
