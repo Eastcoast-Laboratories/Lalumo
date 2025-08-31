@@ -145,11 +145,7 @@ export function generate2_4FreePlayChallenge(component) {
 
   
   
-  // Define possible missing notes (intervals)
-  const possibleMissingNotes = [3, 4, 6, 7, 8]; // minor 3rd, major 3rd, dim 5th, perfect 5th, aug 5th
-  const missingNote = possibleMissingNotes[Math.floor(Math.random() * possibleMissingNotes.length)];
-  
-  // Create incomplete chord based on chord type and missing note
+  // Create full chord based on chord type
   let fullChord = [0]; // Always include root
   
   if (chordType === 'major') {
@@ -162,8 +158,14 @@ export function generate2_4FreePlayChallenge(component) {
     fullChord = [0, 4, 8]; // Root, Major 3rd, Augmented 5th
   }
   
+  // Choose missing note from the actual chord intervals (excluding root)
+  const chordIntervalsWithoutRoot = fullChord.slice(1); // Remove root (0)
+  const missingNote = chordIntervalsWithoutRoot[Math.floor(Math.random() * chordIntervalsWithoutRoot.length)];
+  
   // Remove the missing note from the chord
   const incompleteChord = fullChord.filter(note => note !== missingNote);
+  
+  debugLog('MISSING_NOTE_2_4', `rootNote: 'C4' ${chordType} Full chord (semitones): [${fullChord.join(', ')}], Missing note: ${missingNote}, Incomplete chord: [${incompleteChord.join(', ')}]`);
   
   // Store challenge data
   current2_4Challenge = {
@@ -174,6 +176,62 @@ export function generate2_4FreePlayChallenge(component) {
   };
   
   debugLog('MISSING_NOTE_2_4', `Generated free play challenge: ${chordType} chord missing interval ${missingNote}, incomplete chord: [${incompleteChord.join(', ')}]`);
+  
+  // Update chord display
+  updateChordDisplay(component);
+}
+
+/**
+ * Generate a challenge for free play mode with specific missing note
+ * @param {Object} component - The Alpine component instance
+ * @param {number} missingInterval - The interval to remove from the chord
+ */
+export function generate2_4FreePlayChallengeWithMissingNote(component, missingInterval) {
+  debugLog('MISSING_NOTE_2_4', `Generating free play challenge with missing interval: ${missingInterval}`);
+  
+  const level = get_2_4_level(component);
+  
+  // Define possible chord types that contain the missing interval
+  let validChordTypes = [];
+  
+  // Check which chord types contain the missing interval
+  const chordTypeIntervals = {
+    'major': [0, 4, 7],
+    'minor': [0, 3, 7],
+    'diminished': [0, 3, 6],
+    'augmented': [0, 4, 8]
+  };
+  
+  for (const [type, intervals] of Object.entries(chordTypeIntervals)) {
+    if (intervals.includes(missingInterval)) {
+      validChordTypes.push(type);
+    }
+  }
+  
+  // If no valid chord types found, fallback to major
+  if (validChordTypes.length === 0) {
+    debugLog('MISSING_NOTE_2_4', `No chord types contain interval ${missingInterval}, using major chord`);
+    validChordTypes = ['major'];
+  }
+  
+  // Select random chord type from valid ones
+  const chordType = validChordTypes[Math.floor(Math.random() * validChordTypes.length)];
+  const fullChord = chordTypeIntervals[chordType] || [0, 4, 7];
+  
+  // Remove the specific missing note from the chord
+  const incompleteChord = fullChord.filter(note => note !== missingInterval);
+  
+  debugLog('MISSING_NOTE_2_4', `Button ${missingInterval} pressed | ${chordType} Full chord (semitones): [${fullChord.join(', ')}], Missing note: ${missingInterval}, Incomplete chord: [${incompleteChord.join(', ')}]`);
+  
+  // Store challenge data
+  current2_4Challenge = {
+    missingNote: missingInterval,
+    incompleteChord,
+    chordType,
+    rootNote: 'C4'
+  };
+  
+  debugLog('MISSING_NOTE_2_4', `Generated targeted challenge: ${chordType} chord missing interval ${missingInterval}, incomplete chord: [${incompleteChord.join(', ')}]`);
   
   // Update chord display
   updateChordDisplay(component);
@@ -266,11 +324,7 @@ export function generate2_4Challenge(component) {
   if (level >= 5) chordTypes.push('sus4');
   const chordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
   
-  // Define possible missing notes (intervals)
-  const possibleMissingNotes = [3, 4, 6, 7, 8]; // minor 3rd, major 3rd, dim 5th, perfect 5th, aug 5th
-  const missingNote = possibleMissingNotes[Math.floor(Math.random() * possibleMissingNotes.length)];
-  
-  // Create incomplete chord based on chord type and missing note
+  // Create full chord based on chord type
   let fullChord = [0]; // Always include root
   
   if (chordType === 'major') {
@@ -283,8 +337,14 @@ export function generate2_4Challenge(component) {
     fullChord = [0, 4, 8]; // Root, Major 3rd, Augmented 5th
   }
   
+  // Choose missing note from the actual chord intervals (excluding root)
+  const chordIntervalsWithoutRoot = fullChord.slice(1); // Remove root (0)
+  const missingNote = chordIntervalsWithoutRoot[Math.floor(Math.random() * chordIntervalsWithoutRoot.length)];
+  
   // Remove the missing note from the chord
   const incompleteChord = fullChord.filter(note => note !== missingNote);
+  
+  debugLog('MISSING_NOTE_2_4', `Full chord: [${fullChord.join(', ')}], Missing note: ${missingNote}, Incomplete chord: [${incompleteChord.join(', ')}]`);
   
   // Store challenge data
   current2_4Challenge = {
@@ -340,7 +400,7 @@ export function playCurrent2_4Challenge(component) {
  * @param {Object} component - The Alpine component instance
  */
 export function check2_4Answer(selectedInterval, component) {
-  debugLog('MISSING_NOTE_2_4', `Checking answer: selected ${selectedInterval}, correct is ${current2_4Challenge.missingNote}`);
+  debugLog('MISSING_NOTE_2_4', `Button pressed: ${selectedInterval} | Checking answer: selected ${selectedInterval}, correct is ${current2_4Challenge.missingNote}`);
   
   if (!component.is2_4FreePlayMode) {
     // Game mode - check answer
@@ -410,11 +470,11 @@ export function check2_4Answer(selectedInterval, component) {
       }, 1500);
     }
   } else {
-    // Free play mode - generate new chord and play it
-    debugLog('MISSING_NOTE_2_4', `Free play mode: button ${selectedInterval} pressed`);
+    // Free play mode - generate chord with specific missing note based on button press
+    debugLog('MISSING_NOTE_2_4', `Free play mode: button ${selectedInterval} pressed - generating chord missing this interval`);
     
-    // Generate new challenge for free play mode
-    generate2_4FreePlayChallenge(component);
+    // Generate chord with the pressed button as the missing note
+    generate2_4FreePlayChallengeWithMissingNote(component, selectedInterval);
     
     // Log current chord information
     const noteNames = convertIntervalsToNotes(current2_4Challenge.incompleteChord, current2_4Challenge.rootNote);
