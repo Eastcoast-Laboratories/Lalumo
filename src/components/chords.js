@@ -7,7 +7,7 @@
 import * as Tone from 'tone';
 
 // Import shared utilities
-import { NOTE_NAMES, midiToNoteName } from './shared/music-utils.js';
+import { NOTE_NAMES } from './shared/music-utils.js';
 import { getChordButtons, update2_5ButtonsVisibility } from './2_chords/2_5_chord_characters.js';
 import { debugLog } from '../utils/debug';
 
@@ -20,18 +20,10 @@ export { playBuiltChord, show2_3IntroMessage, toggleNoteInChord } from './2_chor
 
 // Import shared feedback utilities
 import { 
-  showFeedbackMessage, 
-  showActivityIntroMessage, 
   showRainbowSuccess, 
   showBigRainbowSuccess, 
-  showShakeError, 
   showCompleteSuccess, 
-  showCompleteBigSuccess, 
-  showCompleteError,
-  showActivityProgressBar,
-  hideActivityProgressBar,
-  highlightCorrectButton,
-  showErrorWithCorrectHint
+  highlightCorrectButton
 } from '../components/shared/feedback.js';
 
 // Import shared UI helpers
@@ -49,8 +41,6 @@ import {
 
 // 2_2 Chord Stable or Unstable Module
 import {
-  playStableUnstableChord, 
-  checkStableUnstableMatch,
   updateStableUnstableBackground,
   reset2_2ToFreePlayMode
 } from './2_chords/2_2_chords_stable_unstable.js';
@@ -1023,62 +1013,6 @@ export function chords() {
      * ******** 2_2_chord_chords_stable_unstable Activity Methods ********
      * *************************************************** */
     
-    /**
-     * Check if the user's answer matches the current chord type
-     * 
-     * @param {boolean} isStable - Whether the user thinks the chord is stable
-     * @activity 2_2_chord_chords_stable_unstable
-     */
-    checkStableUnstableAnswer(isStable) {
-      // Make sure we have a current chord to check against
-      if (!this.currentStableUnstableChord) {
-        console.log('CHORD_2_2_FEEDBACK: No current chord, Showing fail message');
-        window.showFeedbackMessage('Please play a chord first', {
-      activityId: '2_2_chords_stable_unstable',
-      isIntroMessage: false,
-      delaySeconds: 3,
-      component: this
-    });
-        return;
-      }
-      
-      try {
-        // Check if the answer is correct
-        const isCorrect = checkStableUnstableMatch(isStable, this.currentStableUnstableChord);
-        
-        // Update progress and get feedback message
-        const feedback = updateStableUnstableBackground(this, isCorrect);
-        
-        // Show feedback using global system
-        console.log('CHORD_2_2_FEEDBACK: Showing feedback:', feedback, 'isCorrect:', isCorrect);
-        if (window.showFeedbackMessage) {
-          // Set the correct/incorrect state in the global store
-          const store = window.Alpine?.store;
-          if (store && store.feedback) {
-            store.feedback.isCorrect = isCorrect;
-          }
-          window.showFeedbackMessage(feedback, {
-      activityId: '2_2_chords_stable_unstable',
-      isIntroMessage: false,
-      delaySeconds: 3,
-      component: this
-    });
-        }
-        
-        // Log the result
-        debugLog('CHORDS_2_2', `User selected ${isStable ? 'stable' : 'unstable'}, ` +
-          `correct: ${isCorrect ? 'yes' : 'no'}, progress: ${this.progress['2_2_chords_stable_unstable']}`);
-        
-        // Play the chord again for reference
-        playStableUnstableChord(this);
-        
-      } catch (error) {
-        debugLog(['CHORDS', 'ERROR'], `Error checking stable/unstable answer: ${error.message || error}`);
-        this.showStableUnstableFeedback = true;
-        this.stableUnstableFeedback = 'Error checking answer. Please try again.';
-        this.stableUnstableCorrect = false;
-      }
-    },
     
     /** *************************************************
      * ******** 2_3_chord_building Activity Methods ********
