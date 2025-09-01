@@ -2003,7 +2003,10 @@ if (typeof window !== 'undefined') {
 
 // 2_6 One or Many Activity Functions
 let current2_6Challenge = null;
+let previous2_6Challenge = null;
 let is2_6GameMode = false;
+let consecutive2_6TypeCount = 0;
+let last2_6Type = null;
 
 /**
  * Start the 2_6 One or Many game mode
@@ -2037,15 +2040,71 @@ function generate2_6Challenge() {
   if (currentProgress >= 10) difficulty = 2;
   if (currentProgress >= 20) difficulty = 3;
   
-  // Generate challenge based on difficulty
-  const isOneNote = Math.random() < 0.5;
+  // Generate challenge based on difficulty, avoiding duplicate and consecutive types
+  let newChallenge = null;
+  let attempts = 0;
+  const maxAttempts = 30;
+  
+  do {
+    attempts++;
+    
+    // Determine type based on consecutive count limit (max 3)
+    let isOneNote;
+    if (consecutive2_6TypeCount >= 3) {
+      // Force opposite type if we've had 3 consecutive
+      isOneNote = last2_6Type !== 'one';
+      debugLog(['CHORDS_2_6', 'CONSECUTIVE_DEBUG'], 
+        `Forcing opposite type after ${consecutive2_6TypeCount} consecutive ${last2_6Type}`);
+    } else {
+      // Random choice
+      isOneNote = Math.random() < 0.5;
+    }
+    
+    newChallenge = generateSingle2_6Challenge(isOneNote, difficulty);
+    
+    // Check if it's different from previous challenge
+    if (!previous2_6Challenge || !isSameChallenge(newChallenge, previous2_6Challenge)) {
+      break; // Found a different challenge
+    }
+    
+    debugLog(['CHORDS_2_6', 'DUPLICATE_DEBUG'], 
+      `Attempt ${attempts}: Generated duplicate challenge, trying again...`);
+      
+  } while (attempts < maxAttempts);
+  
+  // Update consecutive type tracking
+  const currentType = newChallenge.type;
+  if (currentType === last2_6Type) {
+    consecutive2_6TypeCount++;
+  } else {
+    consecutive2_6TypeCount = 1;
+    last2_6Type = currentType;
+  }
+  
+  // Store previous challenge for next comparison
+  previous2_6Challenge = current2_6Challenge ? { ...current2_6Challenge } : null;
+  current2_6Challenge = newChallenge;
+  
+  debugLog(['CHORDS_2_6', 'DUPLICATE_DEBUG'], 
+    `Challenge generated after ${attempts} attempts. Type: ${currentType}, Consecutive: ${consecutive2_6TypeCount}, Previous: ${previous2_6Challenge ? JSON.stringify(previous2_6Challenge.notes) : 'none'}, Current: ${JSON.stringify(current2_6Challenge.notes)}`);
+  
+  console.log('ONE_OR_MANY_2_6: Generated challenge:', current2_6Challenge);
+  
+  // Auto-play the challenge
+  playCurrent2_6Challenge();
+}
+
+/**
+ * Generate a single challenge of specified type
+ */
+function generateSingle2_6Challenge(isOneNote, difficulty) {
   
   if (isOneNote) {
     // Single note challenge
     const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'];
     const note = notes[Math.floor(Math.random() * notes.length)];
     
-    current2_6Challenge = {
+    return {
       type: 'one',
       notes: [note],
       correctAnswer: 'one'
@@ -2054,46 +2113,91 @@ function generate2_6Challenge() {
     // Chord challenge
     let chordNotes;
     
+    // All chord types across all difficulties for maximum variety
+    const allChords = [
+      // Major triads
+      ['C4', 'E4', 'G4'], ['D4', 'F#4', 'A4'], ['E4', 'G#4', 'B4'], ['F4', 'A4', 'C5'], 
+      ['G4', 'B4', 'D5'], ['A4', 'C#5', 'E5'], ['B4', 'D#5', 'F#5'],
+      
+      // Minor triads
+      ['C4', 'Eb4', 'G4'], ['D4', 'F4', 'A4'], ['E4', 'G4', 'B4'], ['F4', 'Ab4', 'C5'],
+      ['G4', 'Bb4', 'D5'], ['A4', 'C5', 'E5'], ['B4', 'D5', 'F#5'],
+      
+      // Diminished triads
+      ['C4', 'Eb4', 'Gb4'], ['D4', 'F4', 'Ab4'], ['E4', 'G4', 'Bb4'], ['F4', 'Ab4', 'B4'],
+      ['G4', 'Bb4', 'Db5'], ['A4', 'C5', 'Eb5'], ['B4', 'D5', 'F5'],
+      
+      // Augmented triads
+      ['C4', 'E4', 'G#4'], ['D4', 'F#4', 'A#4'], ['E4', 'G#4', 'C5'], ['F4', 'A4', 'C#5'],
+      ['G4', 'B4', 'D#5'], ['A4', 'C#5', 'F5'], ['B4', 'D#5', 'G5'],
+      
+      // Major 7th chords
+      ['C4', 'E4', 'G4', 'B4'], ['D4', 'F#4', 'A4', 'C#5'], ['E4', 'G#4', 'B4', 'D#5'],
+      ['F4', 'A4', 'C5', 'E5'], ['G4', 'B4', 'D5', 'F#5'], ['A4', 'C#5', 'E5', 'G#5'],
+      
+      // Minor 7th chords
+      ['C4', 'Eb4', 'G4', 'Bb4'], ['D4', 'F4', 'A4', 'C5'], ['E4', 'G4', 'B4', 'D5'],
+      ['F4', 'Ab4', 'C5', 'Eb5'], ['G4', 'Bb4', 'D5', 'F5'], ['A4', 'C5', 'E5', 'G5'],
+      
+      // Dominant 7th chords
+      ['C4', 'E4', 'G4', 'Bb4'], ['D4', 'F#4', 'A4', 'C5'], ['E4', 'G#4', 'B4', 'D5'],
+      ['F4', 'A4', 'C5', 'Eb5'], ['G4', 'B4', 'D5', 'F5'], ['A4', 'C#5', 'E5', 'G5'],
+      
+      // Half-diminished 7th chords
+      ['C4', 'Eb4', 'Gb4', 'Bb4'], ['D4', 'F4', 'Ab4', 'C5'], ['E4', 'G4', 'Bb4', 'D5'],
+      ['F4', 'Ab4', 'B4', 'Eb5'], ['G4', 'Bb4', 'Db5', 'F5'], ['A4', 'C5', 'Eb5', 'G5'],
+      
+      // Sus2 chords
+      ['C4', 'D4', 'G4'], ['D4', 'E4', 'A4'], ['E4', 'F#4', 'B4'], ['F4', 'G4', 'C5'],
+      ['G4', 'A4', 'D5'], ['A4', 'B4', 'E5'], ['B4', 'C#5', 'F#5'],
+      
+      // Sus4 chords
+      ['C4', 'F4', 'G4'], ['D4', 'G4', 'A4'], ['E4', 'A4', 'B4'], ['F4', 'Bb4', 'C5'],
+      ['G4', 'C5', 'D5'], ['A4', 'D5', 'E5'], ['B4', 'E5', 'F#5'],
+      
+      // 6th chords
+      ['C4', 'E4', 'G4', 'A4'], ['D4', 'F#4', 'A4', 'B4'], ['E4', 'G#4', 'B4', 'C#5'],
+      ['F4', 'A4', 'C5', 'D5'], ['G4', 'B4', 'D5', 'E5'], ['A4', 'C#5', 'E5', 'F#5']
+    ];
+    
+    // Filter chords based on difficulty
+    let availableChords;
     if (difficulty === 1) {
-      // Simple major/minor chords
-      const chords = [
-        ['C4', 'E4', 'G4'], // C major
-        ['C4', 'Eb4', 'G4'], // C minor
-        ['F4', 'A4', 'C5'], // F major
-        ['G4', 'B4', 'D5']  // G major
-      ];
-      chordNotes = chords[Math.floor(Math.random() * chords.length)];
+      // Basic triads only
+      availableChords = allChords.filter(chord => chord.length === 3);
     } else if (difficulty === 2) {
-      // Closer intervals
-      const chords = [
-        ['C4', 'D4', 'E4'], // Close intervals
-        ['F4', 'G4', 'A4'],
-        ['C4', 'F4', 'G4'], // Fourth and fifth
-        ['D4', 'F#4', 'A4'] // D major
-      ];
-      chordNotes = chords[Math.floor(Math.random() * chords.length)];
+      // Triads and 4-note chords
+      availableChords = allChords.filter(chord => chord.length <= 4);
     } else {
-      // Complex harmonies
-      const chords = [
-        ['C4', 'E4', 'G4', 'B4'], // Cmaj7
-        ['C4', 'Eb4', 'G4', 'Bb4'], // Cm7
-        ['C4', 'D4'], // Second interval
-        ['C4', 'F#4'] // Tritone
-      ];
-      chordNotes = chords[Math.floor(Math.random() * chords.length)];
+      // All chords
+      availableChords = allChords;
     }
     
-    current2_6Challenge = {
+    chordNotes = availableChords[Math.floor(Math.random() * availableChords.length)];
+    
+    return {
       type: 'many',
       notes: chordNotes,
       correctAnswer: 'many'
     };
   }
+}
+
+/**
+ * Check if two challenges are the same
+ */
+function isSameChallenge(challenge1, challenge2) {
+  if (!challenge1 || !challenge2) return false;
+  if (challenge1.type !== challenge2.type) return false;
   
-  console.log('ONE_OR_MANY_2_6: Generated challenge:', current2_6Challenge);
+  // Compare notes arrays
+  if (challenge1.notes.length !== challenge2.notes.length) return false;
   
-  // Auto-play the challenge
-  playCurrent2_6Challenge();
+  // Sort both arrays to compare regardless of order
+  const notes1 = [...challenge1.notes].sort();
+  const notes2 = [...challenge2.notes].sort();
+  
+  return notes1.every((note, index) => note === notes2[index]);
 }
 
 /**

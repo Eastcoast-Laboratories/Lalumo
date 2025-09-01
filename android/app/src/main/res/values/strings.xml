@@ -86,8 +86,7 @@
     <string name="chord_element_acorn_sus2">Dark Acorn (Sus2)</string>
     <string name="chord_element_lantern_sus4">Dim Dark-Blue Lantern (Sus4)</string>
     <string name="play_chord">Play Chord</string>
-    <string name="start_game">Start Game Mode</string>
-    
+
     <!-- Chords - Stable or Unstable Activity -->
     <string name="chords_stable_unstable_intro">Some chords are stable and peaceful, while others are unstable and restless.</string>
     

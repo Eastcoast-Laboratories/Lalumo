@@ -526,6 +526,7 @@
             >
               🌈 <span x-text="$store.strings?.chord_color_matching || 'Color Matching'"></span>
             </a>
+            
             <a href="#2_2" id="nav_2_2"
               @click="isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_2_chords_stable_unstable'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
@@ -536,6 +537,7 @@
             >
               🏞️ <span x-text="$store.strings?.chords_stable_unstable || 'Stable or Unstable'"></span>
             </a>
+
             <a href="#2_3" id="nav_2_3"
               @click="isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_3_chords_chord-building'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
@@ -592,6 +594,8 @@
             >
               Debug 🎭 <span x-text="$store.strings?.chord_characters || 'Character Matching'"></span>
             </a>
+
+
             <a href="#2_6" id="nav_2_6"
               @click="isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_6_chords_one_or_many'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
