@@ -11,11 +11,13 @@ import { reset_1_2_MatchSounds_Progress } from './1_2_match_sounds.js';
 import { reset_1_3_DrawMelody_Progress } from './1_3_draw_melody.js';
 import { reset_1_4_SoundJudgment_Progress } from './1_4_sound_judgment.js';
 import { reset_1_5_MemoryGame_Progress } from './1_5_memory_game.js';
-import { reset_2_1_Progress } from '../2_chords/2_1_chord_color_matching.js';
-import { reset_2_2_Progress } from '../2_chords/2_2_chords_stable_unstable.js';
-import { reset_2_5_Progress } from '../2_chords/2_5_chord_characters.js';
-import { reset_2_4_Progress } from '../2_chords/2_4_missing_note.js';
 
+// Import reset functions from chord activities
+import { reset_2_2_Progress } from '../2_chords/2_2_chords_stable_unstable.js';
+import { reset_2_3_Progress } from '../2_chords/2_3_chord_building.js';
+import { reset_2_4_Progress } from '../2_chords/2_4_missing_note.js';
+import { reset_2_5_Progress } from '../2_chords/2_5_chord_characters.js';
+import { reset_2_6_Progress } from '../2_chords/2_6_one_or_many.js';
 
 // Exportiere eine Testfunktion für Import-Tests
 export function testCommonModuleImport() {
@@ -141,6 +143,7 @@ export function resetCurrentActivity(currentMode) {
     '2_2': () => reset_2_2_Progress(window.chordsComponent),
     '2_4': () => reset_2_4_Progress(window.chordsComponent),
     '2_5': () => reset_2_5_Progress(window.chordsComponent),
+    '2_6_chords_one_or_many': () => reset_2_6_Progress(window.chordsComponent),
     // Legacy support for old keys (backward compatibility)
     '1_1_pitches_high_or_low': () => reset_1_1_HighOrLow_Progress(window.pitchesComponent),
     '1_2_pitches_match-sounds': () => reset_1_2_MatchSounds_Progress(window.pitchesComponent),
@@ -268,6 +271,8 @@ export function resetAllProgress(component) {
   debugLog('PITCHES', 'RESET_ALL: Resetting Chord Characters activity');
   reset_2_5_Progress(window.chordsComponent);
   
+  debugLog('PITCHES', 'RESET_ALL: Resetting One or Many activity');
+  reset_2_6_Progress(window.chordsComponent);
 
   // Show global reset feedback
   const message = isGerman ? 

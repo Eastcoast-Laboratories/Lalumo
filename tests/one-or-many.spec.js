@@ -244,14 +244,14 @@ test.describe('Lalumo One or Many Activity', () => {
       
       // Check if progress was saved after correct answer
       let progressData = JSON.parse(localStorage.getItem('lalumo_chords_progress') || '{}');
-      const progressAfterCorrect = progressData['2_6_chords_one_or_many'] || 0;
+      const progressAfterCorrect = progressData['2_6'] || 0;
       
       // Test progress update function with incorrect answer
       const incorrectFeedback = window.update2_6Progress(false);
       
       // Check progress after incorrect answer (should remain same)
       progressData = JSON.parse(localStorage.getItem('lalumo_chords_progress') || '{}');
-      const progressAfterIncorrect = progressData['2_6_chords_one_or_many'] || 0;
+      const progressAfterIncorrect = progressData['2_6'] || 0;
       
       return {
         correctFeedback,
