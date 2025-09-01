@@ -14,6 +14,7 @@ let is2_6GameMode = false;
 let isFreeModeActive = true;
 window.freeModeActive2_6 = isFreeModeActive;
 let isInitialized = false;
+let freePlay2_6Chords = [];        // Store the pre-generated chords for free play mode
 
 /**
  * Resets the activity to free play mode when entered from navigation
@@ -64,16 +65,29 @@ function initializeFreePlayMode() {
   if (startButton) startButton.style.display = 'block';
   if (replayButton) replayButton.style.display = 'none';
   
-  debugLog(['CHORDS_2_6', 'FREE_PLAY'], 'Initialized free play mode');
+  // Generate chords for free play mode - one for each button
+  freePlay2_6Chords = [];
+  
+  // Generate one chord for "one" button and one for "many" button using existing function
+  const oneChord = generateSingle2_6Challenge(true, 0); // Level 1 for free play - single note
+  const manyChord = generateSingle2_6Challenge(false, 0); // Level 1 for free play - chord
+  
+  // Add both chords to free play array
+  freePlay2_6Chords.push({ type: 'one', chord: oneChord });
+  freePlay2_6Chords.push({ type: 'many', chord: manyChord });
+  
+  debugLog(['CHORDS_2_6', 'FREE_PLAY'], 'Initialized free play mode with chords:', freePlay2_6Chords);
 }
 
 /**
  * Start the 2_6 One or Many game mode
  */
 function start2_6GameMode() {
-  console.log('ONE_OR_MANY_2_6: Starting game mode');
-  is2_6GameMode = true;
+  debugLog(['CHORDS_2_6', 'MODE'], 'Starting game mode from free play');
+  
+  // Exit free play mode
   isFreeModeActive = false;
+  is2_6GameMode = true;
   window.freeModeActive2_6 = isFreeModeActive;
   
   // Hide start button, show replay button
@@ -293,10 +307,48 @@ function playCurrent2_6Challenge(component) {
 }
 
 /**
+ * Handles the user's selection in free play mode
+ * @param {string} selectedType - The type selected ('one' or 'many')
+ * @param {Object} component - The Alpine component instance
+ */
+function handleFreePlay2_6Selection(selectedType, component) {
+  if (!freePlay2_6Chords || freePlay2_6Chords.length === 0) {
+    debugLog(['CHORDS_2_6', 'ERROR'], 'No free play chords available');
+    return;
+  }
+  
+  // Find the chord for the selected type
+  const selectedChord = freePlay2_6Chords.find(chord => chord.type === selectedType);
+  if (!selectedChord) {
+    debugLog(['CHORDS_2_6', 'ERROR'], `No chord found for type: ${selectedType}`);
+    return;
+  }
+  
+  debugLog(['CHORDS_2_6', 'FREE_PLAY'], 
+    `Free play selection: ${selectedType} chord`);
+  
+  // Set the current challenge to the selected chord for playback
+  current2_6Challenge = selectedChord.chord;
+  
+  // Play the chord
+  playCurrent2_6Challenge();
+  
+  debugLog(['CHORDS_2_6', 'FREE_PLAY'], 
+    `Playing ${selectedType} chord in free play mode`);
+}
+
+/**
  * Check the user's answer for 2_6 activity - following unified pattern like pitches.js
  */
 function checkOneOrManyMatch(answer, component) {
   debugLog('CHORDS_2_6', `User selected ${answer}, checking answer`);
+  
+  // Handle free play mode
+  if (isFreeModeActive) {
+    debugLog(['CHORDS_2_6', 'FREE_PLAY'], `Button clicked in free play mode: ${answer}`);
+    handleFreePlay2_6Selection(answer, component);
+    return true; // In free play mode, any selection is "correct"
+  }
   
   if (!current2_6Challenge) {
     debugLog('CHORDS_2_6', 'No challenge active');
