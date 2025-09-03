@@ -234,7 +234,7 @@ reset-button:
 
 - wenn mögllich arbeite test-driven wie in @CODING_STANDARDS.md#L77-96 beschrieben
 -  benutze die unittests
-
+- highlightCorrectAnswer() fehlt noch und muss das Timing mit dem neu spielen abstimmen
 -------
 
 2_5_chords_color_matching:
@@ -269,4 +269,4 @@ reset-button:
 # most important
 - im web zeigt er die landscape warnung an, dass man sein gerät drehen soll. die warnung darf nur auf android oder ios kommen, auch im browser auf den geräten
 
-- increase highlight timing to match repeated challenge playback
+- in allen activities: increase the highlightCorrectAnswer  timing to match repeated challenge playback : 1_1: +800ms, 1_4 + 1800ms, 2_1 -800ms, 2_2: -1500ms, 2_5: -500ms, 

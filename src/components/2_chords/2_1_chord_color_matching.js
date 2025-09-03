@@ -190,7 +190,7 @@ export function checkColorMatch(selectedElement, component) {
     const correctButtonSelector = `#button_2_1_${correctElement}`;
     setTimeout(() => {
       highlightCorrectButton(correctButtonSelector);
-    }, 800);
+    }, 1700);
     
     // Show error feedback
     showShakeError();

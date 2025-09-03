@@ -1772,7 +1772,7 @@ export function chords() {
         debugLog('FEEDBACK', `CHORD_CHARACTERS_CORRECT_HINT: Highlighting correct button for chord: ${this.currentChordType}`);
         setTimeout(() => {
           highlightCorrectButton(correctButtonSelector);
-        }, 800);
+        }, 1600);
         
         // Hide feedback after delay
         setTimeout(() => {

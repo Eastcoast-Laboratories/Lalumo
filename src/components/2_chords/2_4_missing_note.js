@@ -425,7 +425,7 @@ export function check2_4Answer(selectedInterval, component) {
         // Add a small delay to ensure the error animation has time to play
         setTimeout(() => {
           highlightCorrectButton(correctButton);
-        }, 1000);
+        }, 2500);
       } else {
         debugLog(['MISSING_NOTE_2_4', 'CORRECT_HIGHLIGHT'], `No button found for interval ${current2_4Challenge.missingNote}`);
       }

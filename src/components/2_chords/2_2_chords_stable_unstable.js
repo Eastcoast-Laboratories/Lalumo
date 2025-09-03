@@ -715,7 +715,7 @@ export function checkStableUnstableMatch(selectedType, component) {
       debugLog('FEEDBACK', `STABLE_UNSTABLE_CORRECT_HINT: Highlighting correct button for chord type: ${currentChordType}`);
       setTimeout(() => {
         highlightCorrectButton(correctButtonSelector);
-      }, 800);
+      }, 1000);
       
       // Update Alpine.js feedback variables
       if (component) {

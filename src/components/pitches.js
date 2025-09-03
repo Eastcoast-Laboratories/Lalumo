@@ -1300,7 +1300,7 @@ export function pitches() {
         debugLog('FEEDBACK', `HIGH_OR_LOW_CORRECT_HINT: Highlighting correct button for answer: ${correctHiOrLowAnswer}`);
         setTimeout(() => {
           highlightCorrectButton(correctButtonSelector);
-        }, 800);
+        }, 1800);
         
         // play tone again after 2 seconds
         setTimeout(() => {
@@ -1698,7 +1698,7 @@ export function pitches() {
         debugLog('FEEDBACK', `MATCH_SOUNDS_CORRECT_HINT: Highlighting correct button for answer: ${this.correctAnswer}`);
         setTimeout(() => {
           highlightCorrectButton(correctButtonSelector);
-        }, 800);
+        }, 1000);
       }
       
       // Trigger sound feedback using the central audio engine
@@ -5331,7 +5331,7 @@ export function pitches() {
         debugLog('FEEDBACK', `SOUND_JUDGMENT_CORRECT_HINT: Highlighting correct button for melody state: ${this.melodyHasWrongNote ? 'wrong' : 'right'}`);
         setTimeout(() => {
           highlightCorrectButton(correctButtonSelector);
-        }, 800);
+        }, 2800);
       }
       
       // Display feedback message using global feedback system
