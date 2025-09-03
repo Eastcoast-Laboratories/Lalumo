@@ -4624,11 +4624,45 @@ export function pitches() {
       // Always correct melodies in free mode
       this.melodyHasWrongNote = false;
       
-      // Use free mode shuffle
-      const randomMelodyKey = this.getNextShuffledMelody('free');
+      // Use free mode shuffle with single-note melody filtering
+      let randomMelodyKey = this.getNextShuffledMelody('free');
       debugLog(['SOUND_JUDGMENT', 'FREE_MODE'], `Selected melody from free shuffle: ${randomMelodyKey}`);
       
-      const selectedMelody = this.knownMelodies[randomMelodyKey];
+      let selectedMelody = this.knownMelodies[randomMelodyKey];
+      
+      // Check if the selected melody consists of only one unique note
+      const uniqueNotes = [...new Set(selectedMelody.notes.map(note => {
+        // Extract base note without duration modifiers
+        return note.includes(':') ? note.split(':')[0] : note;
+      }))];
+      
+      if (uniqueNotes.length === 1) {
+        debugLog('PITCHES_1_4_SINGLE_NOTE_FREE', `Rejecting single-note melody in free mode: ${randomMelodyKey} contains only ${uniqueNotes[0]}`);
+        
+        // Find an alternative melody that has multiple different notes
+        let alternativeKey = null;
+        for (const melodyKey of Object.keys(this.knownMelodies)) {
+          if (melodyKey !== randomMelodyKey) {
+            const testMelody = this.knownMelodies[melodyKey];
+            const testUniqueNotes = [...new Set(testMelody.notes.map(note => {
+              return note.includes(':') ? note.split(':')[0] : note;
+            }))];
+            
+            if (testUniqueNotes.length > 1) {
+              alternativeKey = melodyKey;
+              debugLog('PITCHES_1_4_SINGLE_NOTE_FREE', `Found alternative melody for free mode: ${alternativeKey} with ${testUniqueNotes.length} unique notes: [${testUniqueNotes.join(', ')}]`);
+              break;
+            }
+          }
+        }
+        
+        if (alternativeKey) {
+          randomMelodyKey = alternativeKey;
+          selectedMelody = this.knownMelodies[alternativeKey];
+        } else {
+          debugLog(['PITCHES', 'ERROR'], 'No multi-note melodies available in free mode - using single-note melody as fallback');
+        }
+      }
       
       // Store the melody ID for later reference
       this.currentMelodyId = randomMelodyKey;
@@ -4703,7 +4737,54 @@ export function pitches() {
       }
       
       // Get the melody at current index
-      const melodyKey = shuffledKeys[currentIndex];
+      let melodyKey = shuffledKeys[currentIndex];
+      
+      // Prevent melody repetition by checking against recent melody history (last 3 melodies)
+      const recentMelodies = isGameMode ? 
+        (this.recent1_4GameMelodies || []) : 
+        (this.recent1_4FreeMelodies || []);
+      
+      // If the selected melody was already played in the last 3 melodies, find an alternative
+      if (recentMelodies.includes(melodyKey)) {
+        
+        debugLog('PITCHES_1_4_REPETITION', `Preventing melody repetition: ${melodyKey} was already played in recent history: [${recentMelodies.join(', ')}]`);
+        
+        // Find an alternative melody from the remaining shuffled keys
+        let alternativeFound = false;
+        for (let i = currentIndex + 1; i < shuffledKeys.length; i++) {
+          const alternativeKey = shuffledKeys[i];
+          if (!recentMelodies.includes(alternativeKey)) {
+            // Swap the alternative with current position
+            shuffledKeys[currentIndex] = alternativeKey;
+            shuffledKeys[i] = melodyKey;
+            melodyKey = alternativeKey;
+            alternativeFound = true;
+            debugLog('PITCHES_1_4_REPETITION', `Swapped to alternative melody: ${alternativeKey}`);
+            break;
+          }
+        }
+        
+        // If no alternative found in remaining keys, reshuffle
+        if (!alternativeFound) {
+          debugLog('PITCHES_1_4_REPETITION', 'No alternative found, reshuffling melodies');
+          this.shuffleAllMelodies(mode);
+          shuffledKeys = isGameMode ? this.shuffledMelodyKeysGame : this.shuffledMelodyKeysFree;
+          currentIndex = 0;
+          melodyKey = shuffledKeys[currentIndex];
+        }
+      }
+      
+      // Store melody in recent history
+      if (!this.recent1_4GameMelodies) this.recent1_4GameMelodies = [];
+      if (!this.recent1_4FreeMelodies) this.recent1_4FreeMelodies = [];
+      
+      const recentArray = isGameMode ? this.recent1_4GameMelodies : this.recent1_4FreeMelodies;
+      recentArray.push(melodyKey);
+      
+      // Keep only last 3 melodies in history
+      if (recentArray.length > 3) {
+        recentArray.shift();
+      }
       
       // Increment the appropriate index
       if (isGameMode) {
@@ -4713,6 +4794,7 @@ export function pitches() {
       }
       
       debugLog(['SOUND_JUDGMENT', 'SHUFFLE'], `Selected melody ${currentIndex + 1}/${shuffledKeys.length} (${mode} mode): ${melodyKey}`);
+      debugLog('PITCHES_1_4_MONOTONE', `Melody history (${mode}): ${recentArray.join(' -> ')}`);
       
       return melodyKey;
     },
@@ -4766,15 +4848,53 @@ export function pitches() {
       
       const selectedMelody = this.knownMelodies[randomMelodyKey];
       
-      // Store the melody ID for later reference
-      this.currentMelodyId = randomMelodyKey;
+      // Check if the selected melody consists of only one unique note
+      const uniqueNotes = [...new Set(selectedMelody.notes.map(note => {
+        // Extract base note without duration modifiers
+        return note.includes(':') ? note.split(':')[0] : note;
+      }))];
+      
+      if (uniqueNotes.length === 1) {
+        debugLog('PITCHES_1_4_SINGLE_NOTE', `Rejecting single-note melody: ${randomMelodyKey} contains only ${uniqueNotes[0]}`);
+        
+        // Find an alternative melody that has multiple different notes
+        let alternativeKey = null;
+        for (const melodyKey of melodyKeys) {
+          if (melodyKey !== randomMelodyKey) {
+            const testMelody = this.knownMelodies[melodyKey];
+            const testUniqueNotes = [...new Set(testMelody.notes.map(note => {
+              return note.includes(':') ? note.split(':')[0] : note;
+            }))];
+            
+            if (testUniqueNotes.length > 1) {
+              alternativeKey = melodyKey;
+              debugLog('PITCHES_1_4_SINGLE_NOTE', `Found alternative melody: ${alternativeKey} with ${testUniqueNotes.length} unique notes: [${testUniqueNotes.join(', ')}]`);
+              break;
+            }
+          }
+        }
+        
+        if (alternativeKey) {
+          // Use the alternative melody
+          this.currentMelodyId = alternativeKey;
+        } else {
+          debugLog(['PITCHES', 'ERROR'], 'No multi-note melodies available - using single-note melody as fallback');
+          this.currentMelodyId = randomMelodyKey;
+        }
+      } else {
+        // Store the melody ID for later reference
+        this.currentMelodyId = randomMelodyKey;
+      }
+      
+      // Get the final selected melody after potential single-note filtering
+      const finalSelectedMelody = this.knownMelodies[this.currentMelodyId];
       
       // Get the current language
       const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
       
       // Set the melody name in the appropriate language
-      this.currentMelodyName = selectedMelody[language] || selectedMelody.en;
-      debugLog('PITCHES', `MELODY_NAME_DEBUG: Set currentMelodyName to "${this.currentMelodyName}" for melody ID "${randomMelodyKey}"`);
+      this.currentMelodyName = finalSelectedMelody[language] || finalSelectedMelody.en;
+      debugLog('PITCHES', `MELODY_NAME_DEBUG: Set currentMelodyName to "${this.currentMelodyName}" for melody ID "${this.currentMelodyId}"`);
       
       // Update UI immediately after setting melody name
       document.querySelectorAll('.sound-status').forEach(el => {
@@ -4782,7 +4902,7 @@ export function pitches() {
       });
       
       // Create a copy of the melody notes
-      let melodyToPlay = [...selectedMelody.notes];
+      let melodyToPlay = [...finalSelectedMelody.notes];
       
       // If the melody should have wrong notes, modify it
       if (this.melodyHasWrongNote) {
