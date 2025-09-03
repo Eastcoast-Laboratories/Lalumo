@@ -312,29 +312,21 @@ function playCurrent2_6Challenge(component) {
  * @param {Object} component - The Alpine component instance
  */
 function handleFreePlay2_6Selection(selectedType, component) {
-  if (!freePlay2_6Chords || freePlay2_6Chords.length === 0) {
-    debugLog(['CHORDS_2_6', 'ERROR'], 'No free play chords available');
-    return;
-  }
-  
-  // Find the chord for the selected type
-  const selectedChord = freePlay2_6Chords.find(chord => chord.type === selectedType);
-  if (!selectedChord) {
-    debugLog(['CHORDS_2_6', 'ERROR'], `No chord found for type: ${selectedType}`);
-    return;
-  }
-  
   debugLog(['CHORDS_2_6', 'FREE_PLAY'], 
-    `Free play selection: ${selectedType} chord`);
+    `Free play selection: ${selectedType} - generating new random chord`);
   
-  // Set the current challenge to the selected chord for playback
-  current2_6Challenge = selectedChord.chord;
+  // Generate a new random chord each time for the selected type
+  const isOneNote = selectedType === 'one';
+  const newChord = generateSingle2_6Challenge(isOneNote, 1); // Level 1 for free play
+  
+  // Set the current challenge to the newly generated chord for playback
+  current2_6Challenge = newChord;
   
   // Play the chord
   playCurrent2_6Challenge();
   
   debugLog(['CHORDS_2_6', 'FREE_PLAY'], 
-    `Playing ${selectedType} chord in free play mode`);
+    `Playing new ${selectedType} chord in free play mode: ${JSON.stringify(newChord.notes)}`);
 }
 
 /**
@@ -390,7 +382,7 @@ function checkOneOrManyMatch(answer, component) {
           activityId: '2_6_chords_one_or_many',
           isIntroMessage: false,
           delaySeconds: 3,
-          component: data
+          component: component
         });
       }
       

@@ -244,8 +244,7 @@ reset-button:
   - die Eule macht die Augen auf, wenn man das Spiel startet 
 
 2_6:
-- im game mode spielt er jetzt immer den selben sound ab, es variiert nicht mehr nach einem erfolg. das ging schon mal, repariere das
-- Wenn man im game mode richtig geraten hat, sol automatisch nach dem erfolgssound nach einem delay der nächste sound gespielt werden
+- im Free mode soll bei jedem klick ein anderer ton,/Akkord kommen
 
 
 

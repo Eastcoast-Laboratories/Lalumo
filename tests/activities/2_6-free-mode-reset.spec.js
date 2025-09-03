@@ -78,13 +78,18 @@ test.describe('2_6 One or Many Free Mode Reset Test', () => {
     expect(isFreeModeActiveAfterReturn).toBe(true);
     debugLog('TEST_2_6_FREE_MODE', `Free mode state after return: ${isFreeModeActiveAfterReturn}`);
     
-    // Verify reset function was called
+    // Verify reset function was called by checking console logs
     const resetLogs = await page.evaluate(() => {
-      return window.testLogs?.filter(log => 
-        log.includes('CHORDS_2_6') && 
-        log.includes('RESET') && 
-        log.includes('Resetting to free play mode')
-      ) || [];
+      // Check if debugLogs exists and filter for reset messages
+      if (window.debugLogs && Array.isArray(window.debugLogs)) {
+        return window.debugLogs.filter(log => 
+          typeof log === 'string' && 
+          log.includes('CHORDS_2_6') && 
+          log.includes('RESET') && 
+          log.includes('Resetting to free play mode')
+        );
+      }
+      return [];
     });
     
     expect(resetLogs.length).toBeGreaterThan(0);
