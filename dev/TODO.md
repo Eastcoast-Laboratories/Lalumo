@@ -244,7 +244,7 @@ reset-button:
   - die Eule macht die Augen auf, wenn man das Spiel startet 
 
 2_6:
-- im Free mode soll bei jedem klick ein anderer ton,/Akkord kommen
+- besserer Hintergrund
 
 
 
@@ -268,3 +268,5 @@ reset-button:
 
 # most important
 - im web zeigt er die landscape warnung an, dass man sein gerät drehen soll. die warnung darf nur auf android oder ios kommen, auch im browser auf den geräten
+
+- increase highlight timing to match repeated challenge playback

@@ -433,7 +433,11 @@ export function getLastInteractedElement() {
  * @param {string} [options.highlightClass='correct-button-highlight'] - CSS class for highlighting
  */
 export function highlightCorrectButton(correctElement, options = {}) {
-  const { duration = 1000, highlightClass = 'correct-button-highlight' } = options;
+  const {
+      delay = 0,
+      duration = 1000,
+      highlightClass = 'correct-button-highlight',
+    } = options;
   
   // Get the element (either passed directly or by selector)
   let element = correctElement;
@@ -446,18 +450,28 @@ export function highlightCorrectButton(correctElement, options = {}) {
     return;
   }
   
-  debugLog('FEEDBACK', `CORRECT_HIGHLIGHT: Highlighting correct element for ${duration}ms`);
-  debugLog('FEEDBACK', `CORRECT_HIGHLIGHT: Element found: ${element.tagName}#${element.id}, classes: ${element.className}`);
+  const executeHighlight = () => {
+    debugLog('FEEDBACK', `CORRECT_HIGHLIGHT: Highlighting correct element for ${duration}ms`);
+    debugLog('FEEDBACK', `CORRECT_HIGHLIGHT: Element found: ${element.tagName}#${element.id}, classes: ${element.className}`);
+    
+    // Add highlight class
+    element.classList.add(highlightClass);
+    debugLog('FEEDBACK', `CORRECT_HIGHLIGHT: Added class '${highlightClass}', new classes: ${element.className}`);
+    
+    // Remove highlight class after duration
+    setTimeout(() => {
+      element.classList.remove(highlightClass);
+      debugLog('FEEDBACK', 'CORRECT_HIGHLIGHT: Highlight effect removed');
+    }, duration);
+  };
   
-  // Add highlight class
-  element.classList.add(highlightClass);
-  debugLog('FEEDBACK', `CORRECT_HIGHLIGHT: Added class '${highlightClass}', new classes: ${element.className}`);
-  
-  // Remove highlight class after duration
-  setTimeout(() => {
-    element.classList.remove(highlightClass);
-    debugLog('FEEDBACK', 'CORRECT_HIGHLIGHT: Highlight effect removed');
-  }, duration);
+  // Execute highlight with delay
+  if (delay > 0) {
+    debugLog('FEEDBACK', `CORRECT_HIGHLIGHT: Delaying highlight by ${delay}ms`);
+    setTimeout(executeHighlight, delay);
+  } else {
+    executeHighlight();
+  }
 }
 
 /**

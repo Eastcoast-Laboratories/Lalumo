@@ -405,7 +405,7 @@ function checkOneOrManyMatch(answer, component) {
       const correctButtonId = current2_6Challenge.correctAnswer === 'one' ? '#button_2_6_one' : '#button_2_6_many';
       setTimeout(() => {
         highlightCorrectButton(correctButtonId);
-      }, 800);
+      }, 1500);
       
       // Component progress is already updated by update2_6Progress function
       debugLog(['CHORDS_2_6', 'PROGRESS_DEBUG'], 
