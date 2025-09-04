@@ -247,7 +247,6 @@ reset-button:
 
 2_6:
 - besserer Hintergrund
-- textbox unten weiter runter, wenn genug platz ist
 
 
 

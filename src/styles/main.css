@@ -1242,7 +1242,9 @@ section h2 {
 
 #\32 _5_chords_characters 
 */
-
+#\32 _6_chords_one_or_many{
+  min-height: 130vw !important;
+}
 .play-button_2_2, .replay-button_2_2, .play-button_2_6, .replay-button_2_6 {
   opacity: 0;
   width: 100%;
@@ -1353,23 +1355,101 @@ section h2 {
 }
 
 /* Make highlighting visible on 2_5 buttons without changing positions */
-#button_2_5_1_major.correct-button-highlight, 
-#button_2_5_1_minor.correct-button-highlight, 
-#button_2_5_1_augmented.correct-button-highlight, 
-#button_2_5_1_diminished.correct-button-highlight {
-  opacity: 0.8 !important;
+.correct-button-highlight {
+  opacity: 0.6 !important;
   background-color: rgba(34, 197, 94, 0.3) !important;
   border: 3px solid #22c55e !important;
 }
 
-/* 2_1 Magical Elements Grid */
+/* 2_1 Magical Elements Grid - positioned to match background image */
 .magical-element-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  padding: 20px;
+  position: relative;
+  width: 100%;
+  height: 100vh;
   max-width: 600px;
   margin: 0 auto;
+  margin-top: 122px;
+}
+
+#start-game-mode-2_1, #play-chord-2_1{
+  opacity: 0.2;
+  position: absolute;
+  top: min(38%, 50vw);
+  width: 22%;
+  height: 31%;
+  margin-bottom: 60px;
+  left: 39%;
+  z-index: 100;
+}
+
+.magical-element-grid > div{
+  opacity: 0.1;
+}
+
+/* Individual positioning for each magical element to match background */
+#button_2_1_fruit {
+  position: absolute;
+  left: 3%;
+  top: min(43%, 52vw);
+  width: 60px;
+  height: 60px;
+}
+
+#button_2_1_mushroom {
+  position: absolute;
+  left: 8%;
+  top: min(19%, 17vw);
+  width: 60px;
+  height: 60px;
+}
+
+#button_2_1_crystal {
+  position: absolute;
+  left: 21%;
+  top: min(53%, 66vw);
+  width: 60px;
+  height: 60px;
+}
+
+#button_2_1_flower {
+  position: absolute;
+  left: 82%;
+  top: min(13%, 11vw);
+  width: 60px;
+  height: 60px;
+}
+
+#button_2_1_flame {
+  position: absolute;
+  right: 6%;
+  top: min(34%, 43vw);
+  width: 60px;
+  height: 60px;
+}
+
+#button_2_1_feather {
+  position: absolute;
+  left: 15%;
+  top: min(64%, 90vw);
+  width: 60px;
+  height: 60px;
+}
+
+#button_2_1_acorn {
+  position: absolute;
+  left: 58%;
+  top: min(59%, 75vw);
+  width: 60px;
+  height: 60px;
+}
+
+#button_2_1_lantern {
+  position: absolute;
+  right: 13%;
+  top: min(11%, 13vw);
+  width: 60px;
+  height: 60px;
+  margin-top: -8vw;
 }
 
 .magical-element {

@@ -31,6 +31,10 @@ Builds:
       - cp -r public/images/backgrounds/* app/images/backgrounds/
       - mkdir -p android/capacitor-cordova-android-plugins
       - echo "// Empty cordova variables" > android/capacitor-cordova-android-plugins/cordova.variables.gradle
+      - echo "ext.cdvPluginPostBuildExtras = []" >> android/capacitor-cordova-android-plugins/cordova.variables.gradle
+      - echo "apply plugin: 'com.android.library'" > android/capacitor-cordova-android-plugins/build.gradle
+      - echo "android { compileSdkVersion rootProject.ext.compileSdkVersion }" >> android/capacitor-cordova-android-plugins/build.gradle
+      - echo "for (def func : cdvPluginPostBuildExtras) { func() }" >> android/capacitor-cordova-android-plugins/build.gradle
       - bash mobile-build.sh
       - popd
     scanignore:
