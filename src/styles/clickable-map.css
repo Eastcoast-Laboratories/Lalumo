@@ -49,6 +49,10 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+#\32 _1_chords_color-matching, #\32 _5_chords_characters {
+  min-height: 90vh;
+}
+
 /* Mode header with title and back button */
 .mode-header {
   display: flex;
