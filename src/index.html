@@ -493,7 +493,7 @@
             <button id="nav_1_3_debug" class="debug-element"
               @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_3_pitches_draw-melody'}); window.innerWidth < 1024 ? menuOpen = false : null"
             >
-              🔓 ✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
+              Debug ✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
             </button>
             
           </div>
@@ -526,18 +526,6 @@
               tabindex="0"
             >
               🦇 <span x-text="$store.strings?.one_or_many || 'One or Many'"></span>
-            </a>
-            
-            <a href="#2_1" id="nav_2_1"
-              @click="isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_1_chords_color-matching'}); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_1_chords_color-matching')"
-              :class="{ 'active': isActive }"
-              class="debug-element"
-              role="button"
-              tabindex="0"
-            >
-              🌈 <span x-text="$store.strings?.chord_color_matching || 'Color Matching'"></span>
             </a>
             
             <a href="#2_2" id="nav_2_2"
@@ -608,6 +596,40 @@
               Debug 🎭 <span x-text="$store.strings?.chord_characters || 'Character Matching'"></span>
             </a>
 
+            <!-- Locked version of Color Matching (visible when not unlocked) -->
+            <button id="nav_2_1_locked"
+              x-show="!areAllActivitiesUnlocked"
+              @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"
+              class="locked-activity"
+            >
+              🔒 🌈 <span x-text="$store.strings?.chord_color_matching || 'Color Matching'"></span>
+            </button>
+            
+            <!-- Unlocked version of Color Matching (visible when unlocked through referrals) -->
+            <a href="#2_1" id="nav_2_1"
+              x-show="areAllActivitiesUnlocked"
+              @click="isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_1_chords_color-matching'}); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_1_chords_color-matching')"
+              :class="{ 'active': isActive }"
+              role="button"
+              tabindex="0"
+            >
+              🌈 <span x-text="$store.strings?.chord_color_matching || 'Color Matching'"></span>
+            </a>
+            
+            <!-- Debug button for Color Matching (always available) -->
+            <a href="#2_1" id="nav_2_1_debug"
+              class="debug-element"
+              @click="isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_1_chords_color-matching'}); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_1_chords_color-matching')"
+              :class="{ 'active': isActive }"
+              role="button"
+              tabindex="0"
+            >
+              Debug 🌈 <span x-text="$store.strings?.chord_color_matching || 'Color Matching'"></span>
+            </a>
           </div>
         </template>
         
@@ -1024,36 +1046,84 @@
             </div>
             
             <div class="magical-element-grid">
-              <div id="button_2_1_fruit" class="magical-element activity-button-blocker" @click="window.checkColorMatch('fruit', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div :title="$store.strings?.chord_element_fruit_major || 'Bright Blue Fruit (Major)'">🫐</div>
+              <div id="button_2_1_fruit" class="magical-element activity-button-blocker" @click="window.checkColorMatch('fruit', $data); blurElement($event)" 
+                   @touchstart.prevent="startLongPress($event)" 
+                   @touchend.prevent="endLongPress($event)" 
+                   @touchmove.prevent="cancelLongPress($event)"
+                   @mousedown="startMouseLongPress($event)"
+                   @mouseup="endMouseLongPress($event)"
+                   @mouseleave="cancelMouseLongPress($event)"
+                   :title="$store.strings?.chord_element_fruit_major || 'Major'">
               </div>
               
-              <div id="button_2_1_mushroom" class="magical-element activity-button-blocker" @click="window.checkColorMatch('mushroom', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div :title="$store.strings?.chord_element_mushroom_minor || 'Dark Green Mushroom (Minor)'">🍄</div>
+              <div id="button_2_1_mushroom" class="magical-element activity-button-blocker" @click="window.checkColorMatch('mushroom', $data); blurElement($event)" 
+                   @touchstart.prevent="startLongPress($event)" 
+                   @touchend.prevent="endLongPress($event)" 
+                   @touchmove.prevent="cancelLongPress($event)"
+                   @mousedown="startMouseLongPress($event)"
+                   @mouseup="endMouseLongPress($event)"
+                   @mouseleave="cancelMouseLongPress($event)"
+                   :title="$store.strings?.chord_element_mushroom_minor || 'Minor'">
               </div>
               
-              <div id="button_2_1_crystal" class="magical-element activity-button-blocker" @click="window.checkColorMatch('crystal', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div :title="$store.strings?.chord_element_crystal_diminished || 'Cracked Violet Crystal (Diminished)'">💎</div>
+              <div id="button_2_1_crystal" class="magical-element activity-button-blocker" @click="window.checkColorMatch('crystal', $data); blurElement($event)" 
+                   @touchstart.prevent="startLongPress($event)" 
+                   @touchend.prevent="endLongPress($event)" 
+                   @touchmove.prevent="cancelLongPress($event)"
+                   @mousedown="startMouseLongPress($event)"
+                   @mouseup="endMouseLongPress($event)"
+                   @mouseleave="cancelMouseLongPress($event)"
+                   :title="$store.strings?.chord_element_crystal_diminished || 'Diminished'">
               </div>
               
-              <div id="button_2_1_flower" class="magical-element activity-button-blocker" @click="window.checkColorMatch('flower', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div :title="$store.strings?.chord_element_flower_augmented || 'Orange Flower (Augmented)'">🌸</div>
+              <div id="button_2_1_flower" class="magical-element activity-button-blocker" @click="window.checkColorMatch('flower', $data); blurElement($event)" 
+                   @touchstart.prevent="startLongPress($event)" 
+                   @touchend.prevent="endLongPress($event)" 
+                   @touchmove.prevent="cancelLongPress($event)"
+                   @mousedown="startMouseLongPress($event)"
+                   @mouseup="endMouseLongPress($event)"
+                   @mouseleave="cancelMouseLongPress($event)"
+                   :title="$store.strings?.chord_element_flower_augmented || 'Augmented'">
               </div>
               
-              <div id="button_2_1_flame" class="magical-element activity-button-blocker" @click="window.checkColorMatch('flame', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div :title="$store.strings?.chord_element_flame_dominant7 || 'Glowing Red Rune Stone (Dominant7)'">🪨</div>
+              <div id="button_2_1_flame" class="magical-element activity-button-blocker" @click="window.checkColorMatch('flame', $data); blurElement($event)" 
+                   @touchstart.prevent="startLongPress($event)" 
+                   @touchend.prevent="endLongPress($event)" 
+                   @touchmove.prevent="cancelLongPress($event)"
+                   @mousedown="startMouseLongPress($event)"
+                   @mouseup="endMouseLongPress($event)"
+                   @mouseleave="cancelMouseLongPress($event)"
+                   :title="$store.strings?.chord_element_flame_dominant7 || 'Dominant7'">
               </div>
               
-              <div id="button_2_1_feather" class="magical-element activity-button-blocker" @click="window.checkColorMatch('feather', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div :title="$store.strings?.chord_element_feather_major7 || 'Shimmering Golden Feather (Major7)'">🪶</div>
+              <div id="button_2_1_feather" class="magical-element activity-button-blocker" @click="window.checkColorMatch('feather', $data); blurElement($event)" 
+                   @touchstart.prevent="startLongPress($event)" 
+                   @touchend.prevent="endLongPress($event)" 
+                   @touchmove.prevent="cancelLongPress($event)"
+                   @mousedown="startMouseLongPress($event)"
+                   @mouseup="endMouseLongPress($event)"
+                   @mouseleave="cancelMouseLongPress($event)"
+                   :title="$store.strings?.chord_element_feather_major7 || 'Major7'">
               </div>
               
-              <div id="button_2_1_acorn" class="magical-element activity-button-blocker" @click="window.checkColorMatch('acorn', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div :title="$store.strings?.chord_element_acorn_sus2 || 'Dark Acorn (Sus2)'">🌰</div>
+              <div id="button_2_1_acorn" class="magical-element activity-button-blocker" @click="window.checkColorMatch('acorn', $data); blurElement($event)" 
+                   @touchstart.prevent="startLongPress($event)" 
+                   @touchend.prevent="endLongPress($event)" 
+                   @touchmove.prevent="cancelLongPress($event)"
+                   @mousedown="startMouseLongPress($event)"
+                   @mouseup="endMouseLongPress($event)"
+                   @mouseleave="cancelMouseLongPress($event)"
+                   :title="$store.strings?.chord_element_acorn_sus2 || 'Sus2'">
               </div>
               
-              <div id="button_2_1_lantern" class="magical-element activity-button-blocker" @click="window.checkColorMatch('lantern', $data)" @touchstart.prevent @touchend.prevent="$el.click();">
-                <div :title="$store.strings?.chord_element_lantern_sus4 || 'Dim Dark-Blue Lantern (Sus4)'">🏮</div>
+              <div id="button_2_1_lantern" class="magical-element activity-button-blocker" @click="window.checkColorMatch('lantern', $data); blurElement($event)" 
+                   @touchstart.prevent="startLongPress($event)" 
+                   @touchend.prevent="endLongPress($event)" 
+                   @touchmove.prevent="cancelLongPress($event)"
+                   @mousedown="startMouseLongPress($event)"
+                   @mouseup="endMouseLongPress($event)"
+                   @mouseleave="cancelMouseLongPress($event)"
+                   :title="$store.strings?.chord_element_lantern_sus4 || 'Sus4'">
               </div>
             </div>
             

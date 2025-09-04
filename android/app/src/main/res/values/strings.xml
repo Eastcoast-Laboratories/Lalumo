@@ -63,7 +63,7 @@
     <string name="try_again_message">Let\'s try again!</string>
     
     <!-- Chords - Main Menu -->
-    <string name="chord_color_matching">Chord Color Matching</string>
+    <string name="chord_color_matching">Magical Forest Chords</string>
     <string name="chords_stable_unstable">Stable or Unstable</string>
     <string name="chord_building">Chord Building</string>
     <string name="missing_note">Guess the Missing Note</string>
@@ -77,14 +77,14 @@
     <string name="intro_2_1_chords_color_matching">Match magical forest elements to the chords you hear! 🌲✨</string>
     
     <!-- Chord Element Tooltips -->
-    <string name="chord_element_fruit_major">Bright Blue Fruit (Major)</string>
-    <string name="chord_element_mushroom_minor">Dark Green Mushroom (Minor)</string>
-    <string name="chord_element_crystal_diminished">Cracked Violet Crystal (Diminished)</string>
-    <string name="chord_element_flower_augmented">Orange Flower (Augmented)</string>
-    <string name="chord_element_flame_dominant7">Glowing Red Rune Stone (Dominant7)</string>
-    <string name="chord_element_feather_major7">Shimmering Golden Feather (Major7)</string>
-    <string name="chord_element_acorn_sus2">Dark Acorn (Sus2)</string>
-    <string name="chord_element_lantern_sus4">Dim Dark-Blue Lantern (Sus4)</string>
+    <string name="chord_element_fruit_major">Major</string>
+    <string name="chord_element_mushroom_minor">Minor</string>
+    <string name="chord_element_crystal_diminished">Diminished</string>
+    <string name="chord_element_flower_augmented">Augmented</string>
+    <string name="chord_element_flame_dominant7">Dominant7</string>
+    <string name="chord_element_feather_major7">Major7</string>
+    <string name="chord_element_acorn_sus2">Sus2</string>
+    <string name="chord_element_lantern_sus4">Sus4</string>
     <string name="play_chord">Play Chord</string>
 
     <!-- Chords - Stable or Unstable Activity -->
@@ -192,7 +192,7 @@
     
     <!-- Referrals Page Strings -->
     <string name="unlock_chords">Unlock more activities</string>
-    <string name="referral_instruction">Share Lalumo with your friends to unlock more activities: Draw a Melody and Chord Story Characters!</string>
+    <string name="referral_instruction">Share Lalumo with your friends to unlock more activities: Draw a Melody, Chord Story Characters and Magical Forest Chords!</string>
     <string name="referrals_premium">successful referrals: Unlock more activities</string>
     <string name="referrals_future">successful referrals: Get future updates for free</string>
     <string name="register_username">Register Your Username</string>

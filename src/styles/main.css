@@ -1372,7 +1372,7 @@ section h2 {
 }
 
 #start-game-mode-2_1, #play-chord-2_1{
-  opacity: 0.2;
+  opacity: 0.02;
   position: absolute;
   top: min(38%, 50vw);
   width: 22%;
@@ -1383,7 +1383,7 @@ section h2 {
 }
 
 .magical-element-grid > div{
-  opacity: 0.1;
+  opacity: 0.02;
 }
 
 /* Individual positioning for each magical element to match background */
@@ -2312,7 +2312,6 @@ section h2 {
 
 /* Guessing mode */
 .play-button {
-  background-color: var(--secondary-color);
   color: white;
   border: none;
   border-radius: 0.7rem;
@@ -2326,7 +2325,6 @@ section h2 {
 }
 
 .play-button:hover {
-  background-color: #5f50e0;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }

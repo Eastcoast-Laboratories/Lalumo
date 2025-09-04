@@ -132,47 +132,12 @@
   font-weight: bold;
 }
 
-/* Game Mode Button (kept for reference) */
-.large-play-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  color: white;
-  border: none;
-  border-radius: 50px;
-  padding: 15px 40px;
-  font-size: 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  margin: 20px 0;
-}
-
-.large-play-button:hover {
-  transform: scale(1.05);
-  background-color: #ff9f43;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-.large-play-button:active {
-  transform: scale(0.98);
-}
-
 /* Game Mode Styles */
 .sound-judgment-options {
   display: flex;
   justify-content: center;
   gap: 30px;
   margin-top: 20px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .large-play-button {
-    padding: 12px 30px;
-    font-size: 18px;
-  }
 }
 
 @media (max-width: 480px) {
