@@ -161,6 +161,7 @@ reset-button:
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
 1_3 Draw a Melody:
+- immer noch: er zeichnet manchmal temporär eine gerade linie genau vom ersten startpunkt des pfades nach unten rechts im canvas und von da nach unten links, aber die punkte werden ignoriert beim zeichnen, das ist nur ein temporärer anzeigefehler
 - # bereit zur veröffentlichung
 - man kann in einen zustand kommen durch schnelles zeichnen im game mode, wo keine noten mehr auf den linien landen, auchnicht, wenn man wieder auf free stellt, es wird dann nur eine blaue linie gezeichnet und keine noten
 - Zeichnen geht nicht mehr auf den Handy, man schiebt den bildschirm hin und her, anstatt zu malen. könnte helfen: overflow hiddern
@@ -238,6 +239,7 @@ reset-button:
 -------
 
 2_5_chords_color_matching:
+ - hintergrund ist unten abgeschnitten
   - # bereit zur veröffentlichung
   - es soll der erfolgssound kommen
   - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte
@@ -245,6 +247,7 @@ reset-button:
 
 2_6:
 - besserer Hintergrund
+- textbox unten weiter runter, wenn genug platz ist
 
 
 

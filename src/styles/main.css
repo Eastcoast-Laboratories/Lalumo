@@ -1599,8 +1599,8 @@ section h2 {
 
 /* Progress Display Box */
 .progress-display {
-  position: absolute;
-  bottom: 0.5rem;
+  position: fixed;
+  bottom: -0.7rem;
   left: 50%;
   transform: translateX(-50%);
   background-color: rgba(255, 255, 255, 0.5);
@@ -1613,11 +1613,20 @@ section h2 {
   margin: 0 auto;
 }
 
+#\1_4_pitches .progresss-display {
+  position: absolute;
+  bottom: 0.5rem;
+}
 /* Specific positioning for 2_2 stable/unstable progress box */
 .progress_2_2 {
   position: fixed;
   bottom: -12px;
   padding-bottom: 19px;
+}
+
+/* Specific positioning for 2_6 one or many progress box - move into white area */
+#\2_6_chords_one_or_many .progress_2_6 {
+  bottom: -2rem; /* Move further down into the lighter area of the background */
 }
 
 .melody-name {
@@ -1696,8 +1705,8 @@ section h2 {
 
 /* Sound Judgment Level Display - Spezialisierte Anzeige für Sound Judgment Level und Streak */
 .sound-judgment-level {
-  position: absolute;
-  bottom: 0.5rem; /* Am oberen Rand statt am unteren */
+  position: fixed;
+  bottom: 1.7rem; /* Am oberen Rand statt am unteren */
   left: 50%;
   background-color: rgba(255, 255, 255, 0.5); /* Blauer Hintergrund für bessere Sichtbarkeit */
   color: rgb(0, 0, 0);
