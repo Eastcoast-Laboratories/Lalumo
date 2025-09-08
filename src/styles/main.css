@@ -4,6 +4,24 @@
   color-scheme: light only;
 }
 
+/* Longpress Tooltip Styles */
+.tooltip {
+  position: fixed !important; 
+  background-color: rgba(255,255,255,0.7) !important; 
+  color: black !important;
+  padding: 12px 16px !important; 
+  border-radius: 8px !important; 
+  font-size: 16px !important; 
+  z-index: 99999 !important;
+  pointer-events: none !important; 
+  opacity: 1 !important; 
+  transition: none !important;
+  white-space: nowrap !important; 
+  max-width: 300px !important; 
+  border: 1px solid rgba(0,0,0,0.3) !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+}
+
 /* Correct Button Highlight Effect */
 .correct-button-highlight {
   animation: correctButtonPulse 1s ease-in-out;
@@ -1549,8 +1567,8 @@ section h2 {
 .progress_2_1 {
   text-align: center;
   margin: 20px 0;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  bottom: 0.5rem;
+  background-color: white;
 }
 
 #\31 _1_pitches .progress-display{

@@ -331,7 +331,7 @@
     <string name="high_or_low_wrong_comparison">Versuche es nochmal. Der zweite Ton war {0}.</string>
     
     <!-- High or Low Stage Messages -->
-    <string name="high_low_stage1">Schaffe 10 richtige für nähere Töne!</string>
+    <string name="high_low_stage1">Schaffe 10 richtige, damit die Töne näher beieinander liegen!</string>
     <string name="high_low_stage2">Schaffe 20 richtige für zwei Töne!</string>
     <string name="high_low_stage3">Schaffe 30 richtige um die Schwierigkeit zu erhöhen!</string>
     <string name="high_low_stage4">Schaffe 40 richtige für die ultimative Herausforderung!</string>

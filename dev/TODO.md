@@ -135,7 +135,7 @@ reset-button:
 
 - Je höher der Ton, umso leiser machen
 
-
+- der longtouch funktioniert in android nicht
 
 # play store:
 - In die Texte dass der Bildschirm gesperrt ist
@@ -239,15 +239,13 @@ reset-button:
 -------
 
 2_5_chords_color_matching:
- - hintergrund ist unten abgeschnitten
   - # bereit zur veröffentlichung
-  - es soll der erfolgssound kommen
-  - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte
+  - wenn man während der regenbogen läuft drückt, dann beim schnellen drücken des replay buttons noch nichts passieren, erst sobald der neue chord generiert ist
   - die Eule macht die Augen auf, wenn man das Spiel startet 
 
-2_6:
-- besserer Hintergrund
-
+2_6: magical forest chords
+  - # bereit zur veröffentlichung
+  - level progress in bottom
 
 
 

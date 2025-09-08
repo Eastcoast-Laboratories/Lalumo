@@ -110,6 +110,16 @@
         clearTimeout(longPressTimer);
       }
       isLongPressActive = false;
+      
+      // Prevent click event from firing during longpress
+      event.preventDefault();
+      event.stopPropagation();
+      
+      // Android-specific: Add vibration feedback
+      if (navigator.vibrate) {
+        navigator.vibrate(50); // Short vibration feedback
+      }
+      
       longPressTimer = setTimeout(() => {
         // Get tooltip text at the time of showing, not at the time of starting
         let tooltipText = text || event.target.title || event.target.getAttribute('title');
@@ -120,7 +130,8 @@
           title: event.target.title,
           getAttribute: event.target.getAttribute('title'),
           textContent: event.target.textContent,
-          innerHTML: event.target.innerHTML
+          innerHTML: event.target.innerHTML,
+          userAgent: navigator.userAgent
         });
         
         // Fallback: use the button's text content if no title is available
@@ -131,6 +142,11 @@
         
         showTooltip(event, tooltipText);
         isLongPressActive = true;
+        
+        // Android-specific: Additional vibration when tooltip shows
+        if (navigator.vibrate) {
+          navigator.vibrate(100);
+        }
       }, 500);
     }
 
@@ -209,55 +225,51 @@
     }
 
     function showTooltip(event, text) {
-      hideTooltip();
-      tooltipElement = document.createElement('div');
-      tooltipElement.className = 'longpress-tooltip';
-      tooltipElement.textContent = text;
-      
-      Object.assign(tooltipElement.style, {
-        position: 'fixed',
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        color: 'white',
-        padding: '8px 12px',
-        borderRadius: '6px',
-        fontSize: '14px',
-        fontFamily: 'sans-serif',
-        zIndex: '10000',
-        pointerEvents: 'none',
-        whiteSpace: 'nowrap',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
-        opacity: '0',
-        transition: 'opacity 0.2s ease-in-out'
-      });
-      
-      document.body.appendChild(tooltipElement);
-      
-      let clientX, clientY;
-      if (event.touches && event.touches.length > 0) {
-        const touch = event.touches[0] || event.changedTouches[0];
-        clientX = touch.clientX;
-        clientY = touch.clientY;
-      } else {
-        clientX = event.clientX;
-        clientY = event.clientY;
+      if (!text || text.trim() === '') {
+        console.log('TOOLTIP_DEBUG: No text provided', { text, event });
+        return;
       }
       
-      const rect = tooltipElement.getBoundingClientRect();
-      let x = clientX - rect.width / 2;
-      let y = clientY - rect.height - 10;
+      console.log('TOOLTIP_DEBUG: Creating tooltip', { text, event });
       
-      if (x < 10) x = 10;
-      if (x + rect.width > window.innerWidth - 10) x = window.innerWidth - rect.width - 10;
-      if (y < 10) y = clientY + 10;
+      // Capacitor-specific: Show native alert for debugging
+      if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+        console.log('CAPACITOR_DEBUG: Showing native alert instead of tooltip');
+        if (window.Capacitor.Plugins && window.Capacitor.Plugins.Dialog) {
+          window.Capacitor.Plugins.Dialog.alert({
+            title: 'Longpress Tooltip',
+            message: text
+          });
+          return;
+        }
+      }
+      
+      hideTooltip();
+      
+      tooltipElement = document.createElement('div');
+      tooltipElement.className = 'tooltip';
+      tooltipElement.textContent = text;
+      document.body.appendChild(tooltipElement);
+      
+      let clientX = event.clientX || 100;
+      let clientY = event.clientY || 100;
+      
+      console.log('TOOLTIP_DEBUG: Using coordinates', { clientX, clientY, hasTouch: !!event.touches });
+      
+      // Position in center of screen for mobile debugging
+      const x = Math.max(10, Math.min(window.innerWidth - 200, clientX - 100));
+      const y = Math.max(50, Math.min(window.innerHeight - 100, clientY - 50));
       
       tooltipElement.style.left = x + 'px';
       tooltipElement.style.top = y + 'px';
       
-      setTimeout(() => {
-        if (tooltipElement) {
-          tooltipElement.style.opacity = '1';
-        }
-      }, 10);
+      console.log('TOOLTIP_DEBUG: Positioned tooltip', { x, y, text, windowSize: { w: window.innerWidth, h: window.innerHeight } });
+      
+      // Force immediate visibility
+      tooltipElement.style.display = 'block';
+      tooltipElement.style.visibility = 'visible';
+      
+      console.log('TOOLTIP_DEBUG: Tooltip should be visible now');
     }
 
     function hideTooltip() {
@@ -267,6 +279,121 @@
       }
     }
 
+    // Auto-initialize longpress for elements with longpress-title class
+    function initializeLongpressElements() {
+      const elements = document.querySelectorAll('.longpress-title');
+      elements.forEach(element => {
+        let longPressTimer = null;
+        let isLongPressActive = false;
+        
+        const startLongPressHandler = (event) => {
+          if (longPressTimer) clearTimeout(longPressTimer);
+          isLongPressActive = false;
+          
+          console.log('LONGPRESS_DEBUG: Touch start detected', {
+            eventType: event.type,
+            hasTouch: !!event.touches,
+            element: element.tagName,
+            id: element.id
+          });
+          
+          if (navigator.vibrate) navigator.vibrate(50);
+          
+          // Store the original event for tooltip positioning
+          const originalEvent = {
+            clientX: event.clientX || (event.touches && event.touches[0] ? event.touches[0].clientX : 100),
+            clientY: event.clientY || (event.touches && event.touches[0] ? event.touches[0].clientY : 100),
+            target: event.target,
+            touches: event.touches
+          };
+          
+          longPressTimer = setTimeout(() => {
+            const tooltipText = element.title || element.getAttribute('title') || element.textContent;
+            console.log('LONGPRESS_DEBUG: Timer fired, showing tooltip', {
+              tooltipText,
+              element: element.tagName,
+              id: element.id,
+              eventType: event.type,
+              hasTouch: !!event.touches,
+              coordinates: { x: originalEvent.clientX, y: originalEvent.clientY }
+            });
+            
+            // Force show tooltip with visual indicator
+            if (!tooltipText) {
+              console.warn('LONGPRESS_DEBUG: No tooltip text found!');
+              return;
+            }
+            
+            showTooltip(originalEvent, tooltipText);
+            isLongPressActive = true;
+            if (navigator.vibrate) navigator.vibrate(100);
+          }, 500);
+        };
+        
+        const endLongPressHandler = (event) => {
+          if (longPressTimer) {
+            clearTimeout(longPressTimer);
+            longPressTimer = null;
+          }
+          if (isLongPressActive) {
+            hideTooltip();
+            isLongPressActive = false;
+            // Only prevent default if we actually showed a tooltip
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        };
+        
+        const cancelLongPressHandler = (event) => {
+          if (longPressTimer) {
+            clearTimeout(longPressTimer);
+            longPressTimer = null;
+          }
+          if (isLongPressActive) {
+            hideTooltip();
+            isLongPressActive = false;
+          }
+        };
+        
+        // Touch events - use passive: false to allow preventDefault
+        element.addEventListener('touchstart', startLongPressHandler, { passive: false });
+        element.addEventListener('touchend', endLongPressHandler, { passive: false });
+        element.addEventListener('touchmove', cancelLongPressHandler, { passive: false });
+        
+        // Fix for Android drag/drop error: prevent drag events on longpress elements
+        element.addEventListener('dragstart', (event) => {
+          event.preventDefault();
+          console.log('DRAG_DEBUG: Prevented dragstart on longpress element');
+        });
+        
+        element.addEventListener('selectstart', (event) => {
+          event.preventDefault();
+          console.log('DRAG_DEBUG: Prevented selectstart on longpress element');
+        });
+        
+        // Capacitor-specific: Add click handler to show alert for debugging
+        element.addEventListener('click', (event) => {
+          console.log('CAPACITOR_DEBUG: Click detected on element', {
+            id: element.id,
+            tagName: element.tagName,
+            title: element.title
+          });
+        });
+        
+        // Mouse events
+        element.addEventListener('mousedown', startLongPressHandler);
+        element.addEventListener('mouseup', endLongPressHandler);
+        element.addEventListener('mouseleave', cancelLongPressHandler);
+      });
+    }
+    
+    // Initialize on DOM ready and when new elements are added
+    document.addEventListener('DOMContentLoaded', initializeLongpressElements);
+    // Re-initialize when Alpine.js updates the DOM
+    document.addEventListener('alpine:init', () => {
+      setTimeout(initializeLongpressElements, 100);
+    });
+    
     // Make functions globally available
     window.startLongPress = startLongPress;
     window.endLongPress = endLongPress;
@@ -274,6 +401,7 @@
     window.startMouseLongPress = startMouseLongPress;
     window.endMouseLongPress = endMouseLongPress;
     window.cancelMouseLongPress = cancelMouseLongPress;
+    window.initializeLongpressElements = initializeLongpressElements;
   </script>
   
   <!-- Scripts and more styles will be injected by webpack -->
@@ -732,16 +860,10 @@
           
           <!-- High or Low choice buttons -->
           <div class="high-low-choices">
-            <div class="pitch-card low-choice activity-button-blocker" 
+            <div class="pitch-card low-choice activity-button-blocker longpress-title" 
                  @click="checkHighOrLowAnswer('low'); blurElement($event)" 
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')"
-                 :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')"
-                 @touchstart.prevent="startLongPress($event)" 
-                 @touchend.prevent="endLongPress($event)" 
-                 @touchmove.prevent="cancelLongPress($event)"
-                 @mousedown="startMouseLongPress($event)"
-                 @mouseup="endMouseLongPress($event)"
-                 @mouseleave="cancelMouseLongPress($event)">
+                 :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')">
               <div class="pitch-icon low-icon">
                 <img src="images/x.gif" alt="Low pitch" />
                 <span class="choice-label" 
@@ -750,16 +872,10 @@
                         ($store.strings?.low_choice || 'Tief')"></span>
               </div>
             </div>
-            <div class="pitch-card high-choice activity-button-blocker" 
+            <div class="pitch-card high-choice activity-button-blocker longpress-title" 
                  @click="checkHighOrLowAnswer('high'); blurElement($event)" 
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')"
-                 :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')"
-                 @touchstart.prevent="startLongPress($event)" 
-                 @touchend.prevent="endLongPress($event)" 
-                 @touchmove.prevent="cancelLongPress($event)"
-                 @mousedown="startMouseLongPress($event)"
-                 @mouseup="endMouseLongPress($event)"
-                 @mouseleave="cancelMouseLongPress($event)">
+                 :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')">
               <div class="pitch-icon high-icon">
                 <img src="images/x.gif" alt="High pitch" />
                 <span class="choice-label" 
@@ -805,42 +921,30 @@
           <!-- Grid-Container für Match-Sounds mit richtigem rowspan-Verhalten -->
           <div class="match-sounds-container">
             <!-- Up pattern (immer sichtbar) - oben links -->
-            <div class="pitch-card up-card activity-button-blocker" @click="checkMatch('up'); blurElement($event)" 
-                 :title="$store.strings?.up_pattern || 'Up pattern'"
-                 @touchstart.prevent="startLongPress($event)" 
-                 @touchend.prevent="endLongPress($event)" 
-                 @touchmove.prevent="cancelLongPress($event)"
-                 @mousedown="startMouseLongPress($event)"
-                 @mouseup="endMouseLongPress($event)"
-                 @mouseleave="cancelMouseLongPress($event)">
+            <div class="pitch-card up-card activity-button-blocker longpress-title" @click="checkMatch('up'); blurElement($event)" 
+                 :title="$store.strings?.up_pattern || 'Up pattern'">
               <div class="pitch-icon up">
                 <img src="images/1x1.gif" alt="Rocket going up" />
               </div>
             </div>
             
             <!-- Down pattern (immer sichtbar) - rechts mit möglichem rowspan -->
-            <div class="pitch-card down-card activity-button-blocker" @click="checkMatch('down'); blurElement($event)" 
-                 :title="$store.strings?.down_pattern || 'Down pattern'"
-                 @touchstart.prevent="startLongPress($event)" 
-                 @touchend.prevent="endLongPress($event)" 
-                 @touchmove.prevent="cancelLongPress($event)"
-                 @mousedown="startMouseLongPress($event)"
-                 @mouseup="endMouseLongPress($event)"
-                 @mouseleave="cancelMouseLongPress($event)">
+            <div class="pitch-card down-card activity-button-blocker longpress-title" @click="checkMatch('down'); blurElement($event)" 
+                 :title="$store.strings?.down_pattern || 'Down pattern'">
               <div class="pitch-icon down">
                 <img src="images/1x1.gif" alt="Slide going down" />
               </div>
             </div>
             
             <!-- Wave pattern (wenn freigeschaltet) - unten links -->
-            <div x-show="unlockedPatterns.includes('wave')" class="pitch-card wave-card activity-button-blocker" @click="checkMatch('wave'); blurElement($event)" @mousedown="startLongPress('wave')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
+            <div x-show="unlockedPatterns.includes('wave')" class="pitch-card wave-card activity-button-blocker longpress-title" @click="checkMatch('wave'); blurElement($event)" :title="$store.strings?.wave_pattern || 'Wave pattern'">
               <div class="pitch-icon wave">
                 <img src="images/1x1.gif" alt="Wave pattern" />
               </div>
             </div>
             
             <!-- Jump pattern (wenn freigeschaltet) - unten rechts -->
-            <div x-show="unlockedPatterns.includes('jump')" class="pitch-card jump-card activity-button-blocker" @click="checkMatch('jump'); blurElement($event)" @mousedown="startLongPress('jump')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
+            <div x-show="unlockedPatterns.includes('jump')" class="pitch-card jump-card activity-button-blocker longpress-title" @click="checkMatch('jump'); blurElement($event)" :title="$store.strings?.jump_pattern || 'Jump pattern'">
               <div class="pitch-icon jump">
                 <img src="images/1x1.gif" alt="Jumping frog" />
               </div>
@@ -927,25 +1031,13 @@
 
             <!-- Animal choice buttons -->
             <div class="sound-judgment-options">
-              <div class="pitch-card animal-card happy activity-button-blocker" @click="checkSoundHighOrLow(true); blurElement($event)" 
-                   @touchstart.prevent="startLongPress($event)" 
-                   @touchend.prevent="endLongPress($event)" 
-                   @touchmove.prevent="cancelLongPress($event)"
-                   @mousedown="startMouseLongPress($event)"
-                   @mouseup="endMouseLongPress($event)"
-                   @mouseleave="cancelMouseLongPress($event)"
+              <div class="pitch-card animal-card happy activity-button-blocker longpress-title" @click="checkSoundHighOrLow(true); blurElement($event)" 
                    :aria-label="$store.strings?.sounds_good || 'Sounds good'" :title="$store.strings?.sounds_good || 'Sounds good'">
                 <div class="pitch-icon animal-icon">
                   <img src="images/1_5_pitches_good_cat.png">
                 </div>
               </div>
-              <div class="pitch-card animal-card unhappy activity-button-blocker" @click="checkSoundHighOrLow(false); blurElement($event)" 
-                   @touchstart.prevent="startLongPress($event)" 
-                   @touchend.prevent="endLongPress($event)" 
-                   @touchmove.prevent="cancelLongPress($event)"
-                   @mousedown="startMouseLongPress($event)"
-                   @mouseup="endMouseLongPress($event)"
-                   @mouseleave="cancelMouseLongPress($event)"
+              <div class="pitch-card animal-card unhappy activity-button-blocker longpress-title" @click="checkSoundHighOrLow(false); blurElement($event)" 
                    :aria-label="$store.strings?.sounds_wrong || 'Sounds wrong'" :title="$store.strings?.sounds_wrong || 'Sounds wrong'">
                 <div class="pitch-icon animal-icon">
                   <img src="images/1_5_pitches_bad_snake.png">
@@ -1046,83 +1138,35 @@
             </div>
             
             <div class="magical-element-grid">
-              <div id="button_2_1_fruit" class="magical-element activity-button-blocker" @click="window.checkColorMatch('fruit', $data); blurElement($event)" 
-                   @touchstart.prevent="startLongPress($event)" 
-                   @touchend.prevent="endLongPress($event)" 
-                   @touchmove.prevent="cancelLongPress($event)"
-                   @mousedown="startMouseLongPress($event)"
-                   @mouseup="endMouseLongPress($event)"
-                   @mouseleave="cancelMouseLongPress($event)"
+              <div id="button_2_1_fruit" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('fruit', $data); blurElement($event)" 
                    :title="$store.strings?.chord_element_fruit_major || 'Major'">
               </div>
               
-              <div id="button_2_1_mushroom" class="magical-element activity-button-blocker" @click="window.checkColorMatch('mushroom', $data); blurElement($event)" 
-                   @touchstart.prevent="startLongPress($event)" 
-                   @touchend.prevent="endLongPress($event)" 
-                   @touchmove.prevent="cancelLongPress($event)"
-                   @mousedown="startMouseLongPress($event)"
-                   @mouseup="endMouseLongPress($event)"
-                   @mouseleave="cancelMouseLongPress($event)"
+              <div id="button_2_1_mushroom" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('mushroom', $data); blurElement($event)" 
                    :title="$store.strings?.chord_element_mushroom_minor || 'Minor'">
               </div>
               
-              <div id="button_2_1_crystal" class="magical-element activity-button-blocker" @click="window.checkColorMatch('crystal', $data); blurElement($event)" 
-                   @touchstart.prevent="startLongPress($event)" 
-                   @touchend.prevent="endLongPress($event)" 
-                   @touchmove.prevent="cancelLongPress($event)"
-                   @mousedown="startMouseLongPress($event)"
-                   @mouseup="endMouseLongPress($event)"
-                   @mouseleave="cancelMouseLongPress($event)"
+              <div id="button_2_1_crystal" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('crystal', $data); blurElement($event)" 
                    :title="$store.strings?.chord_element_crystal_diminished || 'Diminished'">
               </div>
               
-              <div id="button_2_1_flower" class="magical-element activity-button-blocker" @click="window.checkColorMatch('flower', $data); blurElement($event)" 
-                   @touchstart.prevent="startLongPress($event)" 
-                   @touchend.prevent="endLongPress($event)" 
-                   @touchmove.prevent="cancelLongPress($event)"
-                   @mousedown="startMouseLongPress($event)"
-                   @mouseup="endMouseLongPress($event)"
-                   @mouseleave="cancelMouseLongPress($event)"
+              <div id="button_2_1_flower" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('flower', $data); blurElement($event)" 
                    :title="$store.strings?.chord_element_flower_augmented || 'Augmented'">
               </div>
               
-              <div id="button_2_1_flame" class="magical-element activity-button-blocker" @click="window.checkColorMatch('flame', $data); blurElement($event)" 
-                   @touchstart.prevent="startLongPress($event)" 
-                   @touchend.prevent="endLongPress($event)" 
-                   @touchmove.prevent="cancelLongPress($event)"
-                   @mousedown="startMouseLongPress($event)"
-                   @mouseup="endMouseLongPress($event)"
-                   @mouseleave="cancelMouseLongPress($event)"
+              <div id="button_2_1_flame" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('flame', $data); blurElement($event)" 
                    :title="$store.strings?.chord_element_flame_dominant7 || 'Dominant7'">
               </div>
               
-              <div id="button_2_1_feather" class="magical-element activity-button-blocker" @click="window.checkColorMatch('feather', $data); blurElement($event)" 
-                   @touchstart.prevent="startLongPress($event)" 
-                   @touchend.prevent="endLongPress($event)" 
-                   @touchmove.prevent="cancelLongPress($event)"
-                   @mousedown="startMouseLongPress($event)"
-                   @mouseup="endMouseLongPress($event)"
-                   @mouseleave="cancelMouseLongPress($event)"
+              <div id="button_2_1_feather" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('feather', $data); blurElement($event)" 
                    :title="$store.strings?.chord_element_feather_major7 || 'Major7'">
               </div>
               
-              <div id="button_2_1_acorn" class="magical-element activity-button-blocker" @click="window.checkColorMatch('acorn', $data); blurElement($event)" 
-                   @touchstart.prevent="startLongPress($event)" 
-                   @touchend.prevent="endLongPress($event)" 
-                   @touchmove.prevent="cancelLongPress($event)"
-                   @mousedown="startMouseLongPress($event)"
-                   @mouseup="endMouseLongPress($event)"
-                   @mouseleave="cancelMouseLongPress($event)"
+              <div id="button_2_1_acorn" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('acorn', $data); blurElement($event)" 
                    :title="$store.strings?.chord_element_acorn_sus2 || 'Sus2'">
               </div>
               
-              <div id="button_2_1_lantern" class="magical-element activity-button-blocker" @click="window.checkColorMatch('lantern', $data); blurElement($event)" 
-                   @touchstart.prevent="startLongPress($event)" 
-                   @touchend.prevent="endLongPress($event)" 
-                   @touchmove.prevent="cancelLongPress($event)"
-                   @mousedown="startMouseLongPress($event)"
-                   @mouseup="endMouseLongPress($event)"
-                   @mouseleave="cancelMouseLongPress($event)"
+              <div id="button_2_1_lantern" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('lantern', $data); blurElement($event)" 
                    :title="$store.strings?.chord_element_lantern_sus4 || 'Sus4'">
               </div>
             </div>
@@ -1165,18 +1209,16 @@
             </div>
             
             <div class="button_2_2_grid">
-              <div id="button_2_2_stable" class="character activity-button-blocker" 
+              <div id="button_2_2_stable" class="character activity-button-blocker longpress-title" 
                    @click="checkStableUnstableMatch('stable', $data); blurElement($event)"
-                   @touchstart.prevent
-                   @touchend.prevent="$el.click();">
-                <div title="Stable"></div>
+                   :title="$store.strings?.stable || 'Stable'">
+                <div></div>
               </div>
               
-              <div id="button_2_2_unstable" class="character activity-button-blocker" 
+              <div id="button_2_2_unstable" class="character activity-button-blocker longpress-title" 
                    @click="checkStableUnstableMatch('unstable', $data); blurElement($event)"
-                   @touchstart.prevent
-                   @touchend.prevent="$el.click();">
-                <div title="Unstable"></div>
+                   :title="$store.strings?.unstable || 'Unstable'">
+                <div></div>
               </div>
             </div>
             
@@ -1393,27 +1435,15 @@
 
           <div class="chords-container">
             <div class="button_2_6_grid">
-              <div id="button_2_6_one" class="character activity-button-blocker" 
+              <div id="button_2_6_one" class="character activity-button-blocker longpress-title" 
                    @click="checkOneOrManyMatch('one', $data); blurElement($event)"
-                   :title="$store.strings?.one_note || 'One Note'"
-                   @touchstart.prevent="startLongPress($event)" 
-                   @touchend.prevent="endLongPress($event)" 
-                   @touchmove.prevent="cancelLongPress($event)"
-                   @mousedown="startMouseLongPress($event)"
-                   @mouseup="endMouseLongPress($event)"
-                   @mouseleave="cancelMouseLongPress($event)">
+                   :title="$store.strings?.one_note || 'One Note'">
                 <div>1️⃣</div>
               </div>
               
-              <div id="button_2_6_many" class="character activity-button-blocker" 
+              <div id="button_2_6_many" class="character activity-button-blocker longpress-title" 
                    @click="checkOneOrManyMatch('many', $data); blurElement($event)"
-                   :title="$store.strings?.many_notes || 'Many Notes'"
-                   @touchstart.prevent="startLongPress($event)" 
-                   @touchend.prevent="endLongPress($event)" 
-                   @touchmove.prevent="cancelLongPress($event)"
-                   @mousedown="startMouseLongPress($event)"
-                   @mouseup="endMouseLongPress($event)"
-                   @mouseleave="cancelMouseLongPress($event)">
+                   :title="$store.strings?.many_notes || 'Many Notes'">
                 <div>🎵</div>
               </div>
             </div>
