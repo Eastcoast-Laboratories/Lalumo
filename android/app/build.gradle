@@ -32,6 +32,12 @@ android {
     }
     
     buildTypes {
+        debug {
+            // Enable debugging for Android Studio
+            debuggable true
+            minifyEnabled false
+            shrinkResources false
+        }
         release {
             // Enable minification by default (Android Studio), disable for F-Droid builds
             minifyEnabled project.hasProperty('fdroid') ? false : true
