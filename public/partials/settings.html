@@ -15,12 +15,12 @@
       </div>
     </div>
 
+    <hr>
     <!-- Referral Information -->
     <div x-show="referredBy" class="referral-section">
       <h3 x-text="$store.strings?.referral_info || 'Friend Connection'"></h3>
       <div class="referral-info-section">
-        <!-- Display referring friend info if available -->
-        <hr>
+      <!-- Display referring friend info if available -->
         <div class="referred-by-info">
           <p>
             <span x-text="$store.strings?.referred_by || 'Referred by:'" class="referral-label"></span>
@@ -42,6 +42,13 @@
         <template x-if="$store.user && $store.user.rewardsUnlocked">
           <p x-text="$store.strings?.share_code_info || 'Share this code with friends to unlock rewards'"></p>
         </template>
+      </div>
+    </template>
+    
+    <!-- Display message when no referral code exists yet -->
+    <template x-if="!referralCode">
+      <div class="referral-code-info">
+        <p x-text="$store.strings?.create_referral_code_hint || 'You can create a referral code in the Share screen'"></p>
       </div>
     </template>
     <hr>

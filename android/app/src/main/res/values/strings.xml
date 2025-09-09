@@ -192,6 +192,7 @@
     
     <!-- Referrals Page Strings -->
     <string name="unlock_chords">Unlock more activities</string>
+    <string name="unlock_special_activities">Unlock more Activities</string>
     <string name="referral_instruction">Share Lalumo with your friends to unlock more activities: Draw a Melody, Chord Story Characters and Magical Forest Chords!</string>
     <string name="referrals_premium">successful referrals: Unlock more activities</string>
     <string name="referrals_future">successful referrals: Get future updates for free</string>
@@ -205,6 +206,7 @@
     <string name="register_button">Register Username</string>
     <string name="set_username_first">Please set a username in Settings first.</string>
     <string name="your_referral_code">Your Referral Code</string>
+    <string name="create_referral_code_hint">You can create a referral code in the Share screen</string>
     <string name="referred_by">Referred by:</string>
     <string name="referral_info">Friend Connection</string>
     <string name="registered_as">Registered as:</string>

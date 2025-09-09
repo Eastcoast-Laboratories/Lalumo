@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manual Redeem Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        button { padding: 10px 15px; margin: 5px; }
+        input { padding: 8px; margin: 5px; width: 200px; }
+        .result { background: #f5f5f5; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Manual Test: Redeem Friend Code Functionality</h1>
+    
+    <div class="test-section">
+        <h2>Step 1: Open Lalumo App</h2>
+        <button onclick="openApp()">Open App in New Tab</button>
+        <p>Instructions: Click to open the app, then navigate to a locked chapter to access the redeem functionality.</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Step 2: Test API Endpoints Directly</h2>
+        <h3>Create Test Referral Code</h3>
+        <input type="text" id="testUsername" value="testuser1" placeholder="Username">
+        <button onclick="createReferralCode()">Create Referral Code</button>
+        <div id="createResult" class="result"></div>
+        
+        <h3>Test Redeem Code</h3>
+        <input type="text" id="redeemCode" value="TEST1234" placeholder="Friend Code">
+        <input type="text" id="redeemUsername" value="testuser2" placeholder="Redeem Username">
+        <button onclick="testRedeemCode()">Test Redeem</button>
+        <div id="redeemResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Step 3: Check Database</h2>
+        <button onclick="checkDatabase()">Check Database Status</button>
+        <div id="dbResult" class="result"></div>
+    </div>
+
+    <script>
+        function openApp() {
+            window.open('http://localhost:9091', '_blank');
+        }
+        
+        async function createReferralCode() {
+            const username = document.getElementById('testUsername').value;
+            const resultDiv = document.getElementById('createResult');
+            
+            try {
+                resultDiv.innerHTML = 'Creating referral code...';
+                
+                const response = await fetch('http://localhost:8080/src/api/referral.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Origin': 'http://localhost:9091'
+                    },
+                    body: JSON.stringify({ username: username })
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `
+                    <strong>Status:</strong> ${response.status}<br>
+                    <strong>Response:</strong> <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                
+                if (data.referral_code) {
+                    document.getElementById('redeemCode').value = data.referral_code;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+            }
+        }
+        
+        async function testRedeemCode() {
+            const code = document.getElementById('redeemCode').value;
+            const username = document.getElementById('redeemUsername').value;
+            const resultDiv = document.getElementById('redeemResult');
+            
+            try {
+                resultDiv.innerHTML = 'Testing redeem code...';
+                
+                const response = await fetch('http://localhost:8080/src/api/referral.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Origin': 'http://localhost:9091'
+                    },
+                    body: JSON.stringify({ 
+                        username: username, 
+                        redeemCode: code 
+                    })
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `
+                    <strong>Status:</strong> ${response.status}<br>
+                    <strong>Response:</strong> <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+            }
+        }
+        
+        function checkDatabase() {
+            const resultDiv = document.getElementById('dbResult');
+            resultDiv.innerHTML = `
+                <strong>Database Location:</strong> /var/www/Musici/data/referrals.db<br>
+                <strong>Check manually with:</strong> sqlite3 /var/www/Musici/data/referrals.db ".tables"<br>
+                <strong>View users:</strong> sqlite3 /var/www/Musici/data/referrals.db "SELECT * FROM users LIMIT 5;"
+            `;
+        }
+    </script>
+</body>
+</html>

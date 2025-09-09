@@ -169,7 +169,8 @@
     <string name="feedback_all_unlocked">Großartig! Alle Melodie-Muster sind jetzt verfügbar! 🎉</string>
     
     <!-- Referrals Page Strings -->
-    <string name="unlock_chords">Mehr Aktivitäten freischalten</string>
+    <string name="unlock_chords">Schalte weitere Aktivitäten frei</string>
+    <string name="unlock_special_activities">Schalte weitere Aktivitäten frei</string>
     <string name="referral_instruction">Teile Lalumo mit deinen Freunden, um mehr Aktivitäten freizuschalten: Melodie zeichnen, Akkord-Charaktere und Magical Forest Chords!</string>
     <string name="referrals_premium">erfolgreiche Empfehlungen: Mehr Aktivitäten freischalten</string>
     <string name="referrals_future">erfolgreiche Empfehlungen: Erhalte zukünftige Updates kostenlos</string>
@@ -183,6 +184,7 @@
     <string name="register_button">Benutzernamen registrieren</string>
     <string name="set_username_first">Bitte lege zuerst einen Benutzernamen in den Einstellungen fest.</string>
     <string name="your_referral_code">Dein Empfehlungscode</string>
+    <string name="create_referral_code_hint">Du kannst einen Empfehlungscode im Teilen-Screen erstellen</string>
     <string name="referred_by">Empfohlen von:</string>
     <string name="username_created">Dein Name ist {username}. Du kannst dies in den Einstellungen ändern.</string>
     <string name="username_updated">Dein Name ist {username}. Du kannst dies in den Einstellungen ändern.</string>
