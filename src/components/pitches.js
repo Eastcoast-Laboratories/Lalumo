@@ -83,7 +83,6 @@ export function pitches() {
     melodyTimeouts: [], // Array für Timeout-IDs der Melodiesequenzen
     helpSettings: {
       showHelpMessages: true,     // Whether to show help messages
-      disableTTS: true,          // Whether to disable TTS for intro messages
       seenActivityMessages: {},   // Track which activities have shown the message
     },
     currentHighlightedNote: null, // For highlighting piano keys during playback
@@ -316,16 +315,6 @@ export function pitches() {
       // Initialize snake animation for draw melody activity
       initSnakeAnimation();
     
-      // Set up text-to-speech if available - with better debugging
-      this.speechSynthesis = null;
-      this.ttsAvailable = false;
-      this.usingNativeAndroidTTS = false;  // Flag für native Android TTS
-      
-      // Überprüfe zuerst, ob die native Android TTS-Brücke verfügbar ist
-      this.checkAndroidNativeTTS();
-      
-      // Fallback: Verzögerte Initialisierung der Web-Sprachsynthese für bessere Kompatibilität
-      this.initSpeechSynthesis();
       
       // Load intro message settings from localStorage
       try {
@@ -543,23 +532,6 @@ export function pitches() {
           debugLog('TOUCH', `Showing intro message: ${helpText}`);
         });
         
-        // Use TTS if available
-        try {
-          // Try native Android TTS first
-          if (window.AndroidTTS) {
-            window.AndroidTTS.speak(helpText);
-            debugLog('PITCHES', 'Using Android TTS');
-          } 
-          // Fallback to Web Speech API
-          else if (window.speechSynthesis) {
-            const speech = new SpeechSynthesisUtterance(helpText);
-            speech.lang = language === 'de' ? 'de-DE' : 'en-US';
-            window.speechSynthesis.speak(speech);
-            debugLog('PITCHES', 'Using Web Speech API');
-          }
-        } catch (error) {
-          debugLog(['PITCHES', 'ERROR'], 'TTS error:', error);
-        }
       }, this.longPressThreshold);
     },
     
@@ -614,23 +586,6 @@ export function pitches() {
         this.helpMessage = helpText;
         debugLog('PITCHES', 'Help message set to:', helpText);
         
-        // Use TTS if available
-        try {
-          // Try native Android TTS first
-          if (window.AndroidTTS) {
-            window.AndroidTTS.speak(helpText);
-            debugLog('PITCHES', 'Using Android TTS');
-          } 
-          // Fallback auf Web Speech API
-          else if (window.speechSynthesis) {
-            const speech = new SpeechSynthesisUtterance(helpText);
-            speech.lang = language === 'de' ? 'de-DE' : 'en-US';
-            window.speechSynthesis.speak(speech);
-            debugLog('PITCHES', 'Using Web Speech API');
-          }
-        } catch (error) {
-          debugLog(['PITCHES', 'ERROR'], 'TTS error:', error);
-        }
       }, this.longPressThreshold);
     },
     

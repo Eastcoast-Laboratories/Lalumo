@@ -15,12 +15,12 @@
       </div>
     </div>
 
-    <hr>
     <!-- Referral Information -->
     <div x-show="referredBy" class="referral-section">
       <h3 x-text="$store.strings?.referral_info || 'Friend Connection'"></h3>
       <div class="referral-info-section">
-      <!-- Display referring friend info if available -->
+        <!-- Display referring friend info if available -->
+        <hr>
         <div class="referred-by-info">
           <p>
             <span x-text="$store.strings?.referred_by || 'Referred by:'" class="referral-label"></span>

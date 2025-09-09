@@ -2182,16 +2182,8 @@ export function app() {
         const data = await response.json();
         
         if (data.success) {
-          // Aktualisierte Referral-Anzahl speichern
-          if (data.referralCount) {
-            this.referralCount = data.referralCount;
-          } else {
-            // Falls keine zurückgeliefert wird, lokal erhöhen
-            this.referralCount += 1;
-          }
-          
-          // Akkorde-Kapitel freischalten, wenn 3 oder mehr Referrals erreicht
-          if (this.referralCount >= 3) {
+          // Check if all activities should be unlocked
+          if (data.unlockAllActivities) {
             this.areAllActivitiesUnlocked = true;
           }
           

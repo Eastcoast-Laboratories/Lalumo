@@ -71,56 +71,53 @@ Alpine.store('feedback', {
 Alpine.store('helpSettings', {
   showHelpMessages: true,
   seenActivityMessages: {},
-  disableTTS: true,
   
   // Load settings from localStorage
   init() {
+    debugLog('INTROMESSAGE_STORE', 'Initializing help settings store');
     try {
       const savedSettings = localStorage.getItem('lalumo_help_settings');
       if (savedSettings) {
         const loadedSettings = JSON.parse(savedSettings);
-        // Merge with defaults to ensure new flags are set
+        debugLog('INTROMESSAGE_STORE', 'Loaded settings from localStorage:', loadedSettings);
         Object.assign(this, {
           showHelpMessages: true,
           seenActivityMessages: {},
-          disableTTS: true,
           ...loadedSettings
         });
         // Reset seen messages on app start
         this.seenActivityMessages = {};
-        debugLog('INTROMESSAGE_STORE', 'Loaded settings and reset seen messages', this);
+        debugLog('INTROMESSAGE_STORE', 'Settings initialized with defaults and loaded data');
       }
-      this.save();
     } catch (error) {
-      debugLog(['INTROMESSAGE_STORE', 'ERROR'], `Error loading settings: ${error.message || error}`);
+      debugLog(['INTROMESSAGE_STORE', 'ERROR'], 'Error loading settings from localStorage:', error);
     }
   },
   
   // Save settings to localStorage
-  save() {
+  saveSettings() {
     try {
       localStorage.setItem('lalumo_help_settings', JSON.stringify({
         showHelpMessages: this.showHelpMessages,
-        seenActivityMessages: this.seenActivityMessages,
-        disableTTS: this.disableTTS
+        seenActivityMessages: this.seenActivityMessages
       }));
       debugLog('INTROMESSAGE_STORE', 'Settings saved');
     } catch (error) {
-      debugLog(['INTROMESSAGE_STORE', 'ERROR'], `Error saving settings: ${error.message || error}`);
+      debugLog(['INTROMESSAGE_STORE', 'ERROR'], 'Error saving settings:', error);
     }
   },
   
   // Toggle help messages
   toggleHelpMessages() {
     this.showHelpMessages = !this.showHelpMessages;
-    this.save();
+    this.saveSettings();
     debugLog('INTROMESSAGE_STORE', `Help messages toggled: ${this.showHelpMessages}`);
   },
   
   // Hide help messages (called by close button)
   hideHelpMessages() {
     this.showHelpMessages = false;
-    this.save();
+    this.saveSettings();
     debugLog('INTROMESSAGE_STORE', 'Help messages disabled via close button');
   }
 });
