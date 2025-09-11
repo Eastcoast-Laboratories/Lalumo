@@ -18,8 +18,6 @@ export function app() {
     showUsernamePrompt: false,
     isAudioEnabled: false,
     audioContext: null,
-    isSpeaking: false,
-    ttsAvailable: false,
     currentVoice: null,
     voicesByLanguage: {},
     preferredVoice: null,
@@ -156,13 +154,7 @@ export function app() {
         debugLog('APP', 'String resources loaded from XML');
       });
     },
-    
-    resetSpeech() {
-      // Reset speech synthesis
-      window.speechSynthesis.cancel();
-      this.isSpeaking = false;
-    },
-    
+
     /**
      * Referral System Functions
      */

@@ -44,7 +44,7 @@ window.showFeedbackMessage("This is a help message", {
   activityId: "1_1_pitches_high_or_low",
   isIntroMessage: true,  // Will check user settings before showing
   delaySeconds: 3,
-  component: this  // Optional, for text-to-speech
+  component: this  // Optional
 });
 ```
 
@@ -91,12 +91,6 @@ Help/intro messages respect the user's preference:
 - Setting is stored in `$store.helpSettings.showHelpMessages`
 - Setting is persisted in localStorage as `lalumo_help_settings`
 - Users can toggle this setting via the application settings UI
-
-## Text-to-Speech Support
-
-Intro/help messages can be spoken if:
-- The component has a `speak()` method, OR
-- Browser Speech Synthesis is available AND `$store.helpSettings.enableSpeech` is true
 
 ## Legacy Support
 

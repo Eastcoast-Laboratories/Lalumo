@@ -338,7 +338,6 @@ A space for free discovery: Children can paint tones, let figures dance to pitch
 - [x] Frontend: with Alpine.js
 - Backend: Audio engine locally with Web Audio API, no server dependency
 - Windsurf AI Support:
-  - Voice guidance is supplemented by text-to-speech (local)
   - Windsurf helps with the creation of child-friendly exercise scenarios, tone combinations, and sound design
   - Test cases are generated with AI (e.g., "What to do if the child always selects the highest tone?")
 

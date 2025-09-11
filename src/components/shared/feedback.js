@@ -7,13 +7,13 @@
 
 /**
  * Unified feedback message system for both help messages and game feedback
- * @param {string} message - The message to display and speak
+ * @param {string} message - The message to display
  * @param {Object} options - Options for controlling feedback behavior
  * @param {string} options.activityId - Activity identifier for logging
  * @param {boolean} options.isIntroMessage - Whether this is an intro/help message (respects settings) or game feedback (always shown)
  * @param {boolean} options.isCorrect - For game feedback: correct (true), incorrect (false), or neutral (null)
  * @param {number} options.delaySeconds - Delay in seconds before hiding the message
- * @param {Object} options.component - The Alpine.js component instance for speaking
+ * @param {Object} options.component - The Alpine.js component instance
  * @activity common
  * @used_by 2_1_chords_color-matching, 2_5_chords_characters, 2_2_chords_stable_unstable, all_pitch_activities
  */
@@ -114,21 +114,6 @@ export function showFeedbackMessage(message, options = {}) {
     debugLog(logPrefix, `[${activityId}] ${message} (isCorrect: ${isCorrect})`);
   }
   
-  // Only speak intro/help messages, not game feedback
-  if (isIntroMessage) {
-    // If a component is provided and it has a speak method, use it
-    if (component && typeof component.speak === 'function') {
-      component.speak(message);
-    } 
-    // Otherwise use the global speech synthesis if available
-    else if (window.speechSynthesis && helpSettingsStore && helpSettingsStore.enableSpeech) {
-      const utterance = new SpeechSynthesisUtterance(message);
-      // Get language store
-      const languageStore = window.Alpine?.store ? window.Alpine.store('language') : null;
-      utterance.lang = languageStore?.current || 'en';
-      window.speechSynthesis.speak(utterance);
-    }
-  }
 }
 
 // Track which intro messages have been shown in this session

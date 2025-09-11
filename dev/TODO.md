@@ -65,7 +65,6 @@ dabei:
 - Mobile Deployment
     - Ensure proper touch interactions for mobile
 - AI Integration
-    - Implement voice guidance with text-to-speech
     - Create adaptive exercise scenarios
     - Develop test cases for different child interactions
 
