@@ -2701,3 +2701,8 @@ section h2 {
   outline: 3px solid rgba(51, 51, 51, 0.5);
   outline-offset: 2px;
 }
+
+/* Global button cursor pointer rule */
+button {
+  cursor: pointer;
+}
