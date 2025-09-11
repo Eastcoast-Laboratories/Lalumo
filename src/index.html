@@ -840,7 +840,7 @@
           <!-- Play button - bird in background -->
           <button class="circular-play-button" 
                   @click="playHighOrLowTone(); blurElement($event)" 
-                  @touchstart.prevent @touchend.prevent="$el.click();"
+                  @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();"
                   :aria-label="$store.strings?.play_tone_a11y || 'Play tone'" 
                   :title="$store.strings?.play_tone_a11y || 'Play tone'">
           </button>
@@ -848,7 +848,8 @@
           <!-- High or Low choice buttons -->
           <div class="high-low-choices">
             <div class="pitch-card low-choice activity-button-blocker longpress-title" 
-                 @click="checkHighOrLowAnswer('low'); blurElement($event)" 
+                 @click="checkHighOrLowAnswer('low'); blurElement($event)"
+                 @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')"
                  :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')">
               <div class="pitch-icon low-icon">
@@ -860,7 +861,8 @@
               </div>
             </div>
             <div class="pitch-card high-choice activity-button-blocker longpress-title" 
-                 @click="checkHighOrLowAnswer('high'); blurElement($event)" 
+                 @click="checkHighOrLowAnswer('high'); blurElement($event)"
+                 @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')"
                  :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')">
               <div class="pitch-icon high-icon">
@@ -894,21 +896,22 @@
           <!-- Play button - only show when not in game mode -->
           <button x-show="!gameMode" class="circular-play-button" 
           @click="playCurrentMelody(); blurElement($event)" 
-          @touchstart.prevent @touchend.prevent="$el.click();"
+          @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();"
           aria-label="Start Game" title="Play">
           </button>
           
           <!-- Game mode play button - only show when in game mode -->
           <button x-show="gameMode" class="circular-play-button" 
           @click="playCurrentMelody(); blurElement($event)" 
-          @touchstart.prevent @touchend.prevent="$el.click();"
+          @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();"
           aria-label="Play Melody" title="Play">
           </button>
 
           <!-- Grid-Container für Match-Sounds mit richtigem rowspan-Verhalten -->
           <div class="match-sounds-container">
             <!-- Up pattern (immer sichtbar) - oben links -->
-            <div class="pitch-card up-card activity-button-blocker longpress-title" @click="checkMatch('up'); blurElement($event)" 
+            <div class="pitch-card up-card activity-button-blocker longpress-title" @click="checkMatch('up'); blurElement($event)"
+                 @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                  :title="$store.strings?.up_pattern || 'Up pattern'">
               <div class="pitch-icon up">
                 <img src="images/1x1.gif" alt="Rocket going up" />
@@ -916,7 +919,8 @@
             </div>
             
             <!-- Down pattern (immer sichtbar) - rechts mit möglichem rowspan -->
-            <div class="pitch-card down-card activity-button-blocker longpress-title" @click="checkMatch('down'); blurElement($event)" 
+            <div class="pitch-card down-card activity-button-blocker longpress-title" @click="checkMatch('down'); blurElement($event)"
+                 @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                  :title="$store.strings?.down_pattern || 'Down pattern'">
               <div class="pitch-icon down">
                 <img src="images/1x1.gif" alt="Slide going down" />
@@ -924,14 +928,16 @@
             </div>
             
             <!-- Wave pattern (wenn freigeschaltet) - unten links -->
-            <div x-show="unlockedPatterns.includes('wave')" class="pitch-card wave-card activity-button-blocker longpress-title" @click="checkMatch('wave'); blurElement($event)" :title="$store.strings?.wave_pattern || 'Wave pattern'">
+            <div x-show="unlockedPatterns.includes('wave')" class="pitch-card wave-card activity-button-blocker longpress-title" @click="checkMatch('wave'); blurElement($event)" :title="$store.strings?.wave_pattern || 'Wave pattern'"
+                 @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();">
               <div class="pitch-icon wave">
                 <img src="images/1x1.gif" alt="Wave pattern" />
               </div>
             </div>
             
             <!-- Jump pattern (wenn freigeschaltet) - unten rechts -->
-            <div x-show="unlockedPatterns.includes('jump')" class="pitch-card jump-card activity-button-blocker longpress-title" @click="checkMatch('jump'); blurElement($event)" :title="$store.strings?.jump_pattern || 'Jump pattern'">
+            <div x-show="unlockedPatterns.includes('jump')" class="pitch-card jump-card activity-button-blocker longpress-title" @click="checkMatch('jump'); blurElement($event)" :title="$store.strings?.jump_pattern || 'Jump pattern'"
+                 @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();">
               <div class="pitch-icon jump">
                 <img src="images/1x1.gif" alt="Jumping frog" />
               </div>
@@ -975,19 +981,22 @@
               <!-- Instrument Selection Buttons -->
               <div class="instrument-buttons">
                 <!-- Violin Button -->
-                <button class="instrument-button violin" @click="startSoundJudgmentGame('violin'); blurElement($event)" 
+                <button class="instrument-button violin" @click="startSoundJudgmentGame('violin'); blurElement($event)"
+                  @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                   :title="$store.strings?.violin || 'Violin'" aria-label="Play with violin">
                   <div class="instrument-icon violin-icon">🎻</div>
                 </button>
                 
                 <!-- Flute Button -->
-                <button class="instrument-button flute" @click="startSoundJudgmentGame('flute'); blurElement($event)" 
+                <button class="instrument-button flute" @click="startSoundJudgmentGame('flute'); blurElement($event)"
+                  @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                   :title="$store.strings?.flute || 'Flute'" aria-label="Play with flute">
                   <div class="instrument-icon flute-icon">🎵</div>
                 </button>
                 
                 <!-- Double Bass Button -->
                 <button class="instrument-button doublebass" @click="startSoundJudgmentGame('doublebass'); blurElement($event)"
+                  @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();"
                   :title="$store.strings?.doublebass || 'Double Bass'" aria-label="Play with doublebass">
                   <div class="instrument-icon doublebass-icon">🎻</div>
                 </button>
@@ -996,7 +1005,8 @@
             
             <!-- Start Game Mode Button (at the bottom) -->
             <div class="start-game-container">
-              <button class="start-game-button" @click="startSoundJudgmentGame(); blurElement($event)" aria-label="Start Game" :title="$store.strings?.start_game || 'Start Game'">
+              <button class="start-game-button" @click="startSoundJudgmentGame(); blurElement($event)" aria-label="Start Game" :title="$store.strings?.start_game || 'Start Game'"
+                @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();">
                 <span class="play-icon">▶</span>
               </button>
             </div>
@@ -1018,13 +1028,15 @@
 
             <!-- Animal choice buttons -->
             <div class="sound-judgment-options">
-              <div class="pitch-card animal-card happy activity-button-blocker longpress-title" @click="checkSoundHighOrLow(true); blurElement($event)" 
+              <div class="pitch-card animal-card happy activity-button-blocker longpress-title" @click="checkSoundHighOrLow(true); blurElement($event)"
+                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                    :aria-label="$store.strings?.sounds_good || 'Sounds good'" :title="$store.strings?.sounds_good || 'Sounds good'">
                 <div class="pitch-icon animal-icon">
                   <img src="images/1_5_pitches_good_cat.png">
                 </div>
               </div>
-              <div class="pitch-card animal-card unhappy activity-button-blocker longpress-title" @click="checkSoundHighOrLow(false); blurElement($event)" 
+              <div class="pitch-card animal-card unhappy activity-button-blocker longpress-title" @click="checkSoundHighOrLow(false); blurElement($event)"
+                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                    :aria-label="$store.strings?.sounds_wrong || 'Sounds wrong'" :title="$store.strings?.sounds_wrong || 'Sounds wrong'">
                 <div class="pitch-icon animal-icon">
                   <img src="images/1_5_pitches_bad_snake.png">
@@ -1048,16 +1060,16 @@
           
           <div class="piano-keyboard">
             <!-- White keys C, D, E, G, A with black key indicators -->
-            <button class="piano-key white c4" @click="addToSequence('C4')" @touchstart.prevent @touchend.prevent="$el.click();" :class="{ 'active': currentHighlightedNote === 'C4' }">C</button>
+            <button class="piano-key white c4" @touchstart.prevent="addToSequence('C4')" @mousedown.prevent="addToSequence('C4')" @touchend.prevent @mouseup.prevent :class="{ 'active': currentHighlightedNote === 'C4' }">C</button>
             <div class="piano-key black" aria-hidden="true"></div>
-            <button class="piano-key white d4" @click="addToSequence('D4')" @touchstart.prevent @touchend.prevent="$el.click();" :class="{ 'active': currentHighlightedNote === 'D4' }">D</button>
+            <button class="piano-key white d4" @touchstart.prevent="addToSequence('D4')" @mousedown.prevent="addToSequence('D4')" @touchend.prevent @mouseup.prevent :class="{ 'active': currentHighlightedNote === 'D4' }">D</button>
             <div class="piano-key black" aria-hidden="true"></div>
-            <button class="piano-key white e4" @click="addToSequence('E4')" @touchstart.prevent @touchend.prevent="$el.click();" :class="{ 'active': currentHighlightedNote === 'E4' }">E</button>
+            <button class="piano-key white e4" @touchstart.prevent="addToSequence('E4')" @mousedown.prevent="addToSequence('E4')" @touchend.prevent @mouseup.prevent :class="{ 'active': currentHighlightedNote === 'E4' }">E</button>
             <div class="piano-key inactive f4" aria-hidden="true">F</div>
             <div class="piano-key black" aria-hidden="true"></div>
-            <button class="piano-key white g4" @click="addToSequence('G4')" @touchstart.prevent @touchend.prevent="$el.click();" :class="{ 'active': currentHighlightedNote === 'G4' }">G</button>
+            <button class="piano-key white g4" @touchstart.prevent="addToSequence('G4')" @mousedown.prevent="addToSequence('G4')" @touchend.prevent @mouseup.prevent :class="{ 'active': currentHighlightedNote === 'G4' }">G</button>
             <div class="piano-key black" aria-hidden="true"></div>
-            <button class="piano-key white a4" @click="addToSequence('A4')" @touchstart.prevent @touchend.prevent="$el.click();" :class="{ 'active': currentHighlightedNote === 'A4' }">A</button>
+            <button class="piano-key white a4" @touchstart.prevent="addToSequence('A4')" @mousedown.prevent="addToSequence('A4')" @touchend.prevent @mouseup.prevent :class="{ 'active': currentHighlightedNote === 'A4' }">A</button>
             <div class="piano-key black" aria-hidden="true"></div>
             <div class="piano-key inactive b4" aria-hidden="true" x-text="$store.strings?.piano_key_b || 'B'"></div>
           </div>
@@ -1113,10 +1125,10 @@
         <div id="2_1_chords_color-matching" x-show="mode === '2_1_chords_color-matching'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_1.jpg">
           
           <!-- start-button, shown in free play mode -->
-          <button id="start-game-mode-2_1" @click="is2_1FreePlayMode = false; window.start2_1GameMode($data); $event.stopPropagation();" @touchstart.prevent @touchend.prevent="$el.click();" class="play-button" x-show="is2_1FreePlayMode" style="font-size: 2em; cursor: pointer;" :title="$store.strings?.start_game || 'Start Game Mode'">🦉</button>
+          <button id="start-game-mode-2_1" @click="is2_1FreePlayMode = false; window.start2_1GameMode($data); $event.stopPropagation();" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" class="play-button" x-show="is2_1FreePlayMode" style="font-size: 2em; cursor: pointer;" :title="$store.strings?.start_game || 'Start Game Mode'">🦉</button>
           
           <!-- Play button (shown in game mode) -->
-          <button id="play-chord-2_1" @click="window.playCurrent2_1Chord($data)" @touchstart.prevent @touchend.prevent="$el.click();" class="play-button" x-show="!is2_1FreePlayMode" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
+          <button id="play-chord-2_1" @click="window.playCurrent2_1Chord($data)" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" class="play-button" x-show="!is2_1FreePlayMode" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
 
           <div class="chords-container">            
             <!-- Progress display -->
@@ -1125,35 +1137,43 @@
             </div>
             
             <div class="magical-element-grid">
-              <div id="button_2_1_fruit" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('fruit', $data); blurElement($event)" 
+              <div id="button_2_1_fruit" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('fruit', $data); blurElement($event)"
+                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                    :title="$store.strings?.chord_element_fruit_major || 'Major'">
               </div>
               
-              <div id="button_2_1_mushroom" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('mushroom', $data); blurElement($event)" 
+              <div id="button_2_1_mushroom" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('mushroom', $data); blurElement($event)"
+                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                    :title="$store.strings?.chord_element_mushroom_minor || 'Minor'">
               </div>
               
-              <div id="button_2_1_crystal" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('crystal', $data); blurElement($event)" 
+              <div id="button_2_1_crystal" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('crystal', $data); blurElement($event)"
+                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                    :title="$store.strings?.chord_element_crystal_diminished || 'Diminished'">
               </div>
               
-              <div id="button_2_1_flower" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('flower', $data); blurElement($event)" 
+              <div id="button_2_1_flower" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('flower', $data); blurElement($event)"
+                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                    :title="$store.strings?.chord_element_flower_augmented || 'Augmented'">
               </div>
               
-              <div id="button_2_1_flame" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('flame', $data); blurElement($event)" 
+              <div id="button_2_1_flame" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('flame', $data); blurElement($event)"
+                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                    :title="$store.strings?.chord_element_flame_dominant7 || 'Dominant7'">
               </div>
               
-              <div id="button_2_1_feather" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('feather', $data); blurElement($event)" 
+              <div id="button_2_1_feather" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('feather', $data); blurElement($event)"
+                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                    :title="$store.strings?.chord_element_feather_major7 || 'Major7'">
               </div>
               
-              <div id="button_2_1_acorn" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('acorn', $data); blurElement($event)" 
+              <div id="button_2_1_acorn" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('acorn', $data); blurElement($event)"
+                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                    :title="$store.strings?.chord_element_acorn_sus2 || 'Sus2'">
               </div>
               
-              <div id="button_2_1_lantern" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('lantern', $data); blurElement($event)" 
+              <div id="button_2_1_lantern" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('lantern', $data); blurElement($event)"
+                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                    :title="$store.strings?.chord_element_lantern_sus4 || 'Sus4'">
               </div>
             </div>
@@ -1198,12 +1218,14 @@
             <div class="button_2_2_grid">
               <div id="button_2_2_stable" class="character activity-button-blocker longpress-title" 
                    @click="checkStableUnstableMatch('stable', $data); blurElement($event)"
+                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();"
                    :title="$store.strings?.stable || 'Stable'">
                 <div></div>
               </div>
               
               <div id="button_2_2_unstable" class="character activity-button-blocker longpress-title" 
                    @click="checkStableUnstableMatch('unstable', $data); blurElement($event)"
+                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();"
                    :title="$store.strings?.unstable || 'Unstable'">
                 <div></div>
               </div>
@@ -1217,7 +1239,7 @@
         <div id="2_3_chords_chord-building" x-show="mode === '2_3_chords_chord-building'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg">
           
           <!-- Play button to play the built chord -->
-          <button id="play-chord-2_3" @click="window.playBuiltChord($data)" @touchstart.prevent @touchend.prevent="$el.click();" class="play-button" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
+          <button id="play-chord-2_3" @click="window.playBuiltChord($data)" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" class="play-button" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
 
           <div class="chords-container">
             <div class="chord-building-area">
@@ -1241,10 +1263,10 @@
         <div id="2_4_chords_missing-note" x-show="mode === '2_4_chords_missing-note'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg">
           
           <!-- start-button, shown in free play mode -->
-          <button id="start-game-mode-2_4" @click="start2_4GameMode($data); $event.stopPropagation();" @touchstart.prevent @touchend.prevent="$el.click();" class="play-button" x-show="is2_4FreePlayMode" style="font-size: 2em; cursor: pointer;" :title="$store.strings?.start_game || 'Start Game Mode'">🎵</button>
+          <button id="start-game-mode-2_4" @click="start2_4GameMode($data); $event.stopPropagation();" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" class="play-button" x-show="is2_4FreePlayMode" style="font-size: 2em; cursor: pointer;" :title="$store.strings?.start_game || 'Start Game Mode'">🎵</button>
           
           <!-- Play button (shown in game mode) -->
-          <button id="play-current-2_4" @click="playCurrent2_4Challenge($data)" @touchstart.prevent @touchend.prevent="$el.click();" class="play-button" x-show="!is2_4FreePlayMode" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
+          <button id="play-current-2_4" @click="playCurrent2_4Challenge($data)" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" class="play-button" x-show="!is2_4FreePlayMode" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
 
           <div class="chords-container">            
             <!-- Progress display -->
@@ -1257,14 +1279,13 @@
             </div>
             
             <!-- Chord Display -->
-            <div class="chord-display-container" @click="playCompleteChord2_4($data)" style="cursor: pointer;" 
-                 :title="$store.strings?.play_complete_chord || 'Play complete chord'"
-                 @touchstart.prevent="startLongPress($event)" 
-                 @touchend.prevent="endLongPress($event)" 
-                 @touchmove.prevent="cancelLongPress($event)"
-                 @mousedown="startMouseLongPress($event)"
-                 @mouseup="endMouseLongPress($event)"
-                 @mouseleave="cancelMouseLongPress($event)">
+            <div class="chord-display-container" @click="playCompleteChord2_4($data)" style="cursor: pointer;"
+                @touchstart.prevent="$el.click(); startLongPress($event)" @mousedown.prevent="$el.click(); startMouseLongPress($event)" 
+                :title="$store.strings?.play_complete_chord || 'Play complete chord'"
+                @touchend.prevent="endLongPress($event)" 
+                @touchmove.prevent="cancelLongPress($event)"
+                @mouseup="endMouseLongPress($event)"
+                @mouseleave="cancelMouseLongPress($event)">
               <div id="chord-display-2_4" class="chord-icon" data-chord-type=""></div>
             </div>
             
@@ -1274,7 +1295,8 @@
               <!-- Free Play Mode: Show all 4 basic degree buttons (always visible) -->
               <template x-if="is2_4FreePlayMode">
                 <div class="free-play-buttons">
-                  <button id="button_2_4_root" @click="check2_4Answer(0, $data)" class="note-button activity-button-blocker" 
+                  <button id="button_2_4_root" @click="check2_4Answer(0, $data)" class="note-button activity-button-blocker"
+                    @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                     :title="$store.strings?.root || 'Root'"
                     @touchstart.prevent="startLongPress($event)" 
                     @touchend.prevent="endLongPress($event)" 
@@ -1284,7 +1306,8 @@
                     @mouseleave="cancelMouseLongPress($event)">
                     <span x-text="$store.strings?.root || 'Root'">Root</span>
                   </button>
-                  <button id="button_2_4_third" @click="check2_4Answer('third', $data)" class="note-button activity-button-blocker" 
+                  <button id="button_2_4_third" @click="check2_4Answer('third', $data)" class="note-button activity-button-blocker"
+                    @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                     :title="$store.strings?.third || 'Third'"
                     @touchstart.prevent="startLongPress($event)" 
                     @touchend.prevent="endLongPress($event)" 
@@ -1294,7 +1317,8 @@
                     @mouseleave="cancelMouseLongPress($event)">
                     <span x-text="$store.strings?.third || 'Third'">Third</span>
                   </button>
-                  <button id="button_2_4_fifth" @click="check2_4Answer('fifth', $data)" class="note-button activity-button-blocker" 
+                  <button id="button_2_4_fifth" @click="check2_4Answer('fifth', $data)" class="note-button activity-button-blocker"
+                    @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                     :title="$store.strings?.fifth || 'Fifth'"
                     @touchstart.prevent="startLongPress($event)" 
                     @touchend.prevent="endLongPress($event)" 
@@ -1304,7 +1328,8 @@
                     @mouseleave="cancelMouseLongPress($event)">
                     <span x-text="$store.strings?.fifth || 'Fifth'">Fifth</span>
                   </button>
-                  <button id="button_2_4_seventh" @click="check2_4Answer('seventh', $data)" class="note-button activity-button-blocker" 
+                  <button id="button_2_4_seventh" @click="check2_4Answer('seventh', $data)" class="note-button activity-button-blocker"
+                    @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                     :title="$store.strings?.seventh || 'Seventh'"
                     @touchstart.prevent="startLongPress($event)" 
                     @touchend.prevent="endLongPress($event)" 
@@ -1323,7 +1348,8 @@
                   <template x-for="interval in current2_4ChordIntervals || []" :key="interval">
                     <button 
                       :id="'button_2_4_' + interval" 
-                      @click="check2_4Answer(interval, $data)" 
+                      @click="check2_4Answer(interval, $data)"
+                      @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                       class="note-button activity-button-blocker"
                       :title="getIntervalName(interval)"
                       @touchstart.prevent="startLongPress($event)" 
@@ -1347,10 +1373,10 @@
         <div id="2_5_chords_characters" x-show="mode === '2_5_chords_characters'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg">
           
           <!-- start-button, shown in free play mode -->
-          <button id="start-game-mode-2_5" @click="start2_5GameMode(); $event.stopPropagation();" @touchstart.prevent @touchend.prevent="$el.click();" class="play-button" x-show="is2_5FreePlayMode" style="font-size: 2em; cursor: pointer;" :title="$store.strings?.start_game || 'Start Game Mode'">🦉</button>
+          <button id="start-game-mode-2_5" @click="start2_5GameMode(); $event.stopPropagation();" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" class="play-button" x-show="is2_5FreePlayMode" style="font-size: 2em; cursor: pointer;" :title="$store.strings?.start_game || 'Start Game Mode'">🦉</button>
           
           <!-- Play button (shown in game mode) -->
-          <button id="play-chord-2_5" @click="playCurrent2_5Chord()" @touchstart.prevent @touchend.prevent="$el.click();" class="play-button" x-show="!is2_5FreePlayMode" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
+          <button id="play-chord-2_5" @click="playCurrent2_5Chord()" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" class="play-button" x-show="!is2_5FreePlayMode" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
 
           <div class="chords-container">            
             <!-- Progress display -->
@@ -1367,19 +1393,19 @@
             
             
             <div class="character-grid">
-              <div id="button_2_5_1_major" class="character activity-button-blocker" @click="checkCharacterMatch('major')" @touchstart.prevent @touchend.prevent="$el.click();">
+              <div id="button_2_5_1_major" class="character activity-button-blocker" @click="checkCharacterMatch('major')" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();">
                 <div title="Happy">Happy</div>
               </div>
               
-              <div id="button_2_5_1_minor" class="character activity-button-blocker" @click="checkCharacterMatch('minor')" @touchstart.prevent @touchend.prevent="$el.click();">
+              <div id="button_2_5_1_minor" class="character activity-button-blocker" @click="checkCharacterMatch('minor')" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();">
                 <div title="Sad">Sad</div>
               </div>
               
-              <div id="button_2_5_1_augmented" @click="checkCharacterMatch('augmented')" :class="(progress['2_5'] || 0) >= 10 && (progress['2_5'] || 0) < 20 ? 'character progress2 activity-button-blocker' : 'character activity-button-blocker'" @touchstart.prevent @touchend.prevent="$el.click();">
+              <div id="button_2_5_1_augmented" @click="checkCharacterMatch('augmented')" :class="(progress['2_5'] || 0) >= 10 && (progress['2_5'] || 0) < 20 ? 'character progress2 activity-button-blocker' : 'character activity-button-blocker'" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();">
                 <div title="Surprised">Surprised</div>
               </div>
               
-              <div id="button_2_5_1_diminished" class="character activity-button-blocker" @click="checkCharacterMatch('diminished')" @touchstart.prevent @touchend.prevent="$el.click();">
+              <div id="button_2_5_1_diminished" class="character activity-button-blocker" @click="checkCharacterMatch('diminished')" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();">
                 <div title="Mysterious">Mysterious</div>
               </div>
             </div>
@@ -1404,7 +1430,7 @@
             <button id="start-game-2_6"
                     class="play-button_2_6" 
                     @click="window.start2_6GameMode(); blurElement($event)"
-                    @touchstart.prevent @touchend.prevent="$el.click();"
+                    @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();"
                     :title="$store.strings?.start_game || 'Start Game'">
               ▶️ Start Game
             </button>
@@ -1413,7 +1439,7 @@
             <button id="replay-button-2_6"
                     class="replay-button_2_6" 
                     @click="window.playCurrent2_6Challenge(); blurElement($event)"
-                    @touchstart.prevent @touchend.prevent="$el.click();"
+                    @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();"
                     :title="$store.strings?.replay_sound || 'Replay Sound'"
                     style="display: none;">
               🔄
