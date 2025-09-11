@@ -342,10 +342,9 @@
           }
         };
         
-        // Touch events - use passive: false to allow preventDefault
-        element.addEventListener('touchstart', startLongPressHandler, { passive: false });
-        element.addEventListener('touchend', endLongPressHandler, { passive: false });
-        element.addEventListener('touchmove', cancelLongPressHandler, { passive: false });
+        element.addEventListener('touchstart', startLongPressHandler);
+        element.addEventListener('touchend', endLongPressHandler);
+        element.addEventListener('touchmove', cancelLongPressHandler);
         
         // Fix for Android drag/drop error: prevent drag events on longpress elements
         element.addEventListener('dragstart', (event) => {
@@ -849,7 +848,7 @@
           <div class="high-low-choices">
             <div class="pitch-card low-choice activity-button-blocker longpress-title" 
                  @click="checkHighOrLowAnswer('low'); blurElement($event)"
-                 @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
+                 @touchstart="$el.click();" @mousedown.prevent="$el.click();" 
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')"
                  :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')">
               <div class="pitch-icon low-icon">
@@ -862,7 +861,7 @@
             </div>
             <div class="pitch-card high-choice activity-button-blocker longpress-title" 
                  @click="checkHighOrLowAnswer('high'); blurElement($event)"
-                 @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
+                 @touchstart="$el.click();" @mousedown.prevent="$el.click();" 
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')"
                  :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')">
               <div class="pitch-icon high-icon">
@@ -911,7 +910,7 @@
           <div class="match-sounds-container">
             <!-- Up pattern (immer sichtbar) - oben links -->
             <div class="pitch-card up-card activity-button-blocker longpress-title" @click="checkMatch('up'); blurElement($event)"
-                 @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
+                 @touchstart="$el.click();" @mousedown.prevent="$el.click();" 
                  :title="$store.strings?.up_pattern || 'Up pattern'">
               <div class="pitch-icon up">
                 <img src="images/1x1.gif" alt="Rocket going up" />
@@ -920,7 +919,7 @@
             
             <!-- Down pattern (immer sichtbar) - rechts mit möglichem rowspan -->
             <div class="pitch-card down-card activity-button-blocker longpress-title" @click="checkMatch('down'); blurElement($event)"
-                 @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
+                 @touchstart="$el.click();" @mousedown.prevent="$el.click();" 
                  :title="$store.strings?.down_pattern || 'Down pattern'">
               <div class="pitch-icon down">
                 <img src="images/1x1.gif" alt="Slide going down" />
@@ -929,7 +928,7 @@
             
             <!-- Wave pattern (wenn freigeschaltet) - unten links -->
             <div x-show="unlockedPatterns.includes('wave')" class="pitch-card wave-card activity-button-blocker longpress-title" @click="checkMatch('wave'); blurElement($event)" :title="$store.strings?.wave_pattern || 'Wave pattern'"
-                 @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();">
+                 @touchstart="$el.click();" @mousedown.prevent="$el.click();">
               <div class="pitch-icon wave">
                 <img src="images/1x1.gif" alt="Wave pattern" />
               </div>
@@ -937,7 +936,7 @@
             
             <!-- Jump pattern (wenn freigeschaltet) - unten rechts -->
             <div x-show="unlockedPatterns.includes('jump')" class="pitch-card jump-card activity-button-blocker longpress-title" @click="checkMatch('jump'); blurElement($event)" :title="$store.strings?.jump_pattern || 'Jump pattern'"
-                 @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();">
+                 @touchstart="$el.click();" @mousedown.prevent="$el.click();">
               <div class="pitch-icon jump">
                 <img src="images/1x1.gif" alt="Jumping frog" />
               </div>
@@ -1029,14 +1028,14 @@
             <!-- Animal choice buttons -->
             <div class="sound-judgment-options">
               <div class="pitch-card animal-card happy activity-button-blocker longpress-title" @click="checkSoundHighOrLow(true); blurElement($event)"
-                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
+                   @touchstart="$el.click();" @mousedown.prevent="$el.click();" 
                    :aria-label="$store.strings?.sounds_good || 'Sounds good'" :title="$store.strings?.sounds_good || 'Sounds good'">
                 <div class="pitch-icon animal-icon">
                   <img src="images/1_5_pitches_good_cat.png">
                 </div>
               </div>
               <div class="pitch-card animal-card unhappy activity-button-blocker longpress-title" @click="checkSoundHighOrLow(false); blurElement($event)"
-                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
+                   @touchstart="$el.click();" @mousedown.prevent="$el.click();" 
                    :aria-label="$store.strings?.sounds_wrong || 'Sounds wrong'" :title="$store.strings?.sounds_wrong || 'Sounds wrong'">
                 <div class="pitch-icon animal-icon">
                   <img src="images/1_5_pitches_bad_snake.png">
