@@ -57,10 +57,23 @@
     
     <!-- Success & Error Messages -->
     <string name="success_message">Great job! That\'s correct!</string>
-    <string name="error_message">Not quite right. Try again!</string>
+    <string name="error_message">That wasn\'t right. Try again!</string>
     <string name="next_level_message">You\'ve advanced to the next level!</string>
     <string name="completion_message">Congratulations! You\'ve completed all levels!</string>
     <string name="try_again_message">Let\'s try again!</string>
+    <string name="melody_level_up">Great job! Now try longer melodies with %d notes!</string>
+    <string name="melody_mastered">Amazing! You\'ve mastered all the melodies!</string>
+    <string name="melody_almost_there">Almost there! Try again.</string>
+    <string name="melody_follow_closely">Try to follow the melody more closely.</string>
+    <string name="clear_drawing">Clear drawing</string>
+    <string name="clear_a11y">Clear</string>
+    <string name="clear_drawing_a11y">Clear drawing</string>
+    <string name="challenge_mode_tooltip">Toggle free drawing mode</string>
+    <string name="melodies_activity">melodies</string>
+    <string name="challenge_mode_a11y">Challenge mode</string>
+    <string name="new_melody_a11y">New melody</string>
+    <string name="challenge_mode_activate">Toggle challenge mode</string>
+    <string name="generate_melody">Generate a new melody</string>
     
     <!-- Chords - Main Menu -->
     <string name="chord_color_matching">Magical Forest Chords</string>
@@ -273,15 +286,11 @@
     <string name="reset_success">Progress has been reset!</string>
     
     <!-- Draw Melody UI Elements -->
-    <string name="challenge_mode_activate">Activate melody challenge mode</string>
     <string name="challenge_mode">Challenge mode</string>
     <string name="challenge_mode_deactivate">Toggle free drawing mode</string>
-    <string name="generate_melody">Generate a new random melody</string>
     <string name="new_melody">New melody</string>
     <string name="replay_melody">Click to replay melody</string>
-    <string name="clear_drawing">Clear drawing</string>
     <string name="clear">Clear</string>
-    <string name="melodies_activity">melodies</string>
     <string name="datenschutz_header">Privacy</string>
     
     <!-- Alert and Toast Messages -->

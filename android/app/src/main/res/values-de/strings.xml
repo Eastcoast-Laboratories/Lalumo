@@ -57,10 +57,23 @@
     
     <!-- Success & Error Messages -->
     <string name="success_message">Sehr gut! Das ist richtig!</string>
-    <string name="error_message">Nicht ganz richtig. Versuche es noch einmal!</string>
+    <string name="error_message">Das war nicht richtig. Versuche es noch einmal!</string>
     <string name="next_level_message">Du bist zur nächsten Stufe aufgestiegen!</string>
     <string name="completion_message">Glückwunsch! Du hast alle Stufen abgeschlossen!</string>
     <string name="try_again_message">Lass es uns noch einmal versuchen!</string>
+    <string name="melody_level_up">Super! Jetzt versuche längere Melodien mit %d Tönen!</string>
+    <string name="melody_mastered">Fantastisch! Du hast alle Melodien gemeistert!</string>
+    <string name="melody_almost_there">Fast! Versuche es noch einmal.</string>
+    <string name="melody_follow_closely">Versuche, der Melodie genauer zu folgen.</string>
+    <string name="clear_drawing">Zeichnung löschen</string>
+    <string name="clear_a11y">Löschen</string>
+    <string name="clear_drawing_a11y">Zeichnung löschen</string>
+    <string name="challenge_mode_tooltip">Wechsel zwischen Melodie-Challenge-Modus und freien Zeichnen-Modus</string>
+    <string name="melodies_activity">Melodien</string>
+    <string name="replay_melody">Klicken, um die Melodie abzuspielen</string>
+    <string name="challenge_mode_a11y">Challenge-Modus</string>
+    <string name="new_melody_a11y">Neue Melodie</string>
+    <string name="generate_melody">Neue Melodie generieren</string>
     
     <!-- Chords - Main Menu -->
     <string name="chord_color_matching">Akkorde im Zauberwald</string>
@@ -272,16 +285,12 @@
     <string name="reset_success">Fortschritt wurde zurückgesetzt!</string>
     
     <!-- Draw Melody UI Elements -->
-    <string name="challenge_mode_activate">Melodie-Challenge-Modus aktivieren</string>
+    <string name="challenge_mode_activate">Melodie-Challenge-Modus starten</string>
     <string name="challenge_mode">Challenge-Modus</string>
     <string name="challenge_mode_deactivate">Wechsel zwischen Melodie-Challenge-Modus und freien Zeichnen-Modus</string>
-    <string name="generate_melody">Neue zufällige Melodie generieren</string>
     <string name="new_melody">Neue Melodie</string>
-    <string name="replay_melody">Klicken, um die Melodie abzuspielen</string>
-    <string name="clear_drawing">Zeichnung löschen</string>
     <string name="clear">Löschen</string>
-    <string name="melodies_activity">Melodien</string>
-    
+
     <!-- Alert and Toast Messages -->
     <string name="copied_to_clipboard">In die Zwischenablage kopiert!</string>
     <string name="copy_manual">Konnte nicht automatisch kopieren. Bitte wähle den Text manuell aus und kopiere ihn.</string>

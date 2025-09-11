@@ -2662,15 +2662,12 @@ export function pitches() {
         const challengeToggle = document.createElement('div');
         challengeToggle.className = 'challenge-toggle';
         
-        // Get current language
-        const isGerman = document.documentElement.lang === 'de';
-        
         // Create transparent buttons with accessibility attributes but no text
         challengeToggle.innerHTML = `
           <button id="challenge-button" onclick="blur()"
             class="draw-melody-button"
             title="${this.$store.strings.challenge_mode_activate}" 
-            alt="${this.$store.strings.challenge_mode}_a11y"
+            alt="${this.$store.strings.challenge_mode_a11y}"
             ontouchstart="startLongPress(event)"
             ontouchend="endLongPress(event)"
             ontouchmove="cancelLongPress(event)"
@@ -2681,7 +2678,7 @@ export function pitches() {
           <button id="new-melody-button" onclick="blur()" 
             class="draw-melody-button"
             title="${this.$store.strings.generate_melody}" 
-            alt="${this.$store.strings.new_melody}_a11y"
+            alt="${this.$store.strings.new_melody_a11y}"
             ontouchstart="startLongPress(event)"
             ontouchend="endLongPress(event)"
             ontouchmove="cancelLongPress(event)"
@@ -2710,9 +2707,9 @@ export function pitches() {
         // Create the transparent clear button without text, draw-melody-button
         const clearButton = document.createElement('button');
         clearButton.className = 'clear-drawing-button draw-melody-button';
-        clearButton.title = isGerman ? 'Zeichnung löschen' : 'Clear drawing';
-        clearButton.setAttribute('alt', `${isGerman ? 'Löschen' : 'Clear'}_a11y`);
-        clearButton.setAttribute('aria-label', isGerman ? 'Zeichnung löschen' : 'Clear drawing');
+        clearButton.title = this.$store.strings?.clear_drawing;
+        clearButton.setAttribute('alt', this.$store.strings?.clear_a11y);
+        clearButton.setAttribute('aria-label', this.$store.strings?.clear_drawing_a11y);
         const canvas = document.querySelector('.drawing-canvas');
         canvas.parentNode.appendChild(clearButton);
         
@@ -2775,12 +2772,10 @@ export function pitches() {
       const newMelodyButton = document.getElementById('new-melody-button');
       
       if (challengeButton) {
-        const isGerman = document.documentElement.lang === 'de';
-        
         // Style the challenge mode button based on current mode
         if (this.melodyChallengeMode) {
           challengeButton.classList.add('active');
-          challengeButton.title = isGerman ? 'Wechsel zwischen Melodie-Challenge-Modus und freien Zeichnen-Modus' : 'Toggle free drawing mode';
+          challengeButton.title = this.$store.strings?.challenge_mode_tooltip;
           
           // Show the new melody button when in challenge mode
           newMelodyButton.style.display = 'block';
@@ -2807,8 +2802,7 @@ export function pitches() {
         }
         
         // Use shared progress bar utility
-        const isGerman = document.documentElement.lang === "de";
-        const activityName = isGerman ? "Melodien" : "melodies";
+        const activityName = this.$store.strings?.melodies_activity;
         const currentLevel = get_1_3_level(this);
         const currentNoteCount = currentLevel + 3; // Level + 3 = Anzahl der Noten
         
@@ -2837,8 +2831,7 @@ export function pitches() {
         
         // Add cursor pointer and title to indicate it's clickable
         referenceContainer.style.cursor = 'pointer';
-        const isGerman = document.documentElement.lang === 'de';
-        referenceContainer.title = isGerman ? 'Klicken, um die Melodie abzuspielen' : 'Click to replay melody';
+        referenceContainer.title = this.$store.strings?.replay_melody;
         
         // Add visual feedback styles for hover and click
         referenceContainer.style.transition = 'transform 0.1s ease, box-shadow 0.1s ease';
@@ -3508,7 +3501,6 @@ export function pitches() {
       
       // Provide feedback based on match percentage
       let feedback = '';
-      const isGerman = document.documentElement.lang === 'de';
       let perfectMatch = matchPercentage === 100;
       
       // Create feedback message
@@ -3535,22 +3527,16 @@ export function pitches() {
         if (currentProgress % 3 === 0 && currentLevel < 5) { // Max level is 5 (gives 8 notes)
           const noteCount = currentLevel + 3;
           
-          // TODO: move translation to strings.xml
-          feedback = isGerman ? 
-            `Super! Jetzt versuche längere Melodien mit ${noteCount} Tönen!` : 
-            `Great job! Now try longer melodies with ${noteCount} notes!`;
+          feedback = this.$store.strings?.melody_level_up.replace('%d', noteCount);
           
           // Show rainbow effect for level up
           if (perfectMatch) {
             showRainbowSuccess();
           }
         } else if (currentLevel >= 5) {
-          // TODO: move translation to strings.xml
-          feedback = isGerman ? 
-            'Fantastisch! Du hast alle Melodien gemeistert!' : 
-            'Amazing! You\'ve mastered all the melodies!';
+          feedback = this.$store.strings?.melody_mastered;
           
-          // TODO: play sound and rainbow exact after the painted melody is played (in case it is a longer melody)
+          // Play sound and rainbow exact after the painted melody is played (in case it is a longer melody)
           setTimeout(() => {
             // Play success sound
             audioEngine.playNote('success');
@@ -3564,17 +3550,11 @@ export function pitches() {
         // Visual feedback
         this.showSuccessFeedback();
       } else if (matchPercentage >= 50) {
-          // TODO: move translation to strings.xml
         // Good attempt
-        feedback = isGerman ? 
-          'Fast! Versuche es noch einmal.' : 
-          'Almost there! Try again.';
+        feedback = this.$store.strings?.melody_almost_there;
       } else {
-          // TODO: move translation to strings.xml
         // Poor match
-        feedback = isGerman ? 
-          'Versuche, der Melodie genauer zu folgen.' : 
-          'Try to follow the melody more closely.';
+        feedback = this.$store.strings?.melody_follow_closely;
       }
       
       // Display feedback to the user
