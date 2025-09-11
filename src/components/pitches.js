@@ -4272,32 +4272,46 @@ export function pitches() {
     
     /**
      * Updates the DOM with the current animal images
+     * @used-by 1_4
      */
     updateAnimalImages() {
       debugLog('PITCHES', 'ANIMALS: Updating animal images in DOM with ' + this.currentGoodAnimalImage + ' and ' + this.currentBadAnimalImage);
-      // Find the image elements
-      const goodAnimalImg = document.querySelector('.pitch-card.animal-card.happy .animal-icon img');
-      const badAnimalImg = document.querySelector('.pitch-card.animal-card.unhappy .animal-icon img');
+      // Find the container elements
+      const goodAnimalContainer = document.querySelector('.pitch-card.animal-card.happy .animal-icon');
+      const badAnimalContainer = document.querySelector('.pitch-card.animal-card.unhappy .animal-icon');
       
-      // Update the sources if the elements exist
-      if (goodAnimalImg && this.currentGoodAnimalImage) {
-        goodAnimalImg.src = this.currentGoodAnimalImage;
+      // Update the good animal image
+      if (goodAnimalContainer && this.currentGoodAnimalImage) {
+        let goodAnimalDiv = goodAnimalContainer.querySelector('.animal-1_4-bg');
+        if (!goodAnimalDiv) {
+          goodAnimalDiv = document.createElement('div');
+          goodAnimalDiv.className = 'animal-1_4-bg';
+          goodAnimalContainer.appendChild(goodAnimalDiv);
+        }
+        goodAnimalDiv.style.backgroundImage = `url(${this.currentGoodAnimalImage})`;
         // Extract animal name from filename for better accessibility
         const goodAnimalName = extractAnimalName(this.currentGoodAnimalImage);
-        goodAnimalImg.alt = `Happy ${goodAnimalName}`;
+        goodAnimalDiv.setAttribute('aria-label', `Happy ${goodAnimalName}`);
         debugLog('PITCHES', 'ANIMALS: Updated good animal image in DOM with ' + goodAnimalName);
       } else {
-        debugLog('PITCHES', 'ANIMALS: Good animal button or image not found in DOM');
+        debugLog('PITCHES', 'ANIMALS: Good animal container not found in DOM');
       }
       
-      if (badAnimalImg && this.currentBadAnimalImage) {
-        badAnimalImg.src = this.currentBadAnimalImage;
+      // Update the bad animal image
+      if (badAnimalContainer && this.currentBadAnimalImage) {
+        let badAnimalDiv = badAnimalContainer.querySelector('.animal-1_4-bg');
+        if (!badAnimalDiv) {
+          badAnimalDiv = document.createElement('div');
+          badAnimalDiv.className = 'animal-1_4-bg';
+          badAnimalContainer.appendChild(badAnimalDiv);
+        }
+        badAnimalDiv.style.backgroundImage = `url(${this.currentBadAnimalImage})`;
         // Extract animal name from filename for better accessibility
         const badAnimalName = extractAnimalName(this.currentBadAnimalImage);
-        badAnimalImg.alt = `Unhappy ${badAnimalName}`;
+        badAnimalDiv.setAttribute('aria-label', `Unhappy ${badAnimalName}`);
         debugLog('PITCHES', 'ANIMALS: Updated bad animal image in DOM with ' + badAnimalName);
       } else {
-        debugLog('PITCHES', 'ANIMALS: Bad animal button or image not found in DOM');
+        debugLog('PITCHES', 'ANIMALS: Bad animal container not found in DOM');
       }
     },
     

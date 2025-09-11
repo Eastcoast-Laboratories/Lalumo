@@ -27,6 +27,15 @@
   touch-action: manipulation;
 }
 
+/* Animal background div styling */
+.animal-1_4-bg {
+  width: min(25vw, 106px);
+  height: min(25vw, 106px);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 /* Correct Button Highlight Effect */
 .correct-button-highlight {
   animation: correctButtonPulse 1s ease-in-out;
