@@ -28,12 +28,12 @@ import {
   showActivityProgressBar,
   hideActivityProgressBar,
   highlightCorrectButton,
-  showErrorWithCorrectHint
+  showErrorWithCorrectHint,
+  playIntroAudio
 } from '../components/shared/feedback.js';
 
 // Import shared UI helpers
 import { update_progress_display as sharedUpdateProgressDisplay } from '../components/shared/ui-helpers.js';
-
 
 // Import shared utilities
 import { testCommonModuleImport, resetCurrentActivity, resetAllProgress, showResetFeedback } 
@@ -83,6 +83,7 @@ export function pitches() {
     melodyTimeouts: [], // Array für Timeout-IDs der Melodiesequenzen
     helpSettings: {
       showHelpMessages: true,     // Whether to show help messages
+      playHelpAudio: true,        // Whether to play audio for help messages
       seenActivityMessages: {},   // Track which activities have shown the message
     },
     currentHighlightedNote: null, // For highlighting piano keys during playback
@@ -677,6 +678,7 @@ export function pitches() {
       }
       
       // Always show the intro message for the current mode
+      debugLog('INTRO_AUDIO_CALL', 'setMode calling showContextMessage for mode:', newMode);
       this.showContextMessage(); // Use our context-aware message function
       
       // Update progress tracking
@@ -1860,6 +1862,14 @@ export function pitches() {
         
         // Show context-specific message
         if (message) {
+          // Play audio if enabled and available for this activity
+          const helpSettingsStore = window.Alpine?.store ? window.Alpine.store('helpSettings') : null;
+          if (helpSettingsStore?.playHelpAudio) {
+            const activityId = this.mode + '_stage' + stage;
+            debugLog('INTRO_AUDIO_CALL', 'showContextMessage calling playIntroAudio for mode:', this.mode, 'stage:', stage, 'message:', message);
+            playIntroAudio(message);
+          }
+          
           window.showFeedbackMessage(message, {
             activityId: this.mode + '_stage' + stage,
             isIntroMessage: true,

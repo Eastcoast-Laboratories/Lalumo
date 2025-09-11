@@ -74,6 +74,8 @@
     <string name="new_melody_a11y">New melody</string>
     <string name="challenge_mode_activate">Toggle challenge mode</string>
     <string name="generate_melody">Generate a new melody</string>
+    <string name="help_audio_on">Help Audio Messages On</string>
+    <string name="help_audio_off">Help Audio Messages Off</string>
     
     <!-- Chords - Main Menu -->
     <string name="chord_color_matching">Magical Forest Chords</string>

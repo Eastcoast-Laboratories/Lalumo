@@ -78,6 +78,23 @@
         </div>
       </div>
     </div>
+
+     <!-- Help Messages Audio -->
+     <div class="help-messages-section">
+      <div class="help-options">
+        <div class="toggle-container">
+          <button 
+            class="toggle-button" 
+            :class="{'active': $store.helpSettings.playHelpAudio}" 
+            @click="$store.helpSettings.playHelpAudio = !$store.helpSettings.playHelpAudio" 
+            :aria-label="$store.helpSettings.playHelpAudio ? 'Disable audio help messages' : 'Enable audio help messages'" 
+            aria-a11y="help_audio_toggle">
+            <span class="toggle-slider" :class="{'active': $store.helpSettings.playHelpAudio}"></span>
+            <span class="toggle-text" x-text="$store.helpSettings.playHelpAudio ? ($store.strings?.help_audio_on || 'Audio Messages On') : ($store.strings?.help_audio_off || 'Audio Messages Off')"></span>
+          </button>
+        </div>
+      </div>
+    </div>
     <hr>
     
     <h3 x-text="$store.strings?.game_progress || 'Game Progress'"></h3>

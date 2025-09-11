@@ -70,6 +70,7 @@ Alpine.store('feedback', {
 // Initialize global help settings store
 Alpine.store('helpSettings', {
   showHelpMessages: true,
+  playHelpAudio: true,  // Add missing playHelpAudio property
   seenActivityMessages: {},
   
   // Load settings from localStorage
@@ -82,6 +83,7 @@ Alpine.store('helpSettings', {
         debugLog('INTROMESSAGE_STORE', 'Loaded settings from localStorage:', loadedSettings);
         Object.assign(this, {
           showHelpMessages: true,
+          playHelpAudio: true,
           seenActivityMessages: {},
           ...loadedSettings
         });
@@ -99,6 +101,7 @@ Alpine.store('helpSettings', {
     try {
       localStorage.setItem('lalumo_help_settings', JSON.stringify({
         showHelpMessages: this.showHelpMessages,
+        playHelpAudio: this.playHelpAudio,
         seenActivityMessages: this.seenActivityMessages
       }));
       debugLog('INTROMESSAGE_STORE', 'Settings saved');
@@ -129,6 +132,20 @@ Alpine.data('pitches', pitches);
 Alpine.data('rhythms', rhythms);
 Alpine.data('chords', chords);
 Alpine.data('freeplay', freeplay);
+
+// Track user interaction for audio autoplay policy
+let hasUserInteracted = false;
+const interactionEvents = ['click', 'touchstart', 'keydown'];
+
+interactionEvents.forEach(event => {
+  document.addEventListener(event, () => {
+    if (!hasUserInteracted) {
+      hasUserInteracted = true;
+      window.hasUserInteracted = true;
+      debugLog('INTRO_AUDIO', 'User interaction detected, audio playback now allowed');
+    }
+  }, { once: true, passive: true });
+});
 
 // Initialize Capacitor when device is ready
 document.addEventListener('DOMContentLoaded', () => {

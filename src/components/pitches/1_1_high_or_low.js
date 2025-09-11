@@ -116,6 +116,7 @@ export function setup_1_1(component) {
   debugLog('PITCHES', 'High or Low game reset, gameStarted:', component.gameStarted);
   
   // Show intro message immediately when entering the activity
+  debugLog('INTRO_AUDIO_CALL', '1_1_high_or_low.js calling showActivityIntroMessage');
   window.showActivityIntroMessage('1_1_pitches_high_or_low', component);
 }
 

@@ -74,6 +74,8 @@
     <string name="challenge_mode_a11y">Challenge-Modus</string>
     <string name="new_melody_a11y">Neue Melodie</string>
     <string name="generate_melody">Neue Melodie generieren</string>
+    <string name="help_audio_on">Hilf-Ansagen An</string>
+    <string name="help_audio_off">Hilf-Ansagen Aus</string>
     
     <!-- Chords - Main Menu -->
     <string name="chord_color_matching">Akkorde im Zauberwald</string>

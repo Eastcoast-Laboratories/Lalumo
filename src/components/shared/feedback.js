@@ -146,6 +146,7 @@ export function clearFeedbackTimer() {
  * @used_by 2_1_chords_color-matching, 2_5_chords_characters, 2_2_chords_stable_unstable, 1_1_pitches_high_or_low, 1_2_pitches_match-sounds, 1_3_pitches_draw, 1_4_pitches_does-it-sound-right, 1_5_pitches_memory
  */
 export function showActivityIntroMessage(activityMode, component = null, delaySeconds = 10, force = true /* TODO: should be false before release */) {
+  // TODO: in 1_1 wird stattdessen noch showContextMessage aufgerufen
   debugLog('LOG_INTRO_MESSAGE', 'activity: \'' + activityMode + '\', delaySeconds: ' + delaySeconds + ', force: ' + force);
   
   // Check if this intro message has already been shown in this session
@@ -178,8 +179,10 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       message = store.strings[stringKey];
       debugLog('LOG_INTRO_MESSAGE', 'Loaded from Alpine store:' + stringKey + '=', message);
     }
+  }else{
+    debugLog(['LOG_INTRO_MESSAGE', 'ERROR'], 'No Alpine store available');
   }
-  
+
   // Try to load from global strings object if Alpine store not available
   if (!message && window.strings) {
     const stringKeyMap = {
@@ -218,6 +221,13 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
     shownIntroMessages.add(activityMode);
     debugLog('LOG_INTRO_MESSAGE', 'Marked as shown:' + activityMode);
     
+    // Play audio if enabled and available for this activity
+    const helpSettingsStore = window.Alpine?.store ? window.Alpine.store('helpSettings') : null;
+    if (helpSettingsStore?.playHelpAudio) {
+      debugLog('INTRO_AUDIO_CALL', 'showActivityIntroMessage calling playIntroAudio for:', activityMode);
+      playIntroAudio(message);
+    }
+    
     showFeedbackMessage(message, {
       activityId: activityMode,
       isIntroMessage: true,  // This is an intro message
@@ -225,7 +235,67 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       component
     });
   } else {
-    debugLog(['FEEDBACK', 'WARN'], 'LOG_INTRO_MESSAGE: No intro message found for activity:', activityMode);
+    debugLog(['FEEDBACK', 'LOG_INTRO_MESSAGE', 'ERROR'], 'LOG_INTRO_MESSAGE: No intro message found for activity:', activityMode);
+  }
+}
+
+// Debouncing mechanism to prevent duplicate audio playback
+let lastAudioMessage = null;
+let lastAudioTime = 0;
+const AUDIO_DEBOUNCE_MS = 2000;
+
+/**
+ * Play intro audio for specific activities
+ * @param {string} activityMode - The activity mode identifier
+ */
+export function playIntroAudio(message) {  
+  const now = Date.now();
+  
+  // Check if this is a duplicate call within the debounce window
+  if (lastAudioMessage === message && (now - lastAudioTime) < AUDIO_DEBOUNCE_MS) {
+    debugLog('INTRO_AUDIO', 'Skipping duplicate audio call for:', message, 'within', AUDIO_DEBOUNCE_MS, 'ms');
+    return;
+  }
+  
+  // Immediately set debounce to prevent rapid duplicate calls
+  lastAudioMessage = message;
+  lastAudioTime = now;
+  
+  let filename = message.replace(/[^a-zA-Z0-9]/g, '_');
+  const audioFile = filename + '.mp3';
+  if (!audioFile) {
+    debugLog('INTRO_AUDIO', 'No audio file for message:', message);
+    return;
+  }
+  
+  const audioPath = `/sounds/info-messages/${audioFile}`;
+  debugLog('INTRO_AUDIO', 'Attempting to play audio:', message, 'file:', audioPath);
+  
+  // Check if user has interacted with the page (required for autoplay)
+  if (!document.hasStoredUserActivation && !window.hasUserInteracted) {
+    debugLog('INTRO_AUDIO', 'Skipping audio - no user interaction yet (browser autoplay policy)');
+    return;
+  }
+  
+  try {
+    const audio = new Audio(audioPath);
+    audio.volume = 0.7; // Set reasonable volume
+    
+    audio.addEventListener('loadeddata', () => {
+      debugLog('INTRO_AUDIO', 'Audio loaded successfully:', audioPath);
+    });
+    
+    audio.addEventListener('error', (e) => {
+      debugLog(['INTRO_AUDIO', 'ERROR'], 'Failed to load audio:', audioPath, e);
+    });
+    
+    audio.play().then(() => {
+      debugLog('INTRO_AUDIO', 'Audio playback started successfully:', message);
+    }).catch(error => {
+      debugLog(['INTRO_AUDIO', 'ERROR'], 'Failed to play audio (autoplay policy?):', audioPath, error.message);
+    });
+  } catch (error) {
+    debugLog(['INTRO_AUDIO', 'ERROR'], 'Error creating audio element:', error);
   }
 }
 
@@ -243,6 +313,7 @@ document.addEventListener('alpine:init', () => {
   // Make feedback functions available globally
   window.showFeedbackMessage = showFeedbackMessage;
   window.showActivityIntroMessage = showActivityIntroMessage;
+  window.playIntroAudio = playIntroAudio;
 });
 
 /**
