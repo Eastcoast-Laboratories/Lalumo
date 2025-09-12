@@ -1435,12 +1435,14 @@
             <div class="button_2_6_grid">
               <div id="button_2_6_one" class="character activity-button-blocker longpress-title" 
                    @click="checkOneOrManyMatch('one', $data); blurElement($event)"
+                   @touchstart="$el.click();" @mousedown.prevent="$el.click();"
                    :title="$store.strings?.one_note || 'One Note'">
                 <div>1️⃣</div>
               </div>
               
               <div id="button_2_6_many" class="character activity-button-blocker longpress-title" 
                    @click="checkOneOrManyMatch('many', $data); blurElement($event)"
+                   @touchstart="$el.click();" @mousedown.prevent="$el.click();"
                    :title="$store.strings?.many_notes || 'Many Notes'">
                 <div>🎵</div>
               </div>

@@ -220,37 +220,36 @@ reset-button:
     * TEST RESULTS: Memory game works correctly in test environment (6 PIANO_DIRECT logs captured, proper sequence playback)
     * STATUS: Playwright tests working but REAL INTERMITTENT BUG still exists in normal usage - need to use working test infrastructure to reproduce actual race conditions
   - 
-2_1_chord_color_matching:
-  - Hintergrund noch neu
-  - Die buttons so anordnen, dass sie über den elementen des Hintergrunds liegen
-  - Der Text unten schwarz statt weiss
+2_1_ magical forest chords (letzte activity in der navigation)
+  - Die buttons besser anordnen, dass sie über den elementen des Hintergrunds liegen
+  - level progress div unten zu tief
   - # bereit zur veröffentlichung
 
-2_2_chords_stable_unstable:
+2_2_chords_stable_unstable (2. activity in der navigation)
   - # bereit zur veröffentlichung
  
 2_3_chords_building
+  - # unfertig!
 
-2_4:
-- wenn man lange auf einen button drückt, dann soll der titel tag mit javascript als kleines overlay angezeigt werden, damit man das auch auf dem hany ermitteln kann
+2_4 guess the missing note
+  - # unfertig!
 
-- im free mode bleibt der erste akkord auf stufe 0 anscheinend hängen, also es wird immer der selbe ausgewählt, erst , wenn man einen anderen button drückt, dann wird auch der erste ab dann immer zufällig
+  - wenn man lange auf einen button drückt, dann soll der titel tag mit javascript als kleines overlay angezeigt werden, damit man das auch auf dem hany ermitteln kann
 
-- wenn mögllich arbeite test-driven wie in @CODING_STANDARDS.md#L77-96 beschrieben
--  benutze die unittests
-- highlightCorrectAnswer() fehlt noch und muss das Timing mit dem neu spielen abstimmen
--------
+  - im free mode bleibt der erste akkord auf stufe 0 anscheinend hängen, also es wird immer der selbe ausgewählt, erst , wenn man einen anderen button drückt, dann wird auch der erste ab dann immer zufällig
 
-2_5_chords_color_matching:
+  - wenn mögllich arbeite test-driven wie in @CODING_STANDARDS.md#L77-96 beschrieben
+  -  benutze die unittests
+  - highlightCorrectAnswer() fehlt noch und muss das Timing mit dem neu spielen abstimmen
+
+2_5_chords_color_matching (3. activity in der navigation):
   - # bereit zur veröffentlichung
   - wenn man während der regenbogen läuft drückt, dann beim schnellen drücken des replay buttons noch nichts passieren, erst sobald der neue chord generiert ist
   - die Eule macht die Augen auf, wenn man das Spiel startet 
 
-2_6: magical forest chords
-  - # bereit zur veröffentlichung
-  - level progress in bottom zu tief
+2_6: one or many (1. activity in der navigation)
   - longpress geht nicht auf android
-
+  - # bereit zur veröffentlichung
 
 
 # mobile-build.sh:
