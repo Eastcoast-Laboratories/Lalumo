@@ -1435,16 +1435,17 @@
             <div class="button_2_6_grid">
               <div id="button_2_6_one" class="character activity-button-blocker longpress-title" 
                    @click="checkOneOrManyMatch('one', $data); blurElement($event)"
-                   @touchstart="$el.click();" @mousedown.prevent="$el.click();"
+                   @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)"
                    :title="$store.strings?.one_note || 'One Note'">
-                <div>1️⃣</div>
+                <div>
+                </div>
               </div>
               
               <div id="button_2_6_many" class="character activity-button-blocker longpress-title" 
                    @click="checkOneOrManyMatch('many', $data); blurElement($event)"
-                   @touchstart="$el.click();" @mousedown.prevent="$el.click();"
+                   @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)"
                    :title="$store.strings?.many_notes || 'Many Notes'">
-                <div>🎵</div>
+                <div></div>
               </div>
             </div>
             
@@ -1531,9 +1532,6 @@
       if (target && target.classList) {
         window.debugLog('BLUR', 'Permanently removing focus styles to prevent them from reappearing');
         
-        // Check if this is the play button which has special styling
-        const isPlayButton = target.classList.contains('circular-play-button');
-        
         // For Android Chrome, we need to be more aggressive - reset all styles that could persist
         target.style.outline = 'none';
         target.style.boxShadow = 'none';
@@ -1541,12 +1539,19 @@
         target.style.webkitTapHighlightColor = 'transparent';
         
         // Special handling for play button - reset background color
-        if (isPlayButton) {
-          window.debugLog('BLUR', 'Resetting play button background color');
-          // Reset to transparent background (original state)
+        const isPlayButton = target.classList.contains('circular-play-button');
+        
+        // Special handling for 2_6 buttons - reset active state styles
+        const is2_6Button = target.id === 'button_2_6_one' || target.id === 'button_2_6_many';
+        if (is2_6Button || isPlayButton) {
+          window.debugLog('BLUR', 'Resetting 2_6 button active state styles');
+          // Reset background-color from :active/:hover state
           target.style.backgroundColor = 'transparent';
-          // Reset transform as well
           target.style.transform = 'none';
+          // Reset box-shadow from :active state
+          target.style.boxShadow = 'none';
+          // Force opacity reset
+          target.style.opacity = '';
         }
         
         // Apply these styles to prevent refocus
