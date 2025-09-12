@@ -899,8 +899,8 @@
           
           <!-- Game mode play button - only show when in game mode -->
           <button x-show="gameMode" class="circular-play-button" 
-          @click="playCurrentMelody(); blurElement($event)" 
-          @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();"
+          @click="blurElement($event)" 
+          @touchstart.prevent="playCurrentMelody(); $el.click();" @mousedown.prevent="playCurrentMelody(); $el.click();"
           aria-label="Play Melody" title="Play">
           </button>
 
