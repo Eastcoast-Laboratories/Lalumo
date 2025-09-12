@@ -108,10 +108,6 @@ unter chrome auf dem handy android 15:
     - Sektionenkommentare zur besseren Navigation
     - nicht benutzte stile entfernen
 
-# intro messages:
-    - es soll niemals eine intro message starten, wenn man in irgendeiner activity auf den play button drückt
-    - die einstellungen haben erst nach einem neuladen effekt, ohne bleibt die message bleibt verschwunde
-    - hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
 
 Dies soll in allen aktionen:
 - immer bei Misserfolg (error): den sound abspielen und den hintergrund hin und her-wackeln (.shake-error)
@@ -134,7 +130,15 @@ reset-button:
 
 - Je höher der Ton, umso leiser machen
 
-- der longtouch funktioniert in android nicht
+
+# intro messages:
+    - hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
+    - der close button bei der intro messages soll auf der gesamten message getriggert werden, also wenn man auf die message drückt, dann geht sie weg
+
+- alle feedback messages, die falsch sagen sollen ein längeres delay haben
+
+# text at bottom:
+- die div soll nicht springen, wenn sie schon gut positioniert sind, sollen sie da bleiben, wo sie sind
 
 # play store:
 - In die Texte dass der Bildschirm gesperrt ist
@@ -244,7 +248,8 @@ reset-button:
 
 2_6: magical forest chords
   - # bereit zur veröffentlichung
-  - level progress in bottom
+  - level progress in bottom zu tief
+  - longpress geht nicht auf android
 
 
 

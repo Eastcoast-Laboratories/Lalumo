@@ -17,7 +17,7 @@ Repo: https://github.com/Eastcoast-Laboratories/Lalumo
 Builds:
   - versionName: '5.4'
     versionCode: 35
-    commit: eea74a60c01d34827daa724031c2bc6aec60781e
+    commit: 20988f66c5fecac2677fbddd17cd594c0f2b7e67
     subdir: android/app
     sudo:
       - apt-get update
