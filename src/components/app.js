@@ -2425,30 +2425,45 @@ export function app() {
           // Get progress from component instance using mapped key
           const progressKey = this.mapModeToProgressKey(mode);
           if (componentInstance && componentInstance.progress && componentInstance.progress[progressKey]) {
+            debugLog('RESET_BUTTON', '1. Found progress for', progressKey, 'in', JSON.stringify(componentInstance.progress), 'specific value:', componentInstance.progress[progressKey]);
             return componentInstance.progress[progressKey] || 0;
           }
           
           // Fallback: try to get from global progress object if available
           const fallbackProgressKey = this.mapModeToProgressKey(mode);
           if (window.progress && window.progress[fallbackProgressKey]) {
+            debugLog(['RESET_BUTTON', 'FALLBACK'], '2. Found fallback progress for', fallbackProgressKey, 'in', window.progress);
             return window.progress[fallbackProgressKey] || 0;
           }
         }
         
-        // Fallback: check if any component has an active mode with progress
-        if (window.pitchesComponent && window.pitchesComponent.mode && window.pitchesComponent.mode !== 'main') {
-          const mode = window.pitchesComponent.mode;
-          const pitchesProgressKey = this.mapModeToProgressKey(mode);
-          if (window.pitchesComponent.progress && window.pitchesComponent.progress[pitchesProgressKey]) {
-            return window.pitchesComponent.progress[pitchesProgressKey] || 0;
+        // Fallback: check CURRENT active component first, not all components
+        // Determine which component is currently active based on URL or visible state
+        const currentPath = window.location.hash || window.location.pathname;
+        const isInChords = currentPath.includes('chords') || currentPath.includes('2_');
+        const isInPitches = currentPath.includes('pitches') || currentPath.includes('1_');
+        
+        debugLog('RESET_BUTTON', 'Fallback check - currentPath:', currentPath, 'isInChords:', isInChords, 'isInPitches:', isInPitches);
+        
+        // Check chords first if we're in chords section
+        if (isInChords && window.chordsComponent && window.chordsComponent.mode && window.chordsComponent.mode !== 'main') {
+          const mode = window.chordsComponent.mode;
+          const chordsProgressKey = this.mapModeToProgressKey(mode);
+          debugLog(['RESET_BUTTON', 'FALLBACK'], '3a. Checking chords progress for', chordsProgressKey, 'in', JSON.stringify(window.chordsComponent.progress));
+          if (window.chordsComponent.progress && window.chordsComponent.progress[chordsProgressKey]) {
+            debugLog(['RESET_BUTTON', 'FALLBACK'], '3a. Found chords progress for', chordsProgressKey, 'value:', window.chordsComponent.progress[chordsProgressKey]);
+            return window.chordsComponent.progress[chordsProgressKey] || 0;
           }
         }
         
-        if (window.chordsComponent && window.chordsComponent.mode && window.chordsComponent.mode !== 'main') {
-          const mode = window.chordsComponent.mode;
-          const chordsProgressKey = this.mapModeToProgressKey(mode);
-          if (window.chordsComponent.progress && window.chordsComponent.progress[chordsProgressKey]) {
-            return window.chordsComponent.progress[chordsProgressKey] || 0;
+        // Check pitches first if we're in pitches section
+        if (isInPitches && window.pitchesComponent && window.pitchesComponent.mode && window.pitchesComponent.mode !== 'main') {
+          const mode = window.pitchesComponent.mode;
+          const pitchesProgressKey = this.mapModeToProgressKey(mode);
+          debugLog(['RESET_BUTTON', 'FALLBACK'], '3b. Checking pitches progress for', pitchesProgressKey, 'in', JSON.stringify(window.pitchesComponent.progress));
+          if (window.pitchesComponent.progress && window.pitchesComponent.progress[pitchesProgressKey]) {
+            debugLog(['RESET_BUTTON', 'FALLBACK'], '3b. Found pitches progress for', pitchesProgressKey, 'value:', window.pitchesComponent.progress[pitchesProgressKey]);
+            return window.pitchesComponent.progress[pitchesProgressKey] || 0;
           }
         }
         
