@@ -249,9 +249,6 @@ const AUDIO_DEBOUNCE_MS = 2000;
  * @param {string} activityMode - The activity mode identifier
  */
 export function playIntroAudio(message) {  
-  debugLog('INTRO_AUDIO_CALL', 'playIntroAudio disabled');
-  return;
-
   const now = Date.now();
   
   // Check if this is a duplicate call within the debounce window
