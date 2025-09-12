@@ -2,6 +2,14 @@
 =========
 
 
+## Version 5.4 (2025-09-12)
+- New: „One or Many“
+- New: „Magical Forest Chords“
+- UX: Faster button response
+- Long-Press on buttons shows info about them
+- Green highlighting as feedback for the correct button
+
+
 ## Version 5.3 (2025-08-21)
 - "Draw a Melody": A snake crawls along the drawn path and plays the tones
 - Lalumo now avaliable on F-Droid store 

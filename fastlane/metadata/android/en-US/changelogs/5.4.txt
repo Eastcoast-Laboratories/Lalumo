@@ -1,0 +1,5 @@
+- New: „One or Many“
+- New: „Magical Forest Chords“
+- UX: Faster button response
+- Long-Press on buttons shows info about them
+- Green highlighting as feedback for the correct button

@@ -1,0 +1,5 @@
+- Neu: „Ein Ton oder Viele“
+- Neu: „Akkorde im Zauberwald“
+- UX: Schnellere Button-Reaktion
+- Langes Drücken auf Buttons zeigt Info dazu an
+- Grünes Feedback Hightlight auf Buttons als Hinweis für die richtige Lösung

@@ -1,0 +1,16 @@
+# Play Store Changelogs für Version 5.4
+
+<en-GB>
+- New: „One or Many“
+- New: „Magical Forest Chords“
+- UX: Faster button response
+- Long-Press on buttons shows info about them
+- Green highlighting as feedback for the correct button
+</en-GB>
+<de-DE>
+- Neu: „Ein Ton oder Viele“
+- Neu: „Akkorde im Zauberwald“
+- UX: Schnellere Button-Reaktion
+- Langes Drücken auf Buttons zeigt Info dazu an
+- Grünes Feedback Hightlight auf Buttons als Hinweis für die richtige Lösung
+</de-DE>

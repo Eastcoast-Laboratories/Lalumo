@@ -2,6 +2,14 @@
 =========
 
 
+## Version 5.4 (2025-09-12)
+- Neu: „Ein Ton oder Viele“
+- Neu: „Akkorde im Zauberwald“
+- UX: Schnellere Button-Reaktion
+- Langes Drücken auf Buttons zeigt Info dazu an
+- Grünes Feedback Hightlight auf Buttons als Hinweis für die richtige Lösung
+
+
 ## Version 5.3 (2025-08-21)
 - "Draw a Melody": Eine Schlange kriecht entlang des gezeichneten Pfades und spielt die Töne
 - Lalumo jetzt auf F-Droid verfügbar
