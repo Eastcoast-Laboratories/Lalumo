@@ -168,6 +168,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       '1_1_pitches_high_or_low': 'intro_1_1_pitches_high_or_low',
       '1_2_pitches_match-sounds': 'intro_1_2_pitches_match_sounds',
       '1_3_pitches_draw': 'intro_1_3_pitches_draw',
+      '1_3_pitches_draw-melody': 'intro_1_3_pitches_draw',
       '1_4_pitches_does-it-sound-right': 'intro_1_4_pitches_does_it_sound_right',
       '1_5_pitches_memory': 'intro_1_5_pitches_memory',
       '2_1_chords_color-matching': 'intro_2_1_chords_color_matching',
@@ -191,6 +192,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       '1_1_pitches_high_or_low': 'intro_1_1_pitches_high_or_low',
       '1_2_pitches_match-sounds': 'intro_1_2_pitches_match_sounds',
       '1_3_pitches_draw': 'intro_1_3_pitches_draw',
+      '1_3_pitches_draw-melody': 'intro_1_3_pitches_draw',
       '1_4_pitches_does-it-sound-right': 'intro_1_4_pitches_does_it_sound_right',
       '1_5_pitches_memory': 'intro_1_5_pitches_memory',
       '2_1_chords_color-matching': 'intro_2_1_chords_color_matching',
@@ -209,7 +211,10 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
   if (!message) {
     debugLog('LOG_INTRO_MESSAGE', 'Using direct strings.xml messages for:', activityMode);
     const messages = {
-     // Use the messages from strings.xml that we added
+      '1_3_pitches_draw-melody': {
+        'de': 'Male und höre zu! Deine Linie wird zur Musik!',
+        'en': 'Draw and listen! Your line becomes music!'
+      }
     };
     
     const activityMessages = messages[activityMode] || 'no such mode ' + activityMode;

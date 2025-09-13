@@ -804,7 +804,7 @@ export function chords() {
       // Handle different chord activities with appropriate intro messages
       if (this.mode === '2_1_chords_color-matching') {
         message = language === 'german' ? 
-          'Höre den Akkord und wähle die passende Farbe!' : 
+          'Höre den Akkord an und wähle das passende Tier!' : 
           'Listen to the chord and choose the matching color!';
       } else if (this.mode === '2_2_chords_stable_unstable') {
         message = language === 'german' ? 

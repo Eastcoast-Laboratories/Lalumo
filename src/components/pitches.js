@@ -1890,12 +1890,20 @@ export function pitches() {
         }
         
         if (message) {
+          // Play audio if enabled and available for this activity
+          const helpSettingsStore = window.Alpine?.store ? window.Alpine.store('helpSettings') : null;
+          if (helpSettingsStore?.playHelpAudio) {
+            const activityId = this.mode + '_' + (this.gameMode ? 'game' : 'practice');
+            debugLog('INTRO_AUDIO_CALL', 'showContextMessage calling playIntroAudio for mode:', this.mode, 'gameMode:', this.gameMode, 'message:', message);
+            playIntroAudio(message);
+          }
+          
           window.showFeedbackMessage(message, {
-      activityId: this.mode + '_' + (this.gameMode ? 'game' : 'practice'),
-      isIntroMessage: true,
-      delaySeconds: 10,
-      component: this
-    });
+            activityId: this.mode + '_' + (this.gameMode ? 'game' : 'practice'),
+            isIntroMessage: true,
+            delaySeconds: 10,
+            component: this
+          });
         }
       } else if (this.mode === '1_5_pitches_memory-game') {
         // Context-dependent message based on free play mode
@@ -1910,6 +1918,14 @@ export function pitches() {
         }
         
         if (message) {
+          // Play audio if enabled and available for this activity
+          const helpSettingsStore = window.Alpine?.store ? window.Alpine.store('helpSettings') : null;
+          if (helpSettingsStore?.playHelpAudio) {
+            const activityId = this.mode + '_' + (this.memoryFreePlay ? 'freeplay' : 'game');
+            debugLog('INTRO_AUDIO_CALL', 'showContextMessage calling playIntroAudio for mode:', this.mode, 'memoryFreePlay:', this.memoryFreePlay, 'message:', message);
+            playIntroAudio(message);
+          }
+          
           window.showFeedbackMessage(message, {
             activityId: this.mode + '_' + (this.memoryFreePlay ? 'freeplay' : 'game'),
             isIntroMessage: true,

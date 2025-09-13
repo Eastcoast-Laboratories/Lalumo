@@ -131,9 +131,10 @@ reset-button:
 - Je höher der Ton, umso leiser machen
 
 
-# intro messages:
-    - hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
-    - der close button bei der intro messages soll auf der gesamten message getriggert werden, also wenn man auf die message drückt, dann geht sie weg
+# hilfstexte play mp3:
+   - 2_1: besser: Höre dir den Akkord an und wähle das passende Tier!
+   - 1_4 habe ich noch keine aufnahme erstellt.
+
 
 - alle feedback messages, die falsch sagen sollen ein längeres delay haben
 
