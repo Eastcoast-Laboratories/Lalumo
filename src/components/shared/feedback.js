@@ -5,6 +5,8 @@
  * Ensures consistent user experience and reduces code duplication
  */
 
+import { debugLog } from "../../utils/debug";
+
 /**
  * Unified feedback message system for both help messages and game feedback
  * @param {string} message - The message to display
@@ -250,7 +252,7 @@ const AUDIO_DEBOUNCE_MS = 2000;
  */
 export function playIntroAudio(message) {  
   const now = Date.now();
-  
+  debugLog(['INTRO_AUDIO', 'FUNCTION_CALL'], 'playIntroAudio() called with message ' + message);
   // Check if this is a duplicate call within the debounce window
   if (lastAudioMessage === message && (now - lastAudioTime) < AUDIO_DEBOUNCE_MS) {
     debugLog('INTRO_AUDIO', 'Skipping duplicate audio call for:', message, 'within', AUDIO_DEBOUNCE_MS, 'ms');
@@ -261,7 +263,16 @@ export function playIntroAudio(message) {
   lastAudioMessage = message;
   lastAudioTime = now;
   
-  let filename = message.replace(/[^a-zA-Z0-9]/g, '_');
+  let filename = message.replace(/ö/g, 'oe')         // Replace ö,ä,ü with ae, ue, ...
+  .replace(/ä/g, 'ae')         // Replace ö,ä,ü with ae, ue, ...
+  .replace(/ü/g, 'ue')         // Replace ö,ä,ü with ae, ue, ...
+  .replace(/ß/g, 'ss')         // Replace ö,ä,ü with ae, ue, ...
+  .replace(/Ä/g, 'Ae')         // Replace ÄÖÜ
+  .replace(/Ö/g, 'Oe')         // Replace ÄÖÜ
+  .replace(/Ü/g, 'Ue')         // Replace ÄÖÜ
+  .replace(/\b\w/g, c => c.toUpperCase()) // Make first letter of each word uppercase
+  .replace(/[^a-zA-Z0-9]/g, '')         // Remove all other characters
+
   const audioFile = filename + '.mp3';
   if (!audioFile) {
     debugLog('INTRO_AUDIO', 'No audio file for message:', message);

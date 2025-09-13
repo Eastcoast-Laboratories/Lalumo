@@ -23,7 +23,8 @@ import {
   showRainbowSuccess, 
   showBigRainbowSuccess, 
   showCompleteSuccess, 
-  highlightCorrectButton
+  highlightCorrectButton,
+  playIntroAudio
 } from '../components/shared/feedback.js';
 
 // Import shared UI helpers
@@ -819,17 +820,25 @@ export function chords() {
           'Listen to the chord and find the missing note!';
       } else if (this.mode === '2_5_chords_characters') {
         message = language === 'german' ? 
-          'Höre den Akkord und wähle den passenden Charakter!' : 
+          'Höre dir die Akkord-Art an und wähle das passende Tier!' : 
           'Listen to the chord and choose the matching character!';
       } else if (this.mode === '2_6_chords_one_or_many') {
         message = language === 'german' ? 
-          'Kannst du hören, ob es eine Note oder viele Noten sind?' : 
+          'Kannst du hören, ob es eine Note ist oder viele Noten sind?' : 
           'Can you hear if it is one note or many notes?';
       }
       
       // Show the intro message using the feedback system
       if (message) {
         debugLog('CHORDS', 'LOG_CONTEXT_MESSAGE: Showing intro message for activity:', this.mode);
+        
+        // Play audio if enabled and available for this activity
+        const helpSettingsStore = window.Alpine?.store ? window.Alpine.store('helpSettings') : null;
+        if (helpSettingsStore?.playHelpAudio) {
+          debugLog('INTRO_AUDIO_CALL', 'chords.js showContextMessage calling playIntroAudio for mode:', this.mode, 'message:', message);
+          playIntroAudio(message);
+        }
+        
         window.showFeedbackMessage(message, {
           activityId: this.mode,
           isIntroMessage: true,

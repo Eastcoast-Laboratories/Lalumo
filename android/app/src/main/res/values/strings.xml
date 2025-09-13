@@ -88,8 +88,6 @@
     <!-- Chords - Color Matching Activity -->
     <string name="chord_color_matching_title">Match Colors to Chords</string>
     <string name="chord_color_matching_intro">Listen to the chord and select the color that matches how it sounds to you.</string>
-    <string name="chord_color_matching_2_1_intro">Match magical forest elements to the chords you hear! 🌲✨</string>
-    <string name="intro_2_1_chords_color_matching">Match magical forest elements to the chords you hear! 🌲✨</string>
     
     <!-- Chord Element Tooltips -->
     <string name="chord_element_fruit_major">Major</string>
@@ -121,7 +119,6 @@
     <string name="missing_note_level6">Level 6: Sus2 chords! 🎸</string>
     <string name="missing_note_level7">Level 7: Sus4 chords! 🎹</string>
     <string name="missing_note_master">You are a Missing Note Master! 🎉</string>
-    <string name="intro_2_4_missing_note">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
     <string name="minor_third">Minor 3rd</string>
     <string name="major_third">Major 3rd</string>
     <string name="perfect_fifth">Perfect 5th</string>
@@ -370,6 +367,9 @@
     <!-- Chord Activities -->
     <string name="intro_2_2_chords_stable_unstable">Listen to the chord, does it sound stable or unstable? Click on the matching part of the forest</string>
     <string name="intro_2_5_chords_characters">Listen to the chord and match it to the right character!</string>
+    <string name="intro_2_4_missing_note">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
+    <string name="intro_2_1_chords_color_matching">Match the magical forest elements to the chords you hear! 🌲✨</string>
+    <string name="intro_2_6_chords_one_or_many">Can you hear if it is one note or many?</string>
     
     <!-- Context-specific messages -->
     <string name="match_sounds_practice">Click on pictures to practice. Touch the bird to start the game!</string>
@@ -425,5 +425,4 @@
     <string name="correct_many_notes">Correct! It were many notes!</string>
     <string name="incorrect_was_one">No, it was one note!</string>
     <string name="incorrect_was_many">No, it were many notes!</string>
-    <string name="intro_2_6_chords_one_or_many">Can you hear if it is one note or many notes?</string>
 </resources>

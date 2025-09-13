@@ -88,8 +88,6 @@
     <!-- Chords - Color Matching Activity -->
     <string name="chord_color_matching_title">Ordne Farben zu Akkorden zu</string>
     <string name="chord_color_matching_intro">Höre den Akkord und wähle die Farbe, die am besten dazu passt.</string>
-    <string name="chord_color_matching_2_1_intro">Ordne magische Waldelemente zu den Akkorden zu, die du hörst! 🌲✨</string>
-    <string name="intro_2_1_chords_color_matching">Ordne magische Waldelemente den Akkorden zu, die du hörst! 🌲✨</string>
     
     <!-- Chord Element Tooltips -->
     <string name="chord_element_fruit_major">Dur</string>
@@ -121,7 +119,6 @@
     <string name="missing_note_level6">Stufe 6: Sus2-Akkorde! 🎸</string>
     <string name="missing_note_level7">Stufe 7: Sus4-Akkorde! 🎹</string>
     <string name="missing_note_master">Du bist ein Meister der fehlenden Noten! 🎉</string>
-    <string name="intro_2_4_missing_note">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
     <string name="minor_third">Kleine Terz</string>
     <string name="major_third">Große Terz</string>
     <string name="perfect_fifth">Reine Quinte</string>
@@ -372,10 +369,13 @@
     <string name="intro_1_5_pitches_memory">Höre genau hin und merke dir die Melodie! Kannst du sie nachspielen?</string>
     
     <!-- Chord Activities -->
+    <string name="intro_2_1_chords_color_matching">Ordne die magischen Waldelemente den Akkorden zu, die du hörst! 🌲✨</string>
+    <string name="intro_2_4_missing_note">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
     <string name="intro_2_2_chords_stable_unstable">Höre dir den Akkord an, klingt er stabil oder instabil? Klicke auf die passende Seite im Wald</string>
     <string name="intro_2_5_chords_characters">Höre dir die Akkord-Art an und wähle das passende Tier!</string>
+    <string name="intro_2_6_chords_one_or_many">Kannst du hören, ob es eine Note ist oder mehrere Noten sind?</string>
     
-    <!-- Context-specific messages -->
+    <!-- Context-specific messages (TODO: wird momentan noch statt intro_message abgespielt) -->
     <string name="match_sounds_practice">Klicke auf die Bilder zum Üben. Berühre den Vogel für das Spiel!</string>
     <string name="match_sounds_game">Höre zu und wähle das richtige Bild!</string>
     <string name="memory_practice">Drücke frei auf die Tasten zum Üben. Berühre den Vogel für das Spiel!</string>
@@ -426,5 +426,4 @@
     <string name="correct_many_notes">Richtig! Es waren mehrere Noten!</string>
     <string name="incorrect_was_one">Nein, es war eine Note!</string>
     <string name="incorrect_was_many">Nein, es waren mehrere Noten!</string>
-    <string name="intro_2_6_chords_one_or_many">Kannst du hören, ob es eine Note oder mehrere Noten sind?</string>
 </resources>

@@ -325,10 +325,20 @@ module.exports = (env, argv) => {
             from: 'public/sounds/piano',
             to: 'sounds/piano',
           },
+          // Copy info-messages sound samples
+          {
+            from: 'public/sounds/info-messages',
+            to: 'sounds/info-messages',
+          },
           // Also copy piano samples to app/ directory to maintain consistency
           {
             from: 'public/sounds/piano',
             to: 'app/sounds/piano',
+          },
+          // Also copy info-messages to app/ directory to maintain consistency
+          {
+            from: 'public/sounds/info-messages',
+            to: 'app/sounds/info-messages',
           },
           // Icons für Root-Version
           {
