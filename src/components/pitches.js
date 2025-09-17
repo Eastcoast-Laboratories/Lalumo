@@ -4284,19 +4284,6 @@ export function pitches() {
         // Reset any selected instrument
         this.currentInstrument = null;
         
-        // Show an introductory message for game mode
-        const gameMessage = language === 'de' 
-          ? 'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?'
-          : 'Listen to the melody! Does it sound right? Or is there a wrong note?';
-        
-        // Show the game mode message
-        window.showFeedbackMessage(gameMessage, {
-      activityId: null,
-      isIntroMessage: false,
-      delaySeconds: 2,
-      component: this
-    });
-        
         // Update the progress display now that we're in game mode
         this.update_progress_display();
         

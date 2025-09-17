@@ -217,7 +217,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       },
       '1_4_pitches_does-it-sound-right': {
         'de': 'Hoer dir die Melodie an! Klingt sie richtig, oder ist da ein falscher Ton?',
-        'en': 'Press play to hear a melody. Does it sound right? Or is there a wrong note?'
+        'en': 'Listen to the melody! Does it sound right? Or is there a wrong note?'
       }
     };
     
