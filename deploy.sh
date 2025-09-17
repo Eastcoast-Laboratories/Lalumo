@@ -5,7 +5,7 @@ SSH_HOST=root@vm06.eclabs
 SSH_PATH=/var/kunden/webs/ruben/www/lalumo.eu/www/
 
 # 1. Build the project with standardized configuration
-npm run build
+npm run build || { echo "Build failed - aborting deployment"; exit 1; }
 
 # 2. Sync the entire dist directory to the server with one command
 echo "Syncing entire dist/ directory to server..."
