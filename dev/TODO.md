@@ -133,8 +133,10 @@ reset-button:
 
 # hilfstexte play mp3:
    - 2_1: deutsch: 'Berühre die Blume im magischen Wald und wähle das passende Element!' 
+    - BeruehreDieBlumeImMagischenWaldUndWaehleDasPassendeElement.mp3
    - 1_4:
-    - deutsch: habe ich noch keine aufnahme erstellt:
+    - deutsch: Male und höre zu! Deine Linie wird zur Musik!
+      - MaleUndHoreZuDeineLinieWirdZurMusik.mp3
     - englisch geht nicht:
       - Draw and listen! Your line becomes music!
         - DrawAndListenYourLineBecomesMusic.mp3

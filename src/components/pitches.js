@@ -4208,11 +4208,6 @@ export function pitches() {
       // Get the current language
       const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
       
-      // Show an introductory message
-      const introMessage = language === 'de' 
-        ? 'Drücke auf Play, um eine Melodie zu hören. Klingt sie richtig? Oder ist da ein falscher Ton?'
-        : 'Press play to hear a melody. Does it sound right? Or is there a wrong note?';
-      
       // Track activity usage and initialize progress if needed
       if (!this.progress['1_4']) {
         this.progress['1_4'] = 0;
@@ -4221,14 +4216,6 @@ export function pitches() {
       // Level is now calculated from this.progress['1_4'] using get_1_4_level()
       // No need to load from separate localStorage anymore
       debugLog('PITCHES', `SOUND JUDGMENT: Current level ${get_1_4_level(this)} (progress: ${this.progress['1_4'] || 0})`);
-      
-      // Show intro message first (moved from playback completion)
-      window.showFeedbackMessage(introMessage, {
-      activityId: null,
-      isIntroMessage: true,
-      delaySeconds: 10,
-      component: this
-    });
       
       // Generate a melody in preparation for game mode
       this.generateMelody();

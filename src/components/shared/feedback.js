@@ -214,6 +214,10 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       '1_3_pitches_draw-melody': {
         'de': 'Male und höre zu! Deine Linie wird zur Musik!',
         'en': 'Draw and listen! Your line becomes music!'
+      },
+      '1_4_pitches_does-it-sound-right': {
+        'de': 'Hoer dir die Melodie an! Klingt sie richtig, oder ist da ein falscher Ton?',
+        'en': 'Press play to hear a melody. Does it sound right? Or is there a wrong note?'
       }
     };
     
