@@ -255,6 +255,9 @@ let lastAudioMessage = null;
 let lastAudioTime = 0;
 const AUDIO_DEBOUNCE_MS = 2000;
 
+// Track current playing intro audio
+let currentIntroAudio = null;
+
 /**
  * Play intro audio for specific activities
  * @param {string} activityMode - The activity mode identifier
@@ -262,6 +265,10 @@ const AUDIO_DEBOUNCE_MS = 2000;
 export function playIntroAudio(message) {  
   const now = Date.now();
   debugLog(['INTRO_AUDIO', 'FUNCTION_CALL'], 'playIntroAudio() called with message ' + message);
+  
+  // Store reference to previous audio to stop it later
+  const previousAudio = currentIntroAudio;
+  
   // Check if this is a duplicate call within the debounce window
   if (lastAudioMessage === message && (now - lastAudioTime) < AUDIO_DEBOUNCE_MS) {
     debugLog('INTRO_AUDIO', 'Skipping duplicate audio call for:', message, 'within', AUDIO_DEBOUNCE_MS, 'ms');
@@ -297,22 +304,44 @@ export function playIntroAudio(message) {
     return;
   }
   
+  debugLog('INTRO_AUDIO', 'User interaction check passed, proceeding with audio playback');
+  
   try {
     const audio = new Audio(audioPath);
     audio.volume = 0.7; // Set reasonable volume
+    
+    // Set as current playing intro audio
+    currentIntroAudio = audio;
     
     audio.addEventListener('loadeddata', () => {
       debugLog('INTRO_AUDIO', 'Audio loaded successfully:', audioPath);
     });
     
+    audio.addEventListener('ended', () => {
+      currentIntroAudio = null; // Clear reference when audio ends
+    });
+    
     audio.addEventListener('error', (e) => {
       debugLog(['INTRO_AUDIO', 'ERROR'], 'Failed to load audio:', audioPath, e);
+      currentIntroAudio = null; // Clear reference on error
     });
     
     audio.play().then(() => {
       debugLog('INTRO_AUDIO', 'Audio playback started successfully:', message);
+      
+      // Stop previous audio only after new audio starts successfully
+      if (previousAudio && previousAudio !== audio && !previousAudio.paused) {
+        try {
+          previousAudio.pause();
+          previousAudio.currentTime = 0;
+          debugLog('INTRO_AUDIO_STOP', 'Stopped previous intro audio after new audio started');
+        } catch (error) {
+          debugLog('INTRO_AUDIO_STOP', 'Error stopping previous audio:', error);
+        }
+      }
     }).catch(error => {
       debugLog(['INTRO_AUDIO', 'ERROR'], 'Failed to play audio (autoplay policy?):', audioPath, error.message);
+      currentIntroAudio = null; // Clear reference on play error
     });
   } catch (error) {
     debugLog(['INTRO_AUDIO', 'ERROR'], 'Error creating audio element:', error);
