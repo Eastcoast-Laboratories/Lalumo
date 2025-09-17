@@ -132,9 +132,31 @@ reset-button:
 
 
 # hilfstexte play mp3:
-   - 2_1: besser: Höre dir den Akkord an und wähle das passende Tier!
-   - 1_4 habe ich noch keine aufnahme erstellt.
-
+   - 2_1: deutsch: 'Berühre die Blume im magischen Wald und wähle das passende Element!' 
+   - 1_4:
+    - deutsch: habe ich noch keine aufnahme erstellt:
+    - englisch geht nicht:
+      - Draw and listen! Your line becomes music!
+        - DrawAndListenYourLineBecomesMusic.mp3
+[x] Listen to the tone! Is it high or low?
+  - ListenToTheToneIsItHighOrLow.mp3
+[x] Click on pictures to practice. Touch the bird to start the game!
+  - ClickOnPicturesToPracticeTouchTheBirdToStartTheGame.mp3
+[x] Press keys freely to practice. Touch the bird to start the game!
+  - PressKeysFreelyToPracticeTouchTheBirdToStartTheGame.mp3
+[x] Can you hear if it is one note or many notes?
+  - CanYouHearIfItIsOneNoteOrManyNotes.mp3
+[x] Listen to the chord! Is it stable or unstable?
+  - ListenToTheChordIsItStableOrUnstable.mp3
+[x] Listen to the chord and find the missing note!
+  - ListenToTheChordAndFindTheMissingNote.mp3
+[x] Listen to the chord and choose the matching character!
+  - ListenToTheChordAndChooseTheMatchingCharacter.mp3
+[x] Touch the Flower in the Magical Forest and choose the matching item!
+  - TouchTheFlowerInTheMagicalForestAndChooseTheMatchingItem.mp3
+  // - ListenToTheChordAndChooseTheMatchingColor.mp3
+[x] Press play to hear a melody. Does it sound right? Or is there a wrong note?
+  - PressPlayToHearAMelodyDoesItSoundRightOrIsThereAWrongNote.mp3
 
 - alle feedback messages, die falsch sagen sollen ein längeres delay haben
 

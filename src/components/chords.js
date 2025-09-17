@@ -804,8 +804,8 @@ export function chords() {
       // Handle different chord activities with appropriate intro messages
       if (this.mode === '2_1_chords_color-matching') {
         message = language === 'german' ? 
-          'Höre den Akkord an und wähle das passende Tier!' : 
-          'Listen to the chord and choose the matching color!';
+          'Berühre die Blume im magischen Wald und wähle das passende Element!' : 
+          'Touch the flower in the magical forest and choose the matching item!';
       } else if (this.mode === '2_2_chords_stable_unstable') {
         message = language === 'german' ? 
           'Höre den Akkord! Ist er stabil oder instabil?' : 
