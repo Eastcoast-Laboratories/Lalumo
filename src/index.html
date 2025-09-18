@@ -403,7 +403,7 @@
   </div>
   
   <!-- Loading spinner overlay -->
-  <div id="loading-overlay">
+  <div id="loading-overlay" onclick="hideLoadingOverlay(); replayCurrentIntroAudio()" ontouchstart="hideLoadingOverlay()">
     <img id="loading-logo" src="./icons/icon-512.png" alt="Lalumo Logo">
     <div class="spinner"></div>
   </div>
@@ -416,12 +416,41 @@
       !window.isNativeApp && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'dev-mode' : 'production'
     );
 
-    // Hide loading overlay when page is fully loaded
+    // Function to hide loading overlay
+    function hideLoadingOverlay() {
+      document.getElementById('loading-overlay').classList.add('hidden');
+      document.body.classList.remove('loading');
+    }
+
+    // Show background image when page is fully loaded, but keep overlay visible until clicked
     window.addEventListener('load', function() {
       setTimeout(function() {
-        document.getElementById('loading-overlay').classList.add('hidden');
-        document.body.classList.remove('loading');
-      }, 50); // small delay for smoother transition
+        // Set background image on the loading overlay
+        const loadingOverlay = document.getElementById('loading-overlay');
+        loadingOverlay.style.backgroundImage = 'url(./images/backgrounds/pitches_bird_sings.jpg)';
+        
+        // Always fill full height, maintain aspect ratio
+        // If screen is wider than image: show white borders left/right
+        // If screen is narrower than image: crop left/right sides
+        loadingOverlay.style.backgroundSize = 'auto 100vh';
+        loadingOverlay.style.backgroundPosition = 'center';
+        loadingOverlay.style.backgroundRepeat = 'no-repeat';
+        
+        // Hide spinner and show background
+        const spinner = loadingOverlay.querySelector('.spinner');
+        if (spinner) spinner.style.display = 'none';
+        const loadingLogo = loadingOverlay.querySelector('#loading-logo');
+        if (loadingLogo) loadingLogo.style.display = 'none';
+        
+        // Add click instruction
+        if (!loadingOverlay.querySelector('.click-instruction')) {
+          const instruction = document.createElement('div');
+          instruction.className = 'click-instruction';
+          instruction.innerHTML = '▶';
+          instruction.style.visibility = 'visible';
+          loadingOverlay.appendChild(instruction);
+        }
+      }, 100);
     });
     
     // Portrait mode overlay control

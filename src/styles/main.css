@@ -4,6 +4,23 @@
   color-scheme: light only;
 }
 
+/* Splash screen click instruction */
+.click-instruction {
+  position: absolute;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 3rem;
+  visibility: hidden;
+}
+
+/* Pulse animation for splash screen */
+@keyframes pulse {
+  0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+}
+
 /* Longpress Tooltip Styles */
 .tooltip {
   position: fixed !important; 

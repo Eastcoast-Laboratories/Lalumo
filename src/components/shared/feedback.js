@@ -341,6 +341,18 @@ export function playIntroAudio(message) {
   }
 }
 
+/**
+ * Replay the last intro audio message
+ */
+export function replayCurrentIntroAudio() {
+  if (lastAudioMessage) {
+    debugLog('INTRO_AUDIO_REPLAY', 'Replaying last intro message:', lastAudioMessage);
+    playIntroAudio(lastAudioMessage);
+  } else {
+    debugLog('INTRO_AUDIO_REPLAY', 'No previous intro message to replay');
+  }
+}
+
 // Initialize the feedback functionality when Alpine is ready
 document.addEventListener('alpine:init', () => {
   // Initialize the feedback store if it doesn't exist
@@ -375,6 +387,7 @@ if (typeof window !== 'undefined') {
   window.clearFeedbackTimer = clearFeedbackTimer;
   window.highlightCorrectButton = highlightCorrectButton;
   window.showErrorWithCorrectHint = showErrorWithCorrectHint;
+  window.replayCurrentIntroAudio = replayCurrentIntroAudio;
 }
 
 /**
