@@ -1,5 +1,5 @@
 /**
- * 2_1_chord_color_matching.js - Studio Ghibli Style Chord Color Matching Activity
+ * 2_1_chord_color_matching.js - Studio Ghibli Style Chord Magical Forest Activity
  * Based on 2_5 structure with 8 chord types and magical forest elements
  */
 
@@ -17,14 +17,14 @@ import {
 } from '../shared/feedback.js';
 
 /**
- * Start 2_1 Color Matching activity - similar to 2_5 start function
+ * Start 2_1 Magical Forest activity - similar to 2_5 start function
  * Initializes free play mode and generates first chord
  * @param {Object} component - Alpine.js component
  * @activity 2_1_chords_color-matching
  * @used_by chords.js initialization
  */
 export function start2_1ColorMatching(component) {
-  debugLog('CHORDS', 'Starting 2_1 Color Matching activity');
+  debugLog('CHORDS', 'Starting 2_1 Magical Forest activity');
   
   // Initialize free play mode
   component.is2_1FreePlayMode = true;

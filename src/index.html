@@ -94,7 +94,6 @@
     .button { display: inline-block; padding: 8px 12px; border-radius: 5px; }
     
     /* Activity elements */
-    .activity-container { padding: 12px; }
     .welcome-message { display: flex; align-items: center; margin: 10px 0; }
   </style>
   <!-- Long-press tooltip script -->
@@ -406,8 +405,77 @@
   <div id="loading-overlay" onclick="hideLoadingOverlay(); replayCurrentIntroAudio()" ontouchstart="hideLoadingOverlay()">
     <img id="loading-logo" src="./icons/icon-512.png" alt="Lalumo Logo">
     <div class="spinner"></div>
+
+    <!-- shortcuts to most activities -->
+    <div class="image-map-container" id="activity-shortcuts" style="display: none;" x-data>
+      <!-- High or Low -->
+      <div class="clickable-area shortcut-1_1" 
+           @click="active = 'pitches'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'pitches', mode: '1_1_pitches_high_or_low'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           aria-label="High or Low">
+        <span class="area-label">🐭 <span x-text="$store.strings?.high_or_low || 'High or Low'"></span></span>
+      </div>
+      
+      <!-- Match Sounds -->
+      <div class="clickable-area shortcut-1_2" 
+           @click="active = 'pitches'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'pitches', mode: '1_2_pitches_match-sounds'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           aria-label="Match Mode">
+        <span class="area-label">🎵 <span x-text="$store.strings?.match_sounds || 'Up or Down'"></span></span>
+      </div>
+      
+      <!-- Draw Melody -->
+      <div class="clickable-area shortcut-1_3" 
+           @click="active = 'pitches'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'pitches', mode: '1_3_pitches_draw-melody'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           aria-label="Draw Mode">
+        <span class="area-label">✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span></span>
+      </div>
+      
+      <!-- Does it Sound Right -->
+      <div class="clickable-area shortcut-1_4" 
+           @click="active = 'pitches'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'pitches', mode: '1_4_pitches_does-it-sound-right'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           aria-label="Does it Sound Right">
+        <span class="area-label">👉 <span x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></span></span>
+      </div>
+      
+      <!-- Memory Game -->
+      <div class="clickable-area shortcut-1_5" 
+           @click="active = 'pitches'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'pitches', mode: '1_5_pitches_memory-game'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           aria-label="Memory Mode">
+        <span class="area-label">🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span></span>
+      </div>
+      
+      <!-- One or Many -->
+      <div class="clickable-area shortcut-2_6" 
+           @click="active = 'chords'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_6_chords_one_or_many'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           aria-label="One or Many">
+        <span class="area-label">🦇 <span x-text="$store.strings?.one_or_many || 'One or Many'"></span></span>
+      </div>
+      
+      <!-- Stable or Unstable -->
+      <div class="clickable-area shortcut-2_2" 
+           @click="active = 'chords'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_2_chords_stable_unstable'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           aria-label="Stable or Unstable">
+        <span class="area-label">🏞️ <span x-text="$store.strings?.chords_stable_unstable || 'Stable or Unstable'"></span></span>
+      </div>
+      
+      <!-- Magical Forest -->
+      <div class="clickable-area shortcut-2_1" 
+           @click="active = 'chords'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_1_chords_color-matching'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           aria-label="Magical Forest">
+        <span class="area-label">🌈 <span x-text="$store.strings?.chord_color_matching || 'Magical Forest'"></span></span>
+      </div>
+      
+      <!-- Character Matching -->
+      <div class="clickable-area shortcut-2_5" 
+           @click="active = 'chords'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_5_chords_characters'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           aria-label="Character Matching">
+        <span class="area-label">🎭 <span x-text="$store.strings?.chord_characters || 'Character Matching'"></span></span>
+      </div>
+    </div>
+
+
+
   </div>
-  
+
   <script>
     // Set initial environment classes
     document.body.classList.add(
@@ -441,6 +509,10 @@
         if (spinner) spinner.style.display = 'none';
         const loadingLogo = loadingOverlay.querySelector('#loading-logo');
         if (loadingLogo) loadingLogo.style.display = 'none';
+        
+        // Show activity shortcuts
+        const activityShortcuts = document.getElementById('activity-shortcuts');
+        if (activityShortcuts) activityShortcuts.style.display = 'block';
         
         // Add click instruction
         if (!loadingOverlay.querySelector('.click-instruction')) {
@@ -739,16 +811,16 @@
               Debug 🎭 <span x-text="$store.strings?.chord_characters || 'Character Matching'"></span>
             </a>
 
-            <!-- Locked version of Color Matching (visible when not unlocked) -->
+            <!-- Locked version of Magical Forest (visible when not unlocked) -->
             <button id="nav_2_1_locked"
               x-show="!areAllActivitiesUnlocked"
               @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"
               class="locked-activity"
             >
-              🔒 🌈 <span x-text="$store.strings?.chord_color_matching || 'Color Matching'"></span>
+              🔒 🌈 <span x-text="$store.strings?.chord_color_matching || 'Magical Forest'"></span>
             </button>
             
-            <!-- Unlocked version of Color Matching (visible when unlocked through referrals) -->
+            <!-- Unlocked version of Magical Forest (visible when unlocked through referrals) -->
             <a href="#2_1" id="nav_2_1"
               x-show="areAllActivitiesUnlocked"
               @click="isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_1_chords_color-matching'}); window.innerWidth < 1024 ? menuOpen = false : null"
@@ -758,10 +830,10 @@
               role="button"
               tabindex="0"
             >
-              🌈 <span x-text="$store.strings?.chord_color_matching || 'Color Matching'"></span>
+              🌈 <span x-text="$store.strings?.chord_color_matching || 'Magical Forest'"></span>
             </a>
             
-            <!-- Debug button for Color Matching (always available) -->
+            <!-- Debug button for Magical Forest (always available) -->
             <a href="#2_1" id="nav_2_1_debug"
               class="debug-element"
               @click="isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_1_chords_color-matching'}); window.innerWidth < 1024 ? menuOpen = false : null"
@@ -771,7 +843,7 @@
               role="button"
               tabindex="0"
             >
-              Debug 🌈 <span x-text="$store.strings?.chord_color_matching || 'Color Matching'"></span>
+              Debug 🌈 <span x-text="$store.strings?.chord_color_matching || 'Magical Forest'"></span>
             </a>
           </div>
         </template>
@@ -840,22 +912,6 @@
     <!-- Chapter: Pitch Chapters View -->
     <section class="chapters-view" x-show="active === 'pitches'" x-transition>
       <div x-data="pitches()" x-init="init()">
-        
-        <!-- Main landing with clickable image -->
-        <div x-show="!mode || mode === 'main'" class="pitch-landing">
-          <div class="image-map-container">
-            <div class="clickable-area match-area" @click="setMode('1_2_pitches_match-sounds')" aria-label="Match Mode">
-              <span class="area-label" x-text="$store.strings?.match_sounds || 'Up or Down'"></span>
-            </div>
-            <div class="clickable-area draw-area" @click="setMode('1_3_pitches_draw-melody')" aria-label="Draw Mode">
-              <span class="area-label" x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
-            </div>
-            <div class="clickable-area memory-area" @click="setMode('1_5_pitches_memory-game')" aria-label="Memory Mode">
-              <span class="area-label" x-text="$store.strings?.memory_game || 'Memory Game'"></span>
-            </div>
-          </div>
-
-        </div>
         
         <!-- High or Low Activity -->
         <div id="1_1_pitches" x-show="mode === '1_1_pitches_high_or_low'" class="activity-container lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_1_sloth_mouse.jpg" style="background-size: cover; background-position: top left;
@@ -1135,7 +1191,7 @@
           <div class="image-map-container"></div>
         </div>
         
-        <!-- 2_1 Chords - Studio Ghibli Color Matching Activity -->
+        <!-- 2_1 Chords - Studio Ghibli Magical Forest Activity -->
         <div id="2_1_chords_color-matching" x-show="mode === '2_1_chords_color-matching'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_1.jpg">
           
           <div class="chords-container">            

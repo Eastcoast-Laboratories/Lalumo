@@ -24,7 +24,7 @@ The app playfully teaches preschool children a basic understanding of music – 
 
 - disabled: Chords Kapitel (2_chords):
 
- - Chord Color Matching: (2_1_chords_color-matching)
+ - Chord Magical Forest: (2_1_chords_color-matching)
  - Stable or Unstable: (2_2_chords_stable_unstable)
  - Chord Building: (2_3_chords_chord-building)
  - Missing Note: (2_4_chords_missing-note)
@@ -164,7 +164,7 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
 
 #### in details:
 
-[x] **Chord Color Matching: (2_1_chords_color-matching)**
+[x] **Chord Magical Forest: (2_1_chords_color-matching)**
   Major chords are represented by bright colors, minor chords by cooler or darker colors. Children listen to a chord and select which color best matches what they hear, developing emotional understanding of harmony.
     - this is nearly the same as 2_5 but with more chords and far too complicated for children, but maybe a chellenge for adutlts, so suggest a background image in the style of Studio Ghibli, that would be more for adults than children
   

@@ -1,5 +1,5 @@
 /**
- * Playwright test for 2_1 Chord Color Matching activity in Lalumo app
+ * Playwright test for 2_1 Chord Magical Forest activity in Lalumo app
  * Based on the working match-sounds.spec.js structure
  */
 
@@ -7,10 +7,10 @@ const { test, expect } = require('@playwright/test');
 const { setupTest, debugLog, checkElementVisibility, showTestOverlay, updateTestOverlay, removeTestOverlay } = require('../helpers/test-utils');
 
 /**
- * Test suite for 2_1 Chord Color Matching activity in Lalumo app
+ * Test suite for 2_1 Chord Magical Forest activity in Lalumo app
  * Tests navigation to the activity and basic functionality
  */
-test.describe('Lalumo 2_1 Chord Color Matching Activity Tests', () => {
+test.describe('Lalumo 2_1 Chord Magical Forest Activity Tests', () => {
   // Set global timeout
   test.setTimeout(30000);
 
@@ -19,7 +19,7 @@ test.describe('Lalumo 2_1 Chord Color Matching Activity Tests', () => {
     await setupTest(page);
   });
 
-  test('Should navigate to 2_1 Chord Color Matching activity and test game mode functionality', async ({ page }) => {
+  test('Should navigate to 2_1 Chord Magical Forest activity and test game mode functionality', async ({ page }) => {
     // Increase test timeout to 30 seconds for audio interactions
     test.setTimeout(30000);
     
@@ -27,17 +27,17 @@ test.describe('Lalumo 2_1 Chord Color Matching Activity Tests', () => {
     await page.click('button:has-text("Chords")');
     await page.waitForTimeout(1000);
     
-    // Then navigate to 2_1 Chord Color Matching activity
+    // Then navigate to 2_1 Chord Magical Forest activity
     await page.click('#nav_2_1');
     await page.waitForTimeout(1000);
     
     // Show test overlay using DRY implementation
-    await showTestOverlay(page, 'Starting 2_1 Chord Color Matching test...');
+    await showTestOverlay(page, 'Starting 2_1 Chord Magical Forest test...');
     
     // Verify we're in the correct activity
     const activityContainer = page.locator('[id="2_1_chords_color-matching"]');
     await expect(activityContainer).toBeVisible();
-    debugLog('CHORD_COLOR_MATCHING_SPEC', 'Successfully navigated to 2_1 chord color matching activity');
+    debugLog('CHORD_COLOR_MATCHING_SPEC', 'Successfully navigated to 2_1 chord Magical Forest activity');
     
     // Update test overlay
     await updateTestOverlay(page, 'Checking for start button in free play mode...');
@@ -126,9 +126,9 @@ test.describe('Lalumo 2_1 Chord Color Matching Activity Tests', () => {
     }
     
     // Update test overlay
-    await updateTestOverlay(page, '2_1 Chord Color Matching test completed successfully!');
+    await updateTestOverlay(page, '2_1 Chord Magical Forest test completed successfully!');
     
-    debugLog('CHORD_COLOR_MATCHING_SPEC', '2_1 Chord Color Matching test completed successfully');
+    debugLog('CHORD_COLOR_MATCHING_SPEC', '2_1 Chord Magical Forest test completed successfully');
     
     // Remove test overlay
     await removeTestOverlay(page);

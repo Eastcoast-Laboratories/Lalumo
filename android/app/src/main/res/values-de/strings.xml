@@ -85,7 +85,7 @@
     <string name="chord_characters">Akkord-Charaktere</string>
     <string name="one_or_many">Ein Ton oder Viele</string>
     
-    <!-- Chords - Color Matching Activity -->
+    <!-- Chords - Magical Forest Activity -->
     <string name="chord_color_matching_title">Ordne Farben zu Akkorden zu</string>
     <string name="chord_color_matching_intro">Höre den Akkord und wähle die Farbe, die am besten dazu passt.</string>
     

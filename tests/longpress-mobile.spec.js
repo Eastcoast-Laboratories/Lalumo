@@ -11,7 +11,7 @@ test.use({
 test.describe('Mobile Longpress Functionality', () => {
 
   test('should show tooltip on longpress and allow normal clicks afterwards', async ({ page }) => {
-    // Navigate directly to the chord color matching activity
+    // Navigate directly to the chord Magical Forest activity
     await page.goto('http://localhost:9091/');
     await page.waitForTimeout(1000);
     await page.evaluate(() => {

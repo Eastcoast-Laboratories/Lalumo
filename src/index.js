@@ -3,7 +3,6 @@ import Alpine from 'alpinejs';
 
 // Import styles
 import './styles/main.css';
-import './styles/clickable-map.css';
 import './styles/sound-judgment.css';
 import './styles/menu-backgrounds.css';
 

@@ -1421,7 +1421,7 @@ section h2 {
 }
 
 #start-game-mode-2_1, #play-chord-2_1{
-  opacity: 0.2;
+  opacity: 0.02;
   position: absolute;
   top: min(38%, 50vw);
   width: 22%;
@@ -1432,7 +1432,7 @@ section h2 {
 }
 
 .magical-element-grid > div{
-  opacity: 0.2;
+  opacity: 0.02;
   width: 10%;
   height: 9%;
 }
@@ -1441,7 +1441,7 @@ section h2 {
 #button_2_1_fruit {
   position: absolute;
   left: 3%;
-  top: min(43%, 52vw);
+  top: min(53%, 75vw);
 }
 
 #button_2_1_mushroom {
@@ -1453,38 +1453,37 @@ section h2 {
 #button_2_1_crystal {
   position: absolute;
   left: 21%;
-  top: min(53%, 66vw);
+  top: min(63%, 89vw);
 }
 
 #button_2_1_flower {
   position: absolute;
   left: 82%;
-  top: min(13%, 11vw);
+  top: min(23%, 34vw);
 }
 
 #button_2_1_flame {
   position: absolute;
   right: 6%;
-  top: min(34%, 43vw);
+  top: min(44%, 66vw);
 }
 
 #button_2_1_feather {
   position: absolute;
   left: 15%;
-  top: min(64%, 90vw);
+  top: min(74%, 113vw);
 }
 
 #button_2_1_acorn {
   position: absolute;
   left: 58%;
-  top: min(59%, 75vw);
+  top: min(69%, 98vw);
 }
 
 #button_2_1_lantern {
   position: absolute;
   right: 13%;
-  top: min(11%, 13vw);
-  margin-top: -8vw;
+  top: min(24%, 26vw);
 }
 
 .magical-element {
@@ -2722,4 +2721,247 @@ section h2 {
 /* Global button cursor pointer rule */
 button {
   cursor: pointer;
+}
+
+/* Chapters View - Fullscreen styles */
+.chapters-view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 90; /* Lower z-index to keep below the hamburger menu */
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Limit width on larger screens */
+@media (min-width: 1024px) {
+  .chapters-view > div {
+    width: 70%;
+    margin: 0 auto;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/* Clickable image map styles */
+.pitch-landing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+/* Game mode sections - white background with image border */
+.activity-container {
+  border-radius: 20px;
+  margin: 3% auto 5% auto;
+  padding: 20px;
+  position: relative;
+  z-index: 10;
+  width: 85%;
+  max-width: 523px;
+  height: 99vh;
+  min-height: 71vh;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+#\32 _1_chords_color-matching, #\32 _5_chords_characters {
+  min-height: 90vh;
+}
+
+/* Mode header with title and back button */
+.mode-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.back-to-main {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  background-color: var(--color-accent-light);
+  color: var(--text-color);
+  border: none;
+  border-radius: 0;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  z-index: 2500; /* above everything but Portrait mode notice overlay */
+  margin-left: calc(38px - min(58px, 6vw));
+  margin-top: -10px;
+}
+
+.back-to-main:hover {
+  background-color: #d9d082;
+}
+
+.back-to-main.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.back-to-main.disabled:hover {
+  background-color: var(--color-accent-light);
+  color: var(--text-color);
+}
+
+.back-to-main svg {
+  width: 16px;
+  height: 16px;
+
+}
+
+.image-map-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.clickable-background {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Changed from contain to cover to stretch and fill */
+  border-radius: 0;
+  box-shadow: none;
+  max-height: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.clickable-area {
+  position: absolute;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0);
+  transition: background-color 0.3s ease;
+  border-radius: 10px;
+}
+
+.clickable-area:hover, .clickable-area:active {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.area-label {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 12px;
+  font-size: 1rem;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.clickable-area:hover .area-label {
+  display: block;
+}
+
+/* Position the clickable areas - responsive using min() */
+.shortcut-1_1 {
+  position: absolute;
+  top: min(15%, 20vw);
+  left: 10%;
+  width: min(18%, 22vw);
+  height: min(12%, 15vw);
+}
+
+.shortcut-1_2 {
+  position: absolute;
+  top: min(25%, 30vw);
+  right: 15%;
+  width: min(20%, 25vw);
+  height: min(15%, 18vw);
+}
+
+.shortcut-1_3 {
+  position: absolute;
+  top: min(65%, 80vw);
+  left: 40%;
+  width: min(20%, 25vw);
+  height: min(15%, 18vw);
+}
+
+.shortcut-1_4 {
+  position: absolute;
+  top: min(35%, 45vw);
+  left: 8%;
+  width: min(22%, 28vw);
+  height: min(16%, 20vw);
+}
+
+.shortcut-1_5 {
+  position: absolute;
+  top: min(45%, 55vw);
+  right: 15%;
+  width: min(20%, 25vw);
+  height: min(15%, 18vw);
+}
+
+.shortcut-2_6 {
+  position: absolute;
+  top: min(55%, 70vw);
+  left: 12%;
+  width: min(19%, 24vw);
+  height: min(14%, 17vw);
+}
+
+.shortcut-2_2 {
+  position: absolute;
+  top: min(75%, 95vw);
+  right: 20%;
+  width: min(21%, 26vw);
+  height: min(13%, 16vw);
+}
+
+.shortcut-2_1 {
+  position: absolute;
+  top: min(8%, 12vw);
+  right: 8%;
+  width: min(17%, 21vw);
+  height: min(11%, 14vw);
+}
+
+.shortcut-2_5 {
+  position: absolute;
+  top: min(85%, 110vw);
+  left: 35%;
+  width: min(23%, 29vw);
+  height: min(17%, 21vw);
+}
+
+.mode-instructions {
+  margin-top: 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--color-accent);
+  text-align: center;
 }

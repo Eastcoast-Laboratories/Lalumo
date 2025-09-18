@@ -62,7 +62,7 @@ Die aktuelle pitches.js-Datei ist sehr umfangreich und enthält die Logik für a
     │   ├── 2_chords/
     │   │   ├── index.js                  # Exportiert alle Hauptfunktionen
     │   │   ├── common.js                 # Gemeinsame Funktionen für alle Aktivitäten
-    │   │   ├── 2_1_chord_color_matching.js   # Spezifische Logik für "Chord Color Matching" (2_1)
+    │   │   ├── 2_1_chord_color_matching.js   # Spezifische Logik für "Chord Magical Forest" (2_1)
     │   │   ├── 2_2_chord_stable_unstable.js  # Spezifische Logik für "Chord Stable or Unstable" (2_2)
     │   │   ├── 2_3_chord_building.js         # Spezifische Logik für "Chord Building" (2_3)
     │   │   ├── 2_4_missing_note.js           # Spezifische Logik für "Missing Note" (2_4)

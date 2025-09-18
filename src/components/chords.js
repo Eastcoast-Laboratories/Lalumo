@@ -30,7 +30,7 @@ import {
 // Import shared UI helpers
 import { update_progress_display } from '../components/shared/ui-helpers.js';
 
-// 2_1 Chord Color Matching Module
+// 2_1 Chord Magical Forest Module
 import { 
   start2_1ColorMatching,
   start2_1GameMode,
@@ -119,7 +119,7 @@ export function chords() {
     showFeedback: false,
     progress: null,
     
-    // 2_1 Chord Color Matching state
+    // 2_1 Chord Magical Forest state
     is2_1FreePlayMode: true,
     
     /**
@@ -692,9 +692,9 @@ export function chords() {
         window.Alpine.store('chordMode', mode);
       }
       
-      // Initialize 2_1 Color Matching activity
+      // Initialize 2_1 Magical Forest activity
       if (mode === '2_1_chords_color-matching') {
-        debugLog('CHORDS', 'Initializing 2_1 color matching activity');
+        debugLog('CHORDS', 'Initializing 2_1 Magical Forest activity');
         
         // Always ensure we start in free play mode when entering the activity
         this.is2_1FreePlayMode = true;
@@ -985,11 +985,11 @@ export function chords() {
     },
     
     /** *************************************************
-     * ******** 2_1 Color Matching Activity Methods ********
+     * ******** 2_1 Magical Forest Activity Methods ********
      * *************************************************** */
     
     /**
-     * Start the color matching activity
+     * Start the Magical Forest activity
      * 
      * @activity 2_1_chord_color_matching
      */
@@ -1005,7 +1005,7 @@ export function chords() {
       debugLog('CHORDS_2_1_DEBUG', `After newColorMatchingQuestion call: currentChordType=${this.currentChordType}`);
       
       // Log that we're using the modular function
-      debugLog('CHORDS', 'Started color matching activity using modular function');
+      debugLog('CHORDS', 'Started Magical Forest activity using modular function');
     },
     
     /** *************************************************
