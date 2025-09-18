@@ -490,6 +490,44 @@
       document.body.classList.remove('loading');
     }
 
+    // Function to get unlock status from Alpine.js
+    function getUnlockStatusFromAlpine() {
+      try {
+        const appElement = document.querySelector('[x-data="app()"]');
+        if (appElement && window.Alpine) {
+          const alpineData = appElement._x_dataStack && appElement._x_dataStack[0];
+          if (alpineData && alpineData.areAllActivitiesUnlocked !== undefined) {
+            return alpineData.areAllActivitiesUnlocked;
+          }
+        }
+      } catch (e) {
+        // Silent fail
+      }
+      return false;
+    }
+
+    // Function to show unlocked shortcut buttons
+    function showUnlockedShortcuts() {
+      const lockedShortcuts = [
+        document.querySelector('.shortcut-1_3'), // Draw Melody
+        document.querySelector('.shortcut-2_1'), // Magical Forest
+        document.querySelector('.shortcut-2_5')  // Character Matching
+      ];
+      
+      lockedShortcuts.forEach(shortcut => {
+        if (shortcut) {
+          shortcut.style.display = 'block';
+        }
+      });
+    }
+
+    // Function to check and show unlocked shortcuts
+    function checkAndShowUnlockedShortcuts() {
+      if (getUnlockStatusFromAlpine()) {
+        showUnlockedShortcuts();
+      }
+    }
+
     // Show background image when page is fully loaded, but keep overlay visible until clicked
     window.addEventListener('load', function() {
       setTimeout(function() {
@@ -515,23 +553,24 @@
         if (activityShortcuts) {
           activityShortcuts.style.display = 'block';
           
-          // Hide locked activities if not unlocked
-          const isUnlocked = false;
-          console.log('DEBUG_ALL_UNLOCK: isUnlocked result:', isUnlocked);
+          // Initially hide all locked activities
           const lockedShortcuts = [
             document.querySelector('.shortcut-1_3'), // Draw Melody
             document.querySelector('.shortcut-2_1'), // Magical Forest
             document.querySelector('.shortcut-2_5')  // Character Matching
           ];
           
-          lockedShortcuts.forEach((shortcut, index) => {
+          // Hide them initially
+          lockedShortcuts.forEach(shortcut => {
             if (shortcut) {
-              console.log('DEBUG_ALL_UNLOCK: Setting shortcut', index, 'display to:', isUnlocked ? 'block' : 'none');
-              shortcut.style.display = isUnlocked ? 'block' : 'none';
-            } else {
-              console.log('DEBUG_ALL_UNLOCK: Shortcut', index, 'not found');
+              shortcut.style.display = 'none';
             }
           });
+          
+          // Check unlock status after 3 seconds when Alpine.js is fully loaded
+          setTimeout(() => {
+            checkAndShowUnlockedShortcuts();
+          }, 3000);
         }
       }, 100);
     });
