@@ -163,7 +163,7 @@ reset-button:
 - alle feedback messages, die falsch sagen sollen ein längeres delay haben
 
 # text at bottom:
-- die div soll nicht springen, wenn sie schon gut positioniert sind, sollen sie da bleiben, wo sie sind
+- vereinheitlichen als ein conteiner im index, der immer befüllt wird
 
 # play store:
 - In die Texte dass der Bildschirm gesperrt ist

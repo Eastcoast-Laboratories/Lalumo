@@ -410,63 +410,63 @@
     <div class="image-map-container" id="activity-shortcuts" style="display: none;" x-data>
       <!-- High or Low -->
       <div class="clickable-area shortcut-1_1" 
-           @click="active = 'pitches'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'pitches', mode: '1_1_pitches_high_or_low'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           @click="isHashNavigation = true; window.location.hash = '1_1'; hideLoadingOverlay()" 
            aria-label="High or Low">
         <span class="area-label">🐭 <span x-text="$store.strings?.high_or_low || 'High or Low'"></span></span>
       </div>
       
       <!-- Match Sounds -->
       <div class="clickable-area shortcut-1_2" 
-           @click="active = 'pitches'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'pitches', mode: '1_2_pitches_match-sounds'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           @click="isHashNavigation = true; window.location.hash = '1_2'; hideLoadingOverlay()" 
            aria-label="Match Mode">
         <span class="area-label">🎵 <span x-text="$store.strings?.match_sounds || 'Up or Down'"></span></span>
       </div>
       
       <!-- Draw Melody -->
       <div class="clickable-area shortcut-1_3" 
-           @click="active = 'pitches'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'pitches', mode: '1_3_pitches_draw-melody'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           @click="isHashNavigation = true; window.location.hash = '1_3'; hideLoadingOverlay()" 
            aria-label="Draw Mode">
         <span class="area-label">✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span></span>
       </div>
       
       <!-- Does it Sound Right -->
       <div class="clickable-area shortcut-1_4" 
-           @click="active = 'pitches'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'pitches', mode: '1_4_pitches_does-it-sound-right'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           @click="isHashNavigation = true; window.location.hash = '1_4'; hideLoadingOverlay()" 
            aria-label="Does it Sound Right">
         <span class="area-label">👉 <span x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></span></span>
       </div>
       
       <!-- Memory Game -->
       <div class="clickable-area shortcut-1_5" 
-           @click="active = 'pitches'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'pitches', mode: '1_5_pitches_memory-game'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           @click="isHashNavigation = true; window.location.hash = '1_5'; hideLoadingOverlay()" 
            aria-label="Memory Mode">
         <span class="area-label">🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span></span>
       </div>
       
       <!-- One or Many -->
       <div class="clickable-area shortcut-2_6" 
-           @click="active = 'chords'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_6_chords_one_or_many'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           @click="isHashNavigation = true; window.location.hash = '2_6'; hideLoadingOverlay()" 
            aria-label="One or Many">
         <span class="area-label">🦇 <span x-text="$store.strings?.one_or_many || 'One or Many'"></span></span>
       </div>
       
       <!-- Stable or Unstable -->
       <div class="clickable-area shortcut-2_2" 
-           @click="active = 'chords'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_2_chords_stable_unstable'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           @click="isHashNavigation = true; window.location.hash = '2_2'; hideLoadingOverlay()" 
            aria-label="Stable or Unstable">
         <span class="area-label">🏞️ <span x-text="$store.strings?.chords_stable_unstable || 'Stable or Unstable'"></span></span>
       </div>
       
       <!-- Magical Forest -->
       <div class="clickable-area shortcut-2_1" 
-           @click="active = 'chords'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_1_chords_color-matching'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           @click="isHashNavigation = true; window.location.hash = '2_1'; hideLoadingOverlay()" 
            aria-label="Magical Forest">
         <span class="area-label">🌈 <span x-text="$store.strings?.chord_color_matching || 'Magical Forest'"></span></span>
       </div>
       
       <!-- Character Matching -->
       <div class="clickable-area shortcut-2_5" 
-           @click="active = 'chords'; isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_5_chords_characters'}); window.innerWidth < 1024 ? menuOpen = false : null; hideLoadingOverlay()" 
+           @click="isHashNavigation = true; window.location.hash = '2_5'; hideLoadingOverlay()" 
            aria-label="Character Matching">
         <span class="area-label">🎭 <span x-text="$store.strings?.chord_characters || 'Character Matching'"></span></span>
       </div>
