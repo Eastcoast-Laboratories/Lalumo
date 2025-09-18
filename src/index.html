@@ -912,7 +912,7 @@
 
     <!-- Chapter: Pitch Chapters View -->
     <section class="chapters-view" x-show="active === 'pitches'" x-transition>
-      <div x-data="pitches()" x-init="init()">
+      <div class="chapters-container" x-data="pitches()" x-init="init()">
         
         <!-- High or Low Activity -->
         <div id="1_1_pitches" x-show="mode === '1_1_pitches_high_or_low'" class="activity-container lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_1_sloth_mouse.jpg" style="background-size: cover; background-position: top left;
@@ -1159,33 +1159,10 @@
         </div>
       </div>
     </section>
-
-    <!-- Chapter: Tone Colors -->
-    <section class="chapters-view" x-show="active === 'tonecolors'" x-transition>
-      <div x-data="tonecolors" x-init="init()">
-        <h2>Discover Tone Colors</h2>
-        <div class="tone-grid">
-          <div class="tone-card" @click="pick('warm')">
-            <div class="tone-icon warm"></div>
-            <p>Warm</p>
-          </div>
-          <div class="tone-card" @click="pick('cold')">
-            <div class="tone-icon cold"></div>
-            <p>Cold</p>
-          </div>
-        </div>
-      </div>
-    </section>
-    
-    <!-- Chapter: Rhythm -->
-    <section class="chapters-view" x-show="active === 'rhythms'" x-transition>
-      <h2>Rhythm Exercises</h2>
-      <p>Coming soon!</p>
-    </section>
     
     <!-- Chapter: Chords -->
     <section class="chapters-view" x-show="active === 'chords'" x-transition class="chord-chapters-view lazyload-bg" data-background-image="./x.gif" style="background-size: cover; background-position: top center; border-radius: 0;">
-      <div x-data="chords()" x-init="init()">
+      <div class="chapters-container" x-data="chords()" x-init="init()">
         
         <!-- Main chord activity selection screen -->
         <div x-show="!mode || mode === 'main'" class="chord-landing">
@@ -1492,8 +1469,8 @@
           <div class="progress-display progress_2_6">
             <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['2_6'] || 0)"></p>
             <p x-show="(progress['2_6'] || 0) < 10" x-text="$store.strings?.one_or_many_level1 || 'Can you hear if it is one note or many notes?'"></p>
-            <p x-show="(progress['2_6'] || 0) >= 10 && (progress['2_6'] || 0) < 20" x-text="$store.strings?.one_or_many_level2 || 'Great job! Now with closer intervals! 🎵'"></p>
-            <p x-show="(progress['2_6'] || 0) >= 20 && (progress['2_6'] || 0) < 30" x-text="$store.strings?.one_or_many_level3 || 'Level 3: Complex harmonies vs. single tones! 🎼'"></p>
+            <p x-show="(progress['2_6'] || 0) >= 10 && (progress['2_6'] || 0) < 20" x-text="$store.strings?.one_or_many_level2 || 'Level 2: Basic triads (3 notes) vs. single tones! 🎵'"></p>
+            <p x-show="(progress['2_6'] || 0) >= 20 && (progress['2_6'] || 0) < 30" x-text="$store.strings?.one_or_many_level3 || 'Level 3: Triads and 4-note chords vs. single tones! 🎼'"></p>
             <p x-show="(progress['2_6'] || 0) >= 30" x-text="$store.strings?.one_or_many_master || 'You are a One or Many Master! 🎉'"></p>
           </div>
           <!-- Play buttons -->
@@ -1542,6 +1519,20 @@
       </div>
     </section>
     
+    <!-- Chapter: Tone Colors -->
+    <section class="chapters-view" x-show="active === 'tonecolors'" x-transition>
+      <div x-data="tonecolors" x-init="init()">
+        <h2>Discover Tone Colors</h2>
+        <p>Coming soon!</p>
+      </div>
+    </section>
+    
+    <!-- Chapter: Rhythm -->
+    <section class="chapters-view" x-show="active === 'rhythms'" x-transition>
+      <h2>Rhythm Exercises</h2>
+      <p>Coming soon!</p>
+    </section>
+
     <!-- Chapter: Free Play -->
     <section class="chapters-view" x-show="active === 'freeplay'" x-transition>
       <h2>Free Play Mode</h2>

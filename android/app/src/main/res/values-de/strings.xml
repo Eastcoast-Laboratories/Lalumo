@@ -133,8 +133,8 @@
     <string name="many_notes">Viele Töne</string>
     <string name="replay_sound">Sound wiederholen</string>
     <string name="one_or_many_level1">Kannst du hören ob es ein Ton oder viele Töne sind?</string>
-    <string name="one_or_many_level2">Gut gemacht! Jetzt mit engeren Intervallen! 🎵</string>
-    <string name="one_or_many_level3">Stufe 3: Komplexe Harmonien vs. einzelne Töne! 🎼</string>
+    <string name="one_or_many_level2">Grundakkorde (3 Töne) vs. einzelne Töne! 🎵</string>
+    <string name="one_or_many_level3">Dreiklänge und 4-Ton-Akkorde vs. einzelne Töne! 🎼</string>
     <string name="one_or_many_master">Du bist ein Ein-oder-Viele Meister! 🎉</string>
     <string name="play_incomplete_chord">Unvollständigen Akkord spielen</string>
     <string name="root">Grundton</string>
