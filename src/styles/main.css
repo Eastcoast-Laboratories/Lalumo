@@ -1588,11 +1588,6 @@ section h2 {
   background-color: white;
 }
 
-#\31 _1_pitches .progress-display{
-  position: fixed !important;
-  bottom: -1rem !important;
-}
-
 #button_2_5_1_major:hover, #button_2_5_1_minor:hover, #button_2_5_1_augmented:hover, #button_2_5_1_diminished:hover{
   opacity: 0.05;
 }
@@ -1719,7 +1714,7 @@ section h2 {
 
 /* Progress Display Box */
 .progress-display {
-  position: fixed;
+  position: absolute;
   bottom: -0.7rem;
   left: 50%;
   transform: translateX(-50%);
@@ -1733,21 +1728,12 @@ section h2 {
   margin: 0 auto;
 }
 
-/* Specific positioning for 2_2 stable/unstable progress box */
-.progress_2_2 {
-  position: fixed;
-  bottom: -12px;
-  padding-bottom: 19px;
-}
-
-#\31_1_pitches .progress-display {
+#\31 _1_pitches .progress-display {
   position: absolute;
   bottom: 0.5rem;
 }
-/* Specific positioning for 2_6 one or many progress box - move into white area */
-#\32_6_chords_one_or_many .progress_2_6 {
-  bottom: -2rem; /* Move further down into the lighter area of the background */
-}
+/* Specific positioning for 2_6 one or many progress box - move into white area 
+#\32 _6_chords_one_or_many .progress_2_6 { bottom: -2rem; }*/
 
 .melody-name {
   position: absolute;
@@ -1863,7 +1849,7 @@ section h2 {
   z-index: 100;
 }
 
-#\31_1_pitches > .circular-play-button{
+#\31 _1_pitches > .circular-play-button{
   height: min(36vw, 268px) !important;
   position: absolute;
   top: 0px;
@@ -2629,10 +2615,10 @@ section h2 {
 
 /* Progress display for High or Low */
 .high-low-progress, .progress_2_5 {
-  position: fixed;
-  bottom: -37px;
+  position: absolute;
+  bottom: 3px;
   background: rgba(255, 255, 255, 0.5);
-  padding: 5px 4px 61px 4px;
+  padding: 5px 4px 10px 4px;
   border-radius: 15px;
   font-size: 14px;
   color: #333;
@@ -2732,11 +2718,16 @@ button {
   right: 0;
   bottom: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   z-index: 90; /* Lower z-index to keep below the hamburger menu */
   margin: 0;
   padding: 0;
   overflow: hidden;
+}
+
+.chapters-container{
+  width: 100%;
+  height: 100%;
 }
 
 /* Limit width on larger screens */
@@ -2771,7 +2762,6 @@ button {
   max-width: 523px;
   height: 99vh;
   min-height: 71vh;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 #\32 _1_chords_color-matching, #\32 _5_chords_characters {
