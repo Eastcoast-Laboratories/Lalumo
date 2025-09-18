@@ -2270,9 +2270,6 @@ export function pitches() {
     },
     
     /**
-     * Stop any currently playing sound
-     */
-    /**
      * Stops all currently playing sounds and resets UI state
      * This is a critical method for preventing sound overlap issues
      * @activity common
@@ -4079,14 +4076,11 @@ export function pitches() {
         }
       }
     },
-    
-    /**
-     * Setup for the "Does It Sound Right?" activity
-     * @param {boolean} playSound - Whether to play a melody right away
-     */
+
     /**
      * Selects random animal images from the available arrays
      * Updates currentGoodAnimalImage and currentBadAnimalImage
+     * @used_by 1_4_pitches_does-it-sound-right
      */
     selectRandomAnimalImages() {
       debugLog('PITCHES', 'ANIMALS: Selecting random animal images');

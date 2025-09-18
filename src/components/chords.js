@@ -281,9 +281,6 @@ export function chords() {
     },
     
     /**
-     * Initialize audio context on user interaction
-     */
-    /**
      * Initialize the central audio engine for chord playback
      */
     async initAudio() {
@@ -320,13 +317,6 @@ export function chords() {
       }
     },
     
-    /**
-     * Play a chord based on type and root note
-     * @param {string} chordType - The type of chord (major, minor, etc.)
-     * @param {string} rootNote - The root note of the chord (e.g., 'C4')
-     * @activity all
-     * @used_by 2_1_chord_color_matching, 2_4_missing_note
-     */
     /**
      * Generate a new transpose amount for chords at progress level >= 30
      * Creates random transposition to increase difficulty at higher levels

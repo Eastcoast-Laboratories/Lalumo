@@ -298,13 +298,6 @@ export function playIntroAudio(message) {
   const audioPath = `/sounds/info-messages/${audioFile}`;
   debugLog('INTRO_AUDIO', 'Attempting to play audio:', message, 'file:', audioPath);
   
-  // Check if user has interacted with the page (required for autoplay)
-  if (!document.hasStoredUserActivation && !window.hasUserInteracted) {
-    debugLog('INTRO_AUDIO', 'Skipping audio - no user interaction yet (browser autoplay policy)');
-    return;
-  }
-  
-  debugLog('INTRO_AUDIO', 'User interaction check passed, proceeding with audio playback');
   
   try {
     const audio = new Audio(audioPath);
