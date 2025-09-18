@@ -1417,22 +1417,24 @@ section h2 {
   height: 100vh;
   max-width: 600px;
   margin: 0 auto;
-  margin-top: 122px;
+  margin-top: 0;
 }
 
 #start-game-mode-2_1, #play-chord-2_1{
-  opacity: 0.02;
+  opacity: 0.2;
   position: absolute;
   top: min(38%, 50vw);
   width: 22%;
-  height: 31%;
+  height: 19%;
   margin-bottom: 60px;
   left: 39%;
   z-index: 100;
 }
 
 .magical-element-grid > div{
-  opacity: 0.02;
+  opacity: 0.2;
+  width: 10%;
+  height: 9%;
 }
 
 /* Individual positioning for each magical element to match background */
@@ -1440,64 +1442,48 @@ section h2 {
   position: absolute;
   left: 3%;
   top: min(43%, 52vw);
-  width: 60px;
-  height: 60px;
 }
 
 #button_2_1_mushroom {
   position: absolute;
   left: 8%;
-  top: min(19%, 17vw);
-  width: 60px;
-  height: 60px;
+  top: min(29%, 40vw);
 }
 
 #button_2_1_crystal {
   position: absolute;
   left: 21%;
   top: min(53%, 66vw);
-  width: 60px;
-  height: 60px;
 }
 
 #button_2_1_flower {
   position: absolute;
   left: 82%;
   top: min(13%, 11vw);
-  width: 60px;
-  height: 60px;
 }
 
 #button_2_1_flame {
   position: absolute;
   right: 6%;
   top: min(34%, 43vw);
-  width: 60px;
-  height: 60px;
 }
 
 #button_2_1_feather {
   position: absolute;
   left: 15%;
   top: min(64%, 90vw);
-  width: 60px;
-  height: 60px;
 }
 
 #button_2_1_acorn {
   position: absolute;
   left: 58%;
   top: min(59%, 75vw);
-  width: 60px;
-  height: 60px;
 }
 
 #button_2_1_lantern {
   position: absolute;
   right: 13%;
   top: min(11%, 13vw);
-  width: 60px;
-  height: 60px;
   margin-top: -8vw;
 }
 

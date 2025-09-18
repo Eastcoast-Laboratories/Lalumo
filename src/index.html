@@ -1138,12 +1138,6 @@
         <!-- 2_1 Chords - Studio Ghibli Color Matching Activity -->
         <div id="2_1_chords_color-matching" x-show="mode === '2_1_chords_color-matching'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_1.jpg">
           
-          <!-- start-button, shown in free play mode -->
-          <button id="start-game-mode-2_1" @click="is2_1FreePlayMode = false; window.start2_1GameMode($data); $event.stopPropagation();" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" class="play-button" x-show="is2_1FreePlayMode" style="font-size: 2em; cursor: pointer;" :title="$store.strings?.start_game || 'Start Game Mode'">🦉</button>
-          
-          <!-- Play button (shown in game mode) -->
-          <button id="play-chord-2_1" @click="window.playCurrent2_1Chord($data)" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" class="play-button" x-show="!is2_1FreePlayMode" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
-
           <div class="chords-container">            
             <!-- Progress display -->
             <div class="progress-display progress_2_1">
@@ -1151,6 +1145,13 @@
             </div>
             
             <div class="magical-element-grid">
+              <!-- start-button, shown in free play mode -->
+              <button id="start-game-mode-2_1" @click="is2_1FreePlayMode = false; window.start2_1GameMode($data); $event.stopPropagation();" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" class="play-button" x-show="is2_1FreePlayMode" style="font-size: 2em; cursor: pointer;" :title="$store.strings?.start_game || 'Start Game Mode'">🦉</button>
+              
+              <!-- Play button (shown in game mode) -->
+              <button id="play-chord-2_1" @click="window.playCurrent2_1Chord($data)" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" class="play-button" x-show="!is2_1FreePlayMode" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
+
+              
               <div id="button_2_1_fruit" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('fruit', $data); blurElement($event)"
                    @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
                    :title="$store.strings?.chord_element_fruit_major || 'Major'">
