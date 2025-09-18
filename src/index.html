@@ -497,11 +497,11 @@
         const loadingOverlay = document.getElementById('loading-overlay');
         loadingOverlay.style.backgroundImage = 'url(./images/backgrounds/pitches_bird_sings.jpg)';
         
-        // Always fill full height, maintain aspect ratio
+        // Always show complete image with white borders if needed
         // If screen is wider than image: show white borders left/right
-        // If screen is narrower than image: crop left/right sides
-        loadingOverlay.style.backgroundSize = 'auto 100vh';
-        loadingOverlay.style.backgroundPosition = 'center';
+        // If screen is taller than image: show white borders top/bottom
+        loadingOverlay.style.backgroundSize = 'contain';
+        loadingOverlay.style.backgroundPosition = 'top';
         loadingOverlay.style.backgroundRepeat = 'no-repeat';
         
         // Hide spinner and show background
@@ -512,16 +512,26 @@
         
         // Show activity shortcuts
         const activityShortcuts = document.getElementById('activity-shortcuts');
-        if (activityShortcuts) activityShortcuts.style.display = 'block';
-        
-        // Add click instruction
-        if (!loadingOverlay.querySelector('.click-instruction')) {
-          const instruction = document.createElement('div');
-          instruction.className = 'click-instruction';
-          instruction.innerHTML = '▶';
-          instruction.style.visibility = 'visible';
-          instruction.title = 'Start';
-          loadingOverlay.appendChild(instruction);
+        if (activityShortcuts) {
+          activityShortcuts.style.display = 'block';
+          
+          // Hide locked activities if not unlocked
+          const isUnlocked = false;
+          console.log('DEBUG_ALL_UNLOCK: isUnlocked result:', isUnlocked);
+          const lockedShortcuts = [
+            document.querySelector('.shortcut-1_3'), // Draw Melody
+            document.querySelector('.shortcut-2_1'), // Magical Forest
+            document.querySelector('.shortcut-2_5')  // Character Matching
+          ];
+          
+          lockedShortcuts.forEach((shortcut, index) => {
+            if (shortcut) {
+              console.log('DEBUG_ALL_UNLOCK: Setting shortcut', index, 'display to:', isUnlocked ? 'block' : 'none');
+              shortcut.style.display = isUnlocked ? 'block' : 'none';
+            } else {
+              console.log('DEBUG_ALL_UNLOCK: Shortcut', index, 'not found');
+            }
+          });
         }
       }, 100);
     });
