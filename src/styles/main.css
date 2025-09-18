@@ -13,6 +13,7 @@
   color: white;
   font-size: 3rem;
   visibility: hidden;
+  cursor: pointer;
 }
 
 /* Pulse animation for splash screen */
@@ -1330,7 +1331,7 @@ section h2 {
   position: absolute;
   width: 50%;
   height: min(701px, 93vw);
-  top: min(267px, 43vw);
+  top: min(285px, 50vw);
   border-radius: 20px;
   display: flex;
   justify-content: center;
@@ -2764,10 +2765,9 @@ button {
 .activity-container {
   border-radius: 20px;
   margin: 3% auto 5% auto;
-  padding: 20px;
+  padding: 0;
   position: relative;
   z-index: 10;
-  width: 85%;
   max-width: 523px;
   height: 99vh;
   min-height: 71vh;
