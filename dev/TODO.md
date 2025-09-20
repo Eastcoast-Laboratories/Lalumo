@@ -163,7 +163,7 @@ reset-button:
 - alle feedback messages, die falsch sagen sollen ein längeres delay haben
 
 # text at bottom:
-- vereinheitlichen als ein conteiner im index, der immer befüllt wird
+- vereinheitlichen als ein container im index, der immer befüllt wird
 
 # play store:
 - In die Texte dass der Bildschirm gesperrt ist

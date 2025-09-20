@@ -2858,16 +2858,19 @@ button {
 
 .area-label {
   display: none;
-  position: absolute;
+  position: relative;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 8px 12px;
-  font-size: 1rem;
+  background-color: rgba(125, 125, 125, 0.2);
+  color: black;
+  padding: 0.1vw;
+  font-size: 3.3vw;
+  line-height: 1.1;
   text-align: center;
-  white-space: nowrap;
+  white-space: normal;
+  word-wrap: break-word;
+  border-radius: 0.6vw;
   pointer-events: none;
 }
 
@@ -2878,74 +2881,146 @@ button {
 /* Position the clickable areas - responsive using min() */
 .shortcut-1_1 {
   position: absolute;
-  top: min(15%, 20vw);
+  top: 20vw;
   left: 10%;
-  width: min(18%, 22vw);
-  height: min(12%, 15vw);
+  width: 22vw;
+  height: 15vw;
 }
 
 .shortcut-1_2 {
   position: absolute;
-  top: min(25%, 30vw);
+  top: 30vw;
   right: 15%;
-  width: min(20%, 25vw);
-  height: min(15%, 18vw);
+  width: 25vw;
+  height: 18vw;
 }
 
 .shortcut-1_3 {
   position: absolute;
-  top: min(65%, 80vw);
+  top: 80vw;
   left: 40%;
-  width: min(20%, 25vw);
-  height: min(15%, 18vw);
+  width: 25vw;
+  height: 18vw;
 }
 
 .shortcut-1_4 {
   position: absolute;
-  top: min(35%, 45vw);
+  top: 45vw;
   left: 8%;
-  width: min(22%, 28vw);
-  height: min(16%, 20vw);
+  width: 28vw;
+  height: 20vw;
 }
 
 .shortcut-1_5 {
   position: absolute;
-  top: min(45%, 55vw);
+  top: 55vw;
   right: 15%;
-  width: min(20%, 25vw);
-  height: min(15%, 18vw);
+  width: 25vw;
+  height: 18vw;
 }
 
 .shortcut-2_6 {
   position: absolute;
-  top: min(55%, 70vw);
+  top: 70vw;
   left: 12%;
-  width: min(19%, 24vw);
-  height: min(14%, 17vw);
+  width: 24vw;
+  height: 14vw;
 }
 
 .shortcut-2_2 {
   position: absolute;
-  top: min(75%, 95vw);
+  top: 95vw;
   right: 20%;
-  width: min(21%, 26vw);
-  height: min(13%, 16vw);
+  width: 26vw;
+  height: 16vw;
 }
 
 .shortcut-2_1 {
   position: absolute;
-  top: min(8%, 12vw);
+  top: 12vw;
   right: 8%;
-  width: min(17%, 21vw);
-  height: min(11%, 14vw);
+  width: 24vw;
+  height: 14vw;
 }
 
 .shortcut-2_5 {
   position: absolute;
-  top: min(85%, 110vw);
+  top: 110vw;
   left: 35%;
-  width: min(23%, 29vw);
-  height: min(17%, 21vw);
+  width: 29vw;
+  height: 21vw;
+}
+
+/* Fixed layout for screens with aspect ratio 0.667 or wider - shortcuts positioned relative to centered background */
+@media (min-aspect-ratio: 1024/1536) {
+  .area-label {
+    font-size: 2vh;
+  }
+  .clickable-area {
+    border-radius: 1.6vh;
+  }
+  .shortcut-1_1 {
+    left: calc(50% - 28vh + 5vh);
+    top: 15%;
+    width: 10vh;
+    height: 8vh;
+  }
+
+  .shortcut-1_2 {
+    right: calc(50% - 28vh + 8vh);
+    top: 25%;
+    width: 11vh;
+    height: 10vh;
+  }
+
+  .shortcut-1_3 {
+    left: calc(50% - 28vh + 22vh);
+    top: 65%;
+    width: 11vh;
+    height: 10vh;
+  }
+
+  .shortcut-1_4 {
+    left: calc(50% - 28vh + 4vh);
+    top: 35%;
+    width: 12vh;
+    height: 11vh;
+  }
+
+  .shortcut-1_5 {
+    right: calc(50% - 28vh + 8vh);
+    top: 45%;
+    width: 11vh;
+    height: 10vh;
+  }
+
+  .shortcut-2_6 {
+    left: calc(50% - 28vh + 6vh);
+    top: 55%;
+    width: 14vh;
+    height: 9vh;
+  }
+
+  .shortcut-2_2 {
+    right: calc(50% - 28vh + 11vh);
+    top: 75%;
+    width: 11vh;
+    height: 8vh;
+  }
+
+  .shortcut-2_1 {
+    right: calc(50% - 28vh + 4vh);
+    top: 8%;
+    width: 13vh;
+    height: 7vh;
+  }
+
+  .shortcut-2_5 {
+    left: calc(50% - 28vh + 19vh);
+    top: 85%;
+    width: 12vh;
+    height: 11vh;
+  }
 }
 
 .mode-instructions {
