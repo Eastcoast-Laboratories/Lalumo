@@ -945,6 +945,9 @@
           <button @click="active = 'datenschutz'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'datenschutz' }">
             🔒 <span x-text="$store.strings?.menu_datenschutz || 'Datenschutz'"></span>
           </button>
+          <button @click="active = 'help'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'help' }">
+            ❓ <span>Help</span>
+          </button>
           <button @click="active = 'credits'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'credits' }">
             🏆 <span x-text="$store.strings?.menu_credits || 'Credits'"></span>
           </button>
@@ -954,6 +957,10 @@
           <!-- Play Store Link - nur in Web-App anzeigen (nicht in Android oder iOS) -->
           <a x-show="!$store.isAndroidApp() && !$store.isIOSApp()" href="https://play.google.com/store/apps/details?id=com.lalumo.app" target="_blank" class="menu-button">
             <img src="images/get_on_playstore.png" alt="Play Store" style="height: 45px; vertical-align: middle; margin-right: 5px;">
+          </a>
+          <!-- F-Droid Link - nur in Web-App anzeigen (nicht in Android oder iOS) -->
+          <a x-show="!$store.isAndroidApp() && !$store.isIOSApp()" href="https://f-droid.org/packages/com.lalumo.app/" target="_blank" class="menu-button">
+            <img src="images/get_on_f-droid.png" alt="F-Droid" style="height: 45px; vertical-align: middle; margin-right: 5px;">
           </a>
         </div>
       </div>
@@ -1591,14 +1598,16 @@
     <!-- Legal: Impressum & Datenschutz - included from partials/impress.html -->
     <div data-include="partials/impress_privacy.html"></div>
     
+    <!-- Help: Activity Guide - included from partials/help.html -->
+    <div data-include="partials/help.html"></div>
+    
     <!-- Legal: Credits - included from partials/credits.html -->
     <div data-include="partials/credits.html">
       <!-- Vorübergehende Fallback-Version bis das Partial geladen wird -->
       <section x-show="active === 'credits' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
         <h2 x-text="$store.strings?.credits_header || 'Credits'"></h2>
         <div class="legal-content">
-          <h3 x-text="$store.strings?.version_label || 'Version'"></h3>
-          <p id="app-version">Version 2.1 (21)</p>
+          <p>Loading credits...</p>
         </div>
       </section>
     </div>
