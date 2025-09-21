@@ -937,7 +937,7 @@ export function app() {
         this.unlockProgress = 0;
         document.documentElement.style.setProperty('--unlock-progress', 0);
         // Also update the <html lang> attribute
-        document.documentElement.lang = language === "german" ? "de" : "en";
+        document.documentElement.lang = this.preferredLanguage === "german" ? "de" : "en";
         debugLog('APP', 'Unlock canceled');
       }
     },
