@@ -741,8 +741,8 @@ body {
 }
 
 .hamburger-button {
-  margin-left: 30px;
-  margin-top: 25px;
+  margin-left: 4vh;
+  margin-top: 3.3vh;
 }
 
 /* Menu Lock Button */
@@ -753,10 +753,10 @@ body {
   cursor: pointer;
   display: flex;
   align-items: center;
-  padding: 0.5rem;
-  margin-right: 0.75rem;
-  margin-top: 60px;
-  margin-left: 0.4rem;
+  padding: 1.1vh;
+  margin-right: 1.6vh;
+  margin-top: 8vh;
+  margin-left: 0.9vh;
   z-index: 2500; /* above main menu but below landscape warning layer */
   transition: all 0.3s ease;
 }
@@ -769,16 +769,16 @@ body {
 /* Container für das Schloss-Icon und den Fortschrittsindikator */
 .lock-icon-container {
   position: relative;
-  width: 2rem;
-  height: 2rem;
+  width: 2vh;
+  height: 2vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .lock-icon {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 2vh;
+  height: 2vh;
   color: #333;
   transition: all 0.3s ease;
   position: relative;
@@ -841,24 +841,24 @@ body {
 
 .hamburger-button {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
+  top: 2.1vh;
+  left: 2.1vh;
   background-color: var(--primary-color);
   border: none;
   border-radius: 50%;
-  width: 3rem;
-  height: 3rem;
+  width: 4.4vh;
+  height: 4.4vh;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.3vh 0.7vh rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
 }
 
 .hamburger-icon {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 2.2vh;
+  height: 2.8vh;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -867,16 +867,16 @@ body {
 
 .hamburger-icon span {
   display: block;
-  width: 100%;
-  height: 3px;
+  width: 93%%;
+  height: 0.4vh;
   background-color: white;
-  border-radius: 3px;
+  border-radius: 0.4vh;
   transition: all 0.3s ease;
 }
 
 /* Transform hamburger to X when menu is open */
 .menu-open .hamburger-icon span:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
+  transform: translateY(1.1vh) rotate(45deg);
 }
 
 .menu-open .hamburger-icon span:nth-child(2) {
@@ -884,7 +884,7 @@ body {
 }
 
 .menu-open .hamburger-icon span:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
+  transform: translateY(-1.1vh) rotate(-45deg);
 }
 
 .menu-content {
@@ -892,11 +892,11 @@ body {
   top: 0;
   left: 0;
   width: 85%;
-  max-width: 300px;
+  max-width: 40vh;
   height: 100%;
   background-color: white;
-  padding: 5rem 1rem 2rem;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  padding: 10.7vh 2.1vh 2.7vh; /* 5rem=80px=10.7vh, 1rem=16px=2.1vh, 2rem=32px=2.7vh */
+  box-shadow: 0.3vh 0 0.7vh rgba(0, 0, 0, 0.2); /* 2px=0.3vh, 5px=0.7vh */
   overflow-y: auto;
   z-index: 90; /* Lower than lock button but higher than regular content */
   /* Ensure menu content doesn't cause layout issues */
@@ -907,28 +907,28 @@ body {
 
 .menu-content h2 {
   color: var(--primary-color);
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
-  border-bottom: 2px solid var(--accent-color);
-  padding-bottom: 0.5rem;
+  margin-bottom: 3.2vh;
+  font-size: 2.5vh;
+  border-bottom: 0.3vh solid var(--accent-color);
+  padding-bottom: 1.1vh;
 }
 
 .menu-content h3 {
   color: var(--secondary-color);
-  margin: 1rem 0;
-  font-size: 1.2rem;
+  margin: 1vh 0;
+  font-size: 1.7vh;
 }
 
 .menu-chapters, .menu-activities {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding-top: 1rem;
+  gap: 0.5vh;
+  padding-top: 1vh;
 }
 
 .menu-spacer {
   flex-grow: 1;
-  min-height: 40px;
+  min-height: 5.3vh;
 }
 
 /* Ensure the menu is scrollable when content exceeds the viewport height */
@@ -937,7 +937,7 @@ body {
   position: relative;
   overflow: visible; /* Ensure container doesn't clip content */
   z-index: 1500; /* High enough but below lock button */
-  max-width: 20px; /* TODO: warum ist dies so klein trotzdem ok? wenn breiter, dann überlappt der immer den home button , obwohl der einen höheren z-index hat */
+  max-width: 2.7vh; /* 20px = 2.7vh TODO: warum ist dies so klein trotzdem ok? wenn breiter, dann überlappt der immer den home button , obwohl der einen höheren z-index hat */
 }
 
 /* Ensure scrolling container properly shows all content */
@@ -952,13 +952,13 @@ body {
 }
 
 .menu-settings, .menu-legal {
-  margin-top: 10px;
+  margin-top: 1.3vh;
   width: 100%;
-  padding-bottom: 10px;
+  padding-bottom: 1.3vh;
   min-height: fit-content;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 0.7vh;
 }
 
 /* Settings button with avatar */
@@ -966,29 +966,29 @@ body {
   display: flex !important;
   align-items: center !important;
   justify-content: flex-start !important;
-  gap: 10px;
-  padding: 8px 12px !important;
+  gap: 1.3vh;
+  padding: 1.1vh 1.6vh !important;
   position: relative;
   z-index: 85; /* Higher than general player settings */
 }
 
 /* Language preference section */
 .language-section {
-  margin: 20px 0;
+  margin: 2.7vh 0;
 }
 
 .language-options {
   display: flex;
-  gap: 15px;
-  margin-top: 10px;
+  gap: 2vh;
+  margin-top: 1.3vh;
 }
 
 .language-button {
-  padding: 10px 20px;
-  border-radius: 8px;
+  padding: 1.3vh 2.7vh;
+  border-radius: 1.1vh;
   background-color: #f0f0f0;
-  border: 2px solid transparent;
-  font-size: 16px;
+  border: 0.3vh solid transparent;
+  font-size: 1.4vh;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1017,46 +1017,51 @@ body {
 
 /* Make bottom buttons more prominent and ensure they're visible */
 .menu-legal {
-  margin-bottom: 100px; /* Force extra space after legal section */
+  margin-bottom: 13.4vh; /* 100px = 13.4vh Force extra space after legal section */
 }
 
 .menu-legal button {
-  margin-bottom: 10px;
-  padding: 15px;
-  border-radius: 8px;
-  /* Make buttons stand out more */
-  background-color: #f0f0f0;
-  font-weight: 500;
-  font-size: 1.1em;
+  flex: 1;
+  min-width: fit-content;
+  margin-bottom: 0.7vh;
+  padding: 1.5vh 1vh;
+  border-radius: 1.1vh;
+  background-color: #f5f5f5;
+  border: none;
+  color: var(--text-color);
+  font-size: 1.5vh;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .menu-legal button:last-child {
-  margin-bottom: 150px; /* Force extra space after last button */
+  margin-bottom: 20vh; /* 150px = 20vh Force extra space after last button */
 }
 
 .legal-content {
-  padding: 1rem 0;
+  padding: 2.1vh 0;
 }
 
 .menu-content button,
 .menu-content a[role="button"] {
   background-color: #f5f5f5;
   border: none;
-  border-radius: 0.5rem;
-  padding: 0.8rem 1rem;
+  border-radius: 1.1vh;
+  padding: 1.1vh 1.4vh;
   text-align: left;
-  font-size: 1rem;
+  font-size: 1.4vh;
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
-  color: inherit;
+  color: var(--text-color);
+  width: 100%;
   display: block;
 }
 
 .menu-content button:hover,
 .menu-content a[role="button"]:hover {
   background-color: var(--accent-color);
-  transform: translateX(5px);
+  transform: translateX(0.7vh);
 }
 
 .menu-content button.active,
@@ -1067,23 +1072,23 @@ body {
 }
 
 .menu-open .hamburger-button {
-  left: 10px; /* Fixed position at left corner */
+  left: 1.3vh; /* 10px = 1.3vh Fixed position at left corner */
   right: auto;
-  top: 10px;
-  max-width: calc(300px - 1.5rem);
+  top: 0.3vh;
+  max-width: calc(40vh - 3.2vh);
   z-index: 1001; /* Ensure it's above other elements */
 }
 
 .hamburger-button {
-  left: -1.5rem;
-  top: -1.5em;
+  left: -3.2vh;
+  top: -2.2vh;
 }
 
 /* Desktop Menu Styles - activate at reasonable width */
 @media (min-aspect-ratio: 16/9) {
   /* Container layout modifications */
   .container {
-    padding-left: 130px; /* Increased space for the menu plus margin */
+    padding-left: 17.4vh; /* 130px = 17.4vh Increased space for the menu plus margin */
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;
@@ -1091,13 +1096,13 @@ body {
   
   /* Menu positioning on desktop */
   .desktop-menu {
-    width: 300px;
+    width: 40vh;
   }
   
   .desktop-menu .menu-content {
     position: fixed;
-    width: 300px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    width: 40vh;
+    box-shadow: 0.3vh 0 0.7vh rgba(0, 0, 0, 0.1);
   }
   
   .desktop-menu .hamburger-button {
@@ -1107,7 +1112,7 @@ body {
   
   /* Ensure sections take appropriate space */
   section {
-    padding: 2rem;
+    padding: 4.3vh;
     width: 100%;
     box-sizing: border-box;
   }
