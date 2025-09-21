@@ -93,7 +93,7 @@ export function update2_5ButtonsVisibility(component) {
 }
 
 /**
- * Updates the background image based on progress in the character matching activity
+ * Updates the background image based on progress in the Chord Characters activity
  * @param {Object} component - The Alpine component instance
  */
 export function update_2_5Background(component) {

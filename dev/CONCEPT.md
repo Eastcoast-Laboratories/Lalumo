@@ -28,7 +28,7 @@ The app playfully teaches preschool children a basic understanding of music – 
  - Stable or Unstable: (2_2_chords_stable_unstable)
  - Chord Building: (2_3_chords_chord-building)
  - Missing Note: (2_4_chords_missing-note)
- - Character Matching: (2_5_chords_characters)
+ - Chord Characters: (2_5_chords_characters)
  - One or Many: (2_6_chords_one_or_many)
 
 ##### Implementation of with Tone.js
@@ -242,7 +242,7 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
   A chord is played with one note missing. Children must identify which note completes the chord by selecting from options, developing their ear for harmony.
     - Geht schon, aber viel zu schwer für kleine Kinder
 
-[x] **Chord Story Characters: (2_5_chords_characters)**
+[x] **Chord Characters: (2_5_chords_characters)**
   Different chord types are represented by distinct characters with matching personalities (e.g. a happy dog character for major, mysterious octopus character for diminished). Children match characters to the chords they hear.
   1. When entering the activity, users can freely click any chord character to hear what it sounds like (free play mode)
   2. When ready to begin the learning game, click the owl button

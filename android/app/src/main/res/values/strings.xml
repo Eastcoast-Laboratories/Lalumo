@@ -82,7 +82,7 @@
     <string name="chords_stable_unstable">Stable or Unstable</string>
     <string name="chord_building">Chord Building</string>
     <string name="missing_note">Guess the Missing Note</string>
-    <string name="chord_characters">Chord Story Characters</string>
+    <string name="chord_characters">Chord Characters</string>
     <string name="one_or_many">One or Many</string>
     
     <!-- Chords - Magical Forest Activity -->
@@ -205,7 +205,7 @@
     <!-- Referrals Page Strings -->
     <string name="unlock_chords">Unlock more activities</string>
     <string name="unlock_special_activities">Unlock more Activities</string>
-    <string name="referral_instruction">Share Lalumo with your friends to unlock more activities: Draw a Melody, Chord Story Characters and Magical Forest Chords!</string>
+    <string name="referral_instruction">Share Lalumo with your friends to unlock more activities: Draw a Melody, Chord Characters and Magical Forest Chords!</string>
     <string name="referrals_premium">successful referrals: Unlock more activities</string>
     <string name="referrals_future">successful referrals: Get future updates for free</string>
     <string name="register_username">Register Your Username</string>

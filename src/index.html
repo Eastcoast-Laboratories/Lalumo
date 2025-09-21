@@ -464,11 +464,11 @@
         <span class="area-label">🌈 <span x-text="$store.strings?.chord_color_matching || 'Magical Forest'"></span></span>
       </div>
       
-      <!-- Character Matching -->
+      <!-- Chord Characters -->
       <div class="clickable-area shortcut-2_5" 
            @click="isHashNavigation = true; window.location.hash = '2_5'; hideLoadingOverlay()" 
-           aria-label="Character Matching">
-        <span class="area-label">🎭<br><span x-text="$store.strings?.chord_characters || 'Character Matching'"></span></span>
+           aria-label="Chord Characters">
+        <span class="area-label">🎭<br><span x-text="$store.strings?.chord_characters || 'Chord Characters'"></span></span>
       </div>
     </div>
 
@@ -511,7 +511,7 @@
       const lockedShortcuts = [
         document.querySelector('.shortcut-1_3'), // Draw Melody
         document.querySelector('.shortcut-2_1'), // Magical Forest
-        document.querySelector('.shortcut-2_5')  // Character Matching
+        document.querySelector('.shortcut-2_5')  // Chord Characters
       ];
       
       lockedShortcuts.forEach(shortcut => {
@@ -557,7 +557,7 @@
           const lockedShortcuts = [
             document.querySelector('.shortcut-1_3'), // Draw Melody
             document.querySelector('.shortcut-2_1'), // Magical Forest
-            document.querySelector('.shortcut-2_5')  // Character Matching
+            document.querySelector('.shortcut-2_5')  // Chord Characters
           ];
           
           // Hide them initially
@@ -826,16 +826,16 @@
             >
               🎼 <span x-text="$store.strings?.missing_note || 'Missing Note'"></span>
             </a>
-            <!-- Locked version of Chord Story Characters (visible when not unlocked) -->
+            <!-- Locked version of Chord Characters (visible when not unlocked) -->
             <button id="nav_2_5_locked"
               x-show="!areAllActivitiesUnlocked"
               @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"
               class="locked-activity"
             >
-              🔒 🎭 <span x-text="$store.strings?.chord_characters || 'Character Matching'"></span>
+              🔒 🎭 <span x-text="$store.strings?.chord_characters || 'Chord Characters'"></span>
             </button>
             
-            <!-- Unlocked version of Chord Story Characters (visible when unlocked through referrals) -->
+            <!-- Unlocked version of Chord Characters (visible when unlocked through referrals) -->
             <a href="#2_5" id="nav_2_5"
               x-show="areAllActivitiesUnlocked"
               @click="isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_5_chords_characters'}); window.innerWidth < 1024 ? menuOpen = false : null"
@@ -845,10 +845,10 @@
               role="button"
               tabindex="0"
             >
-              🎭 <span x-text="$store.strings?.chord_characters || 'Character Matching'"></span>
+              🎭 <span x-text="$store.strings?.chord_characters || 'Chord Characters'"></span>
             </a>
             
-            <!-- Debug button for Chord Story Characters (always available) -->
+            <!-- Debug button for Chord Characters (always available) -->
             <a href="#2_5" id="nav_2_5_debug"
               class="debug-element"
               @click="isHashNavigation=true; $dispatch('set-activity-mode', {component: 'chords', mode: '2_5_chords_characters'}); window.innerWidth < 1024 ? menuOpen = false : null"
@@ -858,7 +858,7 @@
               role="button"
               tabindex="0"
             >
-              Debug 🎭 <span x-text="$store.strings?.chord_characters || 'Character Matching'"></span>
+              Debug 🎭 <span x-text="$store.strings?.chord_characters || 'Chord Characters'"></span>
             </a>
 
             <!-- Locked version of Magical Forest (visible when not unlocked) -->
@@ -867,7 +867,7 @@
               @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"
               class="locked-activity"
             >
-              🔒 🌈 <span x-text="$store.strings?.chord_color_matching || 'Magical Forest'"></span>
+              🔒 🌈 <span x-text="$store.strings?.chord_color_matching || 'Magical Forest Chords'"></span>
             </button>
             
             <!-- Unlocked version of Magical Forest (visible when unlocked through referrals) -->
@@ -880,7 +880,7 @@
               role="button"
               tabindex="0"
             >
-              🌈 <span x-text="$store.strings?.chord_color_matching || 'Magical Forest'"></span>
+              🌈 <span x-text="$store.strings?.chord_color_matching || 'Magical Forest Chords'"></span>
             </a>
             
             <!-- Debug button for Magical Forest (always available) -->
@@ -1474,7 +1474,7 @@
           </div>
         </div>
         
-        <!-- 2_5 Chords - Character Matching Activity -->
+        <!-- 2_5 Chords - Chord Characters Activity -->
         <div id="2_5_chords_characters" x-show="mode === '2_5_chords_characters'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg">
           
           <!-- start-button, shown in free play mode -->

@@ -239,7 +239,7 @@ test.describe('Lalumo Hash Navigation', () => {
     try {
       const chordActivities = [
         { id: '2_2', name: 'Stable or Unstable', selector: '[id="2_2_chords_stable_unstable"]' },
-        { id: '2_5', name: 'Character Matching', selector: '[id="2_5_chords_characters"]' }
+        { id: '2_5', name: 'Chord Characters', selector: '[id="2_5_chords_characters"]' }
       ];
       
       // Teste Navigation zu jeder Chord-Aktivität

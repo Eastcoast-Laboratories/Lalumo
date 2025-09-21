@@ -752,8 +752,8 @@ export function chords() {
           window.start2_4MissingNote(this);
         }
       } else if (mode === '2_5_chords_characters') {
-        // Initialisierung für Character Matching
-        debugLog('CHORDS', 'Initializing character matching activity');
+        // Initialisierung für Chord Characters
+        debugLog('CHORDS', 'Initializing Chord Characters activity');
         
         // Always ensure we start in free play mode when entering the activity
         this.is2_5FreePlayMode = true;
@@ -1384,7 +1384,7 @@ export function chords() {
     },
     
     /** *************************************************
-     * ******** Character Matching Activity Methods ********
+     * ******** Chord Characters Activity Methods ********
      * *************************************************** */
     /**
      * Free play mode flag for 2_5_chord_characters
@@ -1410,7 +1410,7 @@ export function chords() {
      */
     currentTransposeAmount: 0,
     /**
-     * Start game mode for the character matching activity
+     * Start game mode for the Chord Characters activity
      * Switches from free play mode to game mode
      * 
      * @activity 2_5_chord_characters
@@ -1458,7 +1458,7 @@ export function chords() {
     },
     
     /**
-     * Play the current chord for the character matching activity
+     * Play the current chord for the Chord Characters activity
      * 
      * @activity 2_5_chord_characters
      */

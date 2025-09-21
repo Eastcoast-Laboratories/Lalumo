@@ -2227,7 +2227,7 @@ export function app() {
      *    - 2_2:XX - Sets chord Stable or Unstable progress to XX (stored in lalumo_chords_progress JSON)
      *    - 2_3:XX - Sets chord building progress to XX (stored in lalumo_chords_progress JSON)
      *    - 2_4:XX - Sets chord missing note progress to XX (stored in lalumo_chords_progress JSON)
-     *    - 2_5:XX - Sets chord character matching progress to XX (stored in lalumo_chords_progress JSON)
+     *    - 2_5:XX - Sets chord Chord Characters progress to XX (stored in lalumo_chords_progress JSON)
      *    - 2_6:XX - Sets one or many progress to XX (stored in lalumo_chords_progress JSON)
      * 
      * 2. Combined values (with secondary values):
@@ -2236,7 +2236,7 @@ export function app() {
      *    - 1_4:6s10 - Sets sound judgment level to 6 and streak to 10
      * 
      * 3. Multiple cheats at once (comma separated):
-     *    - 2_5:30,1_5:8 - Sets chord character matching to 30 and memory game to 8
+     *    - 2_5:30,1_5:8 - Sets chord Chord Characters to 30 and memory game to 8
      * 
      * @param {string} code - The cheatcode string
      * @returns {boolean} - Success status
