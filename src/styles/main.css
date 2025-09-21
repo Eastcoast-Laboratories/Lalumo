@@ -190,7 +190,7 @@
 }
 
 /* Alternative check for mobile devices in landscape */
-@media screen and (orientation: landscape) and (max-width: 1024px) and (max-height: 768px) {
+@media screen and (orientation: landscape) and (max-aspect-ratio: 16/9) {
   .portrait-notice {
     display: flex !important;
   }
@@ -945,7 +945,6 @@ body {
 .hamburger-container.menu-open .menu-content {
   max-height: 100vh; 
   overflow-y: auto;
-  max-width: 90%;
   /* Make sure menu stays on the side and doesn't overlap center content */
   position: fixed;
   left: 0;
@@ -1080,8 +1079,8 @@ body {
   top: -1.5em;
 }
 
-/* Desktop Menu Styles */
-@media (min-width: 1024px) {
+/* Desktop Menu Styles - activate at reasonable width */
+@media (min-aspect-ratio: 16/9) {
   /* Container layout modifications */
   .container {
     padding-left: 130px; /* Increased space for the menu plus margin */
@@ -1119,17 +1118,6 @@ body {
   }
 }
 
-/* Tablet Styles */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .menu-open .hamburger-button {
-    left: calc(300px - 4.8rem);
-    top: -1em;
-  }
-  
-  section {
-    padding: 1rem;
-  }
-}
 
 /* Main content adjustments */
 main {
@@ -1797,7 +1785,7 @@ section h2 {
 }
 
 /* on wide screens, feedback must be positioned from the right border */
-@media (min-width: 1024px) {
+@media (min-aspect-ratio: 16/9) {
   .feedback-message {
     left: auto;
     right: -236px;
@@ -2513,7 +2501,7 @@ section h2 {
 }
 
 /* Responsive design */
-@media (max-width: 768px) {
+@media (max-aspect-ratio: 4/3) {
   .navigation {
     flex-direction: column;
     align-items: stretch;
@@ -2731,7 +2719,7 @@ button {
 }
 
 /* Limit width on larger screens */
-@media (min-width: 1024px) {
+@media (min-aspect-ratio: 16/9) {
   .chapters-view > div {
     width: 70%;
     margin: 0 auto;
