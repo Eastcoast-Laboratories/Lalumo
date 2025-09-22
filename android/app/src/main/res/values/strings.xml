@@ -47,6 +47,23 @@
     <string name="language_english">English</string>
     <string name="language_german">Deutsch</string>
     
+    <!-- Help Guide -->
+    <string name="help_header">Help &amp; Activity Guide</string>
+    
+    <!-- Pitch Activities Help -->
+    <string name="help_high_or_low">You start in Free-Play mode, where you can click on the mule to hear a low note or the mouse to hear a high note. Click the Bird to start the chellenge, where you hear a tone, then click the mouse for \"High\" or the mule for \"Low\" to choose which kind of tone it was.</string>
+    <string name="help_match_sounds">You start in Free-Play mode, where you can click on the pattern images (rocket for up, slide for down, waves, and frog) to hear different melody patterns. Click the bird to start the challenge, where you hear a melody and must click the pattern that matches what you heard.</string>
+    <string name="help_draw_melody">You start in Free-Play mode, where you can freely draw inside the sandpit and listen to the melody your painting results in. Click the Mage to start the challenge, then draw the melody\'s shape on the canvas. The line should go up when the melody goes higher and down when it goes lower. Click on the notes on the top to hear the melody again. Click the unicorn to create a new melody.</string>
+    <string name="help_does_it_sound_right">You start in Listen-Mode, where you can click on the members of the band to hear different songs with differing instruments. Click the play button at the bottom to start the challenge where you hear a song and click the left happy animal if it sounds correct or the right sad animal if it has a few silly notes.</string>
+    <string name="help_memory_game">When you enter the activity, you can play freely on the piano keys. Click the bird to start the memory challenge where you must repeat increasingly long sequences on the piano.</string>
+    
+    <!-- Chord Activities Help -->
+    <string name="help_chords_chapter">Chords Chapter</string>
+    <string name="help_one_or_many">Free-Play mode: click the deer to the left to hear one note or the bats on the right to hear many notes. Click the owl to start the challenge, where you listen to sounds and decide if you hear one note or many notes playing together.</string>
+    <string name="help_stable_unstable">Free-Play mode: try the \"Stable\" left side with the fox and the \"Unstable\" right side with the spiderweb. Click the bird to start the challenge, where you listen to chords and decide if they sound stable (resolved) or unstable (tense).</string>
+    <string name="help_chord_characters">Free-Play mode: click different character buttons to hear the chords: happy dog for major, sad cat for minor, astonished squirrel for diminished, mystic octopus for augmented. Click the owl to start the challenge, where you listen to chords and match them to their character personalities.</string>
+    <string name="help_magical_forest">Free-Play mode: try the scattered elements in the forest to hear different chord progressions. Click the flower in the middle to start the challenge, where you listen to chord progressions and match them to their correct elements in the magical forest.</string>
+    
     <!-- Melodies & Pitches -->
     <string name="play_melody">Play melody</string>
     <string name="high_or_low">High or Low</string>

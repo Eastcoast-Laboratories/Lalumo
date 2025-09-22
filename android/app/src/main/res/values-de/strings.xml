@@ -47,6 +47,24 @@
     <string name="language_english">English</string>
     <string name="language_german">Deutsch</string>
     
+       
+    <!-- Help Guide -->
+    <string name="help_header">Hilfe &amp; Aktivitäten-Anleitung</string>
+    
+    <!-- Pitch Activities Help -->
+    <string name="help_high_or_low">Du startest im Freispiel-Modus, wo du auf den Maulwurf klicken kannst, um einen tiefen Ton zu hören, oder auf die Maus für einen hohen Ton. Klicke auf den Vogel, um die Herausforderung zu starten, bei der du einen Ton hörst und dann auf das richtige Tier klickst.</string>
+    <string name="help_match_sounds">Du startest im Freispiel-Modus, wo du auf die Bilder klicken kannst (Rakete für hoch, Rutsche für runter, Wellen und Frosch), um verschiedene Melodiemuster zu hören. Klicke auf den Vogel, um die Herausforderung zu starten, bei der du eine Melodie hörst und das passende Bild anklicken musst.</string>
+    <string name="help_draw_melody">Du startest im Freispiel-Modus, wo du frei im Sandkasten zeichnen und der Melodie lauschen kannst, die dein Gemälde erzeugt. Klicke auf den Magier, um die Herausforderung zu starten, dann zeichne die Form der Melodie auf die Leinwand nach. Die Linie sollte nach oben gehen, wenn die Melodie höher wird, und nach unten, wenn sie tiefer wird. Klicke auf den Kasten mit den Noten oben, um die Melodie nochmal zu hören. Klicke auf das Einhorn für eine neue Melodie.</string>
+    <string name="help_does_it_sound_right">Du startest im Anhör-Modus, wo du auf die Bandmitglieder klicken kannst, um verschiedene Lieder auf unterschiedlichen Instrumenten gespielt zu hören. Klicke auf den Play-Button unten, um die Herausforderung zu starten, bei der du ein Lied hörst und dann entweder auf das linke fröhliche Tier klickst, wenn es korrekt gespielt klang, oder auf das rechte traurige Tier, wenn es falsche Töne hatte.</string>
+    <string name="help_memory_game">Zuerst kannst du frei auf den Klaviertasten spielen. Klicke auf den Vogel, um die Gedächtnis-Herausforderung zu starten, bei der du immer längere Tonfolgen auf dem Klavier wiederholen musst.</string>
+    
+    <!-- Chord Activities Help -->
+    <string name="help_chords_chapter">Akkorde-Kapitel</string>
+    <string name="help_one_or_many">Freispiel-Modus: Klicke auf das Reh links, um eine Note zu hören, oder auf die Fledermäuse rechts für viele Noten. Klicke auf die Eule, um die Herausforderung zu starten, bei der du Töne hörst und entscheidest, ob du eine Note oder viele Noten gleichzeitig hörst.</string>
+    <string name="help_stable_unstable">Freispiel-Modus: Probiere die "Stabile" linke Seite mit dem Fuchs und die "Instabile" rechte Seite mit dem Spinnennetz aus, wie sie unterschiedlich klingen. Klicke auf den Vogel, um die Herausforderung zu starten, bei der du Akkorde hörst und entscheidest, ob sie stabil (angenehm) oder instabil (gespannt) klingen.</string>
+    <string name="help_chord_characters">Freispiel-Modus: Klicke auf die Tiere, um die Akkorde zu hören: fröhlicher Hund für Dur, traurige Katze für Moll, erschrockenes Eichhörnchen für vermindert, mystischer Oktopus für übermäßig. Klicke auf die Eule, um die Herausforderung zu starten, bei der du Akkorde hörst und sie ihren Charakter-Persönlichkeiten zuordnest.</string>
+    <string name="help_magical_forest">Freispiel-Modus: Probiere die verstreuten Dinge im Wald aus, um verschiedene Akkorde zu hören. Klicke auf die Blume in der Mitte, um die Herausforderung zu starten, bei der du einen Akkord hörst und dann dem richtigen Element im magischen Wald zuordnest.</string>
+ 
     <!-- Melodies & Pitches -->
     <string name="play_melody">Melodie abspielen</string>
     <string name="high_or_low">Hoch oder Tief</string>
