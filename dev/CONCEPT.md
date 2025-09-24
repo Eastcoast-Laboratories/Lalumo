@@ -70,6 +70,8 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
 [x] the up and down melodies should start at a random note
 
 [x] **1.1. "High or low?":** (1_1_pitches_high_or_low)
+    **Help Description:** You start in Free-Play mode, where you can click on the mule to hear a low note or the mouse to hear a high note. Click the Bird to start the challenge, where you hear a tone, then click the mouse for "High" or the mule for "Low" to choose which kind of tone it was.
+    
     Kinder sollen den Unterschied zwischen einer hohen und einer tiefen Note durch Hören erkennen – ohne musikalische Vorkenntnisse, rein intuitiv.
 
     🧠 **Pädagogisches Prinzip**
@@ -78,13 +80,10 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
     - Sie wählen, ob der Ton höch oder tief war
 
     🧩 **Ablauf**
-    - Vogel mit Play-Button zwitschert den Ton als halbe Note (wie in 1_2_match_sounds)
-    - Zwei große Tier-Buttons sind auf dem hintergrund zu sehen, darüber sollen zwei pitch-cards für "hoch" und für "tief"
-      - Schmetterling (hoch, fliegt nach oben)
-      - Maulwurf (tief, taucht nach unten)
-    - Kind wählt eines der Tiere
-    - Feedback:
-      - Richtig und falsch, "wie bei 1_2_match_sounds"
+    - **Free-Play Mode**: Maulwurf (tief) und Maus (hoch) können angeklickt werden zum Erkunden
+    - **Challenge Start**: Vogel-Button startet die Herausforderung
+    - **Challenge**: Ein Ton wird gespielt, dann Auswahl zwischen Maus ("High") oder Maulwurf ("Low")
+    - Feedback: Richtig und falsch, "wie bei 1_2_match_sounds"
 
     🎶 **Technische Umsetzung**
     - Tonerzeugung über Tone.js (triggerAttackRelease)
@@ -101,40 +100,62 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
     - Tonunterschiede werden kleiner (nur ein Ganzton) dabei werden dann 2 töne gespielt: der basiston C4 und dann ein höherer oder ein tieferer
     - Drei statt zwei Auswahlmöglichkeiten (hoch – gleich – tief)
 
-    🐦 **High Note Animals** | 🐢 **Low Note Animals**
+    🐦 **Aktuelle Implementierung:**
+    - **High**: Mouse (Maus)
+    - **Low**: Mule (Maulwurf)
+    - **Challenge Starter**: Bird (Vogel)
+    
+    🐦 **Alternative Animals** | 🐢 **Alternative Animals**
     --------------------------|-------------------------
     Hummingbird               | Tortoise
-    Butterfly                 | Mole
-    Bird (canary/sparrow)     | Bear
-    Squirrel (jumping)        | Elephant
-    Mouse (on tiptoes)        | Hippo
+    Butterfly                 | Bear
+    Bird (canary/sparrow)     | Elephant
+    Squirrel (jumping)        | Hippo
     Cat (meowing/leaping)     | Crocodile
     Frog (mid-jump)           | Sloth
-    Monkey (swinging) | Buffalo
-    Deer (alert, upright) | Ox
-    Owl (flying) | Whale
-[x] **1.2. "Up or Down" to Images and listening to Pitch Movements:**
+    Monkey (swinging)         | Buffalo
+    Deer (alert, upright)     | Ox
+    Owl (flying)              | Whale
+
+[x] **1.2. "Up or Down" to Images and listening to Pitch Movements:** (Match Sounds)
+  **Help Description:** You start in Free-Play mode, where you can click on the pattern images (rocket for up, slide for down, waves, and frog) to hear different melody patterns. Click the bird to start the challenge, where you hear a melody and must click the pattern that matches what you heard.
+  
   Children listen to short melodic sequences where tones move upwards, downwards, in waves, or make jumps. Each movement is represented visually (a rocket for up, a slide for down, waves for undulating patterns, a frog or spring for jumps). when play is pressed, the child must select the one that matches the direction or character of the melody they just heard. The progress is saved. when the child has selected the correct image 10 times, the next image is unlocked (first waves, then frog).
+
 [x] **1.3. "Draw a Melody":**
-  Children can “draw” a melody by dragging their finger or mouse, creating a visual curve. The app plays back a melody that follows the drawn curve, reinforcing the connection between visual movement and pitch. the progress is saved.
+  **Help Description:** You start in Free-Play mode, where you can freely draw inside the sandpit and listen to the melody your painting results in. Click the Mage to start the challenge, then draw the melody's shape on the canvas. The line should go up when the melody goes higher and down when it goes lower. Click on the notes on the top to hear the melody again. Click the unicorn to create a new melody.
+  
+  **Activity Flow:**
+  - **Free-Play Mode**: Freies Zeichnen im Sandkasten mit sofortigem Melody-Feedback
+  - **Challenge Start**: Magier-Button startet die Herausforderung
+  - **Challenge**: Melody-Form nachzeichnen auf der Leinwand (hoch/runter entsprechend der Tonhöhe)
+  - **Replay**: Noten-Button oben für Melody-Wiederholung
+  - **New Melody**: Einhorn-Button generiert neue Melodie
+  
+  Children can "draw" a melody by dragging their finger or mouse, creating a visual curve. The app plays back a melody that follows the drawn curve, reinforcing the connection between visual movement and pitch. the progress is saved.
+
 [x] **1.4. "Memory Game":**
-  Simple “repeat the melody” exercises: the app plays a short melody, and the child tries to reproduce it by tapping virtual keys or buttons. Visual aids (like colored steps or animated animals) help guide the sequence. the progress is saved. when the child has repeated the melody correctly 3 times, the melody is one note longer, ...
+  **Help Description:** When you enter the activity, you can play freely on the piano keys. Click the bird to start the memory challenge where you must repeat increasingly long sequences on the piano.
+  
+  Simple "repeat the melody" exercises: the app plays a short melody, and the child tries to reproduce it by tapping virtual keys or buttons. Visual aids (like colored steps or animated animals) help guide the sequence. the progress is saved. when the child has repeated the melody correctly 3 times, the melody is one note longer, ...
+
 [x] **1.5. "Does It Sound Right?": (1_4_does-it-sound-right)**
-  Children listen to a well-known melody. Sometimes a wrong note sneaks in! Kids decide if the tune sounds right or wrong – with the help of friendly animals.
+  **Help Description:** You start in Listen-Mode, where you can click on the members of the band to hear different songs with differing instruments. Click the play button at the bottom to start the challenge where you hear a song and click the left happy animal if it sounds correct or the right sad animal if it has a few silly notes.
+  
+  Kinder hören ein bekanntes Lied. Manchmal schleicht sich eine falsche Note ein! Kinder entscheiden, ob das Lied richtig oder falsch klingt – mit Hilfe freundlicher Tiere.
 
-  Goal:
-  Develop auditory discrimination by identifying whether a melody is correct or contains a "silly" (off-key) note.
+  Ziel:
+  Entwicklung der auditiven Diskrimination durch Erkennen, ob eine Melodie korrekt ist oder eine "silly" (falsche) Note enthält.
 
-  How It Works:
-    - A familiar children’s melody is played.
-    - Sometimes the melody is correct, sometimes it contains one wrong (dissonant) note.
-    - The child hears the melody once and then chooses:
-     - Happy animal (e.g. cat, rabbit): “Sounds good!”
-     - Silly or angry animal (e.g. skunk, spider): “Sounds wrong!”
-    - If the answer is correct, the same default positive feedback like in "melody game".
-    - If incorrect, the melody is repeated, and the child can try again.
+  **Ablauf der Aktivität:**
+    - **Listen-Mode**: Bandmitglieder anklicken für verschiedene Lieder mit unterschiedlichen Instrumenten
+    - **Challenge Start**: Play-Button unten startet die Herausforderung
+    - **Challenge**: Ein Lied wird gespielt (korrekt oder mit falschen Tönen)
+    - **Wahl**: Linkes fröhliches Tier ("Klingt richtig") oder rechtes trauriges Tier ("Hat falsche Töne")
+    - Wenn die Antwort richtig ist, erhalten Sie das gleiche Standard-Feedback wie im "Melody-Spiel".
+    - Wenn die Antwort falsch ist, wird die Melodie wiederholt und das Kind kann es erneut versuchen.
 
-  Melodies:
+  Melodien:
 
   |Englisch	                      |Deutsch
   |Twinkle, Twinkle, Little Star	|Funkel, funkel, kleiner Stern
@@ -145,7 +166,7 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
   |Are You Sleeping?	            |Schlaf, Kindlein, schlaf
   |Hänschen klein
   |All my ducklings               |Alle meine Entchen
-  |Old MacDonald	                |Alte Macdonald
+  |Old MacDonald	                |Old Macdonald
 
 Learning Outcome:
 Children start developing musical ear and confidence by noticing when something doesn’t sound “quite right.” It’s fun and silly, not about being perfect!
@@ -165,8 +186,17 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
 #### in details:
 
 [x] **Chord Magical Forest: (2_1_chords_color-matching)**
+  **Help Description:** Free-Play mode: try the scattered elements in the forest to hear different chord progressions. Click the flower in the middle to start the challenge, where you listen to chord progressions and match them to their correct elements in the magical forest.
+  
+  **Activity Flow:**
+  - **Free-Play Mode**: Verstreute Elemente im Wald ausprobieren für verschiedene Akkordfolgen
+  - **Challenge Start**: Blume in der Mitte startet die Herausforderung
+  - **Challenge**: Akkordfolge hören und dem richtigen Element im magischen Wald zuordnen
+  - **8 Chord Types**: Major, Minor, Diminished, Augmented, Dominant7, Major7, Sus2, Sus4
+  - **Visual Elements**: Each chord represented by magical forest element (fruit, mushroom, crystal, etc.)
+  
   Major chords are represented by bright colors, minor chords by cooler or darker colors. Children listen to a chord and select which color best matches what they hear, developing emotional understanding of harmony.
-    - this is nearly the same as 2_5 but with more chords and far too complicated for children, but maybe a chellenge for adutlts, so suggest a background image in the style of Studio Ghibli, that would be more for adults than children
+    - this is nearly the same as 2_5 but with more chords and far too complicated for children, but maybe a challenge for adults, so suggest a background image in the style of Studio Ghibli, that would be more for adults than children
   
   # technical
   - delete all code from the current 2_1 activity
@@ -213,14 +243,16 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
   - wenn ja benutze ihn als basis ür einen neuen playwright test für 2_1 und teste ihn ausführlich, bis alles geht
 
 [x] **Stable or Unstable Chords: (2_2_chords_stable_unstable)**
+  **Help Description:** Free-Play mode: try the "Stable" left side with the fox and the "Unstable" right side with the spiderweb. Click the bird to start the challenge, where you listen to chords and decide if they sound stable (resolved) or unstable (tense).
+  
   This activity helps children develop their ear for consonance and dissonance by distinguishing between stable (consonant) and unstable (dissonant) chords. 
   
   **Activity Flow:**
-  1. The app plays either a stable or unstable chord that includes a prominent base note and additional chord tones (total of 6-7 notes)
-  2. Stable chords use harmonious intervals based on the base note (major/minor 3rds, perfect 5ths, consonant extensions) creating a sense of resolution
-  3. Unstable chords contain dissonant intervals against the base note (minor 2nds, tritones, clashing 7ths) creating tension
-  4. The child identifies whether the chord sounds "stable" (pleasant/at rest) or "unstable" (tense/needing resolution)
-  5. Visual feedback reinforces the learning with appropriate imagery (e.g., calm landscapes for stable, stormy for unstable)
+  - **Free-Play Mode**: Linke Seite mit Fuchs ("Stable") und rechte Seite mit Spinnennetz ("Unstable") ausprobieren
+  - **Challenge Start**: Vogel-Button startet die Herausforderung
+  - **Challenge**: Akkord wird gespielt, Entscheidung zwischen "Stable" (aufgelöst) oder "Unstable" (gespannt)
+  - **Technical**: Stable chords use harmonious intervals, unstable chords contain dissonant intervals
+  - Visual feedback reinforces the learning with appropriate imagery (fox for stable, spiderweb for unstable)
   
   **Educational Value:**
   - Develops aural recognition of harmonic tension and resolution
@@ -243,6 +275,8 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
     - Geht schon, aber viel zu schwer für kleine Kinder
 
 [x] **Chord Characters: (2_5_chords_characters)**
+  **Help Description:** Free-Play mode: click different character buttons to hear the chords: happy dog for major, sad cat for minor, astonished squirrel for diminished, mystic octopus for augmented. Click the owl to start the challenge, where you listen to chords and match them to their character personalities.
+  
   Different chord types are represented by distinct characters with matching personalities (e.g. a happy dog character for major, mysterious octopus character for diminished). Children match characters to the chords they hear.
   1. When entering the activity, users can freely click any chord character to hear what it sounds like (free play mode)
   2. When ready to begin the learning game, click the owl button
@@ -251,6 +285,8 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
 
 
 [ ] **One or many: (2_6_chords_one_or_many)
+  **Help Description:** Free-Play mode: click the deer to the left to hear one note or the bats on the right to hear many notes. Click the owl to start the challenge, where you listen to sounds and decide if you hear one note or many notes playing together.
+  
   Children hear one note or a chord and have to select if it is one note or a chord.
   # Prompt for the background image:
     A mystical forest scene at night but bright and colorfull in a green tone, vertical format 9:16, Studio Ghibli style. In the upper third on the right, a wise tawny owl (Waldkauz) sits quietly on a crooked mossy branch, glowing silver moonlight illuminating the fine texture of its feathers, with a few tiny fireflies flickering around it and faint silhouettes of small birds in the background. In the middle third, the left side shows a single lonely deer standing still in the bluish shadows, its breath faintly visible in the cold night air. On the middle right, dozens of bats are emerging from a large jagged dark cave, their wings catching faint glints of moonlight. The forest floor is rich with moss, mushrooms glowing faintly, and scattered fallen leaves. The atmosphere is mysterious, magical, and slightly eerie, with soft beams of moonlight cutting through drifting mist and deep forest tones. all very colorful and magical, glowing

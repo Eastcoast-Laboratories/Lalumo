@@ -1425,61 +1425,7 @@ section h2 {
   z-index: 100;
 }
 
-.magical-element-grid > div{
-  opacity: 0.02;
-  width: 10%;
-  height: 9%;
-}
-
-/* Individual positioning for each magical element to match background */
-#button_2_1_fruit {
-  position: absolute;
-  left: 3%;
-  top: min(53%, 75vw);
-}
-
-#button_2_1_mushroom {
-  position: absolute;
-  left: 8%;
-  top: min(29%, 40vw);
-}
-
-#button_2_1_crystal {
-  position: absolute;
-  left: 21%;
-  top: min(63%, 89vw);
-}
-
-#button_2_1_flower {
-  position: absolute;
-  left: 82%;
-  top: min(23%, 34vw);
-}
-
-#button_2_1_flame {
-  position: absolute;
-  right: 6%;
-  top: min(44%, 66vw);
-}
-
-#button_2_1_feather {
-  position: absolute;
-  left: 15%;
-  top: min(74%, 113vw);
-}
-
-#button_2_1_acorn {
-  position: absolute;
-  left: 58%;
-  top: min(69%, 98vw);
-}
-
-#button_2_1_lantern {
-  position: absolute;
-  right: 13%;
-  top: min(24%, 26vw);
-}
-
+/* 2_1 Individual positioning for each magical element to match background */
 .magical-element {
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -1488,10 +1434,12 @@ section h2 {
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 0.02;
+  width: 6vw;
+  height: 14vw;
 }
 
 .magical-element div {
@@ -1504,6 +1452,57 @@ section h2 {
   border-color: rgba(255, 255, 255, 0.5);
   transform: scale(1.05);
 }
+#button_2_1_fruit {
+  position: absolute;
+  left: 3%;
+  top: min(477px, 90vw);
+}
+
+#button_2_1_mushroom {
+  position: absolute;
+  left: 8%;
+  top: min(261px, 48vw);
+}
+
+#button_2_1_crystal {
+  position: absolute;
+  left: 21%;
+  top: min(567px, 107vw);
+  height: min(9vw, 59px);
+}
+
+#button_2_1_flower {
+  position: absolute;
+  left: 82%;
+  top: min(207px, 41vw);
+}
+
+#button_2_1_flame {
+  position: absolute;
+  right: 6%;
+  top: min(396px, 79vw);
+}
+
+#button_2_1_feather {
+  position: absolute;
+  left: 1%;
+  top: min(666px, 127vw);
+  width: min(24vw, 130px);
+}
+
+#button_2_1_acorn {
+  position: absolute;
+  left: 58%;
+  top: min(620px, 118vw);
+}
+
+#button_2_1_lantern {
+  position: absolute;
+  right: 13%;
+  top: min(216px, 31vw);
+}
+
+
 
 /* 2_4 Chord Display */
 .chord-display-container {
