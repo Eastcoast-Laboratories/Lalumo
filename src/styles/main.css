@@ -708,6 +708,7 @@ input {
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: min(16px, 3vw);
   background-color: var(--background-color);
   color: var(--text-color);
   margin: 0;
@@ -1751,7 +1752,10 @@ section h2 {
   left: 50%;
   transform: translateX(-50%);
   color: var(--text-color);
-  padding: 0.8rem 1.5rem;
+  padding-left: min(12px, 1.5vw);
+  padding-right: min(55px, 6vw);
+  padding-top: min(5px, 0.5vw);
+  padding-bottom: min(12px, 1.5vw);
   background-color: rgba(255, 255, 255, 0.35);
   border-radius: 0 0 1rem 1rem;
   text-align: center;
@@ -2538,7 +2542,7 @@ section h2 {
   }
   
   .choice-label {
-    font-size: 14px;
+    font-size: min(14px, 3vw);
   }
 }
 
@@ -2612,7 +2616,7 @@ section h2 {
   background: rgba(255, 255, 255, 0.5);
   padding: 5px 4px 10px 4px;
   border-radius: 15px;
-  font-size: 14px;
+  font-size: min(14px, 3vw);
   color: #333;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   max-width: 353px;
