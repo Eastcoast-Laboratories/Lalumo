@@ -7,6 +7,11 @@
 
 import { debugLog } from "../../utils/debug";
 
+// Audio announcement system state
+let currentActivityMode = null;
+let shortcutScreenClosed = false;
+let lastIntroMessage = null;
+
 /**
  * Unified feedback message system for both help messages and game feedback
  * @param {string} message - The message to display
@@ -149,7 +154,17 @@ export function clearFeedbackTimer() {
  */
 export function showActivityIntroMessage(activityMode, component = null, delaySeconds = 10, force = true /* TODO: should be false before release */) {
   // TODO: in 1_1 wird stattdessen noch showContextMessage aufgerufen
-  debugLog('LOG_INTRO_MESSAGE', 'activity: \'' + activityMode + '\', delaySeconds: ' + delaySeconds + ', force: ' + force);
+  debugLog('AUDIO_SYSTEM', 'showActivityIntroMessage called:', { activityMode, delaySeconds, force, shortcutScreenClosed });
+  
+  // Store current activity mode and intro message details
+  currentActivityMode = activityMode;
+  lastIntroMessage = { activityMode, component, delaySeconds };
+  
+  // Don't play if shortcut screen is still open (unless forced)
+  if (!shortcutScreenClosed && !force) {
+    debugLog('AUDIO_SYSTEM', 'Delaying intro message until shortcut screen is closed');
+    return;
+  }
   
   // Check if this intro message has already been shown in this session
   if (!force && shownIntroMessages.has(activityMode)) {
@@ -740,6 +755,120 @@ export function hideActivityProgressBar(progressClass = 'activity-progress') {
   }
 }
 
+/**
+ * Repeat the last intro message for the current activity
+ */
+export function repeatLastIntroMessage() {
+  debugLog('AUDIO_SYSTEM', 'Repeat requested for current activity');
+  
+  // Stop any currently playing announcement first
+  if (currentIntroAudio) {
+    debugLog('AUDIO_SYSTEM', 'Stopping current announcement before repeat');
+    currentIntroAudio.pause();
+    currentIntroAudio.currentTime = 0;
+    currentIntroAudio = null;
+  }
+  
+  // Get current activity mode from Alpine store (like reset button does)
+  let activeMode = currentActivityMode; // fallback
+  let targetComponent = null;
+  
+  try {
+    const alpineStore = window.Alpine?.store ? window.Alpine.store('currentActivityMode') : null;
+    if (alpineStore && alpineStore.mode) {
+      activeMode = alpineStore.mode;
+      debugLog('AUDIO_SYSTEM', 'Got activity mode from Alpine store:', activeMode);
+      
+      if (alpineStore.component === 'pitches') {
+        targetComponent = window.pitchesComponent;
+      } else if (alpineStore.component === 'chords') {
+        targetComponent = window.chordsComponent;
+      }
+    } else {
+      // Fallback: determine from currentActivityMode string
+      if (currentActivityMode) {
+        if (currentActivityMode.includes('_pitches_')) {
+          targetComponent = window.pitchesComponent;
+          activeMode = currentActivityMode;
+        } else if (currentActivityMode.includes('_chords_')) {
+          targetComponent = window.chordsComponent;
+          activeMode = currentActivityMode;
+        }
+      }
+    }
+  } catch (error) {
+    debugLog('AUDIO_SYSTEM', 'Error accessing Alpine store:', error);
+  }
+  
+  // Call the appropriate component's showContextMessage function
+  if (targetComponent && targetComponent.showContextMessage) {
+    debugLog('AUDIO_SYSTEM', 'Calling showContextMessage for:', activeMode);
+    targetComponent.showContextMessage();
+  } else {
+    debugLog('AUDIO_SYSTEM', 'No active component found for repeat, activeMode:', activeMode, 'currentActivityMode:', currentActivityMode);
+  }
+}
+
+/**
+ * Get the current activity icon based on the current activity mode
+ * @returns {string} The Unicode icon for the current activity
+ */
+export function getCurrentActivityIcon() {
+  if (!currentActivityMode) {
+    return window.ACTIVITY_ICONS?.['audio'] || '🔊';
+  }
+  
+  // Extract activity ID from mode (e.g. '1_4_pitches_does-it-sound-right' -> '1_4')
+  const activityId = currentActivityMode.split('_').slice(0, 2).join('_');
+  debugLog('AUDIO_SYSTEM', 'Current activity icon:', { currentActivityMode, activityId, icon: window.ACTIVITY_ICONS?.[activityId] });
+  
+  return window.ACTIVITY_ICONS?.[activityId] || window.ACTIVITY_ICONS?.['audio'] || '🔊';
+}
+
+/**
+ * Called when shortcut screen is closed - triggers delayed intro messages
+ */
+export function onShortcutScreenClosed() {
+  debugLog('AUDIO_SYSTEM', 'Shortcut screen closed, checking for delayed intro message');
+  shortcutScreenClosed = true;
+  
+  // Play delayed intro message if there is one
+  if (lastIntroMessage) {
+    showActivityIntroMessage(
+      lastIntroMessage.activityMode,
+      lastIntroMessage.component,
+      lastIntroMessage.delaySeconds,
+      true // force play now
+    );
+  }
+}
+
+/**
+ * Called when first musical tone is played - interrupts current announcement
+ */
+export function onFirstTonePlayed() {
+  debugLog('AUDIO_SYSTEM', 'First tone played, stopping current announcement');
+  
+  if (currentIntroAudio) {
+    currentIntroAudio.pause();
+    currentIntroAudio.currentTime = 0;
+    currentIntroAudio = null;
+  }
+}
+
+// Listen for activity mode changes to update current activity mode
+if (typeof window !== 'undefined') {
+  window.addEventListener('set-activity-mode', (event) => {
+    const { component, mode } = event.detail;
+    debugLog('AUDIO_SYSTEM', 'Activity mode changed:', { component, mode });
+    
+    if (mode && typeof mode === 'string') {
+      currentActivityMode = mode;
+      // Activities handle their own intro messages via showContextMessage()
+    }
+  });
+}
+
 // Make functions available globally
 if (typeof window !== 'undefined') {
   window.showFeedbackMessage = showFeedbackMessage;
@@ -753,4 +882,8 @@ if (typeof window !== 'undefined') {
   window.highlightCorrectButton = highlightCorrectButton;
   window.showActivityProgressBar = showActivityProgressBar;
   window.hideActivityProgressBar = hideActivityProgressBar;
+  window.repeatLastIntroMessage = repeatLastIntroMessage;
+  window.getCurrentActivityIcon = getCurrentActivityIcon;
+  window.onShortcutScreenClosed = onShortcutScreenClosed;
+  window.onFirstTonePlayed = onFirstTonePlayed;
 }

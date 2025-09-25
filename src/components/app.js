@@ -2406,6 +2406,30 @@ export function app() {
      * Get the progress of the currently active activity
      * @returns {number} Progress value of current activity (0 if none)
      */
+    /**
+     * Get the current activity icon based on the current activity mode
+     * @returns {string} The Unicode icon for the current activity
+     */
+    getCurrentCurrentActivityIcon() {
+      try {
+        // Get current activity mode from Alpine store
+        const currentActivityMode = this.$store.currentActivityMode;
+        
+        if (currentActivityMode && currentActivityMode.mode) {
+          // Extract activity ID from mode (e.g. '1_4_pitches_does-it-sound-right' -> '1_4')
+          const activityId = currentActivityMode.mode.split('_').slice(0, 2).join('_');
+          debugLog('AUDIO_SYSTEM', 'Current activity icon from Alpine store:', { currentActivityMode, activityId, icon: window.ACTIVITY_ICONS?.[activityId] });
+          
+          return window.ACTIVITY_ICONS?.[activityId] || window.ACTIVITY_ICONS?.['audio'] || '🔊';
+        }
+        
+        return window.ACTIVITY_ICONS?.['audio'] || '🔊';
+      } catch (error) {
+        debugLog('AUDIO_SYSTEM', 'Error getting current activity icon:', error);
+        return '🔊';
+      }
+    },
+
     getCurrentActivityProgress() {
       try {
         // Get current activity mode from Alpine store

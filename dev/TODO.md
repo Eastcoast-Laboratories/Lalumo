@@ -246,8 +246,8 @@ reset-button:
     * STATUS: Playwright tests working but REAL INTERMITTENT BUG still exists in normal usage - need to use working test infrastructure to reproduce actual race conditions
   - 
 2_1_ magical forest chords (letzte activity in der navigation)
-  - Die buttons besser anordnen, dass sie über den elementen des Hintergrunds liegen
-  - level progress div unten zu tief
+  - Magical forest 7 level mit nur 1 Lösung, wo immer der nächste Akkord gedrückt wird und unten der Text angezeigt wird drücke die Blaubeeren im einen dur Akkord zu hören...
+  - level progress div unten besser anordnen
   - # bereit zur veröffentlichung
 
 2_2_chords_stable_unstable (2. activity in der navigation)
@@ -295,6 +295,16 @@ reset-button:
 - Bei Fehler: richtigen Button aufleuchten lassen als hilfe
 
 # most important
-- im web zeigt er die landscape warnung an, dass man sein gerät drehen soll. die warnung darf nur auf android oder ios kommen, auch im browser auf den geräten
+- im web zeigt er die landscape warnung an, dass man sein gerät drehen soll. die warnung darf nur auf android oder ios kommen, dort aber auch im browser auf den geräten
 
-- in allen activities: increase the highlightCorrectAnswer  timing to match repeated challenge playback : 1_1: +800ms, 1_4 + 1800ms, 2_1 -800ms, 2_2: -1500ms, 2_5: -500ms, 
+- Lalumo wenn die seite mit einem hash geladen wird, dann kein shortcut-screen
+
+- Navi Text etwas größer
+
+- 1_2 falscher Hintergrund, wenn schon 21 Progress sind aber man die App neu startet
+
+- Info Box mit ease-out langsam ausblenden
+
+# Gesprochene Texte neu erstellen in dieser art: 
+- Höre dir die Maus an, sie macht hohe Töne und das Faultier macht Tiefe. Merke dir gut wie ein hoher oder ein tiefer Ton klingt, dann drücke den Vogel um das Spiel zu starten: Hörst du einen hohen oder tiefen Ton?
+

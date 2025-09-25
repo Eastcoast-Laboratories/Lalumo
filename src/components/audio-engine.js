@@ -462,6 +462,11 @@ export class AudioEngine {
       return;
     }
     
+    // Interrupt announcement on first musical tone (except for special sounds like success/try_again)
+    if (!this._specialSounds[noteName] && window.onFirstTonePlayed) {
+      window.onFirstTonePlayed();
+    }
+    
     // Prüfen, ob es sich um einen speziellen Sound handelt
     if (this._specialSounds[noteName]) {
       debugLog('AUDIO', `Spiele speziellen Sound-Effekt: ${noteName}`);
@@ -729,6 +734,11 @@ export class AudioEngine {
     if (!this._isInitialized) {
       debugLog(['AUDIO_ENGINE', 'WARN'], 'Audio-Engine nicht initialisiert. Initialisiere zuerst mit initialize()');
       return false;
+    }
+    
+    // Interrupt announcement on first chord
+    if (window.onFirstTonePlayed) {
+      window.onFirstTonePlayed();
     }
     
     if (!notes || notes.length === 0) {

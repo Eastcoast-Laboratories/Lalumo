@@ -201,6 +201,7 @@
     <!-- Referrals Page Strings -->
     <string name="unlock_chords">Schalte weitere Aktivitäten frei</string>
     <string name="unlock_special_activities">Schalte weitere Aktivitäten frei</string>
+    <string name="repeat_announcement">Ansage wiederholen</string>
     <string name="referral_instruction">Teile Lalumo mit deinen Freunden, um mehr Aktivitäten freizuschalten: Melodie zeichnen, Akkord-Charaktere und Magical Forest Chords!</string>
     <string name="referrals_premium">erfolgreiche Empfehlungen: Mehr Aktivitäten freischalten</string>
     <string name="referrals_future">erfolgreiche Empfehlungen: Erhalte zukünftige Updates kostenlos</string>

@@ -746,6 +746,46 @@ body {
   margin-top: 3.3vh;
 }
 
+/* Audio Repeat Button */
+.repeat-button {
+  position: absolute;
+  top: 2.1vh;
+  left: 8vh;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 6vh;
+  height: 6vh;
+  font-size: 2.5vh;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+}
+
+.repeat-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
+.menu-open .repeat-button {
+  left: 9.3vh;
+  top: 0.3vh;
+}
+
+.menu-locked .repeat-button {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.desktop-menu .repeat-button {
+  display: none;
+}
+
 /* Menu Lock Button */
 .menu-lock-button {
   position: relative;
@@ -868,7 +908,7 @@ body {
 
 .hamburger-icon span {
   display: block;
-  width: 93%%;
+  width: 93%;
   height: 0.4vh;
   background-color: white;
   border-radius: 0.4vh;

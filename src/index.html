@@ -521,6 +521,11 @@
     function hideLoadingOverlay() {
       document.getElementById('loading-overlay').classList.add('hidden');
       document.body.classList.remove('loading');
+      
+      // Notify audio system that shortcut screen is closed
+      if (window.onShortcutScreenClosed) {
+        window.onShortcutScreenClosed();
+      }
     }
 
     // Function to get unlock status from Alpine.js
@@ -683,6 +688,13 @@
           <span></span>
           <span></span>
         </div>
+      </button>
+      
+      <!-- Audio Repeat button -->
+      <button class="repeat-button" 
+        @click="window.repeatLastIntroMessage && window.repeatLastIntroMessage()"
+        :title="$store.strings?.repeat_announcement || 'Repeat announcement'"
+        x-text="getCurrentCurrentActivityIcon()">
       </button>
       
       <!-- Child Lock button with progress indicator -->
