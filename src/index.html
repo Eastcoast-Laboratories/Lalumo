@@ -214,6 +214,9 @@
     }
 
     function showTooltip(event, text) {
+      // Configuration for tooltip positioning
+      const TOOLTIP_OFFSET = 25; // Distance from cursor/finger in pixels
+      
       if (!text || text.trim() === '') {
         console.log('TOOLTIP_DEBUG: No text provided', { text, event });
         return;
@@ -245,9 +248,15 @@
       
       console.log('TOOLTIP_DEBUG: Using coordinates', { clientX, clientY, hasTouch: !!event.touches });
       
-      // Position in center of screen for mobile debugging
-      const x = Math.max(10, Math.min(window.innerWidth - 200, clientX - 100));
-      const y = Math.max(50, Math.min(window.innerHeight - 100, clientY - 50));
+      // Position with configurable offset
+      const rect = tooltipElement.getBoundingClientRect();
+      let x = clientX - rect.width / 2;
+      let y = clientY - rect.height - TOOLTIP_OFFSET; // Above cursor/finger
+      
+      // Keep tooltip on screen
+      if (x < TOOLTIP_OFFSET) x = TOOLTIP_OFFSET;
+      if (x + rect.width > window.innerWidth - TOOLTIP_OFFSET) x = window.innerWidth - rect.width - TOOLTIP_OFFSET;
+      if (y < TOOLTIP_OFFSET) y = clientY + TOOLTIP_OFFSET; // Show below cursor/finger if no space above
       
       tooltipElement.style.left = x + 'px';
       tooltipElement.style.top = y + 'px';
