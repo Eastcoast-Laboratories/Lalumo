@@ -98,6 +98,30 @@
   </style>
   <!-- Long-press tooltip script -->
   <script>
+    // Activity Icon Constants - used throughout the app for consistency
+    const ACTIVITY_ICONS = {
+      // Pitches Activities
+      '1_1': '🐭',  // High or Low
+      '1_2': '🎵',  // Match Sounds (Up or Down)
+      '1_3': '✏️',  // Draw Melody
+      '1_4': '👉',  // Does it Sound Right
+      '1_5': '🎹',  // Memory Game
+      
+      // Chords Activities
+      '2_1': '🌈',  // Magical Forest (Color Matching)
+      '2_2': '🏞️',  // Stable or Unstable
+      '2_3': '🧱',  // Chord Building
+      '2_4': '🎼',  // Missing Note
+      '2_5': '🎭',  // Chord Characters
+      '2_6': '🦇',  // One or Many
+      
+      // General Audio
+      'audio': '🔊'  // General audio/sound icon
+    };
+    
+    // Make icons globally available
+    window.ACTIVITY_ICONS = ACTIVITY_ICONS;
+    
     // Long-press tooltip functionality - inline to ensure immediate availability
     let longPressTimer = null;
     let tooltipElement = null;
@@ -421,63 +445,63 @@
       <div class="clickable-area shortcut-1_1" 
            @click="isHashNavigation = true; window.location.hash = '1_1'; hideLoadingOverlay()" 
            aria-label="High or Low">
-        <span class="area-label">🐭 <span x-text="$store.strings?.high_or_low || 'High or Low'"></span></span>
+        <span class="area-label"><span x-text="ACTIVITY_ICONS['1_1']"></span> <span x-text="$store.strings?.high_or_low || 'High or Low'"></span></span>
       </div>
       
       <!-- Match Sounds -->
       <div class="clickable-area shortcut-1_2" 
            @click="isHashNavigation = true; window.location.hash = '1_2'; hideLoadingOverlay()" 
            aria-label="Match Mode">
-        <span class="area-label">🎵 <span x-text="$store.strings?.match_sounds || 'Up or Down'"></span></span>
+        <span class="area-label"><span x-text="ACTIVITY_ICONS['1_2']"></span> <span x-text="$store.strings?.match_sounds || 'Up or Down'"></span></span>
       </div>
       
       <!-- Draw Melody -->
       <div class="clickable-area shortcut-1_3" 
            @click="isHashNavigation = true; window.location.hash = '1_3'; hideLoadingOverlay()" 
            aria-label="Draw Mode">
-        <span class="area-label">✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span></span>
+        <span class="area-label"><span x-text="ACTIVITY_ICONS['1_3']"></span> <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span></span>
       </div>
       
       <!-- Does it Sound Right -->
       <div class="clickable-area shortcut-1_4" 
            @click="isHashNavigation = true; window.location.hash = '1_4'; hideLoadingOverlay()" 
            aria-label="Does it Sound Right">
-        <span class="area-label">👉 <span x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></span></span>
+        <span class="area-label"><span x-text="ACTIVITY_ICONS['1_4']"></span> <span x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></span></span>
       </div>
       
       <!-- Memory Game -->
       <div class="clickable-area shortcut-1_5" 
            @click="isHashNavigation = true; window.location.hash = '1_5'; hideLoadingOverlay()" 
            aria-label="Memory Mode">
-        <span class="area-label">🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span></span>
+        <span class="area-label"><span x-text="ACTIVITY_ICONS['1_5']"></span> <span x-text="$store.strings?.memory_game || 'Memory Game'"></span></span>
       </div>
       
       <!-- One or Many -->
       <div class="clickable-area shortcut-2_6" 
            @click="isHashNavigation = true; window.location.hash = '2_6'; hideLoadingOverlay()" 
            aria-label="One or Many">
-        <span class="area-label">🦇<br><span x-text="$store.strings?.one_or_many || 'One or Many'"></span></span>
+        <span class="area-label"><span x-text="ACTIVITY_ICONS['2_6']"></span><br><span x-text="$store.strings?.one_or_many || 'One or Many'"></span></span>
       </div>
       
       <!-- Stable or Unstable -->
       <div class="clickable-area shortcut-2_2" 
            @click="isHashNavigation = true; window.location.hash = '2_2'; hideLoadingOverlay()" 
            aria-label="Stable or Unstable">
-        <span class="area-label">🏞️ <span x-text="$store.strings?.chords_stable_unstable || 'Stable or Unstable'"></span></span>
+        <span class="area-label"><span x-text="ACTIVITY_ICONS['2_2']"></span> <span x-text="$store.strings?.chords_stable_unstable || 'Stable or Unstable'"></span></span>
       </div>
       
       <!-- Magical Forest -->
       <div class="clickable-area shortcut-2_1" 
            @click="isHashNavigation = true; window.location.hash = '2_1'; hideLoadingOverlay()" 
            aria-label="Magical Forest">
-        <span class="area-label">🌈 <span x-text="$store.strings?.chord_color_matching || 'Magical Forest'"></span></span>
+        <span class="area-label"><span x-text="ACTIVITY_ICONS['2_1']"></span> <span x-text="$store.strings?.chord_color_matching || 'Magical Forest'"></span></span>
       </div>
       
       <!-- Chord Characters -->
       <div class="clickable-area shortcut-2_5" 
            @click="isHashNavigation = true; window.location.hash = '2_5'; hideLoadingOverlay()" 
            aria-label="Chord Characters">
-        <span class="area-label">🎭<br><span x-text="$store.strings?.chord_characters || 'Chord Characters'"></span></span>
+        <span class="area-label"><span x-text="ACTIVITY_ICONS['2_5']"></span><br><span x-text="$store.strings?.chord_characters || 'Chord Characters'"></span></span>
       </div>
     </div>
 
@@ -704,7 +728,7 @@
               style="display: auto; text-decoration: none; color: inherit;"
               role="button"
             >
-              🔊 <span x-text="$store.strings?.high_or_low || 'High or Low?'"></span>
+              <span x-text="ACTIVITY_ICONS['1_1']"></span> <span x-text="$store.strings?.high_or_low || 'High or Low?'"></span>
             </a>
 
             <!-- Up or Down -->
@@ -716,7 +740,7 @@
               style="text-decoration: none; color: inherit;"
               role="button"
             >
-            🎵 <span x-text="$store.strings?.match_sounds || 'Up or Down'"></span>
+            <span x-text="ACTIVITY_ICONS['1_2']"></span> <span x-text="$store.strings?.match_sounds || 'Up or Down'"></span>
             </a>
             
             <!-- Does it sound right -->
@@ -727,7 +751,7 @@
               :class="{ 'active': isActive }"
               style="text-decoration: none; color: inherit;"
               role="button">
-              👉 <span x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></span>
+              <span x-text="ACTIVITY_ICONS['1_4']"></span> <span x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></span>
             </a>
             
             <!-- Memory Game -->
@@ -738,7 +762,7 @@
               :class="{ 'active': isActive }"
               style="text-decoration: none; color: inherit;"
               role="button">
-              🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
+              <span x-text="ACTIVITY_ICONS['1_5']"></span> <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
             </a>
 
             <!-- following activities require unlock -->
@@ -748,7 +772,7 @@
               @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"
               class="locked-activity"
             >
-              <span>🔒 ✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span></span>
+              <span>🔒 <span x-text="ACTIVITY_ICONS['1_3']"></span> <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span></span>
             </button>
             
             <!-- Unlocked Draw a Melody button (visible when unlocked through referrals) -->
@@ -760,14 +784,14 @@
               style="text-decoration: none; color: inherit;"
               role="button"
             >
-              ✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
+              <span x-text="ACTIVITY_ICONS['1_3']"></span> <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
             </a>
             
             <!-- Debug button for Draw a Melody (always visible) -->
             <button id="nav_1_3_debug" class="debug-element"
               @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_3_pitches_draw-melody'}); window.innerWidth < 1024 ? menuOpen = false : null"
             >
-              Debug ✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
+              Debug <span x-text="ACTIVITY_ICONS['1_3']"></span> <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
             </button>
             
           </div>
@@ -799,7 +823,7 @@
               role="button"
               tabindex="0"
             >
-              🦇 <span x-text="$store.strings?.one_or_many || 'One or Many'"></span>
+              <span x-text="ACTIVITY_ICONS['2_6']"></span> <span x-text="$store.strings?.one_or_many || 'One or Many'"></span>
             </a>
             
             <a href="#2_2" id="nav_2_2"
@@ -810,7 +834,7 @@
               role="button"
               tabindex="0"
             >
-              🏞️ <span x-text="$store.strings?.chords_stable_unstable || 'Stable or Unstable'"></span>
+              <span x-text="ACTIVITY_ICONS['2_2']"></span> <span x-text="$store.strings?.chords_stable_unstable || 'Stable or Unstable'"></span>
             </a>
 
             <a href="#2_3" id="nav_2_3"
@@ -833,7 +857,7 @@
               role="button"
               tabindex="0"
             >
-              🎼 <span x-text="$store.strings?.missing_note || 'Missing Note'"></span>
+              <span x-text="ACTIVITY_ICONS['2_4']"></span> <span x-text="$store.strings?.missing_note || 'Missing Note'"></span>
             </a>
             <!-- Locked version of Chord Characters (visible when not unlocked) -->
             <button id="nav_2_5_locked"
@@ -841,7 +865,7 @@
               @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"
               class="locked-activity"
             >
-              🔒 🎭 <span x-text="$store.strings?.chord_characters || 'Chord Characters'"></span>
+              🔒 <span x-text="ACTIVITY_ICONS['2_5']"></span> <span x-text="$store.strings?.chord_characters || 'Chord Characters'"></span>
             </button>
             
             <!-- Unlocked version of Chord Characters (visible when unlocked through referrals) -->
@@ -854,7 +878,7 @@
               role="button"
               tabindex="0"
             >
-              🎭 <span x-text="$store.strings?.chord_characters || 'Chord Characters'"></span>
+              <span x-text="ACTIVITY_ICONS['2_5']"></span> <span x-text="$store.strings?.chord_characters || 'Chord Characters'"></span>
             </a>
             
             <!-- Debug button for Chord Characters (always available) -->
@@ -867,7 +891,7 @@
               role="button"
               tabindex="0"
             >
-              Debug 🎭 <span x-text="$store.strings?.chord_characters || 'Chord Characters'"></span>
+              Debug <span x-text="ACTIVITY_ICONS['2_5']"></span> <span x-text="$store.strings?.chord_characters || 'Chord Characters'"></span>
             </a>
 
             <!-- Locked version of Magical Forest (visible when not unlocked) -->
@@ -876,7 +900,7 @@
               @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"
               class="locked-activity"
             >
-              🔒 🌈 <span x-text="$store.strings?.chord_color_matching || 'Magical Forest Chords'"></span>
+              🔒 <span x-text="ACTIVITY_ICONS['2_1']"></span> <span x-text="$store.strings?.chord_color_matching || 'Magical Forest Chords'"></span>
             </button>
             
             <!-- Unlocked version of Magical Forest (visible when unlocked through referrals) -->
@@ -889,7 +913,7 @@
               role="button"
               tabindex="0"
             >
-              🌈 <span x-text="$store.strings?.chord_color_matching || 'Magical Forest Chords'"></span>
+              <span x-text="ACTIVITY_ICONS['2_1']"></span> <span x-text="$store.strings?.chord_color_matching || 'Magical Forest Chords'"></span>
             </a>
             
             <!-- Debug button for Magical Forest (always available) -->
@@ -902,7 +926,7 @@
               role="button"
               tabindex="0"
             >
-              Debug 🌈 <span x-text="$store.strings?.chord_color_matching || 'Magical Forest'"></span>
+              Debug <span x-text="ACTIVITY_ICONS['2_1']"></span> <span x-text="$store.strings?.chord_color_matching || 'Magical Forest'"></span>
             </a>
           </div>
         </template>
