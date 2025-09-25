@@ -1252,42 +1252,42 @@
 
               
               <div id="button_2_1_fruit" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('fruit', $data); blurElement($event)"
-                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
+                   @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" 
                    :title="$store.strings?.chord_element_fruit_major || 'Major'">
               </div>
               
               <div id="button_2_1_mushroom" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('mushroom', $data); blurElement($event)"
-                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
+                   @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" 
                    :title="$store.strings?.chord_element_mushroom_minor || 'Minor'">
               </div>
               
               <div id="button_2_1_crystal" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('crystal', $data); blurElement($event)"
-                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
+                   @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" 
                    :title="$store.strings?.chord_element_crystal_diminished || 'Diminished'">
               </div>
               
               <div id="button_2_1_flower" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('flower', $data); blurElement($event)"
-                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
+                   @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" 
                    :title="$store.strings?.chord_element_flower_augmented || 'Augmented'">
               </div>
               
               <div id="button_2_1_flame" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('flame', $data); blurElement($event)"
-                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
+                   @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" 
                    :title="$store.strings?.chord_element_flame_dominant7 || 'Dominant7'">
               </div>
               
               <div id="button_2_1_feather" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('feather', $data); blurElement($event)"
-                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
+                   @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" 
                    :title="$store.strings?.chord_element_feather_major7 || 'Major7'">
               </div>
               
               <div id="button_2_1_acorn" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('acorn', $data); blurElement($event)"
-                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
+                   @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" 
                    :title="$store.strings?.chord_element_acorn_sus2 || 'Sus2'">
               </div>
               
               <div id="button_2_1_lantern" class="magical-element activity-button-blocker longpress-title" @click="window.checkColorMatch('lantern', $data); blurElement($event)"
-                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();" 
+                   @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" 
                    :title="$store.strings?.chord_element_lantern_sus4 || 'Sus4'">
               </div>
             </div>
@@ -1332,14 +1332,14 @@
             <div class="button_2_2_grid">
               <div id="button_2_2_stable" class="character activity-button-blocker longpress-title" 
                    @click="checkStableUnstableMatch('stable', $data); blurElement($event)"
-                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();"
+                   @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)"
                    :title="$store.strings?.stable || 'Stable'">
                 <div></div>
               </div>
               
               <div id="button_2_2_unstable" class="character activity-button-blocker longpress-title" 
                    @click="checkStableUnstableMatch('unstable', $data); blurElement($event)"
-                   @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();"
+                   @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)"
                    :title="$store.strings?.unstable || 'Unstable'">
                 <div></div>
               </div>
@@ -1507,20 +1507,20 @@
             
             
             <div class="character-grid">
-              <div id="button_2_5_1_major" class="character activity-button-blocker" @click="checkCharacterMatch('major')" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();">
-                <div title="Happy">Happy</div>
+              <div id="button_2_5_1_major" class="character activity-button-blocker longpress-title" @click="checkCharacterMatch('major')" @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" :title="$store.strings?.chord_character_major_happy || 'Happy'">
+                <div>Happy</div>
               </div>
               
-              <div id="button_2_5_1_minor" class="character activity-button-blocker" @click="checkCharacterMatch('minor')" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();">
-                <div title="Sad">Sad</div>
+              <div id="button_2_5_1_minor" class="character activity-button-blocker longpress-title" @click="checkCharacterMatch('minor')" @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" :title="$store.strings?.chord_character_minor_sad || 'Sad'">
+                <div>Sad</div>
               </div>
               
-              <div id="button_2_5_1_augmented" @click="checkCharacterMatch('augmented')" :class="(progress['2_5'] || 0) >= 10 && (progress['2_5'] || 0) < 20 ? 'character progress2 activity-button-blocker' : 'character activity-button-blocker'" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();">
-                <div title="Surprised">Surprised</div>
+              <div id="button_2_5_1_augmented" @click="checkCharacterMatch('augmented')" :class="(progress['2_5'] || 0) >= 10 && (progress['2_5'] || 0) < 20 ? 'character progress2 activity-button-blocker longpress-title' : 'character activity-button-blocker longpress-title'" @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" :title="$store.strings?.chord_character_augmented_surprised || 'Surprised'">
+                <div>Surprised</div>
               </div>
               
-              <div id="button_2_5_1_diminished" class="character activity-button-blocker" @click="checkCharacterMatch('diminished')" @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();">
-                <div title="Mysterious">Mysterious</div>
+              <div id="button_2_5_1_diminished" class="character activity-button-blocker longpress-title" @click="checkCharacterMatch('diminished')" @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" :title="$store.strings?.chord_character_diminished_mysterious || 'Mysterious'">
+                <div>Mysterious</div>
               </div>
             </div>
             
