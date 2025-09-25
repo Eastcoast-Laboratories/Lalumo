@@ -377,6 +377,16 @@ export function app() {
         return; // Kein Hash vorhanden
       }
       
+      // Check if this is a simple activity hash (#1_1, #1_4, etc.) - preserve it
+      const simpleActivityPattern = /^#(\d+_\d+)$/;
+      if (simpleActivityPattern.test(hash)) {
+        debugLog('DEEPLINK', `Simple activity hash detected: ${hash} - preserving hash`);
+        // Don't modify the hash for simple activity navigation
+        const activityId = hash.substring(1);
+        this.handleDirectActivityStart(activityId);
+        return;
+      }
+      
       // Extrahiere den Hash ohne das #-Zeichen
       const hashContent = hash.substring(1); 
       
@@ -538,6 +548,39 @@ export function app() {
           // }, 1000); // 1 Sekunde Verzögerung für Alpine.js-Reaktion
         });
       }
+    },
+
+    // Handle direct activity start from hash navigation
+    handleDirectActivityStart(activityId) {
+      debugLog('DEEPLINK', `Starting activity directly: ${activityId}`);
+      
+      this.$nextTick(() => {
+        if (activityId.startsWith('1_')) {
+          // Pitch activities
+          this.active = 'pitches';
+          const targetMode = activityId + '_pitches_' + this.getActivityModeFromId(activityId);
+          debugLog('DEEPLINK', `Dispatching pitch mode: ${targetMode}`);
+          
+          window.dispatchEvent(new CustomEvent('set-activity-mode', {
+            detail: { 
+              component: 'pitches', 
+              mode: targetMode
+            }
+          }));
+        } else if (activityId.startsWith('2_')) {
+          // Chord activities
+          this.active = 'chords';
+          const targetMode = activityId + '_chords_' + this.getActivityModeFromId(activityId);
+          debugLog('DEEPLINK', `Dispatching chord mode: ${targetMode}`);
+          
+          window.dispatchEvent(new CustomEvent('set-activity-mode', {
+            detail: { 
+              component: 'chords', 
+              mode: targetMode
+            }
+          }));
+        }
+      });
     },
 
     // Update URL hash when activity mode changes

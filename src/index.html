@@ -567,7 +567,17 @@
     }
 
     // Show background image when page is fully loaded, but keep overlay visible until clicked
+    // Check for hash navigation BEFORE Alpine.js processes it
+    const hasHashNavigation = window.location.hash && window.location.hash.length > 1;
+    
     window.addEventListener('load', function() {
+      if (hasHashNavigation) {
+        // Skip shortcut screen for hash navigation
+        console.log('Hash navigation detected:', window.location.hash, '- skipping shortcut screen');
+        hideLoadingOverlay(); // This already calls onShortcutScreenClosed()
+        return;
+      }
+      
       setTimeout(function() {
         // Set background image on the loading overlay
         const loadingOverlay = document.getElementById('loading-overlay');
