@@ -297,7 +297,7 @@ reset-button:
 # most important
 - im web zeigt er die landscape warnung an, dass man sein gerät drehen soll. die warnung darf nur auf android oder ios kommen, dort aber auch im browser auf den geräten
 
-- Lalumo wenn die seite mit einem hash geladen wird, dann kein shortcut-screen
+- Lalumo wenn die seite mit einem hash geladen wird, dann soll kein shortcut-screen angezeigt werden
 
 - Navi Text etwas größer
 

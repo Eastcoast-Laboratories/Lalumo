@@ -11,6 +11,8 @@ import { debugLog } from "../../utils/debug";
 let currentActivityMode = null;
 let shortcutScreenClosed = false;
 let lastIntroMessage = null;
+let userHasInteracted = false;
+let pendingAudioMessage = null;
 
 /**
  * Unified feedback message system for both help messages and game feedback
@@ -280,6 +282,13 @@ let currentIntroAudio = null;
 export function playIntroAudio(message) {  
   const now = Date.now();
   debugLog(['INTRO_AUDIO', 'FUNCTION_CALL'], 'playIntroAudio() called with message ' + message);
+  
+  // Check if user has interacted with the page (required for autoplay policy)
+  if (!userHasInteracted) {
+    debugLog('INTRO_AUDIO', 'Skipping audio - no user interaction yet (autoplay policy), storing for later');
+    pendingAudioMessage = message;
+    return;
+  }
   
   // Store reference to previous audio to stop it later
   const previousAudio = currentIntroAudio;
@@ -866,6 +875,30 @@ if (typeof window !== 'undefined') {
       currentActivityMode = mode;
       // Activities handle their own intro messages via showContextMessage()
     }
+  });
+  
+  // Listen for user interactions to enable audio playback
+  const enableAudio = () => {
+    if (!userHasInteracted) {
+      userHasInteracted = true;
+      debugLog('AUDIO_SYSTEM', 'User interaction detected - audio playback enabled');
+      
+      // Play pending audio message if there is one
+      if (pendingAudioMessage) {
+        debugLog('AUDIO_SYSTEM', 'Playing pending audio message:', pendingAudioMessage);
+        const messageToPlay = pendingAudioMessage;
+        pendingAudioMessage = null;
+        // Delay slightly to ensure the interaction event is fully processed
+        setTimeout(() => {
+          playIntroAudio(messageToPlay);
+        }, 100);
+      }
+    }
+  };
+  
+  // Add event listeners for various user interactions
+  ['click', 'touchstart', 'keydown', 'mousedown'].forEach(eventType => {
+    window.addEventListener(eventType, enableAudio, { once: false, passive: true });
   });
 }
 
