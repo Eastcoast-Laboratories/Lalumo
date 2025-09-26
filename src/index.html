@@ -1960,6 +1960,10 @@
           // Benutzer will die Seite verlassen -> nichts tun
         } else {
           // Benutzer will auf der Seite bleiben -> Zustand wiederherstellen
+          // Use replaceState to preserve hash but still enable back button handling
+          const currentUrl = window.location.pathname + window.location.search + window.location.hash;
+          history.replaceState(null, null, currentUrl);
+          // Add a new pushState entry to catch the next back button
           history.pushState(null, null, window.location.pathname);
           event.preventDefault();
         }
@@ -1967,7 +1971,14 @@
     });
 
     // Verhindert, dass der Benutzer die Seite verlässt, indem wir einen History-Eintrag hinzufügen
-    history.pushState(null, null, window.location.pathname);
+    // Only push state if there's no hash (to preserve direct navigation)
+    if (!window.location.hash || window.location.hash === '#') {
+      history.pushState(null, null, window.location.pathname);
+    } else {
+      // For hash navigation, we need to preserve the hash but still enable back button handling
+      // We'll rely on the popstate event listener to handle back button
+      console.log('Hash navigation detected, preserving hash:', window.location.hash);
+    }
   }
 </script>
 </body>

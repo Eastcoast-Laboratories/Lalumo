@@ -537,15 +537,6 @@ export function app() {
               });
             });
           }
-          
-          // Lösche den Hash aus der URL nach dem Start der Aktivität (verzögert für Alpine.js)
-          // setTimeout(() => {
-          //   if (history.replaceState) {
-          //     history.replaceState(null, document.title, window.location.pathname + window.location.search);
-          //   } else {
-          //     window.location.hash = '';
-          //   }
-          // }, 1000); // 1 Sekunde Verzögerung für Alpine.js-Reaktion
         });
       }
     },
