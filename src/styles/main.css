@@ -749,14 +749,15 @@ body {
 /* Audio Repeat Button */
 .repeat-button {
   position: absolute;
-  top: 2.1vh;
-  left: 8vh;
+  top: min(2vw,1vh);
+  left: min(11vw,7vh);
+  padding: 0;
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  width: 6vh;
-  height: 6vh;
-  font-size: 2.5vh;
+  width: min(9vw,5vh);
+  height: min(9vw,5vh);
+  font-size: min(14px,6vw);
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -773,17 +774,7 @@ body {
 }
 
 .menu-open .repeat-button {
-  left: 9.3vh;
-  top: 0.3vh;
-}
-
-.menu-locked .repeat-button {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.desktop-menu .repeat-button {
-  display: none;
+  border-color: rgba(25, 25, 25, 0.15);
 }
 
 /* Menu Lock Button */
@@ -1113,9 +1104,6 @@ body {
 }
 
 .menu-open .hamburger-button {
-  left: 1.3vh; /* 10px = 1.3vh Fixed position at left corner */
-  right: auto;
-  top: 0.3vh;
   max-width: calc(40vh - 3.2vh);
   z-index: 1001; /* Ensure it's above other elements */
 }
@@ -1810,17 +1798,17 @@ section h2 {
 
 .feedback-close-button {
   position: absolute;
-  top: 0.5rem;
-  right: 0.8rem;
+  top: 1vw;
+  right: 1vw;
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 5vw;
   font-weight: bold;
   color: var(--text-color);
   cursor: pointer;
   padding: 0;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 5vw;
+  height: 5vw;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1881,7 +1869,7 @@ section h2 {
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: none;
-  height: min(330px,calc(32vw + (100vw - 360px) * 0.3));
+  height: min(330px, 50vw);
   z-index: 100;
 }
 
