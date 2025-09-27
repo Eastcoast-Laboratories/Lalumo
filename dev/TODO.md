@@ -294,17 +294,18 @@ reset-button:
 
 - Bei Fehler: richtigen Button aufleuchten lassen als hilfe
 
-# most important
 - im web zeigt er die landscape warnung an, dass man sein gerät drehen soll. die warnung darf nur auf android oder ios kommen, dort aber auch im browser auf den geräten
 
-- Lalumo wenn die seite mit einem hash geladen wird, dann soll kein shortcut-screen angezeigt werden
+- Info Box mit ease-out langsam ausblenden
+
+# most important
 
 - Navi Text etwas größer
 
 - 1_2 falscher Hintergrund, wenn schon 21 Progress sind aber man die App neu startet
 
-- Info Box mit ease-out langsam ausblenden
 
 # Gesprochene Texte neu erstellen in dieser art: 
 - Höre dir die Maus an, sie macht hohe Töne und das Faultier macht Tiefe. Merke dir gut wie ein hoher oder ein tiefer Ton klingt, dann drücke den Vogel um das Spiel zu starten: Hörst du einen hohen oder tiefen Ton?
 
+icons zu den hintergründen anpassen
