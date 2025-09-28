@@ -1601,14 +1601,6 @@ section h2 {
   transform: scale(1.1) !important;
 }
 
-/* 2_1 Progress display */
-.progress_2_1 {
-  text-align: center;
-  margin: 20px 0;
-  bottom: 0.5rem;
-  background-color: white;
-}
-
 #button_2_5_1_major:hover, #button_2_5_1_minor:hover, #button_2_5_1_augmented:hover, #button_2_5_1_diminished:hover{
   opacity: 0.05;
 }
@@ -1736,23 +1728,18 @@ section h2 {
 /* Progress Display Box */
 .progress-display {
   position: absolute;
-  bottom: -0.7rem;
+  bottom: max(0px, calc(-1.5vh - 100vh + 100%));
   left: 50%;
   transform: translateX(-50%);
   background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 1rem;
+  border-radius: 1rem 1rem 0 0;
   padding: 0.5rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   text-align: center;
-  width: 93%;
+  width: 90%;
   max-width: 400px;
   margin: 0 auto;
 }
 
-#\31 _1_pitches .progress-display {
-  position: absolute;
-  bottom: 0.5rem;
-}
 /* Specific positioning for 2_6 one or many progress box - move into white area 
 #\32 _6_chords_one_or_many .progress_2_6 { bottom: -2rem; }*/
 
@@ -2637,23 +2624,6 @@ section h2 {
   font-weight: bold;
 }
 
-/* Progress display for High or Low */
-.high-low-progress, .progress_2_5 {
-  position: absolute;
-  bottom: 3px;
-  background: rgba(255, 255, 255, 0.5);
-  padding: 5px 4px 10px 4px;
-  border-radius: 15px;
-  font-size: min(14px, 3vw);
-  color: #333;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  max-width: 353px;
-  height: 44px;
-}
-
-.high-low-progress p {
-  margin: 2px 0;
-}
 
 .bottom_round_edge {
   position: fixed;
