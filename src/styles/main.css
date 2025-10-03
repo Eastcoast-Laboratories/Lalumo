@@ -1833,7 +1833,7 @@ section h2 {
   text-align: center;
   z-index: 5; /* Höherer z-index als andere Elemente */
   min-width: 180px; /* Mindestbreite für Lesbarkeit */
-  font-size: 0.95rem;
+  font-size: 2vh;
   border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
