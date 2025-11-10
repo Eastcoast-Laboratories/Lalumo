@@ -2,6 +2,10 @@
 =========
 
 
+## Version 6.0 (2025-11-10)
+- Intro-Nachrichten als Ansagen
+
+
 ## Version 5.4 (2025-09-12)
 - Neu: „Ein Ton oder Viele“
 - Neu: „Akkorde im Zauberwald“

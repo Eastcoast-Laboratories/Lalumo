@@ -2,6 +2,10 @@
 =========
 
 
+## Version 6.0 (2025-11-10)
+- Intro messages as spoken teasers
+
+
 ## Version 5.4 (2025-09-12)
 - New: „One or Many“
 - New: „Magical Forest Chords“

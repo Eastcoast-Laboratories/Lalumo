@@ -1,0 +1,8 @@
+# Play Store Changelogs für Version 6.0
+
+<en-GB>
+- Intro messages as spoken teasers
+</en-GB>
+<de-DE>
+- Intro-Nachrichten als Ansagen
+</de-DE>

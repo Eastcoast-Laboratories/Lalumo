@@ -10,7 +10,7 @@ CHANGELOG_DE_MD="CHANGELOG_de.md"
 PLAYSTORE_DIR="fastlane/metadata/android/playstore"
 
 # Must be the same as version from build.gradle
-VERSION_NAME=5.4
+VERSION_NAME=6.0
 # Get current date
 CURRENT_DATE=$(date +"%Y-%m-%d")
 
@@ -41,21 +41,13 @@ check_length() {
 
 # German Changelog
 DE_CHANGES=$(cat << EOF
-- Neu: „Ein Ton oder Viele“
-- Neu: „Akkorde im Zauberwald“
-- UX: Schnellere Button-Reaktion
-- Langes Drücken auf Buttons zeigt Info dazu an
-- Grünes Feedback Hightlight auf Buttons als Hinweis für die richtige Lösung
+- Intro-Nachrichten als Ansagen
 EOF
 )
 
 # English Changelog
 EN_CHANGES=$(cat << EOF
-- New: „One or Many“
-- New: „Magical Forest Chords“
-- UX: Faster button response
-- Long-Press on buttons shows info about them
-- Green highlighting as feedback for the correct button
+- Intro messages as spoken teasers
 EOF
 )
 
