@@ -15,6 +15,42 @@ let userHasInteracted = false;
 let pendingAudioMessage = null;
 
 /**
+ * Get the current activity mode from the URL hash
+ * @returns {string|null} The activity mode string or null if no valid hash
+ */
+export function getActivityModeFromHash() {
+  const hash = window.location.hash;
+  if (!hash || hash.length <= 1) {
+    return null;
+  }
+  
+  const activityId = hash.substring(1);
+  const activityPattern = /^(\d+_\d+)$/;
+  const match = activityId.match(activityPattern);
+  
+  if (!match) {
+    return null;
+  }
+  
+  // Map activity ID to full activity mode string
+  const activityModeMap = {
+    '1_1': '1_1_pitches_high_or_low',
+    '1_2': '1_2_pitches_match-sounds',
+    '1_3': '1_3_pitches_draw-melody',
+    '1_4': '1_4_pitches_does-it-sound-right',
+    '1_5': '1_5_pitches_memory-game',
+    '2_1': '2_1_chords_color-matching',
+    '2_2': '2_2_chords_stable_unstable',
+    '2_3': '2_3_chords_chord-building',
+    '2_4': '2_4_chords_missing-note',
+    '2_5': '2_5_chords_characters',
+    '2_6': '2_6_chords_one_or_many'
+  };
+  
+  return activityModeMap[activityId] || null;
+}
+
+/**
  * Unified feedback message system for both help messages and game feedback
  * @param {string} message - The message to display
  * @param {Object} options - Options for controlling feedback behavior
@@ -158,6 +194,14 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
   // TODO: in 1_1 wird stattdessen noch showContextMessage aufgerufen
   debugLog('AUDIO_SYSTEM', 'showActivityIntroMessage called:', { activityMode, delaySeconds, force, shortcutScreenClosed });
   
+  // CRITICAL: Re-verify activity from hash before playing intro message
+  // This prevents playing wrong intro messages when hash changes during initialization
+  const correctActivityMode = getActivityModeFromHash();
+  if (correctActivityMode && correctActivityMode !== activityMode) {
+    debugLog('AUDIO_SYSTEM', 'HASH_MISMATCH: Requested intro for', activityMode, 'but hash shows', correctActivityMode, '-> correcting');
+    activityMode = correctActivityMode;
+  }
+  
   // Store current activity mode and intro message details
   currentActivityMode = activityMode;
   lastIntroMessage = { activityMode, component, delaySeconds };
@@ -283,6 +327,14 @@ export function playIntroAudio(message) {
   const now = Date.now();
   debugLog(['INTRO_AUDIO', 'FUNCTION_CALL'], 'playIntroAudio() called with message ' + message);
   
+  // CRITICAL: Re-verify activity from hash before playing audio
+  // This prevents playing wrong audio when hash changes during initialization
+  const correctActivityMode = getActivityModeFromHash();
+  if (correctActivityMode && currentActivityMode && correctActivityMode !== currentActivityMode) {
+    debugLog('INTRO_AUDIO', 'HASH_MISMATCH: Skipping audio - currentActivityMode is', currentActivityMode, 'but hash shows', correctActivityMode);
+    return; // Don't play audio if activity has changed
+  }
+  
   // Check if user has interacted with the page (required for autoplay policy)
   if (!userHasInteracted) {
     debugLog('INTRO_AUDIO', 'Skipping audio - no user interaction yet (autoplay policy), storing for later');
@@ -407,6 +459,7 @@ export function resetShownIntroMessages() {
 if (typeof window !== 'undefined') {
   window.showFeedbackMessage = showFeedbackMessage;
   window.showActivityIntroMessage = showActivityIntroMessage;
+  window.getActivityModeFromHash = getActivityModeFromHash;
   window.resetShownIntroMessages = resetShownIntroMessages;
   window.clearFeedbackTimer = clearFeedbackTimer;
   window.highlightCorrectButton = highlightCorrectButton;
@@ -841,7 +894,20 @@ export function onShortcutScreenClosed() {
   debugLog('AUDIO_SYSTEM', 'Shortcut screen closed, checking for delayed intro message');
   shortcutScreenClosed = true;
   
-  // Play delayed intro message if there is one
+  // Check if we have a hash navigation (e.g., #1_4) that should determine the activity
+  const activityMode = getActivityModeFromHash();
+  if (activityMode) {
+    debugLog('AUDIO_SYSTEM', 'Hash navigation detected -> playing intro for:', activityMode);
+    // Update the current activity mode and play its intro message
+    currentActivityMode = activityMode;
+    lastIntroMessage = { activityMode, component: null, delaySeconds: 10 };
+    
+    // Play the intro message for this activity
+    showActivityIntroMessage(activityMode, null, 10, true);
+    return;
+  }
+  
+  // Fallback: Play delayed intro message if there is one
   if (lastIntroMessage) {
     showActivityIntroMessage(
       lastIntroMessage.activityMode,
