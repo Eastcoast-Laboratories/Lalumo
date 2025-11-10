@@ -612,7 +612,9 @@ export function app() {
       
       // Initialize Alpine.js store immediately to prevent undefined errors
       window.Alpine.store('strings', {});
-      window.Alpine.store('pitchMode', '1_1_pitches_high_or_low');
+
+      // NOTE: pitchMode is NOT initialized here anymore to prevent overriding hash-based navigation and prevent two intro messages are played at the same time
+      // window.Alpine.store('pitchMode', '1_1_pitches_high_or_low');
       
       // Set up the global strings instance and helper functions
       window.Alpine.store('strings', {

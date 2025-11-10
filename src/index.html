@@ -530,6 +530,17 @@
 
     // Handle overlay click - close splash screen on any click
     function handleOverlayClick(event) {
+      // Check if shortcuts are visible
+      const shortcuts = document.getElementById('activity-shortcuts');
+      const shortcutsVisible = shortcuts && shortcuts.style.display !== 'none';
+      
+      // If shortcuts are visible, only shortcut buttons should close the overlay
+      // Clicking on the empty area does nothing
+      if (shortcutsVisible) {
+        return; // Do nothing - only explicit shortcut clicks close the overlay
+      }
+      
+      // If no shortcuts visible (normal loading screen), close on any click
       hideLoadingOverlay();
       if (window.replayCurrentIntroAudio) {
         window.replayCurrentIntroAudio();
