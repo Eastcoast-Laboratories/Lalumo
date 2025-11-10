@@ -102,6 +102,12 @@
     <string name="chord_characters">Chord Characters</string>
     <string name="one_or_many">One or Many</string>
     
+    <!-- Chords - Chord Characters Activity -->
+    <string name="chord_character_major_happy">Happy</string>
+    <string name="chord_character_minor_sad">Sad</string>
+    <string name="chord_character_augmented_surprised">Surprised</string>
+    <string name="chord_character_diminished_mysterious">Mysterious</string>
+    
     <!-- Chords - Magical Forest Activity -->
     <string name="chord_color_matching_title">Match Colors to Chords</string>
     <string name="chord_color_matching_intro">Listen to the chord and select the color that matches how it sounds to you.</string>

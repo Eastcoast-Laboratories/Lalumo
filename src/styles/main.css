@@ -940,7 +940,7 @@ body {
 .menu-content h2 {
   color: var(--primary-color);
   margin-bottom: 3.2vh;
-  font-size: 2.5vh;
+  font-size: 3.0vh;
   border-bottom: 0.3vh solid var(--accent-color);
   padding-bottom: 1.1vh;
 }
@@ -948,7 +948,7 @@ body {
 .menu-content h3 {
   color: var(--secondary-color);
   margin: 1vh 0;
-  font-size: 1.7vh;
+  font-size: 2.04vh;
 }
 
 .menu-chapters, .menu-activities {
@@ -1061,7 +1061,7 @@ body {
   background-color: #f5f5f5;
   border: none;
   color: var(--text-color);
-  font-size: 1.5vh;
+  font-size: 1.8vh;
   text-align: center;
   white-space: nowrap;
 }
@@ -1081,7 +1081,7 @@ body {
   border-radius: 1.1vh;
   padding: 1.1vh 1.4vh;
   text-align: left;
-  font-size: 1.4vh;
+  font-size: 1.68vh;
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
@@ -1613,6 +1613,21 @@ section h2 {
 #button_2_5_1_minor{
   left: min(29vw, 205px);
   width: min(37vw, 180px);
+}
+
+#button_2_5_1_minor.minor-level4{
+  left: min(30vw, 192px);
+  width: min(26vw, 158px);
+}
+
+#button_2_5_1_minor.minor-level5{
+  left: min(32vw, 195px);
+  width: min(28vw, 165px);
+}
+
+#button_2_5_1_minor.minor-level6{
+  left: min(31vw, 190px);
+  width: min(25vw, 155px);
 }
 
 #button_2_5_1_augmented{

@@ -1562,19 +1562,19 @@
             
             <div class="character-grid">
               <div id="button_2_5_1_major" class="character activity-button-blocker longpress-title" @click="checkCharacterMatch('major')" @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" :title="$store.strings?.chord_character_major_happy || 'Happy'">
-                <div>Happy</div>
+                <div x-text="$store.strings?.chord_character_major_happy || 'Happy'"></div>
               </div>
               
-              <div id="button_2_5_1_minor" class="character activity-button-blocker longpress-title" @click="checkCharacterMatch('minor')" @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" :title="$store.strings?.chord_character_minor_sad || 'Sad'">
-                <div>Sad</div>
+              <div id="button_2_5_1_minor" :class="'character activity-button-blocker longpress-title' + ((progress['2_5'] || 0) >= 50 ? ' minor-level6' : (progress['2_5'] || 0) >= 40 ? ' minor-level5' : (progress['2_5'] || 0) >= 30 ? ' minor-level4' : (progress['2_5'] || 0) >= 20 ? ' minor-level3' : '')" @click="checkCharacterMatch('minor')" @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" :title="$store.strings?.chord_character_minor_sad || 'Sad'">
+                <div x-text="$store.strings?.chord_character_minor_sad || 'Sad'"></div>
               </div>
               
               <div id="button_2_5_1_augmented" @click="checkCharacterMatch('augmented')" :class="(progress['2_5'] || 0) >= 10 && (progress['2_5'] || 0) < 20 ? 'character progress2 activity-button-blocker longpress-title' : 'character activity-button-blocker longpress-title'" @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" :title="$store.strings?.chord_character_augmented_surprised || 'Surprised'">
-                <div>Surprised</div>
+                <div x-text="$store.strings?.chord_character_augmented_surprised || 'Surprised'"></div>
               </div>
               
               <div id="button_2_5_1_diminished" class="character activity-button-blocker longpress-title" @click="checkCharacterMatch('diminished')" @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)" :title="$store.strings?.chord_character_diminished_mysterious || 'Mysterious'">
-                <div>Mysterious</div>
+                <div x-text="$store.strings?.chord_character_diminished_mysterious || 'Mysterious'"></div>
               </div>
             </div>
             
