@@ -755,8 +755,8 @@ body {
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  width: min(9vw,5vh);
-  height: min(9vw,5vh);
+  width: 4.6vh;
+  height: 4.6vh;
   font-size: min(14px,6vw);
   color: white;
   cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="black" stroke="white" stroke-width="1"/></svg>'), pointer;
@@ -764,7 +764,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1001;
+  z-index: 4;
 }
 
 .repeat-button:hover {
@@ -815,6 +815,7 @@ body {
   transition: all 0.3s ease;
   position: relative;
   z-index: 5;
+  margin-top: -5vh;
 }
 
 /* Fortschrittsindikator als Kreisanimation */
@@ -1086,14 +1087,14 @@ body {
   transition: all 0.2s ease;
   text-decoration: none;
   color: var(--text-color);
-  width: 100%;
+  width: 95%;
   display: block;
 }
 
 .menu-content button:hover,
 .menu-content a[role="button"]:hover {
   background-color: var(--accent-color);
-  transform: translateX(0.7vh);
+  transform: translateX(-0.7vh);
 }
 
 .menu-content button.active,
@@ -1102,7 +1103,13 @@ body {
   color: white !important;
   font-weight: bold;
 }
+.menu-content button.active {
+  transform: translateX(-0.7vh);
+}
 
+.menu-legal button:hover, .menu-legal button.active{
+  transform: translateX(0);
+}
 .menu-open .hamburger-button {
   max-width: calc(40vh - 3.2vh);
   z-index: 1001; /* Ensure it's above other elements */
