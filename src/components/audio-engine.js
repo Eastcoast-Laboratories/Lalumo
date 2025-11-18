@@ -1054,11 +1054,12 @@ export class AudioEngine {
           onload: () => {
             // Check if this player is still the current one (not replaced by stopAll)
             if (this._introMessagePlayer !== newPlayer) {
-              debugLog('INTRO_AUDIO', 'Player was replaced, not starting playback');
+              debugLog('INTRO_AUDIO', 'Player was replaced, not starting playback (this is normal during activity switches)');
               try {
                 newPlayer.dispose();
               } catch (e) {}
-              reject(new Error('Player was replaced'));
+              // Don't reject - this is normal behavior during fast activity switches
+              resolve();
               return;
             }
             
