@@ -19,6 +19,7 @@ export class AudioEngine {
     this._isInitialized = false;
     this._activeSequences = new Map();
     this._notesPlaying = new Set();
+    this._introMessagePlayer = null; // Tone.js Player für Intro-Messages definieren
     
     // Spezielle Sound-Effekte definieren
     this._specialSounds = {
@@ -807,6 +808,16 @@ export class AudioEngine {
    * Stoppt alle aktiven Sequenzen und Noten
    */
   stopAll() {
+    // Stop Intro Message Player (HTML5 Audio Replacement)
+    if (this._introMessagePlayer) {
+      try {
+        this._introMessagePlayer.stop();
+        debugLog('AUDIO_ENGINE', 'Intro message player stopped');
+      } catch (err) {
+        debugLog(['AUDIO_ENGINE', 'WARN'], `Error stopping intro player: ${err.message || err}`);
+      }
+    }
+    
     // Alle aktiven Sequenzen stoppen
     this._activeSequences.forEach((sequenceData, id) => {
       try {
@@ -830,7 +841,7 @@ export class AudioEngine {
       this._notesPlaying.clear();
     }
     
-    debugLog('AUDIO_ENGINE', 'Alle Audiowiedergaben gestoppt');
+    debugLog('AUDIO_ENGINE', 'Alle Audiowiedergaben gestoppt (including intro messages)');
   }
   
   /**
@@ -1014,6 +1025,88 @@ export class AudioEngine {
     }
     
     return cleanNote;
+  }
+  
+  /**
+   * Play intro message audio file via Tone.js Player
+   * Replaces HTML5 Audio to allow unified stopAll() control
+   * @param {string} audioPath - Path to the audio file
+   * @param {number} volume - Volume level (0-1, default 0.7)
+   */
+  async playIntroMessage(audioPath, volume = 0.7) {
+    return new Promise((resolve, reject) => {
+      try {
+        // Stop any currently playing intro message
+        if (this._introMessagePlayer) {
+          try {
+            this._introMessagePlayer.stop();
+            this._introMessagePlayer.dispose();
+          } catch (e) {
+            debugLog(['INTRO_AUDIO', 'WARN'], 'Error disposing previous player:', e);
+          }
+          this._introMessagePlayer = null;
+        }
+        
+        // Create new Tone.js Player for this message
+        const newPlayer = new Tone.Player({
+          url: audioPath,
+          volume: Tone.gainToDb(volume),
+          onload: () => {
+            // Check if this player is still the current one (not replaced by stopAll)
+            if (this._introMessagePlayer !== newPlayer) {
+              debugLog('INTRO_AUDIO', 'Player was replaced, not starting playback');
+              try {
+                newPlayer.dispose();
+              } catch (e) {}
+              reject(new Error('Player was replaced'));
+              return;
+            }
+            
+            debugLog('INTRO_AUDIO', 'Tone.js Player loaded successfully:', audioPath);
+            
+            // NOW start playback (buffer is loaded!)
+            try {
+              // Double-check: Player might have been disposed between load and start
+              if (newPlayer.disposed || !newPlayer.buffer || !newPlayer.buffer.loaded) {
+                debugLog(['INTRO_AUDIO', 'WARN'], 'Player was disposed or buffer unloaded before start');
+                reject(new Error('Player was disposed'));
+                return;
+              }
+              
+              newPlayer.start();
+              debugLog('INTRO_AUDIO', 'Playing intro message via Tone.js:', audioPath);
+              resolve();
+            } catch (startError) {
+              debugLog(['INTRO_AUDIO', 'ERROR'], 'Error starting playback:', startError);
+              reject(startError);
+            }
+          },
+          onerror: (error) => {
+            debugLog(['INTRO_AUDIO', 'ERROR'], 'Failed to load audio:', audioPath, error);
+            if (this._introMessagePlayer === newPlayer) {
+              this._introMessagePlayer = null;
+            }
+            reject(error);
+          }
+        }).toDestination();
+        
+        // Store reference
+        this._introMessagePlayer = newPlayer;
+        
+        // Auto-cleanup when finished
+        this._introMessagePlayer.onstop = () => {
+          if (this._introMessagePlayer) {
+            this._introMessagePlayer.dispose();
+            this._introMessagePlayer = null;
+          }
+        };
+        
+      } catch (error) {
+        debugLog(['INTRO_AUDIO', 'ERROR'], 'Error creating intro message player:', error);
+        this._introMessagePlayer = null;
+        reject(error);
+      }
+    });
   }
 }
 

@@ -372,48 +372,14 @@ export function playIntroAudio(message) {
   }
   
   const audioPath = `/sounds/info-messages/${audioFile}`;
-  debugLog('INTRO_AUDIO', 'Attempting to play audio:', message, 'file:', audioPath);
+  debugLog('INTRO_AUDIO', 'Attempting to play audio via Tone.js:', message, 'file:', audioPath);
   
-  
-  try {
-    const audio = new Audio(audioPath);
-    audio.volume = 0.7; // Set reasonable volume
-    
-    // Set as current playing intro audio
-    currentIntroAudio = audio;
-    
-    audio.addEventListener('loadeddata', () => {
-      debugLog('INTRO_AUDIO', 'Audio loaded successfully:', audioPath);
-    });
-    
-    audio.addEventListener('ended', () => {
-      currentIntroAudio = null; // Clear reference when audio ends
-    });
-    
-    audio.addEventListener('error', (e) => {
-      debugLog(['INTRO_AUDIO', 'ERROR'], 'Failed to load audio:', audioPath, e);
-      currentIntroAudio = null; // Clear reference on error
-    });
-    
-    audio.play().then(() => {
-      debugLog('INTRO_AUDIO', 'Audio playback started successfully:', message);
-      
-      // Stop previous audio only after new audio starts successfully
-      if (previousAudio && previousAudio !== audio && !previousAudio.paused) {
-        try {
-          previousAudio.pause();
-          previousAudio.currentTime = 0;
-          debugLog('INTRO_AUDIO_STOP', 'Stopped previous intro audio after new audio started');
-        } catch (error) {
-          debugLog('INTRO_AUDIO_STOP', 'Error stopping previous audio:', error);
-        }
-      }
-    }).catch(error => {
-      debugLog(['INTRO_AUDIO', 'ERROR'], 'Failed to play audio (autoplay policy?):', audioPath, error.message);
-      currentIntroAudio = null; // Clear reference on play error
-    });
-  } catch (error) {
-    debugLog(['INTRO_AUDIO', 'ERROR'], 'Error creating audio element:', error);
+  // USE TONE.JS INSTEAD OF HTML5 AUDIO!
+  // This allows audioEngine.stopAll() to stop intro messages too
+  if (window.audioEngine && typeof window.audioEngine.playIntroMessage === 'function') {
+    window.audioEngine.playIntroMessage(audioPath, 0.7);
+  } else {
+    debugLog(['INTRO_AUDIO', 'ERROR'], 'audioEngine not available for intro message playback');
   }
 }
 
@@ -823,12 +789,11 @@ export function hideActivityProgressBar(progressClass = 'activity-progress') {
 export function repeatLastIntroMessage() {
   debugLog('AUDIO_SYSTEM', 'Repeat requested for current activity');
   
-  // Stop any currently playing announcement first
-  if (currentIntroAudio) {
-    debugLog('AUDIO_SYSTEM', 'Stopping current announcement before repeat');
-    currentIntroAudio.pause();
-    currentIntroAudio.currentTime = 0;
-    currentIntroAudio = null;
+  // Stop ALL sounds (intro messages, notes, chords) via audioEngine
+  // This is the elegant solution - Tone.js controls everything!
+  if (window.audioEngine && typeof window.audioEngine.stopAll === 'function') {
+    window.audioEngine.stopAll();
+    debugLog('AUDIO_SYSTEM', 'Stopped all sounds via audioEngine.stopAll()');
   }
   
   // Get current activity mode from Alpine store (like reset button does)
