@@ -379,7 +379,10 @@ export function playIntroAudio(message) {
   if (window.audioEngine && typeof window.audioEngine.playIntroMessage === 'function') {
     window.audioEngine.playIntroMessage(audioPath, 0.7);
   } else {
-    debugLog(['INTRO_AUDIO', 'ERROR'], 'audioEngine not available for intro message playback');
+    debugLog(['INTRO_AUDIO', 'ERROR'], 'audioEngine not available yet - will retry on next call');
+    // DON'T set debounce if audioEngine not ready - allow retry!
+    lastAudioMessage = null;
+    lastAudioTime = 0;
   }
 }
 

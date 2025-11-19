@@ -4191,6 +4191,9 @@ export function pitches() {
       this.correctAnswer = null;
       this.soundJudgmentCorrectStreak = 0; // Neue Variable für die aktuelle Erfolgsserie
       
+      // NOTE: Intro message is handled by showContextMessage() called from setMode()
+      // Don't call showActivityIntroMessage here to avoid double-call and debounce issues
+      
       // Initialize separate melody shuffles for free and game mode
       this.shuffleAllMelodies('free');
       this.shuffleAllMelodies('game');
