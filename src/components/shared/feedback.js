@@ -272,6 +272,11 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
   if (!message) {
     debugLog('LOG_INTRO_MESSAGE', 'Using direct strings.xml messages for:', activityMode);
     const messages = {
+      '1_1_pitches_high_or_low': {
+        'de': 'Höre den Ton! Ist er hoch oder tief?',
+        'en': 'Listen to the tone! Is it high or low?'
+      },
+      // 1_2, 1_5: call playIntroAudio(message) directly
       '1_3_pitches_draw-melody': {
         'de': 'Male und höre zu! Deine Linie wird zur Musik!',
         'en': 'Draw and listen! Your line becomes music!'

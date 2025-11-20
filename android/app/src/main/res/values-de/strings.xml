@@ -383,7 +383,7 @@
     <string name="high_or_low_intro_stage1">Höre den Ton! Ist er hoch oder tief?</string>
     <string name="high_or_low_intro_stage2">Höre den Ton! Ist er hoch oder tief?</string>
     <string name="high_or_low_intro_stage3">Höre beide Töne! Ist der zweite höher oder tiefer?</string>
-    <string name="high_or_low_intro_stage4">Höre den Ton! Ist er hoch oder tief?</string>
+    <string name="high_or_low_intro_stage4">Höre beide Töne! Ist der zweite höher oder tiefer?</string>
     <string name="high_or_low_intro_stage5">Höre beide Töne! Ist der zweite höher oder tiefer?</string>
 
     <!-- Activity Introduction Messages -->

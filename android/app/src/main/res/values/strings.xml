@@ -378,7 +378,7 @@
     <string name="high_or_low_intro_stage1">Listen to the tone! Is it high or low?</string>
     <string name="high_or_low_intro_stage2">Listen to the tone! Is it high or low?</string>
     <string name="high_or_low_intro_stage3">Listen to both tones! Is the second one higher or lower?</string>
-    <string name="high_or_low_intro_stage4">Listen to the tone! Is it high or low?</string>
+    <string name="high_or_low_intro_stage4">Listen to both tones! Is the second one higher or lower?</string>
     <string name="high_or_low_intro_stage5">Listen to both tones! Is the second one higher or lower?</string>
 
     <!-- Activity Introduction Messages -->
