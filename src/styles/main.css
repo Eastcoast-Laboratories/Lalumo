@@ -1037,8 +1037,8 @@ body {
 }
 
 .settings-button .user-avatar {
-  width: 5vh;
-  height: 5vh;
+  width: 3vh;
+  height: 3vh;
   flex-shrink: 0;
   margin: 0 !important;
 }
@@ -1810,11 +1810,11 @@ section h2 {
 
 .feedback-close-button {
   position: absolute;
-  top: 1vw;
-  right: 1vw;
+  top: 1vh;
+  right: 1vh;
   background: none;
   border: none;
-  font-size: 5vw;
+  font-size: 3vh;
   font-weight: bold;
   color: var(--text-color);
   cursor: pointer;
