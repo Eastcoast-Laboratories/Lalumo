@@ -115,9 +115,9 @@ export function setup_1_1(component) {
   component.gameStarted = false;
   debugLog('PITCHES', 'High or Low game reset, gameStarted:', component.gameStarted);
   
-  // Show intro message immediately when entering the activity
-  debugLog('INTRO_AUDIO_CALL', '1_1_high_or_low.js calling showActivityIntroMessage');
-  window.showActivityIntroMessage('1_1_pitches_high_or_low', component);
+  // NOTE: Intro message is handled by showContextMessage() called from setMode()
+  // Don't call showActivityIntroMessage here to avoid double-call and debounce issues
+  // showContextMessage() provides stage-specific messages which is more appropriate
 }
 
 
