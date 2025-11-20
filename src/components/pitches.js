@@ -1829,54 +1829,10 @@ export function pitches() {
       
       // Handle activities with complex context-dependent logic
       if (this.mode === '1_1_pitches_high_or_low') {
-        // For the High or Low activity, show different instructions based on the current stage
-        const stage = currentHighOrLowStage(this);
-        debugLog('PITCHES', 'LOG_CONTEXT_MESSAGE: Showing context message for High or Low stage:', stage);
-        
-        // Get the appropriate message based on stage and language
-        if (this.$store.strings) {
-          const stageKey = `high_or_low_intro_stage${stage}`;
-          message = this.$store.strings[stageKey];
-        }
-        
-        // Fallback messages if strings.xml not available
-        if (!message) {
-          switch(stage) {
-            case 1:
-            case 2:
-              // Single tone stages
-              message = language === 'german' ? 
-                'Höre den Ton! Ist er hoch oder tief? Berühre den Vogel um das Spiel zu starten!' : 
-                'Listen to the tone! Is it high or low? Touch the bird to start the game!';
-              break;
-            case 3:
-            case 4:
-            case 5:
-              // Two-tone comparison stages
-              message = language === 'german' ? 
-                'Höre beide Töne! Ist der zweite Ton höher oder tiefer?' : 
-                'Listen to both tones! Is the second one higher or lower?';
-              break;
-          }
-        }
-        
-        // Show context-specific message
-        if (message) {
-          // Play audio if enabled and available for this activity
-          const helpSettingsStore = window.Alpine?.store ? window.Alpine.store('helpSettings') : null;
-          if (helpSettingsStore?.playHelpAudio) {
-            const activityId = this.mode + '_stage' + stage;
-            debugLog('INTRO_AUDIO_CALL', 'showContextMessage calling playIntroAudio for mode:', this.mode, 'stage:', stage, 'message:', message);
-            playIntroAudio(message);
-          }
-          
-          window.showFeedbackMessage(message, {
-            activityId: this.mode + '_stage' + stage,
-            isIntroMessage: true,
-            delaySeconds: 10,
-            component: this
-          });
-        }
+        // For 1_1, use the central intro message function like all other activities
+        // This ensures proper audio file mapping and consistent behavior
+        debugLog('PITCHES', 'LOG_CONTEXT_MESSAGE: Using central intro message for 1_1');
+        window.showActivityIntroMessage(this.mode, this);
       } else if (this.mode === '1_2_pitches_match-sounds') {
         // Context-dependent message based on game mode
         if (!this.gameMode) {
