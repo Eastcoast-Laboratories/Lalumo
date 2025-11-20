@@ -645,10 +645,23 @@
     // Portrait mode overlay control
     function checkOrientation() {
       const portraitNotice = document.querySelector('.portrait-notice');
+      if (!portraitNotice) {
+        return;
+      }
+
       const isLandscape = window.innerHeight < window.innerWidth;
-      const isMobile = window.innerWidth <= 1024 || window.innerHeight <= 768;
-      
-      if (isLandscape && isMobile) {
+
+      // Detect real mobile devices via user agent (phones / tablets)
+      const ua = navigator.userAgent || '';
+      const isMobileUA = /Android|webOS|iPhone|iPad|iPod|Windows Phone/i.test(ua);
+
+      // Additional safety: limit to reasonably small screens
+      const minSide = Math.min(window.innerWidth, window.innerHeight);
+      const isSmallScreen = minSide <= 900;
+
+      const shouldShow = isLandscape && isMobileUA && isSmallScreen;
+
+      if (shouldShow) {
         portraitNotice.style.display = 'flex';
         document.body.style.overflow = 'hidden';
       } else {
