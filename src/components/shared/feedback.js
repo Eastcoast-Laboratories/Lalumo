@@ -377,7 +377,7 @@ export function playIntroAudio(message) {
   // USE TONE.JS INSTEAD OF HTML5 AUDIO!
   // This allows audioEngine.stopAll() to stop intro messages too
   if (window.audioEngine && typeof window.audioEngine.playIntroMessage === 'function') {
-    window.audioEngine.playIntroMessage(audioPath, 0.7);
+    window.audioEngine.playIntroMessage(audioPath, 0.9);
   } else {
     debugLog(['INTRO_AUDIO', 'ERROR'], 'audioEngine not available yet - will retry on next call');
     // DON'T set debounce if audioEngine not ready - allow retry!
