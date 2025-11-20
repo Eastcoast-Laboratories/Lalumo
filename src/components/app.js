@@ -68,7 +68,7 @@ export function app() {
         name: 'Feeling Chords',
         activities: {
           '2_1_chords_color-matching': 'Chord Magical Forest',
-          '2_2_chords_stable_unstable': 'Stable or Unstable',
+          '2_2_chords_stable_unstable': 'Spooky or Friendly',
           '2_3_chords_chord-building': 'Chord Building',
           '2_4_chords_missing-note': 'Missing Note',
           '2_5_chords_characters': 'Chord Characters',
@@ -2260,7 +2260,7 @@ export function app() {
      *    - 1_4:XX - Sets sound judgment progress to XX (stored in lalumo_soundJudgmentLevel)
      *    - 1_5:XX - Sets memory game progress to XX (stored in lalumo_memory_level)
      *    - 2_1:XX - Sets chord Magical Forest progress to XX (stored in lalumo_chords_progress JSON)
-     *    - 2_2:XX - Sets chord Stable or Unstable progress to XX (stored in lalumo_chords_progress JSON)
+     *    - 2_2:XX - Sets chord Spooky or Friendly progress to XX (stored in lalumo_chords_progress JSON)
      *    - 2_3:XX - Sets chord building progress to XX (stored in lalumo_chords_progress JSON)
      *    - 2_4:XX - Sets chord missing note progress to XX (stored in lalumo_chords_progress JSON)
      *    - 2_5:XX - Sets chord Chord Characters progress to XX (stored in lalumo_chords_progress JSON)

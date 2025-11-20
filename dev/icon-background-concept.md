@@ -38,7 +38,7 @@
 - **Bewertung**: ✅ Regenbogen passt zu Farben/Magie
 - **Vorschlag**: Beibehalten 
 
-#### 2_2 - Stable or Unstable
+#### 2_2 - Spooky or Friendly
 - **Aktuelles Icon**: 🏞️ (Landschaft)
 - **Hintergrund**: `2_2_chords_stable_unstable-X.jpg` - Fuchs vs. Spinnennetz (Vogel für start)
 - **Hilfstext**: "Fuchs für stabil", "Spinnennetz für instabil"

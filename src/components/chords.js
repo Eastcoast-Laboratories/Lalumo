@@ -40,7 +40,7 @@ import {
   reset_2_1_Progress
 } from './2_chords/2_1_chord_color_matching.js';
 
-// 2_2 Chord Stable or Unstable Module
+// 2_2 Chord Spooky or Friendly Module
 import {
   updateStableUnstableBackground,
   reset2_2ToFreePlayMode
@@ -702,8 +702,8 @@ export function chords() {
         // Generate first chord for free play
         window.generate2_1Chord(this);
       } else if (mode === '2_2_chords_stable_unstable') {
-        // Initialize Stable or Unstable activity
-        debugLog('CHORDS_2_2_DEBUG', 'Initializing Stable or Unstable activity');
+        // Initialize Spooky or Friendly activity
+        debugLog('CHORDS_2_2_DEBUG', 'Initializing Spooky or Friendly activity');
         
         this.currentStableUnstableChord = null;
         // Local feedback variables removed - using global feedback system
@@ -799,7 +799,7 @@ export function chords() {
       } else if (this.mode === '2_2_chords_stable_unstable') {
         message = language === 'german' ? 
           'Höre den Akkord! Ist er stabil oder instabil?' : 
-          'Listen to the chord! Is it stable or unstable?';
+          'Listen to the chord! Does it sound spooky or friendly?';
       } else if (this.mode === '2_3_chords_chord-building') {
         message = language === 'german' ? 
           'Baue den Akkord nach! Höre zu und spiele die richtigen Noten!' : 

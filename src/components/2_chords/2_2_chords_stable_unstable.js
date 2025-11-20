@@ -1,5 +1,5 @@
 /**
- * 2_2_chords_stable_unstable.js - Module for the "Stable or Unstable Chords" activity
+ * 2_2_chords_stable_unstable.js - Module for the "Spooky or Friendly Chords" activity
  */
 
 // Import debug utilities
@@ -64,7 +64,7 @@ export function get_2_2_level(component) {
  * @returns {boolean} True if import successful
  */
 export function testStableUnstableModuleImport() {
-  debugLog('CHORDS', 'Stable or Unstable module successfully imported');
+  debugLog('CHORDS', 'Spooky or Friendly module successfully imported');
   
   // Initialize free play mode immediately when the module is imported
   if (!isInitialized) {
@@ -191,7 +191,7 @@ export function generateUnstableChord(progressLevel = 0) {
 }
 
 /**
- * Plays either a stable or unstable chord
+ * Plays either a spooky or friendly chord
  * @param {Object} component - The Alpine component instance
  * @returns {string} The type of chord played ('stable' or 'unstable')
  */
@@ -861,7 +861,7 @@ export function updateStableUnstableBackground(component) {
 }
 
 /**
- * Reset progress for Stable or Unstable Chords activity (2_2)
+ * Reset progress for Spooky or Friendly Chords activity (2_2)
  * Used by the resetCurrentActivity function
  */
 export function reset_2_2_Progress(component) {

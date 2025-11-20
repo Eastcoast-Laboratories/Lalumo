@@ -38,7 +38,7 @@ function getActivityNames(isGerman) {
     '1_4_pitches_does-it-sound-right': isGerman ? 'Klingt das richtig?' : 'Does It Sound Right?',
     '1_5_pitches_memory-game': isGerman ? 'Memory-Spiel' : 'Memory Game',
     '2_1_chords_color-matching': isGerman ? 'Akkord-Farb Zuordnung' : 'Chord Magical Forest',
-    '2_2_chords_stable_unstable': isGerman ? 'Stabile/Instabile Akkorde' : 'Stable or Unstable Chords',
+    '2_2_chords_stable_unstable': isGerman ? 'Geister- oder Freunliche Akkkorde' : 'Spooky or Friendly Chords',
     '2_3_chords_chord-building': isGerman ? 'Akkord-Bau' : 'Chord Building',
     '2_4_chords_missing-note': isGerman ? 'Fehlende Noten' : 'Missing Note',
     '2_5_chords_characters': isGerman ? 'Akkord-Charaktere' : 'Chord Characters',
@@ -262,7 +262,7 @@ export function resetAllProgress(component) {
   debugLog('PITCHES', 'RESET_ALL: Resetting Magical Forest activity');
   reset_2_1_Progress(window.chordsComponent);
   
-  debugLog('PITCHES', 'RESET_ALL: Resetting Stable or Unstable Chords activity');
+  debugLog('PITCHES', 'RESET_ALL: Resetting Spooky or Friendly Chords activity');
   reset_2_2_Progress(window.chordsComponent);
   
   debugLog('PITCHES', 'RESET_ALL: Resetting Missing Note activity');

@@ -97,7 +97,7 @@
     
     <!-- Chords - Main Menu -->
     <string name="chord_color_matching">Magical Forest Chords</string>
-    <string name="chords_stable_unstable">Stable or Unstable</string>
+    <string name="chords_stable_unstable">Spooky or Friendly</string>
     <string name="chord_building">Chord Building</string>
     <string name="missing_note">Guess the Missing Note</string>
     <string name="chord_characters">Chord Characters</string>
@@ -124,7 +124,7 @@
     <string name="chord_element_lantern_sus4">Sus4</string>
     <string name="play_chord">Play Chord</string>
 
-    <!-- Chords - Stable or Unstable Activity -->
+    <!-- Chords - Spooky or Friendly Activity -->
     <string name="chords_stable_unstable_intro">Some chords are stable and peaceful, while others are unstable and restless.</string>
     
     <!-- Chords - Chord Building Activity -->
@@ -390,7 +390,7 @@
     <string name="intro_1_5_pitches_memory">Listen carefully and remember the melody! Can you play it back?</string>
     
     <!-- Chord Activities -->
-    <string name="intro_2_2_chords_stable_unstable">Listen to the chord, does it sound stable or unstable? Click on the matching part of the forest</string>
+    <string name="intro_2_2_chords_stable_unstable">Listen to the chord, does it sound spooky or friendly? Click on the matching part of the forest</string>
     <string name="intro_2_5_chords_characters">Listen to the chord and match it to the right character!</string>
     <string name="intro_2_4_missing_note">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
     <string name="intro_2_1_chords_color_matching">Match the magical forest elements to the chords you hear! 🌲✨</string>

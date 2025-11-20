@@ -25,7 +25,7 @@ The app playfully teaches preschool children a basic understanding of music – 
 - disabled: Chords Kapitel (2_chords):
 
  - Chord Magical Forest: (2_1_chords_color-matching)
- - Stable or Unstable: (2_2_chords_stable_unstable)
+ - Spooky or Friendly: (2_2_chords_stable_unstable)
  - Chord Building: (2_3_chords_chord-building)
  - Missing Note: (2_4_chords_missing-note)
  - Chord Characters: (2_5_chords_characters)
@@ -242,7 +242,7 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
   - teste zuerst, ob dieser test noch funktioniert: @match-sounds.spec.js#L1-73  
   - wenn ja benutze ihn als basis ür einen neuen playwright test für 2_1 und teste ihn ausführlich, bis alles geht
 
-[x] **Stable or Unstable Chords: (2_2_chords_stable_unstable)**
+[x] **Spooky or Friendly Chords: (2_2_chords_stable_unstable)**
   **Help Description:** Free-Play mode: try the "Stable" left side with the fox and the "Unstable" right side with the spiderweb. Click the bird to start the challenge, where you listen to chords and decide if they sound stable (resolved) or unstable (tense).
   
   This activity helps children develop their ear for consonance and dissonance by distinguishing between stable (consonant) and unstable (dissonant) chords. 

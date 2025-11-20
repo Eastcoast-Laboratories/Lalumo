@@ -109,7 +109,7 @@
       
       // Chords Activities
       '2_1': '🌈',  // Magical Forest (Color Matching)
-      '2_2': '🦊',  // Stable or Unstable (Fox represents stable element)
+      '2_2': '🦊',  // Spooky or Friendly (Fox represents stable element)
       '2_3': '🧱',  // Chord Building
       '2_4': '🎼',  // Missing Note
       '2_5': '🐕',  // Chord Characters (Dog represents main Dur character)
@@ -483,11 +483,11 @@
         <span class="area-label"><span x-text="ACTIVITY_ICONS['2_6']"></span><br><span x-text="$store.strings?.one_or_many || 'One or Many'"></span></span>
       </div>
       
-      <!-- Stable or Unstable -->
+      <!-- Spooky or Friendly -->
       <div class="clickable-area shortcut-2_2" 
            @click="isHashNavigation = true; window.location.hash = '2_2'; hideLoadingOverlay()" 
-           aria-label="Stable or Unstable">
-        <span class="area-label"><span x-text="ACTIVITY_ICONS['2_2']"></span> <span x-text="$store.strings?.chords_stable_unstable || 'Stable or Unstable'"></span></span>
+           aria-label="Spooky or Friendly">
+        <span class="area-label"><span x-text="ACTIVITY_ICONS['2_2']"></span> <span x-text="$store.strings?.chords_stable_unstable || 'Spooky or Friendly'"></span></span>
       </div>
       
       <!-- Magical Forest -->
@@ -875,7 +875,7 @@
               role="button"
               tabindex="0"
             >
-              <span x-text="ACTIVITY_ICONS['2_2']"></span> <span x-text="$store.strings?.chords_stable_unstable || 'Stable or Unstable'"></span>
+              <span x-text="ACTIVITY_ICONS['2_2']"></span> <span x-text="$store.strings?.chords_stable_unstable || 'Spooky or Friendly'"></span>
             </a>
 
             <a href="#2_3" id="nav_2_3"
@@ -1363,7 +1363,7 @@
           </div>
         </div>
         
-        <!-- 2_2 Chords - Stable or Unstable Activity -->
+        <!-- 2_2 Chords - Spooky or Friendly Activity -->
         <div id="2_2_chords_stable_unstable" x-show="mode === '2_2_chords_stable_unstable'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_2_chords_stable_unstable-1.jpg">
           
           <!-- Play buttons -->

@@ -148,7 +148,7 @@ reset-button:
   - PressKeysFreelyToPracticeTouchTheBirdToStartTheGame.mp3
 [x] Can you hear if it is one note or many notes?
   - CanYouHearIfItIsOneNoteOrManyNotes.mp3
-[x] Listen to the chord! Is it stable or unstable?
+[x] Listen to the chord! Is it spooky or friendly?
   - ListenToTheChordIsItStableOrUnstable.mp3
 [x] Listen to the chord and find the missing note!
   - ListenToTheChordAndFindTheMissingNote.mp3

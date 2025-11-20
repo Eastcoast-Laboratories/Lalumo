@@ -98,7 +98,7 @@
     
     <!-- Chords - Main Menu -->
     <string name="chord_color_matching">Akkorde im Zauberwald</string>
-    <string name="chords_stable_unstable">Stabile/Instabile Akkorde</string>
+    <string name="chords_stable_unstable">Geister- oder Freunliche Akkkorde</string>
     <string name="chord_building">Akkorde Bauen</string>
     <string name="missing_note">Rate die fehlende Note</string>
     <string name="chord_characters">Akkord-Charaktere</string>
@@ -125,7 +125,7 @@
     <string name="chord_element_lantern_sus4">Sus4</string>
     <string name="play_chord">Akkord spielen</string>
 
-    <!-- Chords - Stable or Unstable Activity -->
+    <!-- Chords - Spooky or Friendly Activity -->
     <string name="chords_stable_unstable_intro">Einige Akkorde sind harmonisch und ruhig, während andere Akkorde unharmonisch und unruhig klingen.</string>
     
     <!-- Chords - Chord Building Activity -->
