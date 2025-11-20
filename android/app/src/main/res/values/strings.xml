@@ -22,6 +22,7 @@
     <string name="nav_up">Up</string>
     <string name="nav_down">Down</string>
     <string name="back_to_main_a11y">Back to main menu</string>
+    <string name="select_chord_activity">Select an activity from the menu to begin your chord journey!</string>
     
     <!-- Portrait Mode Notice -->
     <string name="portrait_notice_title">📱 Please rotate your device</string>

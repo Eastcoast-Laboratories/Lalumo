@@ -959,6 +959,9 @@ body {
   padding-top: 1vh;
 }
 
+.menu-chapters > button:nth-child(1).active, .menu-chapters > button:nth-child(1):hover{
+  background-color: #919d76;
+}
 .menu-spacer {
   flex-grow: 1;
   min-height: 5.3vh;

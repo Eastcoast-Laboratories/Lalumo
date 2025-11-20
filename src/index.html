@@ -752,7 +752,7 @@
         
         <div class="menu-chapters">
           <!-- pitches -->
-          <button @click="active = 'pitches'; $dispatch('set-activity-mode', 'main')" :class="{ 'active': active === 'pitches' }">
+          <button @click="active = 'pitches'; $dispatch('set-activity-mode', 'main'); window.audioEngine?.stopAll()" :class="{ 'active': active === 'pitches' }">
             <span x-text="$store.strings?.menu_pitches || 'Pitches & Melodies'"></span>
           </button>
         </div>
@@ -843,7 +843,7 @@
           <button 
             @click="
               active = 'chords'; 
-              $dispatch('set-activity-mode', {component: 'chords', mode: '2_2_chords_stable_unstable'});
+              window.audioEngine?.stopAll();
               checkAndAutoCloseMenu();
             "
             :class="{ 'active': active === 'chords' }">
@@ -1296,7 +1296,9 @@
         
         <!-- Main chord activity selection screen -->
         <div x-show="!mode || mode === 'main'" class="chord-landing">
-          <div class="image-map-container"></div>
+          <div style="position: absolute; right: 2vh; top: 50%; transform: translateY(-50%); max-width: 40vw; text-align: right; font-size: 2.5vh; color: rgba(255, 255, 255, 0.85); text-shadow: 0 2px 4px rgba(0,0,0,0.3); line-height: 1.6;">
+            <div x-text="$store.strings?.select_chord_activity || 'Select an activity from the menu to begin your chord journey!'"></div>
+          </div>
         </div>
         
         <!-- 2_1 Chords - Studio Ghibli Magical Forest Activity -->

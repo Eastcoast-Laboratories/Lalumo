@@ -22,6 +22,7 @@
     <string name="nav_up">Hoch</string>
     <string name="nav_down">Runter</string>
     <string name="back_to_main_a11y">Zurück zum Hauptmenü</string>
+    <string name="select_chord_activity">Wähle eine Aktivität aus dem Menü, um deine Akkord-Reise zu beginnen!</string>
     
     <!-- Portrait Mode Notice -->
     <string name="portrait_notice_title">📱 Bitte drehe dein Gerät</string>
