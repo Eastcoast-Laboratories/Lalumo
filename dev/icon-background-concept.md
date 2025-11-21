@@ -41,9 +41,9 @@
 #### 2_2 - Spooky or Friendly
 - **Aktuelles Icon**: 🏞️ (Landschaft)
 - **Hintergrund**: `2_2_chords_stable_unstable-X.jpg` - Fuchs vs. Spinnennetz (Vogel für start)
-- **Hilfstext**: "Fuchs für stabil", "Spinnennetz für instabil"
+- **Hilfstext**: "Fuchs für freundlich", "Spinnennetz für geisterhaft"
 - **Problem**: Landschaft ist zu generisch
-- **Vorschlag**: 🦊 (Fuchs)
+- **Vorschlag**: 👻 Geist
 
 #### 2_3 - Chord Building
 - **Aktuelles Icon**: 🧱 (Ziegel)

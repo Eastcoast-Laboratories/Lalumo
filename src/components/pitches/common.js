@@ -38,7 +38,7 @@ function getActivityNames(isGerman) {
     '1_4_pitches_does-it-sound-right': isGerman ? 'Klingt das richtig?' : 'Does It Sound Right?',
     '1_5_pitches_memory-game': isGerman ? 'Memory-Spiel' : 'Memory Game',
     '2_1_chords_color-matching': isGerman ? 'Akkord-Farb Zuordnung' : 'Chord Magical Forest',
-    '2_2_chords_stable_unstable': isGerman ? 'Geister- oder Freunliche Akkkorde' : 'Spooky or Friendly Chords',
+    '2_2_chords_stable_unstable': isGerman ? 'Geisterhaft oder Freundlich' : 'Spooky or Friendly Chords',
     '2_3_chords_chord-building': isGerman ? 'Akkord-Bau' : 'Chord Building',
     '2_4_chords_missing-note': isGerman ? 'Fehlende Noten' : 'Missing Note',
     '2_5_chords_characters': isGerman ? 'Akkord-Charaktere' : 'Chord Characters',

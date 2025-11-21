@@ -52,7 +52,7 @@
     <string name="help_header">Help &amp; Activity Guide</string>
     
     <!-- Pitch Activities Help -->
-    <string name="help_high_or_low">You start in Free-Play mode, where you can click on the mule to hear a low note or the mouse to hear a high note. Click the Bird to start the chellenge, where you hear a tone, then click the mouse for \"High\" or the mule for \"Low\" to choose which kind of tone it was.</string>
+    <string name="help_high_or_low">You start in Free-Play mode, where you can click on the mule to hear a low note or the mouse to hear a high note. Click the Bird to start the chellenge, where you hear a tone, then click the mouse for "High" or the mule for "Low" to choose which kind of tone it was.</string>
     <string name="help_match_sounds">You start in Free-Play mode, where you can click on the pattern images (rocket for up, slide for down, waves, and frog) to hear different melody patterns. Click the bird to start the challenge, where you hear a melody and must click the pattern that matches what you heard.</string>
     <string name="help_draw_melody">You start in Free-Play mode, where you can freely draw inside the sandpit and listen to the melody your painting results in. Click the Mage to start the challenge, then draw the melody\'s shape on the canvas. The line should go up when the melody goes higher and down when it goes lower. Click on the notes on the top to hear the melody again. Click the unicorn to create a new melody.</string>
     <string name="help_does_it_sound_right">You start in Listen-Mode, where you can click on the members of the band to hear different songs with differing instruments. Click the play button at the bottom to start the challenge where you hear a song and click the left happy animal if it sounds correct or the right sad animal if it has a few silly notes.</string>
@@ -61,7 +61,7 @@
     <!-- Chord Activities Help -->
     <string name="help_chords_chapter">Chords Chapter</string>
     <string name="help_one_or_many">Free-Play mode: click the deer to the left to hear one note or the bats on the right to hear many notes. Click the owl to start the challenge, where you listen to sounds and decide if you hear one note or many notes playing together.</string>
-    <string name="help_stable_unstable">Free-Play mode: try the \"Stable\" left side with the fox and the \"Unstable\" right side with the spiderweb. Click the bird to start the challenge, where you listen to chords and decide if they sound stable (resolved) or unstable (tense).</string>
+    <string name="help_stable_unstable">Free-Play mode: try the "Friendly" left side with the fox and the "Spooky" right side with the spiderweb. Click the bird to start the challenge, where you listen to chords and decide if they sound friendly (stable, resolved) or spooky (unstable, tense).</string>
     <string name="help_chord_characters">Free-Play mode: click different character buttons to hear the chords: happy dog for major, sad cat for minor, astonished squirrel for diminished, mystic octopus for augmented. Click the owl to start the challenge, where you listen to chords and match them to their character personalities.</string>
     <string name="help_magical_forest">Free-Play mode: try the scattered elements in the forest to hear different chord progressions. Click the flower in the middle to start the challenge, where you listen to chord progressions and match them to their correct elements in the magical forest.</string>
     
@@ -126,6 +126,8 @@
 
     <!-- Chords - Spooky or Friendly Activity -->
     <string name="chords_stable_unstable_intro">Some chords are stable and peaceful, while others are unstable and restless.</string>
+    <string name="stable">Friendly</string>
+    <string name="unstable">Spooky</string>
     
     <!-- Chords - Chord Building Activity -->
     <string name="chord_building_title">Build Your Own Chords</string>
@@ -190,7 +192,7 @@
     <string name="squirrel_returns">The squirrel is back to help! Octopus still sleeping. 🐿️</string>
     
     <!-- Stable/Unstable Chord Progression Messages -->
-    <string name="stable_unstable_level1">Can you hear the difference between stable and unstable chords?</string>
+    <string name="stable_unstable_level1">Can you hear the difference between friendly and spooky chords?</string>
     <string name="stable_unstable_level2">Great job! Now listening for seventh chords and altered dominants! 🎵</string>
     <string name="stable_unstable_level3">Level 3: Extended harmonies vs. polytonal chords! 🎼</string>
     <string name="stable_unstable_level4">Level 4: Jazz voicings vs. atonal clusters! 🎹</string>
@@ -407,8 +409,8 @@
     <string name="feedback_correct_unstable">Correct! It was an unstable chord.</string>
     <string name="feedback_incorrect_stable">Incorrect. It was a stable chord.</string>
     <string name="feedback_incorrect_unstable">Incorrect. It was an unstable chord.</string>
-    <string name="stable_chord">stable chord</string>
-    <string name="unstable_chord">unstable chord</string>
+    <string name="stable_chord">friendly chord</string>
+    <string name="unstable_chord">spooky chord</string>
     
     <!-- Back Button Messages -->
     <string name="back_button_confirm_exit">Do you really want to leave this page? Your session progress might be lost.</string>

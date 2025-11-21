@@ -798,7 +798,7 @@ export function chords() {
           'Touch the flower in the magical forest and choose the matching item!';
       } else if (this.mode === '2_2_chords_stable_unstable') {
         message = language === 'german' ? 
-          'Höre den Akkord! Ist er stabil oder instabil?' : 
+          'Höre den Akkord! Klingt er geisterhaft oder freundlich?' : 
           'Listen to the chord! Does it sound spooky or friendly?';
       } else if (this.mode === '2_3_chords_chord-building') {
         message = language === 'german' ? 

@@ -109,7 +109,7 @@
       
       // Chords Activities
       '2_1': '🌈',  // Magical Forest (Color Matching)
-      '2_2': '🦊',  // Spooky or Friendly (Fox represents stable element)
+      '2_2': '👻',  // Spooky or Friendly Ghost 
       '2_3': '🧱',  // Chord Building
       '2_4': '🎼',  // Missing Note
       '2_5': '🐕',  // Chord Characters (Dog represents main Dur character)
@@ -1413,14 +1413,14 @@
               <div id="button_2_2_stable" class="character activity-button-blocker longpress-title" 
                    @click="checkStableUnstableMatch('stable', $data); blurElement($event)"
                    @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)"
-                   :title="$store.strings?.stable || 'Stable'">
+                   :title="$store.strings?.stable || 'Friendly'">
                 <div></div>
               </div>
               
               <div id="button_2_2_unstable" class="character activity-button-blocker longpress-title" 
                    @click="checkStableUnstableMatch('unstable', $data); blurElement($event)"
                    @touchstart="$el.click(); blurElement($event)" @mousedown.prevent="$el.click(); blurElement($event)"
-                   :title="$store.strings?.unstable || 'Unstable'">
+                   :title="$store.strings?.unstable || 'Spooky'">
                 <div></div>
               </div>
             </div>

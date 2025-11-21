@@ -62,17 +62,17 @@
     <!-- Chord Activities Help -->
     <string name="help_chords_chapter">Akkorde-Kapitel</string>
     <string name="help_one_or_many">Freispiel-Modus: Klicke auf das Reh links, um eine Note zu hören, oder auf die Fledermäuse rechts für viele Noten. Klicke auf die Eule, um die Herausforderung zu starten, bei der du Töne hörst und entscheidest, ob du eine Note oder viele Noten gleichzeitig hörst.</string>
-    <string name="help_stable_unstable">Freispiel-Modus: Probiere die "Stabile" linke Seite mit dem Fuchs und die "Instabile" rechte Seite mit dem Spinnennetz aus, wie sie unterschiedlich klingen. Klicke auf den Vogel, um die Herausforderung zu starten, bei der du Akkorde hörst und entscheidest, ob sie stabil (angenehm) oder instabil (gespannt) klingen.</string>
+    <string name="help_stable_unstable">Freispiel-Modus: Probiere die "Freundliche" linke Seite mit dem Fuchs und die rechte Seite mit dem Spinnennetz für "Geisterakkorde" aus. Achte darauf, wie unterschiedlich sie klingen. Klicke auf den Vogel, um die Herausforderung zu starten, bei der du Akkorde hörst und entscheidest, ob sie freundlich (angenehm, stabil) oder geisterhaft (gespannt, instabil) klingen.</string>
     <string name="help_chord_characters">Freispiel-Modus: Klicke auf die Tiere, um die Akkorde zu hören: fröhlicher Hund für Dur, traurige Katze für Moll, erschrockenes Eichhörnchen für vermindert, mystischer Oktopus für übermäßig. Klicke auf die Eule, um die Herausforderung zu starten, bei der du Akkorde hörst und sie ihren Charakter-Persönlichkeiten zuordnest.</string>
     <string name="help_magical_forest">Freispiel-Modus: Probiere die verstreuten Dinge im Wald aus, um verschiedene Akkorde zu hören. Klicke auf die Blume in der Mitte, um die Herausforderung zu starten, bei der du einen Akkord hörst und dann dem richtigen Element im magischen Wald zuordnest.</string>
  
     <!-- Melodies & Pitches -->
-    <string name="play_melody">Melodie abspielen</string>
+    <string name="play_melody" comment="Fallback">Melodie abspielen</string>
     <string name="high_or_low">Hoch oder Tief</string>
     <string name="match_sounds">Rauf oder Runter</string>
-    <string name="draw_melody">Zeichne eine Melodie</string>
     <string name="does_it_sound_right">Klingt es richtig?</string>
     <string name="memory_game">Gedächtnis-Spiel</string>
+    <string name="draw_melody">Zeichne eine Melodie</string>
     
     <!-- Success & Error Messages -->
     <string name="success_message">Sehr gut! Das ist richtig!</string>
@@ -98,7 +98,7 @@
     
     <!-- Chords - Main Menu -->
     <string name="chord_color_matching">Akkorde im Zauberwald</string>
-    <string name="chords_stable_unstable">Geister- oder Freunliche Akkkorde</string>
+    <string name="chords_stable_unstable">Geisterhaft oder Freundlich</string>
     <string name="chord_building">Akkorde Bauen</string>
     <string name="missing_note">Rate die fehlende Note</string>
     <string name="chord_characters">Akkord-Charaktere</string>
@@ -127,6 +127,8 @@
 
     <!-- Chords - Spooky or Friendly Activity -->
     <string name="chords_stable_unstable_intro">Einige Akkorde sind harmonisch und ruhig, während andere Akkorde unharmonisch und unruhig klingen.</string>
+    <string name="stable">Freundlich</string>
+    <string name="unstable">Geisterhaft</string>
     
     <!-- Chords - Chord Building Activity -->
     <string name="chord_building_title">Baue deine eigenen Akkorde</string>
@@ -192,7 +194,7 @@
     <string name="all_friends_return">Alle Freunde sind zurück! 🐶🐱🐿️🐙</string>
     
     <!-- Stable/Unstable Chord Progression Messages -->
-    <string name="stable_unstable_level1">Kannst du den Unterschied zwischen stabilen und instabilen Akkorden hören?</string>
+    <string name="stable_unstable_level1">Kannst du den Unterschied zwischen Geisterakkorden und freundlichen Akkorden hören?</string>
     <string name="stable_unstable_level2">Gut gemacht! Jetzt hörst du Septakkorde und alterierte Dominanten! 🎵</string>
     <string name="stable_unstable_level3">Stufe 3: Erweiterte Harmonien vs. polytonale Akkorde! 🎼</string>
     <string name="stable_unstable_level4">Stufe 4: Jazz-Voicings vs. atonale Cluster! 🎹</string>
@@ -397,7 +399,7 @@
     <!-- Chord Activities -->
     <string name="intro_2_1_chords_color_matching">Ordne die magischen Waldelemente den Akkorden zu, die du hörst! 🌲✨</string>
     <string name="intro_2_4_missing_note">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
-    <string name="intro_2_2_chords_stable_unstable">Höre dir den Akkord an, klingt er stabil oder instabil? Klicke auf die passende Seite im Wald</string>
+    <string name="intro_2_2_chords_stable_unstable">Höre dir den Akkord an, klingt er geisterhaft oder freundlich? Klicke auf die passende Seite im Wald</string>
     <string name="intro_2_5_chords_characters">Höre dir die Akkord-Art an und wähle das passende Tier!</string>
     <string name="intro_2_6_chords_one_or_many">Kannst du hören, ob es eine Note ist oder mehrere Noten sind?</string>
     
@@ -417,12 +419,12 @@
     <string name="start_game">Spiel starten</string>
     
     <!-- Chord Feedback Messages -->
-    <string name="feedback_correct_stable">Richtig! Es war ein stabiler Akkord.</string>
-    <string name="feedback_correct_unstable">Richtig! Es war ein instabiler Akkord.</string>
-    <string name="feedback_incorrect_stable">Falsch. Es war ein stabiler Akkord.</string>
-    <string name="feedback_incorrect_unstable">Falsch. Es war ein instabiler Akkord.</string>
-    <string name="stable_chord">stabiler Akkord</string>
-    <string name="unstable_chord">instabiler Akkord</string>
+    <string name="feedback_correct_stable">Richtig! Es war ein freundlicher Akkord.</string>
+    <string name="feedback_correct_unstable">Richtig! Es war ein Geisterakkord.</string>
+    <string name="feedback_incorrect_stable">Falsch. Es war ein freundlicher Akkord.</string>
+    <string name="feedback_incorrect_unstable">Falsch. Es war ein Geisterakkord.</string>
+    <string name="stable_chord">freundlicher Akkord</string>
+    <string name="unstable_chord">Geisterakkord</string>
     
     <!-- UI Messages -->
     <string name="welcome_message">Willkommen bei Lalumo!</string>
