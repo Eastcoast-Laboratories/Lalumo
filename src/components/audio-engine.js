@@ -405,6 +405,35 @@ export class AudioEngine {
       // Globale Tone.js Einstellungen
       Tone.Transport.bpm.value = 120;
       
+      // iOS FIX: Add global event listeners to resume Tone.js context on every user interaction
+      // iOS can put AudioContext into "interrupted" state (not just "suspended") when HTML5 audio plays
+      // Tone.context.resume() only checks for "suspended", so we need to use the underlying context
+      // See: https://github.com/Tonejs/Tone.js/issues/767
+      if (typeof window !== 'undefined') {
+        const resumeToneContext = async () => {
+          const state = Tone.context.state;
+          // Check for both "suspended" AND "interrupted" (iOS-specific non-standard state)
+          if (state !== 'running') {
+            try {
+              // Use the underlying AudioContext directly to handle "interrupted" state
+              // Tone.context.resume() doesn't work for "interrupted", only for "suspended"
+              await Tone.context._context.resume();
+              debugLog('AUDIO_ENGINE', `iOS: Tone.js context resumed from "${state}" state`);
+            } catch (e) {
+              // Silently fail - this is expected if context is already running
+            }
+          }
+        };
+        
+        // Add listeners for all interaction types
+        // Use capture phase to ensure we run before other handlers
+        ['touchstart', 'touchend', 'mousedown', 'click'].forEach(eventType => {
+          document.addEventListener(eventType, resumeToneContext, { passive: true, capture: true });
+        });
+        
+        debugLog('AUDIO_ENGINE', 'iOS: Global Tone.js context resume listeners added (handles "interrupted" state)');
+      }
+      
       this._isInitialized = true;
       debugLog('AUDIO_ENGINE', 'Audio-Engine erfolgreich initialisiert');
       return Promise.resolve();

@@ -427,6 +427,10 @@
   
 </head>
 <body class="loading">
+  <!-- iOS Audio Fix: Hidden audio element to prevent AudioContext "interrupted" state -->
+  <!-- See: https://stackoverflow.com/questions/69502340 -->
+  <audio id="ios-audio-fix" style="display:none;" preload="auto"></audio>
+  
   <!-- Portrait Mode Notice -->
   <div class="portrait-notice">
     <button class="portrait-notice-close" onclick="closePortraitNotice()" ontouchstart="closePortraitNotice()" ontouchend="event.preventDefault()" aria-label="Close notice">×</button>
