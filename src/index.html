@@ -431,6 +431,13 @@
   <!-- See: https://stackoverflow.com/questions/69502340 -->
   <audio id="ios-audio-fix" style="display:none;" preload="auto"></audio>
   
+  <!-- Mute Warning Notice -->
+  <div class="mute-warning-notice" style="display: none;">
+    <button class="mute-warning-close" onclick="closeMuteWarning()" ontouchstart="closeMuteWarning()" ontouchend="event.preventDefault()" aria-label="Close notice">×</button>
+    <h2 data-string="mute_warning_title">🔇 Device is muted</h2>
+    <p data-string="mute_warning_message">Your device appears to be in silent mode. You won't hear any sounds. Please unmute your device to enjoy Lalumo.</p>
+  </div>
+  
   <!-- Portrait Mode Notice -->
   <div class="portrait-notice">
     <button class="portrait-notice-close" onclick="closePortraitNotice()" ontouchstart="closePortraitNotice()" ontouchend="event.preventDefault()" aria-label="Close notice">×</button>
@@ -680,6 +687,32 @@
     window.addEventListener('orientationchange', function() {
       setTimeout(checkOrientation, 100); // delay for orientation change
     });
+    
+    // Function to manually close mute warning
+    window.closeMuteWarning = function() {
+      const muteWarning = document.querySelector('.mute-warning-notice');
+      if (muteWarning) {
+        muteWarning.classList.add('hidden');
+        muteWarning.style.display = 'none';
+        document.body.style.overflow = '';
+        // Store preference to not show again this session
+        sessionStorage.setItem('muteWarningDismissed', 'true');
+      }
+    };
+    
+    // Function to show mute warning
+    window.showMuteWarning = function() {
+      // Check if already dismissed this session
+      if (sessionStorage.getItem('muteWarningDismissed') === 'true') {
+        return;
+      }
+      
+      const muteWarning = document.querySelector('.mute-warning-notice');
+      if (muteWarning) {
+        muteWarning.style.display = 'flex';
+        muteWarning.classList.remove('hidden');
+      }
+    };
     
     // Function to manually close portrait notice
     window.closePortraitNotice = function() {

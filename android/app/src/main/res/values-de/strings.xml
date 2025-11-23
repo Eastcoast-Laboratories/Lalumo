@@ -24,6 +24,10 @@
     <string name="back_to_main_a11y">Zurück zum Hauptmenü</string>
     <string name="select_chord_activity">Wähle eine Aktivität aus dem Menü, um deine Akkord-Reise zu beginnen!</string>
     
+    <!-- Mute Warning -->
+    <string name="mute_warning_title">🔇 Gerät ist stumm geschaltet</string>
+    <string name="mute_warning_message">Dein Gerät scheint im Lautlos-Modus zu sein. Du wirst keine Töne hören können. Bitte schalte dein Gerät laut, um Lalumo zu genießen.</string>
+    
     <!-- Portrait Mode Notice -->
     <string name="portrait_notice_title">📱 Bitte drehe dein Gerät</string>
     <string name="portrait_notice_message">Lalumo funktioniert nur im Hochformat.</string>

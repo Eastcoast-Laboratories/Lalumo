@@ -20,6 +20,8 @@ export class AudioEngine {
     this._activeSequences = new Map();
     this._notesPlaying = new Set();
     this._introMessagePlayer = null; // Tone.js Player für Intro-Messages definieren
+    this._muteCheckPerformed = false; // Track if we've already checked for mute
+    this._deviceIsMuted = false; // Store mute detection result
     
     // Spezielle Sound-Effekte definieren
     this._specialSounds = {

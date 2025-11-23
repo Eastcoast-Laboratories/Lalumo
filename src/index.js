@@ -12,6 +12,9 @@ import { checkStoredDebugSettings, debugLog } from './utils/debug';
 // Import Button Blocker Utility
 import './utils/buttonBlocker';
 
+// Import Mute Detector
+import { detectDeviceMute } from './utils/mute-detector';
+
 // Import and initialize the global Tone.js instance
 import { initToneJs } from './utils/toneJsSampler';
 
@@ -158,6 +161,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   debugLog('APP', `Lalumo app running on platform: ${capacitor.getPlatform()}`);
+  
+  // Check for muted device after first user interaction
+  setTimeout(async () => {
+    try {
+      const isMuted = await detectDeviceMute();
+      if (isMuted && typeof window.showMuteWarning === 'function') {
+        window.showMuteWarning();
+      }
+    } catch (error) {
+      debugLog(['MUTE_DETECTOR', 'ERROR'], 'Failed to check mute status:', error);
+    }
+  }, 2000); // Wait 2 seconds after page load
 });
 
 // Start Alpine, but only if it hasn't been started already
