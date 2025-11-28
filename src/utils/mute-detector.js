@@ -68,9 +68,9 @@ export async function detectDeviceMute() {
       
       // Quiet tone (audible to analyzer but very quiet for user)
       oscillator.frequency.value = 1000;
-      gainNode.gain.value = 0.01; // Increased from 0.001 to be detectable
-      analyser.fftSize = 256; // Increased for better resolution
-      analyser.smoothingTimeConstant = 0.3;
+      gainNode.gain.value = 0.1; // Increased to 10% - needs to be loud enough for analyzer
+      analyser.fftSize = 2048; // Larger FFT for better detection
+      analyser.smoothingTimeConstant = 0;
       
       oscillator.connect(gainNode);
       gainNode.connect(analyser);
@@ -81,10 +81,14 @@ export async function detectDeviceMute() {
       // Start the tone - longer duration for better detection
       const startTime = audioContext.currentTime;
       oscillator.start(startTime);
-      oscillator.stop(startTime + 0.1); // Increased to 100ms
+      oscillator.stop(startTime + 0.2); // 200ms tone
       
-      // Check if we actually hear audio output
-      const checkAudio = () => {
+      // Take multiple measurements and use the maximum
+      let maxLevel = 0;
+      let measurementCount = 0;
+      const maxMeasurements = 8;
+      
+      const measureAudio = () => {
         if (resolved) return;
         
         try {
@@ -92,14 +96,25 @@ export async function detectDeviceMute() {
           const sum = dataArray.reduce((a, b) => a + b, 0);
           const average = sum / dataArray.length;
           
-          // If average is > 1, audio is playing (threshold increased)
-          const isMuted = average <= 1;
+          if (average > maxLevel) {
+            maxLevel = average;
+          }
           
-          resolved = true;
-          debugLog('MUTE_DETECTOR', `Device muted: ${isMuted} (audio level: ${average.toFixed(2)}, threshold: 1)`);
+          measurementCount++;
           
-          cleanup();
-          resolve(isMuted);
+          if (measurementCount < maxMeasurements) {
+            // Take another measurement
+            setTimeout(measureAudio, 20);
+          } else {
+            // Done measuring, evaluate result
+            const isMuted = maxLevel <= 1;
+            
+            resolved = true;
+            debugLog('MUTE_DETECTOR', `Device muted: ${isMuted} (max audio level: ${maxLevel.toFixed(2)}, measurements: ${measurementCount}, threshold: 1)`);
+            
+            cleanup();
+            resolve(isMuted);
+          }
         } catch (e) {
           resolved = true;
           debugLog(['MUTE_DETECTOR', 'ERROR'], 'Check audio error:', e);
@@ -108,8 +123,8 @@ export async function detectDeviceMute() {
         }
       };
       
-      // Check audio output after 150ms (give more time for audio to play)
-      setTimeout(checkAudio, 150);
+      // Start measuring after 30ms (give oscillator time to start)
+      setTimeout(measureAudio, 30);
       
       // Fallback timeout
       setTimeout(() => {
