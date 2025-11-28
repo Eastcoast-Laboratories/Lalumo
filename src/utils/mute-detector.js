@@ -147,14 +147,22 @@ export async function detectDeviceMute() {
 
 /**
  * Start continuous mute monitoring
- * Checks every 10 seconds if device is muted
+ * Only runs on iOS devices where silent mode detection is possible
+ * Desktop browsers cannot detect system volume/mute (browser sandbox limitation)
  */
 export function startMuteMonitoring() {
   if (muteCheckInterval) {
     return; // Already monitoring
   }
   
-  debugLog('MUTE_DETECTOR', 'Starting continuous mute monitoring');
+  // Only enable on iOS - Desktop browsers can't detect system mute
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  if (!isIOS) {
+    debugLog('MUTE_DETECTOR', 'Mute detection disabled on non-iOS platform (system volume not accessible from browser)');
+    return;
+  }
+  
+  debugLog('MUTE_DETECTOR', 'Starting continuous mute monitoring (iOS only)');
   
   const checkAndNotify = async () => {
     try {
