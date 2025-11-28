@@ -695,16 +695,20 @@
         muteWarning.classList.add('hidden');
         muteWarning.style.display = 'none';
         document.body.style.overflow = '';
-        // Store preference to not show again this session
-        sessionStorage.setItem('muteWarningDismissed', 'true');
+        // Store timestamp of dismissal - allow showing again after 30 seconds
+        sessionStorage.setItem('muteWarningDismissedAt', Date.now().toString());
       }
     };
     
     // Function to show mute warning
     window.showMuteWarning = function() {
-      // Check if already dismissed this session
-      if (sessionStorage.getItem('muteWarningDismissed') === 'true') {
-        return;
+      // Check if recently dismissed (within last 30 seconds)
+      const dismissedAt = sessionStorage.getItem('muteWarningDismissedAt');
+      if (dismissedAt) {
+        const timeSinceDismiss = Date.now() - parseInt(dismissedAt, 10);
+        if (timeSinceDismiss < 30000) { // 30 seconds
+          return; // Don't show again yet
+        }
       }
       
       const muteWarning = document.querySelector('.mute-warning-notice');
