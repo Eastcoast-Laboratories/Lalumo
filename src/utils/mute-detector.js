@@ -144,9 +144,9 @@ export function startMuteMonitoring() {
     try {
       const isMuted = await detectDeviceMute();
       
-      // Only show warning if mute status changed from unmuted to muted
-      if (isMuted && !lastMuteStatus) {
-        debugLog('MUTE_DETECTOR', 'Device became muted, showing warning');
+      // Show warning every time if device is muted (not just on status change)
+      if (isMuted) {
+        debugLog('MUTE_DETECTOR', 'Device is muted, showing warning');
         if (typeof window.showMuteWarning === 'function') {
           window.showMuteWarning();
         }
@@ -158,8 +158,8 @@ export function startMuteMonitoring() {
     }
   };
   
-  // Initial check after 10 seconds (for testing)
-  setTimeout(checkAndNotify, 10000);
+  // Initial check after 3 seconds
+  setTimeout(checkAndNotify, 3000);
   
   // Then check every 10 seconds
   muteCheckInterval = setInterval(checkAndNotify, 10000);
