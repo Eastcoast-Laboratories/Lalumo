@@ -66,10 +66,11 @@ export async function detectDeviceMute() {
       gainNode = audioContext.createGain();
       analyser = audioContext.createAnalyser();
       
-      // Very quiet, very short tone
+      // Quiet tone (audible to analyzer but very quiet for user)
       oscillator.frequency.value = 1000;
-      gainNode.gain.value = 0.001; // Very quiet
-      analyser.fftSize = 32;
+      gainNode.gain.value = 0.01; // Increased from 0.001 to be detectable
+      analyser.fftSize = 256; // Increased for better resolution
+      analyser.smoothingTimeConstant = 0.3;
       
       oscillator.connect(gainNode);
       gainNode.connect(analyser);
@@ -77,10 +78,10 @@ export async function detectDeviceMute() {
       
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
       
-      // Start the tone
+      // Start the tone - longer duration for better detection
       const startTime = audioContext.currentTime;
       oscillator.start(startTime);
-      oscillator.stop(startTime + 0.01); // Stop after 10ms
+      oscillator.stop(startTime + 0.1); // Increased to 100ms
       
       // Check if we actually hear audio output
       const checkAudio = () => {
@@ -91,11 +92,11 @@ export async function detectDeviceMute() {
           const sum = dataArray.reduce((a, b) => a + b, 0);
           const average = sum / dataArray.length;
           
-          // If average is > 0, audio is playing
-          const isMuted = average === 0;
+          // If average is > 1, audio is playing (threshold increased)
+          const isMuted = average <= 1;
           
           resolved = true;
-          debugLog('MUTE_DETECTOR', `Device muted: ${isMuted} (audio level: ${average.toFixed(2)})`);
+          debugLog('MUTE_DETECTOR', `Device muted: ${isMuted} (audio level: ${average.toFixed(2)}, threshold: 1)`);
           
           cleanup();
           resolve(isMuted);
@@ -107,8 +108,8 @@ export async function detectDeviceMute() {
         }
       };
       
-      // Check audio output after 50ms
-      setTimeout(checkAudio, 50);
+      // Check audio output after 150ms (give more time for audio to play)
+      setTimeout(checkAudio, 150);
       
       // Fallback timeout
       setTimeout(() => {
