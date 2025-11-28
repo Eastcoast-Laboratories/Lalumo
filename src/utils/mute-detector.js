@@ -14,12 +14,57 @@ let lastMuteStatus = false;
  */
 export async function detectDeviceMute() {
   return new Promise((resolve) => {
+    let oscillator = null;
+    let gainNode = null;
+    let analyser = null;
+    let resolved = false;
+    
+    const cleanup = () => {
+      try {
+        if (oscillator) {
+          try {
+            oscillator.stop();
+          } catch (e) {
+            // Already stopped
+          }
+          try {
+            oscillator.disconnect();
+          } catch (e) {
+            // Already disconnected
+          }
+          oscillator = null;
+        }
+        if (gainNode) {
+          try {
+            gainNode.disconnect();
+          } catch (e) {}
+          gainNode = null;
+        }
+        if (analyser) {
+          try {
+            analyser.disconnect();
+          } catch (e) {}
+          analyser = null;
+        }
+      } catch (e) {
+        debugLog(['MUTE_DETECTOR', 'WARN'], 'Cleanup error:', e);
+      }
+    };
+    
     try {
       // Create a very short oscillator (10ms)
       const audioContext = Tone.context._context || Tone.context;
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      const analyser = audioContext.createAnalyser();
+      
+      // Ensure context is running
+      if (audioContext.state !== 'running') {
+        debugLog('MUTE_DETECTOR', 'AudioContext not running, assuming not muted');
+        resolve(false);
+        return;
+      }
+      
+      oscillator = audioContext.createOscillator();
+      gainNode = audioContext.createGain();
+      analyser = audioContext.createAnalyser();
       
       // Very quiet, very short tone
       oscillator.frequency.value = 1000;
@@ -31,7 +76,6 @@ export async function detectDeviceMute() {
       analyser.connect(audioContext.destination);
       
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
-      let resolved = false;
       
       // Start the tone
       const startTime = audioContext.currentTime;
@@ -42,26 +86,25 @@ export async function detectDeviceMute() {
       const checkAudio = () => {
         if (resolved) return;
         
-        analyser.getByteFrequencyData(dataArray);
-        const sum = dataArray.reduce((a, b) => a + b, 0);
-        const average = sum / dataArray.length;
-        
-        // If average is > 0, audio is playing
-        const isMuted = average === 0;
-        
-        resolved = true;
-        debugLog('MUTE_DETECTOR', `Device muted: ${isMuted} (audio level: ${average.toFixed(2)})`);
-        
-        // Clean up
         try {
-          oscillator.disconnect();
-          gainNode.disconnect();
-          analyser.disconnect();
+          analyser.getByteFrequencyData(dataArray);
+          const sum = dataArray.reduce((a, b) => a + b, 0);
+          const average = sum / dataArray.length;
+          
+          // If average is > 0, audio is playing
+          const isMuted = average === 0;
+          
+          resolved = true;
+          debugLog('MUTE_DETECTOR', `Device muted: ${isMuted} (audio level: ${average.toFixed(2)})`);
+          
+          cleanup();
+          resolve(isMuted);
         } catch (e) {
-          // Already disconnected
+          resolved = true;
+          debugLog(['MUTE_DETECTOR', 'ERROR'], 'Check audio error:', e);
+          cleanup();
+          resolve(false);
         }
-        
-        resolve(isMuted);
       };
       
       // Check audio output after 50ms
@@ -72,17 +115,15 @@ export async function detectDeviceMute() {
         if (!resolved) {
           resolved = true;
           debugLog('MUTE_DETECTOR', 'Mute detection timeout, assuming not muted');
-          try {
-            oscillator.disconnect();
-            gainNode.disconnect();
-            analyser.disconnect();
-          } catch (e) {}
+          cleanup();
           resolve(false);
         }
       }, 500);
       
     } catch (error) {
+      resolved = true;
       debugLog(['MUTE_DETECTOR', 'ERROR'], 'Mute detection failed:', error);
+      cleanup();
       resolve(false);
     }
   });
@@ -117,8 +158,8 @@ export function startMuteMonitoring() {
     }
   };
   
-  // Initial check after 3 seconds
-  setTimeout(checkAndNotify, 3000);
+  // Initial check after 10 seconds (for testing)
+  setTimeout(checkAndNotify, 10000);
   
   // Then check every 10 seconds
   muteCheckInterval = setInterval(checkAndNotify, 10000);
