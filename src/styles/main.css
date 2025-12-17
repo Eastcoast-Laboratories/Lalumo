@@ -1374,6 +1374,10 @@ section h2 {
   overflow: hidden;
 }
 
+[id="2_2_chords_stable_unstable"].stable-unstable-level2-tall {
+  max-height: 1583px !important;
+}
+
 #\31 _1_pitches{
   height: 154vw !important;
   max-height: 803px;

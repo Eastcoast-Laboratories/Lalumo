@@ -851,6 +851,14 @@ export function updateStableUnstableBackground(component) {
     const activityElement = document.querySelector('[x-show="mode === \'2_2_chords_stable_unstable\'"]');
     if (activityElement) {
       activityElement.style.backgroundImage = `url(${backgroundImage})`;
+
+      const level2TallClass = 'stable-unstable-level2-tall';
+      if (progress >= 10 && progress < 20) {
+        activityElement.classList.add(level2TallClass);
+      } else {
+        activityElement.classList.remove(level2TallClass);
+      }
+
       debugLog(['CHORDS_2_2_DEBUG', '2_2_BACKGROUND'], `Updated background based on progress (${progress}): ${backgroundImage}`);
     } else {
       debugLog(['CHORDS_2_2_DEBUG', 'ERROR'], 'Error updating background: div not found');
