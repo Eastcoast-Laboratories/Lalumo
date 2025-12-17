@@ -12,6 +12,9 @@ import { checkStoredDebugSettings, debugLog } from './utils/debug';
 // Import Button Blocker Utility
 import './utils/buttonBlocker';
 
+// Import Mute Detector
+import { startMuteMonitoring } from './utils/mute-detector';
+
 // Import and initialize the global Tone.js instance
 import { initToneJs } from './utils/toneJsSampler';
 
@@ -158,6 +161,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   debugLog('APP', `Lalumo app running on platform: ${capacitor.getPlatform()}`);
+  
+  // Start continuous mute monitoring
+  // Will check every 10 seconds and show warning when device becomes muted
+  startMuteMonitoring();
 });
 
 // Start Alpine, but only if it hasn't been started already

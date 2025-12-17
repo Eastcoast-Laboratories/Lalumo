@@ -24,6 +24,10 @@
     <string name="back_to_main_a11y">Back to main menu</string>
     <string name="select_chord_activity">Select an activity from the menu to begin your chord journey!</string>
     
+    <!-- Mute Warning -->
+    <string name="mute_warning_title">🔇 Device is muted</string>
+    <string name="mute_warning_message">Your device appears to be in silent mode. You won\'t hear any sounds. Please unmute your device to enjoy Lalumo.</string>
+    
     <!-- Portrait Mode Notice -->
     <string name="portrait_notice_title">📱 Please rotate your device</string>
     <string name="portrait_notice_message">Lalumo works only in portrait mode.</string>

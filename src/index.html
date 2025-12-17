@@ -431,6 +431,13 @@
   <!-- See: https://stackoverflow.com/questions/69502340 -->
   <audio id="ios-audio-fix" style="display:none;" preload="auto"></audio>
   
+  <!-- Mute Warning Notice -->
+  <div class="mute-warning-notice" style="display: none;">
+    <button class="mute-warning-close" onclick="closeMuteWarning()" ontouchstart="closeMuteWarning()" ontouchend="event.preventDefault()" aria-label="Close notice">×</button>
+    <h2 data-string="mute_warning_title">🔇 Device is muted</h2>
+    <p data-string="mute_warning_message">Your device appears to be in silent mode. You won't hear any sounds. Please unmute your device to enjoy Lalumo.</p>
+  </div>
+  
   <!-- Portrait Mode Notice -->
   <div class="portrait-notice">
     <button class="portrait-notice-close" onclick="closePortraitNotice()" ontouchstart="closePortraitNotice()" ontouchend="event.preventDefault()" aria-label="Close notice">×</button>
@@ -680,6 +687,40 @@
     window.addEventListener('orientationchange', function() {
       setTimeout(checkOrientation, 100); // delay for orientation change
     });
+    
+    // Auto-hide timeout for mute warning
+    let muteWarningTimeout = null;
+    
+    // Function to manually close mute warning
+    window.closeMuteWarning = function() {
+      const muteWarning = document.querySelector('.mute-warning-notice');
+      if (muteWarning) {
+        muteWarning.classList.add('hidden');
+        muteWarning.style.display = 'none';
+      }
+      if (muteWarningTimeout) {
+        clearTimeout(muteWarningTimeout);
+        muteWarningTimeout = null;
+      }
+    };
+    
+    // Function to show mute warning (compact notification)
+    window.showMuteWarning = function() {
+      const muteWarning = document.querySelector('.mute-warning-notice');
+      if (muteWarning) {
+        // Show warning
+        muteWarning.style.display = 'flex';
+        muteWarning.classList.remove('hidden');
+        
+        // Auto-hide after 5 seconds
+        if (muteWarningTimeout) {
+          clearTimeout(muteWarningTimeout);
+        }
+        muteWarningTimeout = setTimeout(() => {
+          window.closeMuteWarning();
+        }, 5000);
+      }
+    };
     
     // Function to manually close portrait notice
     window.closePortraitNotice = function() {
