@@ -3,6 +3,7 @@
  * Uses Web Audio API to detect actual audio output
  */
 import { debugLog } from './debug';
+import { Capacitor } from '@capacitor/core';
 import * as Tone from 'tone';
 
 let muteCheckInterval = null;
@@ -147,22 +148,23 @@ export async function detectDeviceMute() {
 
 /**
  * Start continuous mute monitoring
- * Only runs on iOS devices where silent mode detection is possible
- * Desktop browsers cannot detect system volume/mute (browser sandbox limitation)
+ * Only runs in the native Android app (Capacitor WebView)
+ * Disabled in browsers (including iOS Safari) and iOS native app
  */
 export function startMuteMonitoring() {
   if (muteCheckInterval) {
     return; // Already monitoring
   }
   
-  // Only enable on iOS - Desktop browsers can't detect system mute
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  if (!isIOS) {
-    debugLog('MUTE_DETECTOR', 'Mute detection disabled on non-iOS platform (system volume not accessible from browser)');
+  const isNative = Capacitor.isNativePlatform();
+  const platform = Capacitor.getPlatform();
+
+  if (!(isNative && platform === 'android')) {
+    debugLog('MUTE_DETECTOR', `Mute detection disabled (requires native android). isNative=${isNative}, platform=${platform}`);
     return;
   }
-  
-  debugLog('MUTE_DETECTOR', 'Starting continuous mute monitoring (iOS only)');
+
+  debugLog('MUTE_DETECTOR', 'Starting continuous mute monitoring (native android only)');
   
   const checkAndNotify = async () => {
     try {
