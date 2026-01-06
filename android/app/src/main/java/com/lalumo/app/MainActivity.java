@@ -8,26 +8,24 @@ import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Set;
-import java.util.List;
 import android.webkit.ValueCallback;
+import android.media.AudioManager;
 import androidx.activity.OnBackPressedCallback;
 
 import com.getcapacitor.BridgeActivity;
 
-public class MainActivity extends BridgeActivity implements OnInitListener {
-    private TextToSpeech tts;
-    private boolean ttsReady = false;
+public class MainActivity extends BridgeActivity {
     private static final String TAG = "LalumoBridge";
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(TAG, "BuildConfig.IS_DEBUG_BUILD=" + BuildConfig.IS_DEBUG_BUILD);
+        if (BuildConfig.IS_DEBUG_BUILD) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
         
         // Enable fullscreen mode - hide both status bar and navigation bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -64,74 +62,10 @@ public class MainActivity extends BridgeActivity implements OnInitListener {
         });
         
         // JavaScript-Schnittstellen hinzufügen
-        this.bridge.getWebView().addJavascriptInterface(new WebAppInterface(), "AndroidTTS");
+        this.bridge.getWebView().addJavascriptInterface(new WebAppInterface(), "AndroidApp");
         this.bridge.getWebView().addJavascriptInterface(new MenuLockInterface(), "AndroidMenuLock");
         
-        // Text-to-Speech initialisieren
-        initTTS();
-        
-        // Inject JavaScript to notify the web app that native TTS is available
-        this.bridge.getWebView().evaluateJavascript(
-            "console.log('Native Android TTS bridge initialized');" +
-            "if (window.androidTTSReady) { window.androidTTSReady(); }", null);
-    }
-    
-    /**
-     * Initialisiert die Text-to-Speech Engine
-     */
-    private void initTTS() {
-        Log.d(TAG, "Initializing Text-to-Speech engine");
-        tts = new TextToSpeech(this, this);
-    }
-    
-    @Override
-    public void onInit(int status) {
-        Log.d(TAG, "TTS initialization status: " + status);
-        
-        if (status == TextToSpeech.SUCCESS) {
-            Log.d(TAG, "TTS engine initialized successfully");
-            
-            // Try to set German language
-            int result = tts.setLanguage(Locale.GERMAN);
-            Log.d(TAG, "Setting language to German, result: " + result);
-            
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.w(TAG, "German language not supported, falling back to default");
-                // Try English as fallback
-                result = tts.setLanguage(Locale.ENGLISH);
-                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    // Use device default as last resort
-                    result = tts.setLanguage(Locale.getDefault());
-                }
-            }
-            
-            // Set speech properties
-            tts.setPitch(1.2f); // Slightly higher for friendly sound
-            tts.setSpeechRate(0.9f); // Slightly slower for better understanding
-            
-            ttsReady = true;
-            
-            // Test TTS with a simple message
-            // HashMap<String, String> params = new HashMap<>();
-            // params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "tts_test");
-            // tts.speak("TTS Test erfolgreich", TextToSpeech.QUEUE_FLUSH, params);
-            
-            // Notify web app that TTS is ready
-            runOnUiThread(() -> {
-                bridge.getWebView().evaluateJavascript(
-                    "console.log('Native TTS engine ready');" +
-                    "if (window.androidTTSReady) { window.androidTTSReady(true); }", null);
-            });
-        } else {
-            Log.e(TAG, "Failed to initialize TTS engine with status: " + status);
-            
-            // Notify web app about TTS failure
-            runOnUiThread(() -> {
-                bridge.getWebView().evaluateJavascript(
-                    "console.log('Native TTS engine failed');" +
-                    "if (window.androidTTSReady) { window.androidTTSReady(false); }", null);
-            });
-        }
+       
     }
     
     /**
@@ -139,65 +73,45 @@ public class MainActivity extends BridgeActivity implements OnInitListener {
      */
     public class WebAppInterface {
         @JavascriptInterface
-        public void speak(String text) {
-            if (text == null || text.isEmpty()) {
-                Log.e(TAG, "Cannot speak empty text");
-                return;
-            }
-            
-            Log.d(TAG, "Native TTS speak request: '" + text + "', ttsReady: " + ttsReady);
-            
-            if (ttsReady) {
-                // Workaround für mögliche Async-Probleme: auf dem UI-Thread ausführen
-                runOnUiThread(() -> {
-                    try {
-                        HashMap<String, String> params = new HashMap<>();
-                        params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "mascot_speech");
-                        
-                        int result = tts.speak(text, TextToSpeech.QUEUE_FLUSH, params);
-                        Log.d(TAG, "TTS speak result: " + result);
-                        
-                        // Notify web app about speech status
-                        final int speakResult = result;
-                        bridge.getWebView().evaluateJavascript(
-                            "console.log('Native TTS speak result: " + speakResult + "');" +
-                            "if (window.androidTTSCallback) { window.androidTTSCallback(" + speakResult + "); }", null);
-                    } catch (Exception e) {
-                        Log.e(TAG, "Error during TTS speak", e);
-                    }
-                });
-            } else {
-                Log.e(TAG, "Cannot speak, TTS engine not ready");
-            }
+        public boolean isDebugBuild() {
+            return BuildConfig.IS_DEBUG_BUILD;
         }
         
         @JavascriptInterface
-        public boolean isTTSAvailable() {
-            return ttsReady;
-        }
-        
-        @JavascriptInterface
-        public String getTTSStatus() {
-            StringBuilder status = new StringBuilder();
-            status.append("TTS Ready: ").append(ttsReady);
-            
-            if (tts != null) {
-                status.append(", Engine: ").append(tts.getDefaultEngine());
-                status.append(", Speaking: ").append(tts.isSpeaking());
-            } else {
-                status.append(", Engine: null");
+        public boolean isDeviceMuted() {
+            try {
+                AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+                if (audioManager == null) {
+                    Log.w(TAG, "AudioManager not available");
+                    return false;
+                }
+                
+                // Check if device is in silent/vibrate mode
+                int ringerMode = audioManager.getRingerMode();
+                boolean isRingerMuted = (ringerMode == AudioManager.RINGER_MODE_SILENT || 
+                                         ringerMode == AudioManager.RINGER_MODE_VIBRATE);
+                
+                // Also check if music/media volume is at 0
+                int musicVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                int maxMusicVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+                boolean isVolumeZero = (musicVolume == 0);
+                
+                boolean isMuted = isRingerMuted || isVolumeZero;
+                
+                Log.d(TAG, "Device mute status: " + (isMuted ? "MUTED" : "NOT_MUTED") + 
+                      " (ringerMode=" + ringerMode + ", musicVolume=" + musicVolume + 
+                      "/" + maxMusicVolume + ")");
+                
+                return isMuted;
+            } catch (Exception e) {
+                Log.e(TAG, "Error checking device mute status", e);
+                return false;
             }
-            
-            return status.toString();
         }
     }
     
     @Override
     public void onDestroy() {
-        if (tts != null) {
-            tts.stop();
-            tts.shutdown();
-        }
         super.onDestroy();
     }
     

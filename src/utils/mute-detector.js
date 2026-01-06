@@ -10,10 +10,23 @@ let muteCheckInterval = null;
 let lastMuteStatus = false;
 
 /**
- * Detect if device is muted using Web Audio API analyzer
- * This works by playing a very short tone and checking if it actually produces audio output
+ * Detect if device is muted
+ * On native Android: uses AudioManager.getRingerMode() for accurate detection
+ * On other platforms: uses Web Audio API analyzer
  */
 export async function detectDeviceMute() {
+  // Try native Android mute detection first
+  if (window.AndroidApp && typeof window.AndroidApp.isDeviceMuted === 'function') {
+    try {
+      const isMuted = window.AndroidApp.isDeviceMuted();
+      debugLog('MUTE_DETECTOR', `Native Android mute detection: ${isMuted}`);
+      return isMuted;
+    } catch (e) {
+      debugLog(['MUTE_DETECTOR', 'WARN'], 'Native mute detection failed, falling back to Web Audio API:', e);
+    }
+  }
+  
+  // Fallback to Web Audio API for non-Android or if native fails
   return new Promise((resolve) => {
     let oscillator = null;
     let gainNode = null;
@@ -153,6 +166,7 @@ export async function detectDeviceMute() {
  */
 export function startMuteMonitoring() {
   if (muteCheckInterval) {
+    debugLog('MUTE_DETECTOR', 'Mute monitoring already active');
     return; // Already monitoring
   }
   

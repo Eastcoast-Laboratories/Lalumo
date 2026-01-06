@@ -3,6 +3,11 @@ apply plugin: 'com.android.application'
 android {
     namespace "com.lalumo.app"
     compileSdk rootProject.ext.compileSdkVersion
+    
+    buildFeatures {
+        buildConfig = true
+    }
+    
     defaultConfig {
         applicationId "com.lalumo.app"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -37,6 +42,7 @@ android {
             debuggable true
             minifyEnabled false
             shrinkResources false
+            buildConfigField "boolean", "IS_DEBUG_BUILD", "true"
         }
         release {
             // Enable minification by default (Android Studio), disable for F-Droid builds
@@ -46,6 +52,7 @@ android {
             shrinkResources project.hasProperty('fdroid') ? false : true
             
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "boolean", "IS_DEBUG_BUILD", "false"
         }
     }
 }

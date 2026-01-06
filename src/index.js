@@ -151,6 +151,8 @@ interactionEvents.forEach(event => {
 
 // Initialize Capacitor when device is ready
 document.addEventListener('DOMContentLoaded', () => {
+  checkStoredDebugSettings();
+
   // Initialize Capacitor and get platform info
   const capacitor = initCapacitor();
   

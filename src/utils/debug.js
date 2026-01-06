@@ -9,6 +9,14 @@ let isDebugMode = false;
 // Initialize app start time for detailed timing logs
 const appStartTime = Date.now();
 
+const originalConsole = {
+  log: console.log.bind(console),
+  info: console.info.bind(console),
+  debug: console.debug.bind(console),
+  error: console.error.bind(console),
+  warn: console.warn.bind(console)
+};
+
 // Production detection (Android, deployed web)
 const isProduction = () => {
   // Check if we're running as an Android app
@@ -17,13 +25,24 @@ const isProduction = () => {
                     document.URL.startsWith('file://') ||
                     document.URL.startsWith('capacitor://') ||
                     (window.Capacitor && window.Capacitor.isNative);
+
+  let isAndroidDebugBuild = false;
+  if (isAndroid && window.AndroidApp && typeof window.AndroidApp.isDebugBuild === 'function') {
+    try {
+      isAndroidDebugBuild = window.AndroidApp.isDebugBuild();
+    } catch (e) {
+      console.error('[DEBUG_INIT] AndroidApp.isDebugBuild() failed:', e);
+    }
+  }
+
+  const isAndroidProduction = isAndroid && !isAndroidDebugBuild;
   
   // Check if we're on a deployed site (not localhost)
   const isDeployedWeb = !window.location.href.includes('localhost') && 
                         !window.location.href.includes('127.0.0.1') &&
                         window.location.protocol === 'https:';
                         
-  return isAndroid || isDeployedWeb;
+  return isAndroidProduction || isDeployedWeb;
 };
 
 /**
@@ -34,9 +53,15 @@ const initDebugMode = (forceDebug = false) => {
   // Set debug mode on if forced or if not in production
   isDebugMode = forceDebug || !isProduction();
   
-  // Log the debug status, using the native console.log directly
-  const originalConsoleLog = console.log;
-  originalConsoleLog(`Debug mode ${isDebugMode ? 'enabled' : 'disabled'} (${isProduction() ? 'production' : 'development'} environment detected)`);
+  if (isDebugMode) {
+    console.log = originalConsole.log;
+    console.info = originalConsole.info;
+    console.debug = originalConsole.debug;
+    console.error = originalConsole.error;
+    console.warn = originalConsole.warn;
+  }
+
+  originalConsole.log(`Debug mode ${isDebugMode ? 'enabled' : 'disabled'} (${isProduction() ? 'production' : 'development'} environment detected)`);
   
   // Override console methods to filter by debug mode
   if (!isDebugMode) {
@@ -46,13 +71,11 @@ const initDebugMode = (forceDebug = false) => {
     console.debug = () => {};
     // Keep error and warn for critical issues
     // But add a prefix to make it clear they're from the app
-    const originalConsoleError = console.error;
     console.error = (...args) => {
-      originalConsoleError('LALUMO ERROR:', ...args);
+      originalConsole.error('LALUMO ERROR:', ...args);
     };
-    const originalConsoleWarn = console.warn;
     console.warn = (...args) => {
-      originalConsoleWarn('LALUMO WARNING:', ...args);
+      originalConsole.warn('LALUMO WARNING:', ...args);
     };
   }
 };
