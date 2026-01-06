@@ -117,6 +117,9 @@ export function pitches() {
     lastSelectedPatternType: null, // Speichert den letzten ausgewählten Pattern-Typ
     consecutivePatternCount: 0,    // Zählt, wie oft das gleiche Pattern hintereinander ausgewählt wurde
     showMemoryHighlighting: false, // Whether to show highlighting in memory game
+    memoryConsecutiveErrors: 0,    // Track consecutive errors in memory game
+    memoryConsecutiveCorrect: 0,   // Track consecutive correct answers in memory game
+    memoryBeginnerMode: false,     // Beginner mode enabled after 4 consecutive errors
     
     // High or Low (1_1) - Persistent instrument selection
     currentHighOrLowInstrument: null, // Keep same instrument until correct answer
@@ -3507,24 +3510,20 @@ export function pitches() {
           const noteCount = currentLevel + 3;
           
           feedback = this.$store.strings?.melody_level_up.replace('%d', noteCount);
-          
-          // Show rainbow effect for level up
-          if (perfectMatch) {
-            showRainbowSuccess();
-          }
         } else if (currentLevel >= 5) {
           feedback = this.$store.strings?.melody_mastered;
           
-          // Play sound and rainbow exact after the painted melody is played (in case it is a longer melody)
+          // Play sound exact after the painted melody is played (in case it is a longer melody)
           setTimeout(() => {
             // Play success sound
             audioEngine.playNote('success');
             debugLog('AUDIO', '[1_3] Playing success feedback sound with audio engine. progress: ' + currentProgress);
-            
-            // Always show rainbow for mastering all levels
-            showRainbowSuccess();
           }, 2000);
         }
+        
+        // Show rainbow effect every time a melody is successfully drawn (>= 80% match)
+        // This happens for every successful attempt, not just level-ups
+        showRainbowSuccess();
         
         // Visual feedback
         this.showSuccessFeedback();
@@ -3839,6 +3838,24 @@ export function pitches() {
         // Play error sound using the central audio engine
         audioEngine.playNote('try_again', 1.0);
         
+        // Track consecutive errors for beginner mode
+        this.memoryConsecutiveErrors++;
+        this.memoryConsecutiveCorrect = 0; // Reset correct counter
+        debugLog('PITCHES', `MEMORY_GAME: Consecutive errors: ${this.memoryConsecutiveErrors}`);
+        
+        // Enable beginner mode after 4 consecutive errors
+        if (this.memoryConsecutiveErrors >= 4 && !this.memoryBeginnerMode) {
+          this.memoryBeginnerMode = true;
+          this.showMemoryHighlighting = true;
+          debugLog('PITCHES', 'MEMORY_GAME: Beginner mode ENABLED (4 consecutive errors)');
+        } else if (this.memoryBeginnerMode) {
+          // Already in beginner mode, keep highlighting enabled
+          this.showMemoryHighlighting = true;
+        } else {
+          // Less than 4 errors, enable highlighting but not beginner mode
+          this.showMemoryHighlighting = true;
+        }
+        
         // Show feedback using global system
         const errorMessage = this.$store.strings?.memory_incorrect || 'Let\'s try again. Listen carefully!';
         debugLog('PITCHES', 'MEMORY_GAME_FEEDBACK: Showing fail message:', errorMessage);
@@ -3849,8 +3866,6 @@ export function pitches() {
       component: this
     });
         
-        // Enable highlighting for the next playback after an error
-        this.showMemoryHighlighting = true;
         debugLog("PIANO_DIRECT", "Error detected, enabling highlighting for next playback");
         
         // Reset after a delay
@@ -3951,9 +3966,26 @@ export function pitches() {
         if (!this.progress['1_5']) this.progress['1_5'] = 0;
         this.progress['1_5'] += 1;
         
-        // Reset to sound-only mode for the next sequence
-        this.showMemoryHighlighting = false;
-        debugLog("PIANO_DIRECT", "Success! Disabling highlighting for next sequence");
+        // Track consecutive correct answers for beginner mode exit
+        this.memoryConsecutiveCorrect++;
+        this.memoryConsecutiveErrors = 0; // Reset error counter
+        debugLog('PITCHES', `MEMORY_GAME: Consecutive correct: ${this.memoryConsecutiveCorrect}`);
+        
+        // Exit beginner mode after 5 consecutive correct answers
+        if (this.memoryBeginnerMode && this.memoryConsecutiveCorrect >= 5) {
+          this.memoryBeginnerMode = false;
+          this.showMemoryHighlighting = false;
+          this.memoryConsecutiveCorrect = 0; // Reset counter
+          debugLog('PITCHES', 'MEMORY_GAME: Beginner mode DISABLED (5 consecutive correct)');
+        } else if (!this.memoryBeginnerMode) {
+          // Not in beginner mode, reset to sound-only for the next sequence
+          this.showMemoryHighlighting = false;
+          debugLog("PIANO_DIRECT", "Success! Disabling highlighting for next sequence");
+        } else {
+          // Still in beginner mode, keep highlighting enabled
+          this.showMemoryHighlighting = true;
+          debugLog('PITCHES', `MEMORY_GAME: Still in beginner mode (${this.memoryConsecutiveCorrect}/5 correct needed to exit)`);
+        }
         
         debugLog('PITCHES', 'Updated memory progress:', this.progress['1_5']);
         
@@ -5313,6 +5345,7 @@ export function pitches() {
 
     /**
      * Start game mode for memory (called when play button is pressed)
+     * If already in game mode, resets the user's pressed keys and replays the sequence
      */
     startMemoryGame() {
       debugLog('PITCHES', `BUG_DEBUG: startMemoryGame() called - current gameMode: ${this.gameMode}, isPlaying: ${this.isPlaying}`);
@@ -5320,6 +5353,14 @@ export function pitches() {
       // BUG FIX: Prevent race condition during game startup
       if (this.memoryGameStarting) {
         debugLog('PITCHES', 'BUG_FIX: Memory game already starting, ignoring duplicate call');
+        return;
+      }
+      
+      // If already in game mode, reset the user sequence and replay the current sequence
+      if (this.gameMode) {
+        debugLog('PITCHES', 'MEMORY_GAME: Bird clicked during game - resetting user sequence');
+        this.userSequence = [];
+        this.playMemorySequence();
         return;
       }
       

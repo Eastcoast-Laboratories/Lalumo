@@ -187,11 +187,10 @@ reset-button:
 - # bereit zur veröffentlichung
 - die Welle muss Sägezahn sein ohne Brandung 
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
-- Wenn man beim gedächtnisspiel zu viele Fehler macht oder gleich immer die Farben anzeigen 
-- Wenn man angefangen hat zu spielen und dann noch mal den Vogel drückt, dann muss er das resetten, so dass es kein Fehler ist, wenn man dann von vorne anfängt
 
 1_3 Draw a Melody:
-- es fehlt die sucess regenbogen effekt, wenn man eine melodie erfolgreich nachgezeichnet hat. der regenbogen kommt bisher nur wenn man einen level aufsteigt. das soll aber jedes mal komen, wenn es richtig war
+- Beim Malen muss man einbauen, dass man beim loslassen eine kurze zwei Sekunden hat, wo man nicht malen darf, damit die Melodie auch angefangen zu spielen
+
 - immer noch: er zeichnet manchmal temporär eine gerade linie genau vom ersten startpunkt des pfades nach unten rechts im canvas und von da nach unten links, aber die punkte werden ignoriert beim zeichnen, das ist nur ein temporärer anzeigefehler
 - # bereit zur veröffentlichung
 - man kann in einen zustand kommen durch schnelles zeichnen im game mode, wo keine noten mehr auf den linien landen, auchnicht, wenn man wieder auf free stellt, es wird dann nur eine blaue linie gezeichnet und keine noten
@@ -215,9 +214,11 @@ reset-button:
 - eigene melodien hochladen
 
 1_5 memory game:
+- Wenn man angefangen hat zu spielen und dann noch mal den Vogel drückt, dann muss er das resetten, so dass es kein Fehler ist, wenn man dann von vorne anfängt. also vogel drücken soll die schon gedrückten taasten vergessen, damit man von vorne anfangen muss mit der melodie die man hört
   - # bereit zur veröffentlichung
-  - wenn man in 1_4 eine melodie startet und dann während die noch spielt in 1_5 wechselt, dann werden unter dem piano 10 kreise angezeigt
-  - not reproduceable BUG: sometimes the memory game only plays one sequence then stops playing sound on subsequent clicks
+
+- wenn man in 1_4 eine melodie startet und dann während die noch spielt in 1_5 wechselt, dann werden unter dem piano 10 kreise angezeigt
+- not reproduceable BUG: sometimes the memory game only plays one sequence then stops playing sound on subsequent clicks
     * First sequence plays correctly: G4, C4 with logs showing "PIANO_DIRECT Starting memory sequence playback"
     * After completion, clicking play button again produces no new "PIANO_DIRECT" logs
     * Key log patterns from first run:
@@ -253,7 +254,8 @@ reset-button:
   - level progress div unten besser anordnen
   - # bereit zur veröffentlichung
 
-2_2_chords_stable_unstable (2. activity in der navigation)
+2_2_chords_stable_unstable (2. activity in der navigation) Gesterhaft oder freundlich
+- es kommen noch manchmal haargenau dieselben Akkorde hintereinander, das darf niemals passieren, es muss immer gemerkt werden, welcher akkord zuletzt gespielt wurd und dann darf dieser nicht in der selben höhe danach noch malkommen
   - # bereit zur veröffentlichung
  
 2_3_chords_building
