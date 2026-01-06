@@ -187,8 +187,11 @@ reset-button:
 - # bereit zur veröffentlichung
 - die Welle muss Sägezahn sein ohne Brandung 
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
+- Wenn man beim gedächtnisspiel zu viele Fehler macht oder gleich immer die Farben anzeigen 
+- Wenn man angefangen hat zu spielen und dann noch mal den Vogel drückt, dann muss er das resetten, so dass es kein Fehler ist, wenn man dann von vorne anfängt
 
 1_3 Draw a Melody:
+- es fehlt die sucess regenbogen effekt, wenn man eine melodie erfolgreich nachgezeichnet hat. der regenbogen kommt bisher nur wenn man einen level aufsteigt. das soll aber jedes mal komen, wenn es richtig war
 - immer noch: er zeichnet manchmal temporär eine gerade linie genau vom ersten startpunkt des pfades nach unten rechts im canvas und von da nach unten links, aber die punkte werden ignoriert beim zeichnen, das ist nur ein temporärer anzeigefehler
 - # bereit zur veröffentlichung
 - man kann in einen zustand kommen durch schnelles zeichnen im game mode, wo keine noten mehr auf den linien landen, auchnicht, wenn man wieder auf free stellt, es wird dann nur eine blaue linie gezeichnet und keine noten

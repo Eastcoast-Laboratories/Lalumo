@@ -12,6 +12,7 @@ let lastMuteStatus = false;
 /**
  * Detect if device is muted
  * On native Android: uses AudioManager.getRingerMode() for accurate detection
+ * On native iOS: uses AVAudioSession.outputVolume for accurate detection
  * On other platforms: uses Web Audio API analyzer
  */
 export async function detectDeviceMute() {
@@ -22,11 +23,25 @@ export async function detectDeviceMute() {
       debugLog('MUTE_DETECTOR', `Native Android mute detection: ${isMuted}`);
       return isMuted;
     } catch (e) {
-      debugLog(['MUTE_DETECTOR', 'WARN'], 'Native mute detection failed, falling back to Web Audio API:', e);
+      debugLog(['MUTE_DETECTOR', 'WARN'], 'Native Android mute detection failed, falling back to Web Audio API:', e);
     }
   }
   
-  // Fallback to Web Audio API for non-Android or if native fails
+  // Try native iOS mute detection via Capacitor plugin
+  if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'ios') {
+    try {
+      const { MuteDetector } = window;
+      if (MuteDetector && typeof MuteDetector.isDeviceMuted === 'function') {
+        const result = await MuteDetector.isDeviceMuted();
+        debugLog('MUTE_DETECTOR', `Native iOS mute detection: ${result.isMuted} (volume=${result.volumeLevel})`);
+        return result.isMuted;
+      }
+    } catch (e) {
+      debugLog(['MUTE_DETECTOR', 'WARN'], 'Native iOS mute detection failed, falling back to Web Audio API:', e);
+    }
+  }
+  
+  // Fallback to Web Audio API for non-native or if native fails
   return new Promise((resolve) => {
     let oscillator = null;
     let gainNode = null;
@@ -161,8 +176,8 @@ export async function detectDeviceMute() {
 
 /**
  * Start continuous mute monitoring
- * Only runs in the native Android app (Capacitor WebView)
- * Disabled in browsers (including iOS Safari) and iOS native app
+ * Only runs in native apps (Android and iOS)
+ * Disabled in browsers (including iOS Safari)
  */
 export function startMuteMonitoring() {
   if (muteCheckInterval) {
@@ -173,12 +188,12 @@ export function startMuteMonitoring() {
   const isNative = Capacitor.isNativePlatform();
   const platform = Capacitor.getPlatform();
 
-  if (!(isNative && platform === 'android')) {
-    debugLog('MUTE_DETECTOR', `Mute detection disabled (requires native android). isNative=${isNative}, platform=${platform}`);
+  if (!isNative || (platform !== 'android' && platform !== 'ios')) {
+    debugLog('MUTE_DETECTOR', `Mute detection disabled (requires native app). isNative=${isNative}, platform=${platform}`);
     return;
   }
 
-  debugLog('MUTE_DETECTOR', 'Starting continuous mute monitoring (native android only)');
+  debugLog('MUTE_DETECTOR', `Starting continuous mute monitoring (native ${platform} app)`);
   
   const checkAndNotify = async () => {
     try {
