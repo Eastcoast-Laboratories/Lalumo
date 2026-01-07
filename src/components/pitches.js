@@ -67,6 +67,7 @@ export function pitches() {
     currentAnimation: null,
     drawPath: [],
     previousDrawPath: [], // Store the previous drawing path
+    isDrawingLocked: false, // Lockout flag after drawing ends (2 seconds)
     correctAnswer: null,
     melodyHasWrongNote: false, // For 'does-it-sound-right' activity - whether current melody has wrong note
     currentMelodyName: '', // Display name of currently playing melody
@@ -2990,8 +2991,16 @@ export function pitches() {
     /**
      * Handle start of drawing
      * @param {Event} e - Mouse/touch event
+     * @activity 1_3_draw_melody
      */
     startDrawing(e) {
+      // Prevent drawing if locked (melody is playing)
+      if (this.isDrawingLocked) {
+        debugLog('PITCHES', '[DRAW_MELODY_DEBUG] Drawing attempt blocked - drawing is locked');
+        e.preventDefault();
+        return;
+      }
+      
       e.preventDefault(); // Verhindert unbeabsichtigtes Verhalten auf Mobilgeräten
       
       // Hole den Canvas-Kontext zum Zeichnen
@@ -3060,6 +3069,7 @@ export function pitches() {
     /**
      * Handle drawing movement
      * @param {Event} e - Mouse/touch event
+     * @activity 1_3_draw_melody
      */
     draw(e) {
       e.preventDefault(); // Verhindert unbeabsichtigtes Verhalten auf Mobilgeräten
@@ -3109,6 +3119,7 @@ export function pitches() {
     /**
      * Add a point to the drawing path
      * @param {Event} e - Mouse/touch event
+     * @activity 1_3_draw_melody
      */
     addPointToPath(e) {
       const canvas = e.currentTarget;
@@ -3150,6 +3161,7 @@ export function pitches() {
     
     /**
      * End drawing and play the resulting melody
+     * @activity 1_3_draw_melody
      */
     endDrawing(e) {
       debugLog('PITCHES', `[DRAW_MELODY_DEBUG] endDrawing() called - drawPath length: ${this.drawPath.length}`);
@@ -3184,6 +3196,14 @@ export function pitches() {
       // Melodie aus der Zeichnung generieren und abspielen
       this.playDrawnMelody();
       
+      // Lock drawing for 2 seconds to allow melody to play without interference
+      this.isDrawingLocked = true;
+      debugLog('PITCHES', '[DRAW_MELODY_DEBUG] Drawing locked for 2 seconds');
+      setTimeout(() => {
+        this.isDrawingLocked = false;
+        debugLog('PITCHES', '[DRAW_MELODY_DEBUG] Drawing unlocked');
+      }, 2000);
+      
       // Reset debouncing flag after processing is complete
       setTimeout(() => {
         this._endDrawingInProgress = false;
@@ -3192,6 +3212,7 @@ export function pitches() {
     
     /**
      * Play a melody based on the drawn path
+     * @activity 1_3_draw_melody
      */
     playDrawnMelody() {
       debugLog('PITCHES', `[DRAW_MELODY_DEBUG] playDrawnMelody() called - drawPath length: ${this.drawPath.length}`);
@@ -3334,6 +3355,7 @@ export function pitches() {
     /**
      * Spielt eine Sequenz von Noten nacheinander ab
      * Verwendet die zentrale Audio-Engine für konsistente Audiowiedergabe auf allen Plattformen
+     * @activity 1_3_draw_melody
      */
     playDrawnNoteSequence(notes, index = 0, sampledPoints = null, token = null) {
       // Abort if playback has been cancelled or token mismatches
@@ -3411,6 +3433,7 @@ export function pitches() {
     /**
      * Stop playback of the drawn melody immediately
      * Clears scheduled timeouts, resets flags and highlights
+     * @activity 1_3_draw_melody
      */
     stopDrawnMelodyPlayback() {
       try {
@@ -3436,6 +3459,7 @@ export function pitches() {
     /**
      * Stop playback of the reference melody (challenge mode)
      * Clears any scheduled timeouts
+     * @activity 1_3_draw_melody
      */
     stopReferencePlayback() {
       try {
@@ -4053,6 +4077,10 @@ export function pitches() {
           this.startMemoryGame(); // Start game mode from free play
         } else {
           debugLog('PITCHES', 'BUG_DEBUG: Replaying memory sequence (gameMode=true)');
+          // Bird clicked during game - reset user sequence and replay
+          debugLog('PITCHES', 'MEMORY_GAME: Bird clicked during game - resetting user sequence');
+          this.userSequence = [];
+          
           // Replay sollte keine neuen Tiere anzeigen, nur bei neuen Spielen/Sequenzen
           // Add safety check for missing sequence (defensive fix for intermittent bug)
           if (!this.currentSequence || this.currentSequence.length === 0) {

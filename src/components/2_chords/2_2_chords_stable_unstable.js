@@ -314,7 +314,14 @@ export function playStableUnstableChord(component, isReplay = false) {
       
       do {
         // For game mode, randomly choose a chord type and generate it
-        const isStable = Math.random() < 0.5;
+        let isStable = Math.random() < 0.5;
+        
+        // If the previous chord type is the same, force a different type
+        if (previousChordType && ((previousChordType === 'stable' && isStable) || (previousChordType === 'unstable' && !isStable))) {
+          isStable = !isStable;
+          debugLog(['CHORDS_2_2_DEBUG', 'DUPLICATE'], `Forcing chord type change: was ${previousChordType}, now ${isStable ? 'stable' : 'unstable'}`);
+        }
+        
         currentChordType = isStable ? 'stable' : 'unstable';
         
         // Generate a new chord based on type and current progress level
