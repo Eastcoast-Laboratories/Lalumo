@@ -2,6 +2,8 @@ import { debugLog } from '../utils/debug';
 import config from '../config.js';
 import { initMultiTouchHandler } from '../utils/touch-handler.js';
 
+const MENU_LOCK_MAX_AGE_MS = 20 * 60 * 1000;
+
 /**
  * Main application component
  */
@@ -630,6 +632,55 @@ export function app() {
       
       // Load user data (including language) from localStorage
       this.loadUserData();
+
+      // Restore menu lock state (child safety feature) from localStorage
+      try {
+        const storedMenuLocked = localStorage.getItem('lalumo_menu_locked');
+        const storedLastAccessRaw = localStorage.getItem('lalumo_menu_locked_last_access');
+        const storedLastAccess = storedLastAccessRaw ? Number(storedLastAccessRaw) : NaN;
+
+        const isStoredLocked = storedMenuLocked === 'true';
+        const now = Date.now();
+
+        if (!isStoredLocked) {
+          this.menuLocked = false;
+        } else if (!Number.isFinite(storedLastAccess)) {
+          // If we have no valid timestamp, we auto-unlock (cannot prove it's within allowed window)
+          this.menuLocked = false;
+          localStorage.setItem('lalumo_menu_locked', 'false');
+          localStorage.removeItem('lalumo_menu_locked_last_access');
+          debugLog(['MENU_LOCK', 'ERROR'], 'Invalid or missing menu lock timestamp - auto-unlocking for safety');
+        } else {
+          const ageMs = now - storedLastAccess;
+          if (ageMs > MENU_LOCK_MAX_AGE_MS) {
+            this.menuLocked = false;
+            localStorage.setItem('lalumo_menu_locked', 'false');
+            localStorage.removeItem('lalumo_menu_locked_last_access');
+            debugLog('MENU_LOCK', `Menu lock expired after ${ageMs}ms (> ${MENU_LOCK_MAX_AGE_MS}ms) - auto-unlocking`);
+          } else {
+            this.menuLocked = true;
+            // Refresh last access time so the lock persists while actively used
+            localStorage.setItem('lalumo_menu_locked_last_access', String(now));
+            debugLog('MENU_LOCK', `Restored menu lock state from localStorage: true (ageMs=${ageMs}, maxAgeMs=${MENU_LOCK_MAX_AGE_MS})`);
+          }
+        }
+
+        if (!this.menuLocked) {
+          debugLog('MENU_LOCK', 'Restored menu lock state from localStorage: false');
+        }
+
+        // Keep Android native state in sync (if available)
+        if (window.AndroidMenuLock) {
+          try {
+            window.AndroidMenuLock.setMenuLockState(this.menuLocked);
+            debugLog('ANDROID', `Android notified about restored menu lock state: ${this.menuLocked}`);
+          } catch (androidError) {
+            debugLog(['ANDROID', 'ERROR'], `Error while notifying Android about restored menu lock state: ${androidError.message || androidError}`);
+          }
+        }
+      } catch (e) {
+        debugLog(['MENU_LOCK', 'ERROR'], `Error while restoring menu lock state: ${e.message || e}`);
+      }
       
       // Parse URL hash for deep links and referrals
       this.parseUrlHash();
@@ -909,6 +960,11 @@ export function app() {
       try {
         // Save to localStorage
         localStorage.setItem('lalumo_menu_locked', this.menuLocked);
+        if (this.menuLocked) {
+          localStorage.setItem('lalumo_menu_locked_last_access', String(Date.now()));
+        } else {
+          localStorage.removeItem('lalumo_menu_locked_last_access');
+        }
         debugLog('MENU_LOCK', `Menu lock state updated: ${this.menuLocked}`);
         
         // Notify Android about menu lock state change if running in Android
