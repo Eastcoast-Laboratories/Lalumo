@@ -1049,7 +1049,6 @@ body {
 /* Ensure the menu is scrollable when content exceeds the viewport height */
 .hamburger-container {
   max-height: 100vh;
-  position: relative;
   overflow: visible; /* Ensure container doesn't clip content */
   z-index: 1500; /* High enough but below lock button */
   max-width: 2.7vh; /* 20px = 2.7vh TODO: warum ist dies so klein trotzdem ok? wenn breiter, dann überlappt der immer den home button , obwohl der einen höheren z-index hat */
