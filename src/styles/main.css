@@ -1379,7 +1379,7 @@ section h2 {
 
 #\31 _1_pitches{
   height: 154vw !important;
-  max-height: 803px;
+  max-height: 984px;
 }
 
 #\31 _2_pitches{
@@ -1834,8 +1834,8 @@ section h2 {
 
 /* Progress Display Box */
 .progress-display {
-  position: absolute;
-  bottom: max(0px, calc(-1.5vh - 100vh + 100%));
+  position: fixed;
+  bottom: -5px;
   left: 50%;
   transform: translateX(-50%);
   background-color: rgba(255, 255, 255, 0.5);
@@ -1845,6 +1845,7 @@ section h2 {
   width: 90%;
   max-width: 400px;
   margin: 0 auto;
+  z-index: 100;
 }
 
 /* Specific positioning for 2_6 one or many progress box - move into white area 
