@@ -94,7 +94,7 @@ unter chrome auf dem handy android 15:
 
 - Regenbogen ist im breiten screen zu weit links
 
-- wenn man bilder generiert: Prompt: "das bild soll hochkannt, aber rechts und links einen schwarzen balken, so dass der sichtbare bereicch nur 1000x2000px sind, (also 2000px hoch)
+- wenn man bilder generiert: Prompt: "das bild soll hochkannt, aber rechts und links einen schwarzen balken, so dass der sichtbare bereicch nur 1000x2200px sind, (also 2200px hoch)
 
 - ergänze ein debug flag, das die console logs nur ausgibt, wenn man die app  im debug mode startet, nicht aber wenn man diese deployed oder als android app startet (already started to be implemented with `debugLog`)
 

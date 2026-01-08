@@ -1377,12 +1377,13 @@ section h2 {
 }
 
 #\31 _1_pitches{
-  height: 154vw !important;
+  height: 212vw !important;
   max-height: 984px;
 }
 
 #\31 _2_pitches{
-  height: 161vw !important; 
+  height: 212vw !important; 
+  max-height: 984px;
 }
 
 #\31 _3_pitches{
@@ -1780,6 +1781,9 @@ section h2 {
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
+  position: absolute;
+  top: min(60vw, 312px);
+  height: min(81vw, 455px);
 }
 
 /* Standard-Höhe für Pitch-Cards */
