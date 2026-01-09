@@ -49,7 +49,7 @@
 .animal-1_4-bg {
   width: min(25vw, 106px);
   height: min(25vw, 106px);
-  background-size: contain;
+  background-size: 90%;
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -1392,8 +1392,8 @@ section h2 {
 }
 
 #\31 _4_pitches{
-  height: 150vw !important;
-  max-height: min(775px, 132vw);
+  height: 212vw !important;
+  max-height: 984px;
 }
 
 #\31 _5_pitches{
@@ -1746,7 +1746,6 @@ section h2 {
 
 .pitch-card {
   border-radius: 1rem;
-  padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1856,13 +1855,11 @@ section h2 {
 
 .melody-name {
   position: absolute;
-  top: min(371px, 58vw);
+  top: min(433px, 83vw);
   color: var(--text-color);
   padding: 0.5rem 1rem 1.5rem;
   border-radius: 0.8rem;
   text-align: center;
-  margin-top: 25px;
-  margin-bottom: -16px;
   max-width: 80%;
   font-weight: bold;
   animation: bounce 0.5s ease;
@@ -2151,34 +2148,19 @@ section h2 {
 .sound-judgment-options {
   display: flex;
   justify-content: center;
-  gap: max(1vw, 7px);
+  gap: min(24vw, 97px);
   margin-top: 20px;
   left: min(16vw, 72px);
   position: absolute;
-  top: min(487px, 78vw);
+  top: min(489px, 89vw);
+  width: min(76vw,388px);
 }
 
 .animal-card {
   cursor: pointer;
-  padding: 15px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   width: min(26vw, 185px);
   border-radius: 50%;
-}
-
-.animal-card .animal-icon img {
-  width: min(25vw, 106px);
-  height: min(25vw, 106px);
-  object-fit: contain;
-  margin-top: 0px;
-}
-
-.animal-card.happy:active {
-  transform: scale(0.95);
-}
-
-.animal-card.unhappy:active {
-  transform: scale(0.95);
 }
 
 @keyframes pulse {
@@ -2204,8 +2186,6 @@ section h2 {
 }
 
 .pitch-icon {
-  width: 80px;
-  height: 80px;
   margin-bottom: 0.8rem;
   display: flex;
   align-items: center;
@@ -2943,7 +2923,7 @@ button {
 .clickable-background {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Changed from contain to cover to stretch and fill */
+  object-fit: cover;
   border-radius: 0;
   box-shadow: none;
   max-height: none;

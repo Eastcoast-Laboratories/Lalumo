@@ -132,16 +132,3 @@
   font-weight: bold;
 }
 
-/* Game Mode Styles */
-.sound-judgment-options {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin-top: 20px;
-}
-
-@media (max-width: 480px) {
-  .sound-judgment-options {
-    gap: 15px;
-  }
-}
