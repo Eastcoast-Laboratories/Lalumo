@@ -124,6 +124,13 @@ Alpine.store('helpSettings', {
     this.showHelpMessages = false;
     this.saveSettings();
     debugLog('INTROMESSAGE_STORE', 'Help messages disabled via close button');
+  },
+  
+  // Toggle audio help messages
+  togglePlayHelpAudio() {
+    this.playHelpAudio = !this.playHelpAudio;
+    this.saveSettings();
+    debugLog('INTROMESSAGE_STORE', `Help audio toggled: ${this.playHelpAudio}`);
   }
 });
 

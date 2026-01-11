@@ -69,7 +69,7 @@
           <button 
             class="toggle-button" 
             :class="{'active': $store.helpSettings.showHelpMessages}" 
-            @click="$store.helpSettings.showHelpMessages = !$store.helpSettings.showHelpMessages" 
+            @click="$store.helpSettings.toggleHelpMessages()" 
             :aria-label="$store.helpSettings.showHelpMessages ? 'Disable help messages' : 'Enable help messages'" 
             aria-a11y="help__toggle">
             <span class="toggle-slider" :class="{'active': $store.helpSettings.showHelpMessages}"></span>
@@ -86,7 +86,7 @@
           <button 
             class="toggle-button" 
             :class="{'active': $store.helpSettings.playHelpAudio}" 
-            @click="$store.helpSettings.playHelpAudio = !$store.helpSettings.playHelpAudio" 
+            @click="$store.helpSettings.togglePlayHelpAudio()" 
             :aria-label="$store.helpSettings.playHelpAudio ? 'Disable audio help messages' : 'Enable audio help messages'" 
             aria-a11y="help_audio_toggle">
             <span class="toggle-slider" :class="{'active': $store.helpSettings.playHelpAudio}"></span>
