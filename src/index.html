@@ -1331,17 +1331,17 @@
             <button class="piano-key white a4" @touchstart.prevent="addToSequence('A4')" @mousedown.prevent="addToSequence('A4')" @touchend.prevent @mouseup.prevent :class="{ 'active': currentHighlightedNote === 'A4' }">A</button>
             <div class="piano-key black" aria-hidden="true"></div>
             <div class="piano-key inactive b4" aria-hidden="true" x-text="$store.strings?.piano_key_b || 'B'"></div>
+            <div class="sequence-progress">
+              <template x-for="(_, index) in userSequence" :key="index">
+                <div class="progress-dot active"></div>
+              </template>
+              
+              <template x-for="(_, index) in Array(Math.max(0, currentSequence.length - userSequence.length))" :key="index">
+                <div class="progress-dot"></div>
+              </template>
+            </div>
           </div>
           
-          <div class="sequence-progress">
-            <template x-for="(_, index) in userSequence" :key="index">
-              <div class="progress-dot active"></div>
-            </template>
-            
-            <template x-for="(_, index) in Array(Math.max(0, currentSequence.length - userSequence.length))" :key="index">
-              <div class="progress-dot"></div>
-            </template>
-          </div>
           
           <!-- Local feedback removed - using unified global feedback -->
         </div>
