@@ -1755,6 +1755,7 @@ export function pitches() {
         unlocked = true;
         const message = window.Alpine?.store('strings')?.feedback_wave_unlocked || 'Great! You unlocked wavy melodies! :wave:';
         window.showFeedbackMessage(message, {
+            forceShow,
       activityId: null,
       isIntroMessage: false,
       delaySeconds: 2,
@@ -1770,6 +1771,7 @@ export function pitches() {
         unlocked = true;
         const message = window.Alpine?.store('strings')?.feedback_jump_unlocked || 'Amazing! You unlocked random jump melodies! :frog:';
         window.showFeedbackMessage(message, {
+            forceShow,
       activityId: null,
       isIntroMessage: false,
       delaySeconds: 2,
@@ -1827,7 +1829,7 @@ export function pitches() {
      * @activity common
      * @used-by activities with complex context logic
      */
-    showContextMessage() {
+    showContextMessage(forceShow = false) {
       const language = localStorage.getItem('lalumo_language') || 'english';
       let message = '';
       
@@ -1836,7 +1838,7 @@ export function pitches() {
         // For 1_1, use the central intro message function like all other activities
         // This ensures proper audio file mapping and consistent behavior
         debugLog('PITCHES', 'LOG_CONTEXT_MESSAGE: Using central intro message for 1_1');
-        window.showActivityIntroMessage(this.mode, this);
+        window.showActivityIntroMessage(this.mode, this, 10, true, forceShow);
       } else if (this.mode === '1_2_pitches_match-sounds') {
         // Context-dependent message based on game mode
         if (!this.gameMode) {
@@ -1852,13 +1854,14 @@ export function pitches() {
         if (message) {
           // Play audio if enabled and available for this activity
           const helpSettingsStore = window.Alpine?.store ? window.Alpine.store('helpSettings') : null;
-          if (helpSettingsStore?.playHelpAudio) {
+          if (helpSettingsStore?.playHelpAudio || forceShow) {
             const activityId = this.mode + '_' + (this.gameMode ? 'game' : 'practice');
             debugLog('INTRO_AUDIO_CALL', 'showContextMessage calling playIntroAudio for mode:', this.mode, 'gameMode:', this.gameMode, 'message:', message);
             playIntroAudio(message);
           }
           
           window.showFeedbackMessage(message, {
+            forceShow,
             activityId: this.mode + '_' + (this.gameMode ? 'game' : 'practice'),
             isIntroMessage: true,
             delaySeconds: 10,
@@ -1880,13 +1883,14 @@ export function pitches() {
         if (message) {
           // Play audio if enabled and available for this activity
           const helpSettingsStore = window.Alpine?.store ? window.Alpine.store('helpSettings') : null;
-          if (helpSettingsStore?.playHelpAudio) {
+          if (helpSettingsStore?.playHelpAudio || forceShow) {
             const activityId = this.mode + '_' + (this.memoryFreePlay ? 'freeplay' : 'game');
             debugLog('INTRO_AUDIO_CALL', 'showContextMessage calling playIntroAudio for mode:', this.mode, 'memoryFreePlay:', this.memoryFreePlay, 'message:', message);
             playIntroAudio(message);
           }
           
           window.showFeedbackMessage(message, {
+            forceShow,
             activityId: this.mode + '_' + (this.memoryFreePlay ? 'freeplay' : 'game'),
             isIntroMessage: true,
             delaySeconds: 10,
@@ -1896,7 +1900,7 @@ export function pitches() {
       } else {
         // For activities without complex context logic, use the central intro message function
         debugLog('PITCHES', 'LOG_CONTEXT_MESSAGE: Using central intro message for activity:', this.mode);
-        window.showActivityIntroMessage(this.mode, this);
+        window.showActivityIntroMessage(this.mode, this, 10, true, forceShow);
       }
     },
     
@@ -1957,6 +1961,7 @@ export function pitches() {
     showFeedbackMessage(message, activityId = null, delaySeconds = 2) {
       debugLog(['PITCHES', 'WARN'], 'DEPRECATED: showFeedbackMessage is deprecated. Use window.showFeedbackMessage() instead in activity ' + activityId + ' (' + this.mode + ')');
       window.showFeedbackMessage(message, {
+            forceShow,
       activityId: activityId,
       isIntroMessage: false,
       delaySeconds: delaySeconds,

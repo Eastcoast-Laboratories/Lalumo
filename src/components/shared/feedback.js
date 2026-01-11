@@ -59,6 +59,7 @@ export function getActivityModeFromHash() {
  * @param {boolean} options.isCorrect - For game feedback: correct (true), incorrect (false), or neutral (null)
  * @param {number} options.delaySeconds - Delay in seconds before hiding the message
  * @param {Object} options.component - The Alpine.js component instance
+ * @param {boolean} options.forceShow - Force showing message even if help messages are disabled (e.g. repeat button)
  * @activity common
  * @used_by 2_1_chords_color-matching, 2_5_chords_characters, 2_2_chords_stable_unstable, all_pitch_activities
  */
@@ -69,9 +70,10 @@ export function showFeedbackMessage(message, options = {}) {
     isIntroMessage = false,
     isCorrect = null, 
     delaySeconds = isIntroMessage ? 10 : 3,
-    component = null
+    component = null,
+    forceShow = false
   } = options;
-  debugLog('showFeedbackMessage', 'isIntroMessage: ' + isIntroMessage + ', activityId: ' + activityId + ', isCorrect: ' + isCorrect + ', delaySeconds: ' + delaySeconds);
+  debugLog('showFeedbackMessage', 'isIntroMessage: ' + isIntroMessage + ', activityId: ' + activityId + ', isCorrect: ' + isCorrect + ', delaySeconds: ' + delaySeconds + ', forceShow: ' + forceShow);
   
   // Check for empty message
   if (!message || message.trim() === '' || message === 'undefined' || message === 'null') {
@@ -94,7 +96,9 @@ export function showFeedbackMessage(message, options = {}) {
   }
   
   // For intro messages, check if help messages are enabled in user settings
-  if (isIntroMessage && helpSettingsStore?.showHelpMessages === false) {
+  // forceShow overrides this check (e.g. when user clicks repeat button)
+  debugLog('HELP_MESSAGE', `Check: isIntroMessage=${isIntroMessage}, showHelpMessages=${helpSettingsStore?.showHelpMessages}, forceShow=${forceShow}`);
+  if (isIntroMessage && helpSettingsStore?.showHelpMessages === false && !forceShow) {
     debugLog('HELP_MESSAGE', 'Skipping help message - user has disabled help messages');
     return;
   }
@@ -187,12 +191,13 @@ export function clearFeedbackTimer() {
  * @param {Object} component - The Alpine.js component instance (optional)
  * @param {number} delaySeconds - Delay before hiding message (default: 10)
  * @param {boolean} force - Force showing message even if already shown (default: false)
+ * @param {boolean} forceShow - Force showing message even if help messages are disabled (e.g. repeat button)
  * @activity common
  * @used_by 2_1_chords_color-matching, 2_5_chords_characters, 2_2_chords_stable_unstable, 1_1_pitches_high_or_low, 1_2_pitches_match-sounds, 1_3_pitches_draw, 1_4_pitches_does-it-sound-right, 1_5_pitches_memory
  */
-export function showActivityIntroMessage(activityMode, component = null, delaySeconds = 10, force = true /* TODO: should be false before release */) {
+export function showActivityIntroMessage(activityMode, component = null, delaySeconds = 10, force = true /* TODO: should be false before release */, forceShow = false) {
   // TODO: in 1_1 wird stattdessen noch showContextMessage aufgerufen
-  debugLog('AUDIO_SYSTEM', 'showActivityIntroMessage called:', { activityMode, delaySeconds, force, shortcutScreenClosed });
+  debugLog('AUDIO_SYSTEM', 'showActivityIntroMessage called:', { activityMode, delaySeconds, force, forceShow, shortcutScreenClosed });
   
   // CRITICAL: Re-verify activity from hash before playing intro message
   // This prevents playing wrong intro messages when hash changes during initialization
@@ -391,9 +396,10 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
     debugLog('LOG_INTRO_MESSAGE', 'Marked as shown:' + activityMode);
     
     // Play audio if enabled and available for this activity
+    // forceShow overrides the playHelpAudio setting (e.g. when user clicks repeat button)
     const helpSettingsStore = window.Alpine?.store ? window.Alpine.store('helpSettings') : null;
-    if (helpSettingsStore?.playHelpAudio) {
-      debugLog('INTRO_AUDIO_CALL', 'showActivityIntroMessage calling playIntroAudio for:', activityMode);
+    if (helpSettingsStore?.playHelpAudio || forceShow) {
+      debugLog('INTRO_AUDIO_CALL', 'showActivityIntroMessage calling playIntroAudio for:', activityMode, 'forceShow:', forceShow);
       playIntroAudio(message);
     }
     
@@ -401,7 +407,8 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       activityId: activityMode,
       isIntroMessage: true,  // This is an intro message
       delaySeconds,
-      component
+      component,
+      forceShow
     });
   } else {
     debugLog(['FEEDBACK', 'LOG_INTRO_MESSAGE', 'ERROR'], 'LOG_INTRO_MESSAGE: No intro message found for activity:', activityMode);
@@ -928,11 +935,12 @@ export function repeatLastIntroMessage() {
   }
   
   // Call the appropriate component's showContextMessage function
+  // Pass forceShow: true to override help messages disabled setting
   if (targetComponent && targetComponent.showContextMessage) {
-    debugLog('AUDIO_SYSTEM', 'Calling showContextMessage for:', activeMode);
-    targetComponent.showContextMessage();
+    debugLog('REPEAT_BUTTON', 'Calling showContextMessage for:', activeMode, 'with forceShow: true, targetComponent:', targetComponent ? 'found' : 'null');
+    targetComponent.showContextMessage(true); // forceShow = true
   } else {
-    debugLog('AUDIO_SYSTEM', 'No active component found for repeat, activeMode:', activeMode, 'currentActivityMode:', currentActivityMode);
+    debugLog('REPEAT_BUTTON', 'No active component found for repeat, activeMode:', activeMode, 'currentActivityMode:', currentActivityMode, 'targetComponent:', targetComponent);
   }
 }
 

@@ -787,7 +787,7 @@ export function chords() {
      * @activity common
      * @used-by all activities
      */
-    showContextMessage() {
+    showContextMessage(forceShow = false) {
       const language = localStorage.getItem('lalumo_language') || 'english';
       let message = '';
       
@@ -823,9 +823,10 @@ export function chords() {
         debugLog('CHORDS', 'LOG_CONTEXT_MESSAGE: Showing intro message for activity:', this.mode);
         
         // Play audio if enabled and available for this activity
+        // forceShow overrides the playHelpAudio setting (e.g. when user clicks repeat button)
         const helpSettingsStore = window.Alpine?.store ? window.Alpine.store('helpSettings') : null;
-        if (helpSettingsStore?.playHelpAudio) {
-          debugLog('INTRO_AUDIO_CALL', 'chords.js showContextMessage calling playIntroAudio for mode:', this.mode, 'message:', message);
+        if (helpSettingsStore?.playHelpAudio || forceShow) {
+          debugLog('INTRO_AUDIO_CALL', 'chords.js showContextMessage calling playIntroAudio for mode:', this.mode, 'message:', message, 'forceShow:', forceShow);
           playIntroAudio(message);
         }
         
@@ -833,13 +834,14 @@ export function chords() {
           activityId: this.mode,
           isIntroMessage: true,
           delaySeconds: 10,
-          component: this
+          component: this,
+          forceShow
         });
       } else {
         // Fallback to central intro message function
         debugLog('CHORDS', 'LOG_CONTEXT_MESSAGE: Using central intro message for activity:', this.mode);
         if (window.showActivityIntroMessage) {
-          window.showActivityIntroMessage(this.mode, this);
+          window.showActivityIntroMessage(this.mode, this, 10, true, forceShow);
         } else {
           debugLog('ERROR', 'showActivityIntroMessage not available for ' + this.mode);
         }
