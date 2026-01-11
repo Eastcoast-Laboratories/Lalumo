@@ -5,6 +5,9 @@
 // Import debug utilities
 import { debugLog } from '../../utils/debug.js';
 
+// Import audio engine
+import audioEngine from '../audio-engine.js';
+
 // 2_6 One or Many Activity// Global variables
 let current2_6Challenge = null;
 let previous2_6Challenge = null;

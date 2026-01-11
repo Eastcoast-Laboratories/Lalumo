@@ -1036,16 +1036,21 @@ export class AudioEngine {
     // Präfixe entfernen
     let cleanNote = note
       .replace('pitch_', '')
-      .replace('sound_', '')
-      .toUpperCase();
+      .replace('sound_', '');
+    
+    // Normalize: uppercase the note letter, keep 'b' for flat and '#' for sharp
+    // E.g. "eb4" -> "Eb4", "c#4" -> "C#4", "BB4" -> "Bb4"
+    cleanNote = cleanNote.replace(/^([a-gA-G])([b#]?)(\d?)$/, (match, letter, accidental, octave) => {
+      return letter.toUpperCase() + accidental.toLowerCase() + octave;
+    });
     
     // Sicherstellen, dass die Note eine Oktavnummer enthält
-    if (/^[A-G][b#]?$/.test(cleanNote)) {
+    if (/^[A-G][b#]?$/i.test(cleanNote)) {
       // Ohne Oktave, Standard-Oktave 4 hinzufügen
       cleanNote = `${cleanNote}4`;
     }
     
-    // Regex für gültige Noten in wissenschaftlicher Notation
+    // Regex für gültige Noten in wissenschaftlicher Notation (e.g. C4, D#4, Eb4)
     const noteRegex = /^[A-G][b#]?[0-8]$/;
     
     if (!noteRegex.test(cleanNote)) {
