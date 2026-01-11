@@ -18,6 +18,7 @@ let isFreeModeActive = true;
 window.freeModeActive2_6 = isFreeModeActive;
 let isInitialized = false;
 let freePlay2_6Chords = [];        // Store the pre-generated chords for free play mode
+let lastGenerated2_6Challenge = null; // Track last generated challenge to prevent duplicates
 
 /**
  * Resets the activity to free play mode when entered from navigation
@@ -191,13 +192,29 @@ function generateSingle2_6Challenge(isOneNote, difficulty) {
   if (isOneNote) {
     // Single note challenge
     const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'];
-    const note = notes[Math.floor(Math.random() * notes.length)];
+    let note;
+    let attempts = 0;
+    const maxAttempts = 10;
     
-    return {
+    // Prevent generating the same note twice in a row
+    do {
+      attempts++;
+      note = notes[Math.floor(Math.random() * notes.length)];
+    } while (
+      attempts < maxAttempts && 
+      lastGenerated2_6Challenge && 
+      lastGenerated2_6Challenge.type === 'one' && 
+      lastGenerated2_6Challenge.notes[0] === note
+    );
+    
+    const challenge = {
       type: 'one',
       notes: [note],
       correctAnswer: 'one'
     };
+    
+    lastGenerated2_6Challenge = challenge;
+    return challenge;
   } else {
     // Chord challenge
     let chordNotes;
@@ -262,13 +279,27 @@ function generateSingle2_6Challenge(isOneNote, difficulty) {
       availableChords = allChords;
     }
     
-    chordNotes = availableChords[Math.floor(Math.random() * availableChords.length)];
+    // Prevent generating the same chord twice in a row
+    let attempts = 0;
+    const maxAttempts = 10;
+    do {
+      attempts++;
+      chordNotes = availableChords[Math.floor(Math.random() * availableChords.length)];
+    } while (
+      attempts < maxAttempts && 
+      lastGenerated2_6Challenge && 
+      lastGenerated2_6Challenge.type === 'many' && 
+      isSameChallenge({ type: 'many', notes: chordNotes }, lastGenerated2_6Challenge)
+    );
     
-    return {
+    const challenge = {
       type: 'many',
       notes: chordNotes,
       correctAnswer: 'many'
     };
+    
+    lastGenerated2_6Challenge = challenge;
+    return challenge;
   }
 }
 
@@ -602,6 +633,7 @@ export function reset_2_6_Progress(component) {
   // Reset activity state
   current2_6Challenge = null;
   previous2_6Challenge = null;
+  lastGenerated2_6Challenge = null;
   consecutive2_6TypeCount = 0;
   last2_6Type = null;
   
