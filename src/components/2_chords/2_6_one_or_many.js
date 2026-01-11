@@ -124,9 +124,16 @@ function generate2_6Challenge() {
   
   const currentProgress = progress['2_6'] || 0;
   
-  // Calculate difficulty level (1-4) based on progress like 2_2
+  // Calculate difficulty level based on progress
+  // Progress 0-9: difficulty 1 (Levels 1-2: Chords)
+  // Progress 10-19: difficulty 2 (Levels 1-2: Chords)
+  // Progress 20-29: difficulty 3 (Levels 3-5: Dissonant tones)
+  // Progress 30-39: difficulty 4 (Levels 3-5: Dissonant tones)
+  // Progress 40-49: difficulty 5 (Levels 6-8: Consonant tones)
+  // Progress 50-59: difficulty 6 (Levels 6-8: Consonant tones)
+  // Progress 60+: difficulty 7 (Level 9+: Octave distance)
   let difficulty = Math.floor(currentProgress / 10) + 1;
-  difficulty = Math.min(difficulty, 4); // Cap at level 4
+  difficulty = Math.min(difficulty, 7); // Cap at level 7 (for octave distance)
   
   debugLog('CHORDS_2_6', `Progress: ${currentProgress}, Difficulty: ${difficulty}`);
   
@@ -186,6 +193,11 @@ function generate2_6Challenge() {
 
 /**
  * Generate a single challenge of specified type
+ * Difficulty levels:
+ * 1-2: Single note vs. chords (3+ notes)
+ * 3-5: Single note vs. two dissonant tones (seconds, sevenths, tritones)
+ * 6-8: Single note vs. two consonant tones (fourths, fifths, thirds)
+ * 9+: Single note vs. two tones in octave distance
  */
 function generateSingle2_6Challenge(isOneNote, difficulty) {
   
@@ -215,92 +227,168 @@ function generateSingle2_6Challenge(isOneNote, difficulty) {
     
     lastGenerated2_6Challenge = challenge;
     return challenge;
+  } else if (difficulty <= 2) {
+    // Levels 1-2: Chords (3+ notes)
+    return generateChordChallenge(difficulty);
+  } else if (difficulty <= 5) {
+    // Levels 3-5: Two dissonant tones (seconds, sevenths, tritones)
+    return generateTwoToneChallenge('dissonant', difficulty);
+  } else if (difficulty <= 8) {
+    // Levels 6-8: Two consonant tones (fourths, fifths, thirds)
+    return generateTwoToneChallenge('consonant', difficulty);
   } else {
-    // Chord challenge
-    let chordNotes;
-    
-    // All chord types across all difficulties for maximum variety
-    const allChords = [
-      // Major triads
-      ['C4', 'E4', 'G4'], ['D4', 'F#4', 'A4'], ['E4', 'G#4', 'B4'], ['F4', 'A4', 'C5'], 
-      ['G4', 'B4', 'D5'], ['A4', 'C#5', 'E5'], ['B4', 'D#5', 'F#5'],
-      
-      // Minor triads
-      ['C4', 'Eb4', 'G4'], ['D4', 'F4', 'A4'], ['E4', 'G4', 'B4'], ['F4', 'Ab4', 'C5'],
-      ['G4', 'Bb4', 'D5'], ['A4', 'C5', 'E5'], ['B4', 'D5', 'F#5'],
-      
-      // Diminished triads
-      ['C4', 'Eb4', 'Gb4'], ['D4', 'F4', 'Ab4'], ['E4', 'G4', 'Bb4'], ['F4', 'Ab4', 'B4'],
-      ['G4', 'Bb4', 'Db5'], ['A4', 'C5', 'Eb5'], ['B4', 'D5', 'F5'],
-      
-      // Augmented triads
-      ['C4', 'E4', 'G#4'], ['D4', 'F#4', 'A#4'], ['E4', 'G#4', 'C5'], ['F4', 'A4', 'C#5'],
-      ['G4', 'B4', 'D#5'], ['A4', 'C#5', 'F5'], ['B4', 'D#5', 'G5'],
-      
-      // Major 7th chords
-      ['C4', 'E4', 'G4', 'B4'], ['D4', 'F#4', 'A4', 'C#5'], ['E4', 'G#4', 'B4', 'D#5'],
-      ['F4', 'A4', 'C5', 'E5'], ['G4', 'B4', 'D5', 'F#5'], ['A4', 'C#5', 'E5', 'G#5'],
-      
-      // Minor 7th chords
-      ['C4', 'Eb4', 'G4', 'Bb4'], ['D4', 'F4', 'A4', 'C5'], ['E4', 'G4', 'B4', 'D5'],
-      ['F4', 'Ab4', 'C5', 'Eb5'], ['G4', 'Bb4', 'D5', 'F5'], ['A4', 'C5', 'E5', 'G5'],
-      
-      // Dominant 7th chords
-      ['C4', 'E4', 'G4', 'Bb4'], ['D4', 'F#4', 'A4', 'C5'], ['E4', 'G#4', 'B4', 'D5'],
-      ['F4', 'A4', 'C5', 'Eb5'], ['G4', 'B4', 'D5', 'F5'], ['A4', 'C#5', 'E5', 'G5'],
-      
-      // Half-diminished 7th chords
-      ['C4', 'Eb4', 'Gb4', 'Bb4'], ['D4', 'F4', 'Ab4', 'C5'], ['E4', 'G4', 'Bb4', 'D5'],
-      ['F4', 'Ab4', 'B4', 'Eb5'], ['G4', 'Bb4', 'Db5', 'F5'], ['A4', 'C5', 'Eb5', 'G5'],
-      
-      // Sus2 chords
-      ['C4', 'D4', 'G4'], ['D4', 'E4', 'A4'], ['E4', 'F#4', 'B4'], ['F4', 'G4', 'C5'],
-      ['G4', 'A4', 'D5'], ['A4', 'B4', 'E5'], ['B4', 'C#5', 'F#5'],
-      
-      // Sus4 chords
-      ['C4', 'F4', 'G4'], ['D4', 'G4', 'A4'], ['E4', 'A4', 'B4'], ['F4', 'Bb4', 'C5'],
-      ['G4', 'C5', 'D5'], ['A4', 'D5', 'E5'], ['B4', 'E5', 'F#5'],
-      
-      // 6th chords
-      ['C4', 'E4', 'G4', 'A4'], ['D4', 'F#4', 'A4', 'B4'], ['E4', 'G#4', 'B4', 'C#5'],
-      ['F4', 'A4', 'C5', 'D5'], ['G4', 'B4', 'D5', 'E5'], ['A4', 'C#5', 'E5', 'F#5']
-    ];
-    
-    // Filter chords based on difficulty
-    let availableChords;
-    if (difficulty === 1) {
-      // Basic triads only
-      availableChords = allChords.filter(chord => chord.length === 3);
-    } else if (difficulty === 2) {
-      // Triads and 4-note chords
-      availableChords = allChords.filter(chord => chord.length <= 4);
-    } else {
-      // All chords
-      availableChords = allChords;
-    }
-    
-    // Prevent generating the same chord twice in a row
-    let attempts = 0;
-    const maxAttempts = 10;
-    do {
-      attempts++;
-      chordNotes = availableChords[Math.floor(Math.random() * availableChords.length)];
-    } while (
-      attempts < maxAttempts && 
-      lastGenerated2_6Challenge && 
-      lastGenerated2_6Challenge.type === 'many' && 
-      isSameChallenge({ type: 'many', notes: chordNotes }, lastGenerated2_6Challenge)
-    );
-    
-    const challenge = {
-      type: 'many',
-      notes: chordNotes,
-      correctAnswer: 'many'
-    };
-    
-    lastGenerated2_6Challenge = challenge;
-    return challenge;
+    // Level 9+: Two tones in octave distance
+    return generateTwoToneChallenge('octave', difficulty);
   }
+}
+
+/**
+ * Generate a chord challenge (3+ notes)
+ */
+function generateChordChallenge(difficulty) {
+  // All chord types across all difficulties for maximum variety
+  const allChords = [
+    // Major triads
+    ['C4', 'E4', 'G4'], ['D4', 'F#4', 'A4'], ['E4', 'G#4', 'B4'], ['F4', 'A4', 'C5'], 
+    ['G4', 'B4', 'D5'], ['A4', 'C#5', 'E5'], ['B4', 'D#5', 'F#5'],
+    
+    // Minor triads
+    ['C4', 'Eb4', 'G4'], ['D4', 'F4', 'A4'], ['E4', 'G4', 'B4'], ['F4', 'Ab4', 'C5'],
+    ['G4', 'Bb4', 'D5'], ['A4', 'C5', 'E5'], ['B4', 'D5', 'F#5'],
+    
+    // Diminished triads
+    ['C4', 'Eb4', 'Gb4'], ['D4', 'F4', 'Ab4'], ['E4', 'G4', 'Bb4'], ['F4', 'Ab4', 'B4'],
+    ['G4', 'Bb4', 'Db5'], ['A4', 'C5', 'Eb5'], ['B4', 'D5', 'F5'],
+    
+    // Augmented triads
+    ['C4', 'E4', 'G#4'], ['D4', 'F#4', 'A#4'], ['E4', 'G#4', 'C5'], ['F4', 'A4', 'C#5'],
+    ['G4', 'B4', 'D#5'], ['A4', 'C#5', 'F5'], ['B4', 'D#5', 'G5'],
+    
+    // Major 7th chords
+    ['C4', 'E4', 'G4', 'B4'], ['D4', 'F#4', 'A4', 'C#5'], ['E4', 'G#4', 'B4', 'D#5'],
+    ['F4', 'A4', 'C5', 'E5'], ['G4', 'B4', 'D5', 'F#5'], ['A4', 'C#5', 'E5', 'G#5'],
+    
+    // Minor 7th chords
+    ['C4', 'Eb4', 'G4', 'Bb4'], ['D4', 'F4', 'A4', 'C5'], ['E4', 'G4', 'B4', 'D5'],
+    ['F4', 'Ab4', 'C5', 'Eb5'], ['G4', 'Bb4', 'D5', 'F5'], ['A4', 'C5', 'E5', 'G5'],
+    
+    // Dominant 7th chords
+    ['C4', 'E4', 'G4', 'Bb4'], ['D4', 'F#4', 'A4', 'C5'], ['E4', 'G#4', 'B4', 'D5'],
+    ['F4', 'A4', 'C5', 'Eb5'], ['G4', 'B4', 'D5', 'F5'], ['A4', 'C#5', 'E5', 'G5'],
+    
+    // Half-diminished 7th chords
+    ['C4', 'Eb4', 'Gb4', 'Bb4'], ['D4', 'F4', 'Ab4', 'C5'], ['E4', 'G4', 'Bb4', 'D5'],
+    ['F4', 'Ab4', 'B4', 'Eb5'], ['G4', 'Bb4', 'Db5', 'F5'], ['A4', 'C5', 'Eb5', 'G5'],
+    
+    // Sus2 chords
+    ['C4', 'D4', 'G4'], ['D4', 'E4', 'A4'], ['E4', 'F#4', 'B4'], ['F4', 'G4', 'C5'],
+    ['G4', 'A4', 'D5'], ['A4', 'B4', 'E5'], ['B4', 'C#5', 'F#5'],
+    
+    // Sus4 chords
+    ['C4', 'F4', 'G4'], ['D4', 'G4', 'A4'], ['E4', 'A4', 'B4'], ['F4', 'Bb4', 'C5'],
+    ['G4', 'C5', 'D5'], ['A4', 'D5', 'E5'], ['B4', 'E5', 'F#5'],
+    
+    // 6th chords
+    ['C4', 'E4', 'G4', 'A4'], ['D4', 'F#4', 'A4', 'B4'], ['E4', 'G#4', 'B4', 'C#5'],
+    ['F4', 'A4', 'C5', 'D5'], ['G4', 'B4', 'D5', 'E5'], ['A4', 'C#5', 'E5', 'F#5']
+  ];
+  
+  // Filter chords based on difficulty
+  let availableChords;
+  if (difficulty === 1) {
+    // Basic triads only
+    availableChords = allChords.filter(chord => chord.length === 3);
+  } else if (difficulty === 2) {
+    // Triads and 4-note chords
+    availableChords = allChords.filter(chord => chord.length <= 4);
+  } else {
+    // All chords
+    availableChords = allChords;
+  }
+  
+  // Prevent generating the same chord twice in a row
+  let attempts = 0;
+  const maxAttempts = 10;
+  let chordNotes;
+  do {
+    attempts++;
+    chordNotes = availableChords[Math.floor(Math.random() * availableChords.length)];
+  } while (
+    attempts < maxAttempts && 
+    lastGenerated2_6Challenge && 
+    lastGenerated2_6Challenge.type === 'many' && 
+    isSameChallenge({ type: 'many', notes: chordNotes }, lastGenerated2_6Challenge)
+  );
+  
+  const challenge = {
+    type: 'many',
+    notes: chordNotes,
+    correctAnswer: 'many'
+  };
+  
+  lastGenerated2_6Challenge = challenge;
+  return challenge;
+}
+
+/**
+ * Generate a two-tone challenge
+ */
+function generateTwoToneChallenge(toneType, difficulty) {
+  const baseNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'];
+  let twoNotes;
+  let attempts = 0;
+  const maxAttempts = 10;
+  
+  do {
+    attempts++;
+    const baseNote = baseNotes[Math.floor(Math.random() * baseNotes.length)];
+    const baseNoteIndex = baseNotes.indexOf(baseNote);
+    
+    if (toneType === 'dissonant') {
+      // Dissonant intervals: minor 2nd, major 7th, tritone
+      const dissonantIntervals = [1, 11, 6]; // semitones
+      const interval = dissonantIntervals[Math.floor(Math.random() * dissonantIntervals.length)];
+      const secondNoteIndex = (baseNoteIndex + Math.floor(interval / 2)) % 7;
+      const secondNote = baseNotes[secondNoteIndex];
+      twoNotes = [baseNote, secondNote];
+    } else if (toneType === 'consonant') {
+      // Consonant intervals: perfect 4th, perfect 5th, major 3rd, minor 3rd
+      const consonantIntervals = [5, 7, 4, 3]; // semitones
+      const interval = consonantIntervals[Math.floor(Math.random() * consonantIntervals.length)];
+      const secondNoteIndex = (baseNoteIndex + Math.floor(interval / 2)) % 7;
+      const secondNote = baseNotes[secondNoteIndex];
+      twoNotes = [baseNote, secondNote];
+    } else if (toneType === 'octave') {
+      // Octave distance: same note in different octaves
+      // Extract note letter and accidental, then create octave version
+      const noteMatch = baseNote.match(/^([A-G][b#]?)(\d)$/);
+      debugLog('CHORDS_2_6_OCTAVE', `baseNote: ${baseNote}, regex match:`, noteMatch);
+      if (noteMatch) {
+        const noteLetter = noteMatch[1];
+        const octave = parseInt(noteMatch[2]);
+        const octaveNote = noteLetter + (octave + 1);
+        twoNotes = [baseNote, octaveNote];
+        debugLog('CHORDS_2_6_OCTAVE', `Generated octave notes: ${baseNote} -> ${octaveNote}`);
+      } else {
+        twoNotes = [baseNote, baseNote]; // Fallback (shouldn't happen)
+        debugLog('CHORDS_2_6_OCTAVE', `ERROR: Regex did not match for baseNote: ${baseNote}`);
+      }
+    }
+  } while (
+    attempts < maxAttempts && 
+    lastGenerated2_6Challenge && 
+    lastGenerated2_6Challenge.type === 'many' && 
+    isSameChallenge({ type: 'many', notes: twoNotes }, lastGenerated2_6Challenge)
+  );
+  
+  const challenge = {
+    type: 'many',
+    notes: twoNotes,
+    correctAnswer: 'many'
+  };
+  
+  lastGenerated2_6Challenge = challenge;
+  return challenge;
 }
 
 /**

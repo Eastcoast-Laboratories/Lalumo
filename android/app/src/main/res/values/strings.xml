@@ -165,6 +165,9 @@
     <string name="one_or_many_level1">Can you hear if it is one note or many notes?</string>
     <string name="one_or_many_level2">Basic triads (3 notes) vs. single tones! 🎵</string>
     <string name="one_or_many_level3">Triads and 4-note chords vs. single tones! 🎼</string>
+    <string name="one_or_many_level4">Two dissonant tones (seconds, sevenths, tritones) vs. single tones! 🎶</string>
+    <string name="one_or_many_level5">Two consonant tones (fourths, fifths, thirds) vs. single tones! 🎼</string>
+    <string name="one_or_many_level6">Two tones in octave distance vs. single tones! 🎵</string>
     <string name="one_or_many_master">You are a One or Many Master! 🎉</string>
     <string name="root">Root</string>
     <string name="third">Third</string>

@@ -1661,7 +1661,10 @@
             <p x-show="(progress['2_6'] || 0) < 10" x-text="$store.strings?.one_or_many_level1 || 'Can you hear if it is one note or many notes?'"></p>
             <p x-show="(progress['2_6'] || 0) >= 10 && (progress['2_6'] || 0) < 20" x-text="$store.strings?.one_or_many_level2 || 'Level 2: Basic triads (3 notes) vs. single tones! 🎵'"></p>
             <p x-show="(progress['2_6'] || 0) >= 20 && (progress['2_6'] || 0) < 30" x-text="$store.strings?.one_or_many_level3 || 'Level 3: Triads and 4-note chords vs. single tones! 🎼'"></p>
-            <p x-show="(progress['2_6'] || 0) >= 30" x-text="$store.strings?.one_or_many_master || 'You are a One or Many Master! 🎉'"></p>
+            <p x-show="(progress['2_6'] || 0) >= 30 && (progress['2_6'] || 0) < 40" x-text="$store.strings?.one_or_many_level4 || 'Level 4: Two dissonant tones vs. single tones! 🎶'"></p>
+            <p x-show="(progress['2_6'] || 0) >= 40 && (progress['2_6'] || 0) < 50" x-text="$store.strings?.one_or_many_level5 || 'Level 5: Two consonant tones vs. single tones! 🎼'"></p>
+            <p x-show="(progress['2_6'] || 0) >= 50 && (progress['2_6'] || 0) < 60" x-text="$store.strings?.one_or_many_level6 || 'Level 6: Two tones in octave distance vs. single tones! 🎵'"></p>
+            <p x-show="(progress['2_6'] || 0) >= 60" x-text="$store.strings?.one_or_many_master || 'You are a One or Many Master! 🎉'"></p>
           </div>
           <!-- Play buttons -->
           <div class="play-buttons-container-2_6">
