@@ -1787,19 +1787,29 @@ section h2 {
 
 /* Standard-Höhe für Pitch-Cards */
 .match-sounds-container .pitch-card {
-  height: 100px;
+  height: min(200px, 39vw);
   margin: 0;
 }
 
 /* Wenn weder Welle noch Frosch freigeschaltet: alle Karten höher */
 .match-sounds-container.no-unlocks .pitch-card {
-  height: 200px; /* Alle Cards doppelt so hoch wenn nichts freigeschaltet ist */
+  height: min(300px, 59vw); /* Alle Cards doppelt so hoch wenn nichts freigeschaltet ist */
 }
 
 /* Nur Rutsche über zwei Zeilen, wenn Frosch nicht freigeschaltet */
 .match-sounds-container.no-frog .pitch-card.down-card {
   grid-row: span 2; /* Über zwei Reihen erstrecken */
-  height: 210px; /* Etwas höher für bessere Sichtbarkeit */
+  height: min(310px, 61vw); /* Etwas höher für bessere Sichtbarkeit */
+}
+
+/* Rakete etwas kleiner, wenn frosch noch nicht freigeschaltet ist */
+.match-sounds-container.no-frog .pitch-card.up-card {
+  height: min(150px, 29vw);
+}
+
+/* wenn alles unlocked, der frosch etwas grösser */
+.match-sounds-container.all-unlocked .pitch-card.jump-card {
+  height: min(250px, 49vw);
 }
 
 /* Spezifische Positionierung der Cards */
