@@ -146,12 +146,36 @@ Alpine.data('freeplay', freeplay);
 let hasUserInteracted = false;
 const interactionEvents = ['click', 'touchstart', 'keydown'];
 
+// iOS 16+ audio context warmup function
+async function warmUpAudioContextForIOS() {
+  try {
+    // 1. Play silent audio to trigger audio context on iOS
+    const silentAudio = document.getElementById('silentAudio');
+    if (silentAudio) {
+      await silentAudio.play().catch(err => {
+        debugLog(['AUDIO_SYSTEM', 'WARN'], 'Silent audio play failed:', err);
+      });
+    }
+    
+    // 2. Resume Tone.js context if available
+    if (window.Tone && window.Tone.context) {
+      await window.Tone.context.resume();
+      debugLog('AUDIO_SYSTEM', 'iOS audio context warmed up successfully');
+    }
+  } catch (error) {
+    debugLog(['AUDIO_SYSTEM', 'WARN'], 'Audio warmup failed:', error);
+  }
+}
+
 interactionEvents.forEach(event => {
   document.addEventListener(event, () => {
     if (!hasUserInteracted) {
       hasUserInteracted = true;
       window.hasUserInteracted = true;
       debugLog('INTRO_AUDIO', 'User interaction detected, audio playback now allowed');
+      
+      // Warm up audio context for iOS 16+
+      warmUpAudioContextForIOS();
     }
   }, { once: true, passive: true });
 });

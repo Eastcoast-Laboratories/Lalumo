@@ -8,6 +8,10 @@
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="./images/logo_bird_sings.jpg" />
+  <!-- Silent audio for iOS 16+ audio context warmup -->
+  <audio id="silentAudio" preload="auto" style="display:none;">
+    <source src="data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA==" type="audio/wav">
+  </audio>
   <!-- Native App Detector - Setzt das window.isNativeApp Flag für zuverlässige App-Erkennung -->
   <script>
     // In der nativen App wird capacitorJs geladen
