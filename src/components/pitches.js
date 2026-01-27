@@ -1050,6 +1050,12 @@ export function pitches() {
       debugLog('PITCHES', 'Playing High or Low tone for stage:', stage, 'gameStarted:', this.gameStarted);
       
       try {
+        // Stop intro message when game starts
+        if (window.audioEngine) {
+          window.audioEngine.stopAll();
+          debugLog('PITCHES', '1_1: Stopped intro message, starting game');
+        }
+        
         // First, ensure the audio engine is initialized
         await audioEngine.initialize();
         
@@ -1104,6 +1110,12 @@ export function pitches() {
      * @activity 1_1_high_or_low
      */
     checkHighOrLowAnswer(answer) {
+      // Stop intro message when answer button is clicked
+      if (window.audioEngine) {
+        window.audioEngine.stopAll();
+        debugLog('PITCHES', '1_1: Stopped intro message, answer button clicked');
+      }
+      
       if (this.isPlaying && this.progress['1_1'] >= 20) {
         // If a tone is currently playing and the user has reached stage 2, ignore the answer
         debugLog(['HIGH_OR_LOW', 'ANSWER_TIMING'], 'Answer ignored: Tone is playing and user has reached stage 2');
@@ -2730,6 +2742,12 @@ export function pitches() {
      * @activity 1_3_draw_melody
      */
     toggleMelodyChallenge() {
+      // Stop intro message when challenge mode is toggled
+      if (window.audioEngine) {
+        window.audioEngine.stopAll();
+        debugLog('PITCHES', '1_3: Stopped intro message, challenge mode toggled');
+      }
+      
       this.melodyChallengeMode = !this.melodyChallengeMode;
       
       if (this.melodyChallengeMode) {
@@ -3170,6 +3188,12 @@ export function pitches() {
      */
     endDrawing(e) {
       debugLog('PITCHES', `[DRAW_MELODY_DEBUG] endDrawing() called - drawPath length: ${this.drawPath.length}`);
+      
+      // Stop intro message when melody is drawn
+      if (window.audioEngine) {
+        window.audioEngine.stopAll();
+        debugLog('PITCHES', '1_3: Stopped intro message, melody drawn');
+      }
       
       // Prevent double calls from multiple event handlers (mouseup + touchend)
       if (this._endDrawingInProgress) {
@@ -5383,6 +5407,12 @@ export function pitches() {
     startMemoryGame() {
       debugLog('PITCHES', `BUG_DEBUG: startMemoryGame() called - current gameMode: ${this.gameMode}, isPlaying: ${this.isPlaying}`);
       
+      // Stop intro message when game starts
+      if (window.audioEngine) {
+        window.audioEngine.stopAll();
+        debugLog('PITCHES', '1_5: Stopped intro message, starting game');
+      }
+      
       // BUG FIX: Prevent race condition during game startup
       if (this.memoryGameStarting) {
         debugLog('PITCHES', 'BUG_FIX: Memory game already starting, ignoring duplicate call');
@@ -5510,9 +5540,17 @@ export function pitches() {
     },
     
     startMatchGame() {
+      // Stop intro message when game starts
+      if (window.audioEngine) {
+        window.audioEngine.stopAll();
+        debugLog('PITCHES', '1_2: Stopped intro message, starting game');
+      }
+      
       this.gameMode = true;
       this.setup_1_2(true, true); // Play sound and generate new
-      this.showContextMessage(); // Update instructions
+      // Don't call showContextMessage() here - it would replay the intro audio
+      // Just update the UI text without audio
+      debugLog('PITCHES', '1_2: Skipping showContextMessage to prevent intro audio replay');
     }
   };
 }
