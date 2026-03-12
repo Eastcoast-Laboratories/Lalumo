@@ -261,7 +261,7 @@ reset-button:
 2_4 guess the missing note
   - # unfertig!
 
-  - wenn man lange auf einen button drückt, dann soll der titel tag mit javascript als kleines overlay angezeigt werden, damit man das auch auf dem hany ermitteln kann
+  - wenn man lange auf einen button drückt, dann soll der titel tag mit javascript als kleines overlay angezeigt werden, damit man das auch auf dem handy ermitteln kann
 
   - im free mode bleibt der erste akkord auf stufe 0 anscheinend hängen, also es wird immer der selbe ausgewählt, erst , wenn man einen anderen button drückt, dann wird auch der erste ab dann immer zufällig
 
@@ -302,12 +302,9 @@ reset-button:
 
 # most important
 
-- Navi Text etwas größer
-
 - 1_2 falscher Hintergrund, wenn schon 21 Progress sind aber man die App neu startet
 
 
 # Gesprochene Texte neu erstellen in dieser art: 
 - Höre dir die Maus an, sie macht hohe Töne und das Faultier macht Tiefe. Merke dir gut wie ein hoher oder ein tiefer Ton klingt, dann drücke den Vogel um das Spiel zu starten: Hörst du einen hohen oder tiefen Ton?
 
-icons zu den hintergründen anpassen
