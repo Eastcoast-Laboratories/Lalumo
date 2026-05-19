@@ -286,15 +286,12 @@ reset-button:
 -------------------------------------------
 - Background-Bilder Lazy load testen
 
- - back button in android gesondert behandeln: der back-button soll da zurück ins menu gehen, aber nur, wenn die navigation nicht gelockt ist.
 
 - exportProgress funktioniiert nicht merh, wenn man garbage importiert hat
 
 - Webpack-Bundle-Analyzer verwenden um große Abhängigkeiten zu identifizieren
 
 - Redeem refresh button einbauen
-
-- Bei Fehler: richtigen Button aufleuchten lassen als hilfe
 
 - im web zeigt er die landscape warnung an, dass man sein gerät drehen soll. die warnung darf nur auf android oder ios kommen, dort aber auch im browser auf den geräten
 

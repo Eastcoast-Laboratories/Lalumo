@@ -2028,13 +2028,20 @@
       
       // Testen, ob wir in einer App sind oder im Browser
       if (isAndroid) {
-        // In Android: Zurück zum Menü, wenn nicht gesperrt , TODO: select by 'id="app"' instead
+        // In Android: Open menu sidebar if inside an activity and menu is not locked
         const app = Alpine.getScope(document.querySelector('[x-data="app()"]'));
-        if (app && !app.menuLocked) {
-          // Wenn nicht im Hauptmenü, zurück zum Hauptmenü gehen
+        if (app) {
+          // Check if we are inside an activity (not in main menu)
           if (app.active !== 'main') {
-            app.setActive('main');
-            // Verhindern des Verlassens der App
+            // Only open menu if not locked
+            if (!app.menuLocked) {
+              // Open the menu sidebar (like clicking hamburger menu)
+              app.menuOpen = true;
+              window.debugLog('BACK_BUTTON', 'Android back button opened menu sidebar');
+            } else {
+              window.debugLog('BACK_BUTTON', 'Android back button ignored - menu is locked');
+            }
+            // Prevent leaving the app
             history.pushState(null, null, window.location.pathname);
             event.preventDefault();
           }
