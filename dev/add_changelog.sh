@@ -41,13 +41,21 @@ check_length() {
 
 # German Changelog
 DE_CHANGES=$(cat << EOF
-- Intro-Nachrichten als Ansagen
+- Neue Schwierigkeitsgrade in „ein Ton oder viele“
+- Drei zusätzliche Level (4–6) mit anspruchsvolleren Zwei-Ton-Aufgaben
+- Gedächtnis-Spiel automatisches umschalten in den Einsteiger-Modus
+- Kindersicherung verbessert
+- Bugfixes und allgemeine Verbesserungen der UI
 EOF
 )
 
 # English Changelog
 EN_CHANGES=$(cat << EOF
-- Intro messages as spoken teasers
+- New difficulty levels in "one or many"
+- Three additional levels (4-6) with more challenging two-tone tasks
+- Memory game automatic switch to beginner mode
+- Child safety improved
+- Bug fixes and general UI improvements
 EOF
 )
 

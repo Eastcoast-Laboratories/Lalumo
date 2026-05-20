@@ -2,6 +2,13 @@
 =========
 
 
+## Version 7.0 (2026-05-20)
+- New difficulty levels in "one or many"
+- Three additional levels (4-6) with more challenging two-tone tasks
+- Memory game automatic switch to beginner mode
+- Child safety improved
+- Bug fixes and general UI improvements
+
 ## Version 6.0 (2025-11-10)
 - Intro messages as spoken teasers
 

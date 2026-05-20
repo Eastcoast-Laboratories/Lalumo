@@ -1,0 +1,16 @@
+# Play Store Changelogs für Version 7.0
+
+<en-GB>
+- New difficulty levels in "one or many"
+- Three additional levels (4-6) with more challenging two-tone tasks
+- Memory game automatic switch to beginner mode
+- Child safety improved
+- Bug fixes and general UI improvements
+</en-GB>
+<de-DE>
+- Neue Schwierigkeitsgrade in „ein Ton oder viele“
+- Drei zusätzliche Level (4–6) mit anspruchsvolleren Zwei-Ton-Aufgaben
+- Gedächtnis-Spiel automatisches umschalten in den Einsteiger-Modus
+- Kindersicherung verbessert
+- Bugfixes und allgemeine Verbesserungen der UI
+</de-DE>

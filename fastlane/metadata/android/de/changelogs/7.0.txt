@@ -1,0 +1,5 @@
+- Neue Schwierigkeitsgrade in „ein Ton oder viele“
+- Drei zusätzliche Level (4–6) mit anspruchsvolleren Zwei-Ton-Aufgaben
+- Gedächtnis-Spiel automatisches umschalten in den Einsteiger-Modus
+- Kindersicherung verbessert
+- Bugfixes und allgemeine Verbesserungen der UI

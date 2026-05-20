@@ -1,0 +1,5 @@
+- New difficulty levels in "one or many"
+- Three additional levels (4-6) with more challenging two-tone tasks
+- Memory game automatic switch to beginner mode
+- Child safety improved
+- Bug fixes and general UI improvements

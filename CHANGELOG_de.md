@@ -2,6 +2,13 @@
 =========
 
 
+## Version 7.0 (2026-05-20)
+- Neue Schwierigkeitsgrade in „ein Ton oder viele“
+- Drei zusätzliche Level (4–6) mit anspruchsvolleren Zwei-Ton-Aufgaben
+- Gedächtnis-Spiel automatisches umschalten in den Einsteiger-Modus
+- Kindersicherung verbessert
+- Bugfixes und allgemeine Verbesserungen der UI
+
 ## Version 6.0 (2025-11-10)
 - Intro-Nachrichten als Ansagen
 
