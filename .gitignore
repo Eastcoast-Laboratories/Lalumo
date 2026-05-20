@@ -110,3 +110,4 @@ yarn-error.log*
 /app/icons/icon-512.png
 /dev/images-dev/backgrounds/tmp
 /dev/fdroid_example_drinkable_app.yaml
+/android/.idea/androidTestResultsUserPreferences.xml
