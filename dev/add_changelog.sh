@@ -10,7 +10,7 @@ CHANGELOG_DE_MD="CHANGELOG_de.md"
 PLAYSTORE_DIR="fastlane/metadata/android/playstore"
 
 # Must be the same as version from build.gradle
-VERSION_NAME=7.0
+VERSION_NAME=7.2
 # Get current date
 CURRENT_DATE=$(date +"%Y-%m-%d")
 
@@ -41,20 +41,12 @@ check_length() {
 
 # German Changelog
 DE_CHANGES=$(cat << EOF
-- Neue Schwierigkeitsgrade in „ein Ton oder viele“
-- Drei zusätzliche Level (4–6) mit anspruchsvolleren Zwei-Ton-Aufgaben
-- Gedächtnis-Spiel automatisches umschalten in den Einsteiger-Modus
-- Kindersicherung verbessert
 - Bugfixes und allgemeine Verbesserungen der UI
 EOF
 )
 
 # English Changelog
 EN_CHANGES=$(cat << EOF
-- New difficulty levels in "one or many"
-- Three additional levels (4-6) with more challenging two-tone tasks
-- Memory game automatic switch to beginner mode
-- Child safety improved
 - Bug fixes and general UI improvements
 EOF
 )
