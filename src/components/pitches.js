@@ -1481,8 +1481,10 @@ export function pitches() {
      * @returns {Array} The generated pattern
      */
     generateDownPattern() {
-      // Use a higher start index to ensure there's enough room to go down
-      const startIndex = 11 + Math.floor(Math.random() * 10); // 11-20
+      // Ensure we have enough room to go down 5 notes (min index 4)
+      const minStartIndex = 4;
+      const maxStartIndex = this.availableNotes.length - 1;
+      const startIndex = minStartIndex + Math.floor(Math.random() * (maxStartIndex - minStartIndex + 1)); // 4 to max
       
       // Create a 5-note descending pattern from this starting position
       const pattern = [];
@@ -1492,7 +1494,11 @@ export function pitches() {
       debugLog('PITCHES', `Starting down pattern at index ${startIndex}: ${this.availableNotes[startIndex]}`);
       
       for (let i = 0; i < 5; i++) {
-        const noteIndex = Math.max(0, startIndex - i); // Stelle sicher, dass der Index nie negativ wird
+        const noteIndex = startIndex - i;
+        if(!this.availableNotes[noteIndex]) {
+          debugLog('PITCHES', `Down pattern note ${i+1}: Index ${noteIndex} -> undefined`);
+          continue;
+        }
         const note = this.availableNotes[noteIndex];
         pattern.push(note);
         debugLog('PITCHES', `Down pattern note ${i+1}: Index ${noteIndex} -> ${note}`);
@@ -1768,11 +1774,11 @@ export function pitches() {
         const message = window.Alpine?.store('strings')?.feedback_wave_unlocked || 'Great! You unlocked wavy melodies! :wave:';
         window.showFeedbackMessage(message, {
             forceShow,
-      activityId: null,
-      isIntroMessage: false,
-      delaySeconds: 2,
-      component: this
-    });
+            activityId: null,
+            isIntroMessage: false,
+            delaySeconds: 2,
+            component: this
+          });
       }
       
       // Unlock jump pattern at 20 correct answers  
@@ -1784,11 +1790,11 @@ export function pitches() {
         const message = window.Alpine?.store('strings')?.feedback_jump_unlocked || 'Amazing! You unlocked random jump melodies! :frog:';
         window.showFeedbackMessage(message, {
             forceShow,
-      activityId: null,
-      isIntroMessage: false,
-      delaySeconds: 2,
-      component: this
-    });
+            activityId: null,
+            isIntroMessage: false,
+            delaySeconds: 2,
+            component: this
+          });
       }
       
       // Wenn ein neues Pattern freigeschaltet wurde und wir im Match-Sounds-Modus sind,
@@ -1974,11 +1980,11 @@ export function pitches() {
       debugLog(['PITCHES', 'WARN'], 'DEPRECATED: showFeedbackMessage is deprecated. Use window.showFeedbackMessage() instead in activity ' + activityId + ' (' + this.mode + ')');
       window.showFeedbackMessage(message, {
             forceShow,
-      activityId: activityId,
-      isIntroMessage: false,
-      delaySeconds: delaySeconds,
-      component: this
-    });
+            activityId: activityId,
+            isIntroMessage: false,
+            delaySeconds: delaySeconds,
+            component: this
+          });
     },    
   
     /**
