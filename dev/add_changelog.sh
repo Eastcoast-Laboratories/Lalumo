@@ -11,6 +11,8 @@ PLAYSTORE_DIR="fastlane/metadata/android/playstore"
 
 # Must be the same as version from build.gradle
 VERSION_NAME=7.2
+# Extract versionCode from build.gradle
+VERSION_CODE=$(grep "versionCode" "$BUILD_GRADLE" | awk '{print $2}')
 # Get current date
 CURRENT_DATE=$(date +"%Y-%m-%d")
 
@@ -87,18 +89,18 @@ fi
 
 # Fastlane-Changelogs erstellen
 # Deutsches Changelog
-DE_CHANGELOG_FILE="$BASE_DIR/de/changelogs/${VERSION_NAME}.txt"
+DE_CHANGELOG_FILE="$BASE_DIR/de/changelogs/${VERSION_CODE}.txt"
 mkdir -p "$(dirname "$DE_CHANGELOG_FILE")"
 echo "$DE_CHANGES" > "$DE_CHANGELOG_FILE"
 
 # Englisches Changelog
-EN_CHANGELOG_FILE="$BASE_DIR/en-US/changelogs/${VERSION_NAME}.txt"
+EN_CHANGELOG_FILE="$BASE_DIR/en-US/changelogs/${VERSION_CODE}.txt"
 mkdir -p "$(dirname "$EN_CHANGELOG_FILE")"
 echo "$EN_CHANGES" > "$EN_CHANGELOG_FILE"
 
 # Play Store spezifische Changelogs erstellen
 mkdir -p "$PLAYSTORE_DIR"
-PLAYSTORE_CHANGELOG_FILE="$PLAYSTORE_DIR/changelog_${VERSION_NAME}.txt"
+PLAYSTORE_CHANGELOG_FILE="$PLAYSTORE_DIR/changelog_${VERSION_CODE}.txt"
 echo "# Play Store Changelogs für Version $VERSION_NAME" > "$PLAYSTORE_CHANGELOG_FILE"
 echo "" >> "$PLAYSTORE_CHANGELOG_FILE"
 echo "$PLAYSTORE_EN_GB" >> "$PLAYSTORE_CHANGELOG_FILE"
