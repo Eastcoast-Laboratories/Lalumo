@@ -2,6 +2,9 @@
 =========
 
 
+## Version 7.2 (2026-06-03)
+- Bug fixes and general UI improvements
+
 ## Version 7.0 (2026-05-20)
 - New difficulty levels in "one or many"
 - Three additional levels (4-6) with more challenging two-tone tasks

@@ -2,6 +2,9 @@
 =========
 
 
+## Version 7.2 (2026-06-03)
+- Bugfixes und allgemeine Verbesserungen der UI
+
 ## Version 7.0 (2026-05-20)
 - Neue Schwierigkeitsgrade in „ein Ton oder viele“
 - Drei zusätzliche Level (4–6) mit anspruchsvolleren Zwei-Ton-Aufgaben

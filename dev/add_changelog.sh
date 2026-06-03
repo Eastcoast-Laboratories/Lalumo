@@ -11,8 +11,8 @@ PLAYSTORE_DIR="fastlane/metadata/android/playstore"
 
 # Must be the same as version from build.gradle
 VERSION_NAME=7.2
-# Extract versionCode from build.gradle
-VERSION_CODE=$(grep "versionCode" "$BUILD_GRADLE" | awk '{print $2}')
+# Extract versionCode from build.gradle (exclude comment lines)
+VERSION_CODE=$(grep "versionCode" "$BUILD_GRADLE" | grep -v "//" | awk '{print $2}')
 # Get current date
 CURRENT_DATE=$(date +"%Y-%m-%d")
 

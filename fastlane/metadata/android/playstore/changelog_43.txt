@@ -1,0 +1,8 @@
+# Play Store Changelogs für Version 7.2
+
+<en-GB>
+- Bug fixes and general UI improvements
+</en-GB>
+<de-DE>
+- Bugfixes und allgemeine Verbesserungen der UI
+</de-DE>
