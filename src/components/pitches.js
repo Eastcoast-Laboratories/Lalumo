@@ -1773,7 +1773,7 @@ export function pitches() {
         unlocked = true;
         const message = window.Alpine?.store('strings')?.feedback_wave_unlocked || 'Great! You unlocked wavy melodies! :wave:';
         window.showFeedbackMessage(message, {
-            forceShow,
+            forceShow: true,
             activityId: null,
             isIntroMessage: false,
             delaySeconds: 2,
@@ -1789,7 +1789,7 @@ export function pitches() {
         unlocked = true;
         const message = window.Alpine?.store('strings')?.feedback_jump_unlocked || 'Amazing! You unlocked random jump melodies! :frog:';
         window.showFeedbackMessage(message, {
-            forceShow,
+            forceShow: true,
             activityId: null,
             isIntroMessage: false,
             delaySeconds: 2,
@@ -1979,7 +1979,7 @@ export function pitches() {
     showFeedbackMessage(message, activityId = null, delaySeconds = 2) {
       debugLog(['PITCHES', 'WARN'], 'DEPRECATED: showFeedbackMessage is deprecated. Use window.showFeedbackMessage() instead in activity ' + activityId + ' (' + this.mode + ')');
       window.showFeedbackMessage(message, {
-            forceShow,
+            forceShow: true,
             activityId: activityId,
             isIntroMessage: false,
             delaySeconds: delaySeconds,
