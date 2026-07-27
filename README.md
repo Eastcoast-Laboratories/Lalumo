@@ -131,7 +131,16 @@ npm run build
 ls -la dist/
 
 # 3. Upload to the server (make sure you're in the project root directory)
-rsync -avz --no-perms --no-owner --no-group --delete dist/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.z11.de/
+#    The webroot has moved to lalumo.eu on the new VM ($SERVER_IP:$SSHPORT).
+#    PHP-FPM now runs as its own user $FPM_USERNAME, so rsync must set the
+#    owner and permissions directly. Without --chown/--chmod the files would
+#    arrive as root:root, the pool user could no longer write them, and the
+#    setgid bit on directories would be lost.
+rsync -avz --delete \
+      --chown=$FPM_USERNAME:user \
+      --chmod=D2750,F640 \
+      -e "ssh -p $SSHPORT" \
+      dist/ root@$SERVER_IP:/var/kunden/webs/user/www/lalumo.eu/www/
 
 # 4. Resume development (optional)
 npm run watch
