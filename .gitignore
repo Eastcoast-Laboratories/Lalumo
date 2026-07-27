@@ -66,6 +66,9 @@ android/.idea/deviceManager.xml
 .DS_Store
 Thumbs.db
 
+# Environment / secrets
+.env
+
 # Logs
 *.log
 npm-debug.log*

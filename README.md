@@ -131,16 +131,18 @@ npm run build
 ls -la dist/
 
 # 3. Upload to the server (make sure you're in the project root directory)
+#    Copy .env.example to .env and fill in the real values, then source it:
+#      set -a; . ./.env; set +a
 #    The webroot has moved to lalumo.eu on the new VM ($SERVER_IP:$SSHPORT).
 #    PHP-FPM now runs as its own user $FPM_USERNAME, so rsync must set the
 #    owner and permissions directly. Without --chown/--chmod the files would
 #    arrive as root:root, the pool user could no longer write them, and the
 #    setgid bit on directories would be lost.
 rsync -avz --delete \
-      --chown=$FPM_USERNAME:user \
+      --chown=$FPM_USERNAME:$FPM_GROUP \
       --chmod=D2750,F640 \
       -e "ssh -p $SSHPORT" \
-      dist/ root@$SERVER_IP:/var/kunden/webs/user/www/lalumo.eu/www/
+      dist/ root@$SERVER_IP:$SSH_PATH
 
 # 4. Resume development (optional)
 npm run watch
