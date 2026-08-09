@@ -2103,12 +2103,30 @@ export function app() {
             rawResponse = await response.text();
             debugLog('API', `Rohtext der Server-Antwort: ${rawResponse}`);
             
-            // Dann als JSON parsen
-            data = JSON.parse(rawResponse);
+            // Dann als JSON parsen — falls PHP-Warnings vor dem JSON stehen,
+            // versuche das JSON aus dem Rohtext zu extrahieren
+            try {
+                data = JSON.parse(rawResponse);
+            } catch (parseError) {
+                const jsonMatch = rawResponse.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    debugLog(['API', 'INVALID_RESPONSE'], `Server-Antwort enthielt PHP-Warnings vor dem JSON, extrahiere JSON: ${parseError.message || parseError}`);
+                    data = JSON.parse(jsonMatch[0]);
+                } else {
+                    // Kein JSON gefunden — HTML-Fehlermeldungen sanitizen
+                    const sanitized = rawResponse
+                        .replace(/<br\s*\/?>/gi, '\n')
+                        .replace(/<[^>]+>/g, '')
+                        .replace(/&nbsp;/g, ' ')
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                    debugLog(['API', 'INVALID_RESPONSE'], `Kein gültiges JSON in der Server-Antwort. Sanitized: ${sanitized.substring(0, 500)}`);
+                    throw new Error(sanitized.substring(0, 300) || 'Server returned non-JSON response');
+                }
+            }
         } catch (error) {
-            debugLog(['APP', 'ERROR'], `Fehler beim Parsen der JSON-Antwort: ${error.message || error}`);
-            debugLog(['APP', 'ERROR'], `Ungültiger Rohtext der Server-Antwort: ${rawResponse.message || rawResponse}`);
-            throw new Error('Fehler beim Registrieren: ' + error.message);
+            debugLog(['APP', 'ERROR'], `Fehler beim Registrieren: ${error.message || error}`);
+            throw error;
         }
         
         if (data.success) {
@@ -2148,7 +2166,7 @@ export function app() {
       } catch (error) {
         debugLog(['APP', 'ERROR'], `Fehler beim Registrieren: ${error.message || error}`);
         this.registrationError = true;
-        this.registrationMessage = this.$store.strings?.registration_error || 'An error occurred. Please try again later.';
+        this.registrationMessage = error.message || (this.$store.strings?.registration_error || 'An error occurred. Please try again later.');
       } finally {
         // Lade-Status beenden
         this.showToast(this.registrationMessage);

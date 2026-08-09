@@ -77,9 +77,10 @@ $dbFile = $dbDir . 'data/referrals.db';
 debugLog('Database path: ' . $dbFile);
 
 // Erstelle data-Verzeichnis falls es nicht existiert
-if (!is_dir($dbDir)) {
-    debugLog('Database folder created: ' . $dbFile);
-    mkdir($dbDir, 0755, true);
+$dataDir = $dbDir . 'data';
+if (!is_dir($dataDir)) {
+    debugLog('Creating data directory: ' . $dataDir);
+    mkdir($dataDir, 0755, true);
 }
 
 // Datenbank initialisieren
