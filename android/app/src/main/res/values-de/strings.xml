@@ -283,7 +283,7 @@
     <string name="progress_imported">Fortschritt erfolgreich importiert für %1$s!</string>
     
     <!-- Share Functionality -->
-    <string name="share_text">Probiere Lalumo und benutze meinen Empfehlungscode</string>
+    <string name="share_text">Schau mal hier, diese tolle Musik-Lern-App für Kinder - Lalumo! Benutze meinen Empfehlungscode</string>
     <string name="share_title">Lalumo Empfehlungscode</string>
     <string name="share_fallback">Der Empfehlungscode wurde in die Zwischenablage kopiert. Teile ihn mit deinen Freunden!</string>
     

@@ -262,6 +262,16 @@ export function app() {
     },
     
     /**
+     * Build the share text with referral code for clipboard or Web Share API
+     */
+    getReferralShareText() {
+      if (!this.referralCode) return '';
+      const baseText = this.$store.strings?.share_text || 'Check out this cool music learning app for kids - Lalumo! Use my referral code';
+      const link = this.referralLink || this.generateReferralLink();
+      return `${baseText}: ${this.referralCode}\n${link}`;
+    },
+
+    /**
      * Copy referral code to clipboard
      */
     async copyReferralCode() {
@@ -295,6 +305,42 @@ export function app() {
         document.body.removeChild(textArea);
       }
     },
+
+    /**
+     * Copy full share text (invitation + code + link) to clipboard
+     */
+    async copyReferralShareText() {
+      if (!this.referralCode) return;
+      
+      const shareText = this.getReferralShareText();
+      
+      try {
+        await navigator.clipboard.writeText(shareText);
+        this.showToast(this.$store.strings?.copied || 'Copied!');
+      } catch (error) {
+        debugLog(['CLIPBOARD', 'ERROR'], `Error copying to clipboard: ${error.message || error}`);
+        
+        const textArea = document.createElement('textarea');
+        textArea.value = shareText;
+        textArea.style.position = 'fixed';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+          const successful = document.execCommand('copy');
+          if (successful) {
+            this.showToast(this.$store.strings?.copied || 'Copied!');
+          } else {
+            this.showToast(this.$store.strings?.copy_failed || 'Failed to copy');
+          }
+        } catch (err) {
+          debugLog(['CLIPBOARD', 'ERROR'], `Fallback: Oops, unable to copy: ${err.message || err}`);
+        }
+        
+        document.body.removeChild(textArea);
+      }
+    },
     
     /**
      * Share referral code using Web Share API or fallback to clipboard
@@ -303,8 +349,8 @@ export function app() {
       if (!this.referralCode) return;
       
       const shareTitle = this.$store.strings?.share_title || 'Lalumo Referral Code';
-      const shareText = (this.$store.strings?.share_text || 'Try Lalumo and use my referral code') + ': ' + this.referralCode;
-      const shareUrl = 'https://lalumo.app'; // Your app's URL
+      const shareText = this.getReferralShareText();
+      const shareUrl = this.referralLink || this.generateReferralLink();
       
       // Check if the Web Share API is available
       if (navigator.share) {
@@ -318,11 +364,11 @@ export function app() {
         } catch (error) {
           debugLog(['SHARE', 'ERROR'], `Error sharing content: ${error.message || error}`);
           // Fall back to clipboard if sharing was cancelled or failed
-          this.copyReferralCode();
+          this.copyReferralShareText();
         }
       } else {
         // If Web Share API is not available, use clipboard instead
-        await this.copyReferralCode();
+        await this.copyReferralShareText();
         this.showToast(this.$store.strings?.share_fallback || 'The referral code has been copied to your clipboard. Share it with your friends!');
       }
     },
@@ -2174,34 +2220,6 @@ export function app() {
       }
     },
     
-    /**
-     * Teilt den Referral-Code über die native Share-API
-     */
-    shareReferralCode() {
-      if (!this.referralCode) {
-        debugLog(['REFERRAL', 'ERROR'], 'Kein Referral-Code vorhanden!');
-        return;
-      }
-      
-      const shareText = `${this.$store.strings?.share_text || 'Try Lalumo and use my referral code'}: ${this.referralCode}`;
-      
-      // Web Share API verwenden, wenn verfügbar
-      if (navigator.share) {
-        navigator.share({
-          title: this.$store.strings?.share_title || 'Lalumo Referral Code',
-          text: shareText,
-          url: window.location.href
-        }).then(() => {
-          debugLog('APP', 'Erfolgreich geteilt');
-        }).catch((error) => {
-          debugLog(['APP', 'ERROR'], `Fehler beim Teilen: ${error.message || error}`);
-        });
-      } else {
-        // Fallback für Browser ohne Share API
-        this.copyReferralCode();
-        alert(this.$store.strings?.share_fallback || 'The referral code has been copied to your clipboard. Share it with your friends!');
-      }
-    },
     
     /**
      * Übersetzt Referral-Nachrichtencodes in lokalisierte Strings basierend auf der aktuellen Sprache
