@@ -1,5 +1,12 @@
 apply plugin: 'com.android.application'
 
+// Load keystore properties from file (works in Android Studio and CLI)
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('keystore.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace "com.lalumo.app"
     compileSdk rootProject.ext.compileSdkVersion
@@ -34,6 +41,13 @@ android {
             keyAlias 'fdroidkey'
             keyPassword 'fdroidpass'
         }
+        uploadRelease {
+            // Google Play upload key (Google re-signs with the app signing key)
+            storeFile file(keystoreProperties['uploadStoreFile'] ?: '/home/ruben/android-keystore/upload-keystore.jks')
+            storePassword keystoreProperties['uploadStorePassword'] ?: System.getenv('UPLOAD_KEYSTORE_PASSWORD')
+            keyAlias keystoreProperties['uploadKeyAlias'] ?: 'key0'
+            keyPassword keystoreProperties['uploadKeyPassword'] ?: System.getenv('UPLOAD_KEY_PASSWORD')
+        }
     }
     
     buildTypes {
@@ -53,6 +67,9 @@ android {
             
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "boolean", "IS_DEBUG_BUILD", "false"
+            
+            // Sign with F-Droid key for F-Droid builds, otherwise with Google Play upload key
+            signingConfig project.hasProperty('fdroid') ? signingConfigs.fdroidRelease : signingConfigs.uploadRelease
         }
     }
 }
