@@ -958,7 +958,7 @@ export function generateStableChord(progressLevel = 0) {
         midiToNoteName(root + 31)   // Perfect 5th (G4)
       ];
       
-    case 2: // Level 3: Extended harmonies (9th, 11th chords)
+    case 2: // Level 3: Extended harmonies (9th, 11th chords) - corrected interval comments
       return [
         baseNote,                   // Base note (C2)
         midiToNoteName(root + 12),  // Root (C3)
@@ -966,7 +966,7 @@ export function generateStableChord(progressLevel = 0) {
         midiToNoteName(root + 19),  // Perfect 5th (G3)
         midiToNoteName(root + 23),  // Major 7th (B3)
         midiToNoteName(root + 26),  // 9th (D4)
-        midiToNoteName(root + 33)   // 11th (F4)
+        midiToNoteName(root + 33)   // 13th (A5)
       ];
       
     case 3: // Level 4: Jazz voicings with controlled dissonance
@@ -988,7 +988,7 @@ export function generateStableChord(progressLevel = 0) {
         midiToNoteName(root + 21),  // Flat 7th (Bb3) - creates impressionistic color
         midiToNoteName(root + 26),  // 9th (D4) 
         midiToNoteName(root + 30),  // #5 (G#4) - adds color
-        midiToNoteName(root + 33)   // 11th (F4) - impressionistic sound
+        midiToNoteName(root + 33)   // 13th (A5) - impressionistic sound
       ];
       
     case 5: // Level 6: Complex extended harmonies with subtle tensions
@@ -1000,8 +1000,8 @@ export function generateStableChord(progressLevel = 0) {
         midiToNoteName(root + 19),  // Perfect 5th (G3)
         midiToNoteName(root + 23),  // Major 7th (B3) 
         midiToNoteName(root + 26),  // 9th (D4)
-        midiToNoteName(root + 33),  // 11th (F4)
-        midiToNoteName(root + 38)   // 13th (A4) - creates a complete extended harmony
+        midiToNoteName(root + 33),  // 13th (A5)
+        midiToNoteName(root + 38)   // Perfect 5th+2 octaves (D6) - creates a complete extended harmony
       ];
   }
 }
