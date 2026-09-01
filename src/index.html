@@ -1685,7 +1685,6 @@
             <button id="replay-button-2_6"
                     class="replay-button_2_6" 
                     @click="window.playCurrent2_6Challenge(); blurElement($event)"
-                    @touchstart.prevent="$el.click();" @mousedown.prevent="$el.click();"
                     :title="$store.strings?.replay_sound || 'Replay Sound'"
                     style="display: none;">
               🔄
