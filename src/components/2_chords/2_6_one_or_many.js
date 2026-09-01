@@ -335,6 +335,9 @@ function generateChordChallenge(difficulty) {
  */
 function generateTwoToneChallenge(toneType, difficulty) {
   const baseNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'];
+  // Chromatic scale spanning two octaves to support all intervals from any base note
+  const chromaticScale = ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4',
+                          'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5'];
   let twoNotes;
   let attempts = 0;
   const maxAttempts = 10;
@@ -342,25 +345,22 @@ function generateTwoToneChallenge(toneType, difficulty) {
   do {
     attempts++;
     const baseNote = baseNotes[Math.floor(Math.random() * baseNotes.length)];
-    const baseNoteIndex = baseNotes.indexOf(baseNote);
+    const chromaticIndex = chromaticScale.indexOf(baseNote);
     
     if (toneType === 'dissonant') {
       // Dissonant intervals: minor 2nd, major 7th, tritone
       const dissonantIntervals = [1, 11, 6]; // semitones
       const interval = dissonantIntervals[Math.floor(Math.random() * dissonantIntervals.length)];
-      const secondNoteIndex = (baseNoteIndex + Math.floor(interval / 2)) % 7;
-      const secondNote = baseNotes[secondNoteIndex];
+      const secondNote = chromaticScale[chromaticIndex + interval];
       twoNotes = [baseNote, secondNote];
     } else if (toneType === 'consonant') {
       // Consonant intervals: perfect 4th, perfect 5th, major 3rd, minor 3rd
       const consonantIntervals = [5, 7, 4, 3]; // semitones
       const interval = consonantIntervals[Math.floor(Math.random() * consonantIntervals.length)];
-      const secondNoteIndex = (baseNoteIndex + Math.floor(interval / 2)) % 7;
-      const secondNote = baseNotes[secondNoteIndex];
+      const secondNote = chromaticScale[chromaticIndex + interval];
       twoNotes = [baseNote, secondNote];
     } else if (toneType === 'octave') {
       // Octave distance: same note in different octaves
-      // Extract note letter and accidental, then create octave version
       const noteMatch = baseNote.match(/^([A-G][b#]?)(\d)$/);
       debugLog('CHORDS_2_6_OCTAVE', `baseNote: ${baseNote}, regex match:`, noteMatch);
       if (noteMatch) {
