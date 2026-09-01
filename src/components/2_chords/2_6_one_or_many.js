@@ -125,15 +125,16 @@ function generate2_6Challenge() {
   const currentProgress = progress['2_6'] || 0;
   
   // Calculate difficulty level based on progress
-  // Progress 0-9: difficulty 1 (Levels 1-2: Chords)
-  // Progress 10-19: difficulty 2 (Levels 1-2: Chords)
-  // Progress 20-29: difficulty 3 (Levels 3-5: Dissonant tones)
-  // Progress 30-39: difficulty 4 (Levels 3-5: Dissonant tones)
-  // Progress 40-49: difficulty 5 (Levels 6-8: Consonant tones)
-  // Progress 50-59: difficulty 6 (Levels 6-8: Consonant tones)
-  // Progress 60+: difficulty 7 (Level 9+: Octave distance)
+  // Progress 0-9:   difficulty 1 (Basic triads)
+  // Progress 10-19: difficulty 2 (Extended chords: 4-note)
+  // Progress 20-29: difficulty 3 (Open dissonant: minor 2nd, tritone)
+  // Progress 30-39: difficulty 4 (Subtle dissonant: major 2nd, minor 7th, major 7th)
+  // Progress 40-49: difficulty 5 (Consonant: perfect 4th)
+  // Progress 50-59: difficulty 6 (Consonant close: major/minor 3rd)
+  // Progress 60-69: difficulty 7 (Consonant wide: perfect 5th)
+  // Progress 70+:   difficulty 8 (Octave distance)
   let difficulty = Math.floor(currentProgress / 10) + 1;
-  difficulty = Math.min(difficulty, 7); // Cap at level 7 (for octave distance)
+  difficulty = Math.min(difficulty, 8); // Cap at level 8 (for octave distance)
   
   debugLog('CHORDS_2_6', `Progress: ${currentProgress}, Difficulty: ${difficulty}`);
   
@@ -194,10 +195,14 @@ function generate2_6Challenge() {
 /**
  * Generate a single challenge of specified type
  * Difficulty levels:
- * 1-2: Single note vs. chords (3+ notes)
- * 3-5: Single note vs. two dissonant tones (seconds, sevenths, tritones)
- * 6-8: Single note vs. two consonant tones (fourths, fifths, thirds)
- * 9+: Single note vs. two tones in octave distance
+ * 1: Basic triads (3 notes)
+ * 2: Extended chords (4-note chords)
+ * 3: Open dissonant two-tones (minor 2nd, tritone)
+ * 4: Subtle dissonant two-tones (major 2nd, minor 7th, major 7th)
+ * 5: Consonant two-tones: perfect 4th
+ * 6: Close consonant two-tones: major/minor 3rd
+ * 7: Wide consonant two-tones: perfect 5th
+ * 8: Octave distance
  */
 function generateSingle2_6Challenge(isOneNote, difficulty) {
   
@@ -230,14 +235,14 @@ function generateSingle2_6Challenge(isOneNote, difficulty) {
   } else if (difficulty <= 2) {
     // Levels 1-2: Chords (3+ notes)
     return generateChordChallenge(difficulty);
-  } else if (difficulty <= 5) {
-    // Levels 3-5: Two dissonant tones (seconds, sevenths, tritones)
+  } else if (difficulty <= 4) {
+    // Levels 3-4: Dissonant two-tones
     return generateTwoToneChallenge('dissonant', difficulty);
-  } else if (difficulty <= 8) {
-    // Levels 6-8: Two consonant tones (fourths, fifths, thirds)
+  } else if (difficulty <= 7) {
+    // Levels 5-7: Consonant two-tones
     return generateTwoToneChallenge('consonant', difficulty);
   } else {
-    // Level 9+: Two tones in octave distance
+    // Level 8: Octave distance
     return generateTwoToneChallenge('octave', difficulty);
   }
 }
@@ -342,21 +347,36 @@ function generateTwoToneChallenge(toneType, difficulty) {
   let attempts = 0;
   const maxAttempts = 10;
   
+  // Select intervals based on difficulty level
+  let intervals;
+  if (toneType === 'dissonant') {
+    if (difficulty === 3) {
+      // Level 3: Open dissonant (minor 2nd, tritone)
+      intervals = [1, 6];
+    } else {
+      // Level 4: Subtle dissonant (major 2nd, minor 7th, major 7th)
+      intervals = [2, 10, 11];
+    }
+  } else if (toneType === 'consonant') {
+    if (difficulty === 5) {
+      // Level 5: Perfect 4th
+      intervals = [5];
+    } else if (difficulty === 6) {
+      // Level 6: Close consonant (major 3rd, minor 3rd)
+      intervals = [4, 3];
+    } else {
+      // Level 7: Perfect 5th
+      intervals = [7];
+    }
+  }
+  
   do {
     attempts++;
     const baseNote = baseNotes[Math.floor(Math.random() * baseNotes.length)];
     const chromaticIndex = chromaticScale.indexOf(baseNote);
     
-    if (toneType === 'dissonant') {
-      // Dissonant intervals: minor 2nd, major 7th, tritone
-      const dissonantIntervals = [1, 11, 6]; // semitones
-      const interval = dissonantIntervals[Math.floor(Math.random() * dissonantIntervals.length)];
-      const secondNote = chromaticScale[chromaticIndex + interval];
-      twoNotes = [baseNote, secondNote];
-    } else if (toneType === 'consonant') {
-      // Consonant intervals: perfect 4th, perfect 5th, major 3rd, minor 3rd
-      const consonantIntervals = [5, 7, 4, 3]; // semitones
-      const interval = consonantIntervals[Math.floor(Math.random() * consonantIntervals.length)];
+    if (toneType === 'dissonant' || toneType === 'consonant') {
+      const interval = intervals[Math.floor(Math.random() * intervals.length)];
       const secondNote = chromaticScale[chromaticIndex + interval];
       twoNotes = [baseNote, secondNote];
     } else if (toneType === 'octave') {
