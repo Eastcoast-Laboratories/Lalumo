@@ -165,11 +165,11 @@
     <string name="replay_sound">Sound wiederholen</string>
     <string name="one_or_many_level1">Kannst du hören, ob es ein Ton oder viele Töne sind?</string>
     <string name="one_or_many_level2">Grundakkorde (3 Töne) vs. einzelne Töne! 🎵</string>
-    <string name="one_or_many_level3">Offene dissonante Töne (kleine Sekunde, Tritonus) vs. einzelne Töne! �</string>
+    <string name="one_or_many_level3">Offene dissonante Töne (kleine Sekunde, Tritonus) vs. einzelne Töne! 🎶</string>
     <string name="one_or_many_level4">Subtile dissonante Töne (große Sekunde, Septimen) vs. einzelne Töne! 🎶</string>
-    <string name="one_or_many_level5">Reine Quarten vs. einzelne Töne! �</string>
+    <string name="one_or_many_level5">Reine Quarten vs. einzelne Töne! 🎼</string>
     <string name="one_or_many_level6">Enge konsonante Töne (Terzen) vs. einzelne Töne! 🎼</string>
-    <string name="one_or_many_level7">Reine Quinten vs. einzelne Töne! �</string>
+    <string name="one_or_many_level7">Reine Quinten vs. einzelne Töne! 🎵</string>
     <string name="one_or_many_level8">Zwei Töne im Oktavabstand vs. einzelne Töne! 🎵</string>
     <string name="one_or_many_master">Du bist ein Ein-oder-Viele Meister! 🎉</string>
     <string name="play_incomplete_chord">Unvollständigen Akkord spielen</string>
