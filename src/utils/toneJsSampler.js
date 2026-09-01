@@ -488,4 +488,50 @@ export function playToneNoteWithBufferCheck(note, duration = 0.8, velocity = 0.8
   }
 }
 
-// No code here - old implementations removed
+/**
+ * Release all currently sounding notes from all Tone.js instruments
+ * Stops sustained notes immediately by calling releaseAll on each instrument
+ */
+export function releaseAllToneNotes() {
+  debugLog("TONE_JS", "Releasing all active notes from all instruments");
+
+  if (pianoSampler) {
+    try {
+      pianoSampler.releaseAll();
+    } catch (err) {
+      debugLog("TONE_JS", "Error releasing piano notes:", err);
+    }
+  }
+
+  if (violinSynth) {
+    try {
+      violinSynth.releaseAll();
+    } catch (err) {
+      debugLog("TONE_JS", "Error releasing violin notes:", err);
+    }
+  }
+
+  if (fluteSynth) {
+    try {
+      fluteSynth.releaseAll();
+    } catch (err) {
+      debugLog("TONE_JS", "Error releasing flute notes:", err);
+    }
+  }
+
+  if (brassSynth) {
+    try {
+      brassSynth.releaseAll();
+    } catch (err) {
+      debugLog("TONE_JS", "Error releasing brass notes:", err);
+    }
+  }
+
+  if (doublebassSynth) {
+    try {
+      doublebassSynth.releaseAll();
+    } catch (err) {
+      debugLog("TONE_JS", "Error releasing doublebass notes:", err);
+    }
+  }
+}

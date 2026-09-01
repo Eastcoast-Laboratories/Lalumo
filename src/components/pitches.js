@@ -6,7 +6,7 @@
 // Importiere die zentrale Audio-Engine für alle Audiofunktionen
 import audioEngine from './audio-engine.js';
 // Import direct Tone.js piano sampler (one global instance for all piano sound)
-import { playToneNote, isToneJsReady } from '../utils/toneJsSampler';
+import { playToneNote, isToneJsReady, releaseAllToneNotes } from '../utils/toneJsSampler';
 
 // Importiere Debug-Utilities
 import { debugLog } from '../utils/debug.js';
@@ -2319,6 +2319,15 @@ export function pitches() {
       } catch (e) {
         debugLog(['PITCHES', 'ERROR'], 'AUDIO_ERROR: Failed to stop audio engine:', e);
       }
+      
+      // Also release all currently sounding Tone.js notes (piano sampler and synths)
+      // audioEngine.stopAll() only covers its internal synth, not the direct Tone.js instruments
+      try {
+        releaseAllToneNotes();
+        debugLog('PITCHES', 'AUDIO: Released all Tone.js instrument notes via releaseAllToneNotes()');
+      } catch (e) {
+        debugLog(['PITCHES', 'ERROR'], 'AUDIO_ERROR: Failed to release Tone.js notes:', e);
+      }
     },
     
     /**
@@ -3737,6 +3746,10 @@ export function pitches() {
         return;
       }
       
+      // Mark as playing to prevent user input during sequence playback
+      this.isPlaying = true;
+      debugLog('MEMORY_GAME', 'Set isPlaying=true - user input blocked during sequence playback');
+      
       // BUG FIX: Check if Tone.js is ready before attempting playback
       if (!isToneJsReady()) {
         debugLog("PIANO_DIRECT", "BUG_FIX: Tone.js not ready - attempting to initialize");
@@ -3807,7 +3820,9 @@ export function pitches() {
             
             const cleanupTimeoutId = setTimeout(() => {
               this.currentHighlightedNote = null;
-              debugLog("PIANO_DIRECT", "Memory sequence complete, highlighting cleared");
+              this.isPlaying = false;
+              debugLog("PIANO_DIRECT", "Memory sequence complete, highlighting cleared, isPlaying set to false");
+              debugLog('MEMORY_GAME', 'Set isPlaying=false - user input enabled after sequence playback');
               
               // Remove from tracking
               const idx = this.melodyTimeouts.indexOf(cleanupTimeoutId);
@@ -3844,6 +3859,12 @@ export function pitches() {
      * @used_by index (piano-keyboard)
      */
     addToSequence(note) {
+      // Ignore user input while the memory sequence is still playing
+      if (this.isPlaying) {
+        debugLog('MEMORY_GAME', `addToSequence: Ignoring key press for ${note} - sequence is still playing (isPlaying=true)`);
+        return;
+      }
+      
       // Stop any currently playing melody first
       this.stopCurrentSound();
       
@@ -3926,6 +3947,10 @@ export function pitches() {
     });
         
         debugLog("PIANO_DIRECT", "Error detected, enabling highlighting for next playback");
+        
+        // Lock keyboard while waiting for replay
+        this.isPlaying = true;
+        debugLog('MEMORY_GAME', 'Set isPlaying=true - keyboard locked during error feedback wait');
         
         // Reset after a delay
         setTimeout(() => {
@@ -4059,6 +4084,10 @@ export function pitches() {
           }, 500);
         }
       }
+      
+      // Lock keyboard while waiting for replay
+      this.isPlaying = true;
+      debugLog('MEMORY_GAME', `Set isPlaying=true - keyboard locked during ${isCorrect ? 'correct' : 'incorrect'} feedback wait`);
       
       // Reset after feedback
       setTimeout(() => {
