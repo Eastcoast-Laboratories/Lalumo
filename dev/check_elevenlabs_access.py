@@ -56,7 +56,11 @@ for label, url in (
                     or detail.get('status')
                     or 'unknown'
                 )
-        except Exception:
+        except (
+            AttributeError,
+            UnicodeDecodeError,
+            json.JSONDecodeError,
+        ):
             detail = 'unavailable'
         print(
             f'{label}_access=failed status={error.code} '

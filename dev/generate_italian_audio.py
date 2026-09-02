@@ -64,12 +64,16 @@ for filename, string_key in recordings.items():
                     or detail.get('status')
                     or 'unknown'
                 )
-        except Exception:
+        except (
+            AttributeError,
+            UnicodeDecodeError,
+            json.JSONDecodeError,
+        ):
             detail = 'unavailable'
         raise SystemExit(
             f'generation_failed={filename} status={error.code} '
             f'detail={detail}'
-        )
+        ) from error
     if not audio.startswith(b'ID3') and not audio.startswith(b'\xff'):
         raise SystemExit(
             f'generation_failed={filename} reason=unexpected_response'
