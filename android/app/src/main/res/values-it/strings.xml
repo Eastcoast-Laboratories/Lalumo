@@ -1,0 +1,468 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <!-- App Information -->
+    <string name="app_name">Lalumo</string>
+    <string name="title_activity_main">Lalumo</string>
+    <string name="package_name">com.lalumo.app</string>
+    <string name="custom_url_scheme">com.lalumo.app</string>
+    
+    <!-- Menu Items -->
+    <string name="menu_pitches">Altezze &amp; Melodie</string>
+    <string name="menu_tonecolors">Timbri</string>
+    <string name="menu_rhythm">Ritmo</string>
+    <string name="menu_chords">Accordi</string>
+    <string name="menu_freeplay">Gioco Libero</string>
+    <string name="menu_settings">Impostazioni</string>
+    <string name="menu_impressum">Impronta</string>
+    <string name="menu_datenschutz">Privacy</string>
+    <string name="menu_credits">Crediti</string>
+    <string name="menu_share">Condividi</string>
+    
+    <!-- Navigation -->
+    <string name="nav_up">Su</string>
+    <string name="nav_down">Giù</string>
+    <string name="back_to_main_a11y">Torna al menu principale</string>
+    <string name="select_chord_activity">Scegli un\'attività dal menu per iniziare il tuo viaggio negli accordi!</string>
+    
+    <!-- Mute Warning -->
+    <string name="mute_warning_title">🔇 Il dispositivo è silenziato</string>
+    <string name="mute_warning_message">Il tuo dispositivo sembra essere in modalità silenziosa. Non sentirai alcun suono. Riattiva l\'audio del dispositivo per goderti Lalumo.</string>
+    
+    <!-- Portrait Mode Notice -->
+    <string name="portrait_notice_title">📱 Ruota il tuo dispositivo</string>
+    <string name="portrait_notice_message">Lalumo funziona solo in modalità verticale.</string>
+    
+    <!-- Buttons -->
+    <string name="button_generate_name">Genera un nome casuale</string>
+    <string name="button_save_name">Salva nome</string>
+    <string name="button_clear">Cancella &amp; riprova</string>
+    <string name="button_play_melody">Riproduci melodia</string>
+    <string name="button_play_melody_a11y">Riproduci melodia</string>
+    <string name="button_export_progress">Esporta progressi</string>
+    <string name="button_import_progress">Importa progressi</string>
+    <string name="button_copy_clipboard">Copia negli appunti</string>
+    <string name="copy_progress_code">Copia questo codice e salvalo:</string>
+    <string name="button_copy_progress">Copia codice</string>
+    <string name="progress_code_copied">Codice copiato negli appunti!</string>
+    <string name="button_reset_progress">Resetta i progressi</string>
+    <string name="button_confirm_reset">Sì, resetta tutto</string>
+    <string name="button_cancel">Annulla</string>
+    
+    <!-- Language Selection -->
+    <string name="language_english">English</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_italian">Italiano</string>
+    
+       
+    <!-- Help Guide -->
+    <string name="help_header">Aiuto &amp; Guida alle attività</string>
+    
+    <!-- Pitch Activities Help -->
+    <string name="help_high_or_low">Inizi in modalità libera, dove puoi cliccare sulla talpa per sentire un suono grave, o sul topo per un suono acuto. Clicca sull\'uccello per iniziare la sfida, in cui senti un suono e poi clicchi sull\'animale giusto.</string>
+    <string name="help_match_sounds">Inizi in modalità libera, dove puoi cliccare sulle immagini (razza per su, scivolo per giù, onde e rana) per sentire diversi schemi melodici. Clicca sull\'uccello per iniziare la sfida, in cui senti una melodia e devi cliccare sull\'immagine corrispondente.</string>
+    <string name="help_draw_melody">Inizi in modalità libera, dove puoi disegnare liberamente nella cassa di sabbia e ascoltare la melodia che il tuo disegno crea. Clicca sul mago per iniziare la sfida, poi disegna la forma della melodia sulla tela. La linea deve salire quando la melodia diventa più acuta e scendere quando diventa più grave. Clicca sulla scatola con le note in alto per riascoltare la melodia. Clicca sull\'unicorno per una nuova melodia.</string>
+    <string name="help_does_it_sound_right">Inizi in modalità di ascolto, dove puoi cliccare sui membri della band per sentire diverse canzoni suonate con strumenti diversi. Clicca sul pulsante Play in basso per iniziare la sfida, in cui senti una canzone e poi clicchi sull\'animale felice a sinistra se suonava correttamente, o sull\'animale triste a destra se aveva note sbagliate.</string>
+    <string name="help_memory_game">Prima puoi suonare liberamente i tasti del pianoforte. Clicca sull\'uccello per iniziare la sfida di memoria, in cui devi ripetere sequenze di note sempre più lunghe sul pianoforte.</string>
+    
+    <!-- Chord Activities Help -->
+    <string name="help_chords_chapter">Capitolo degli Accordi</string>
+    <string name="help_one_or_many">Modalità libera: Clicca sul cervo a sinistra per sentire una nota, o sui pipistrelli a destra per molte note. Clicca sulla civetta per iniziare la sfida, in cui senti dei suoni e decidi se senti una nota o molte note contemporaneamente.</string>
+    <string name="help_stable_unstable">Modalità libera: Prova il lato \"amichevole\" a sinistra con la volpe e il lato destro con la ragnatela per \"accordi fantasma\". Nota come suonano in modo diverso. Clicca sull\'uccello per iniziare la sfida, in cui senti degli accordi e decidi se suonano amichevoli (piacevoli, stabili) o fantasmatici (tesi, instabili).</string>
+    <string name="help_chord_characters">Modalità libera: Clicca sugli animali per sentire gli accordi: cane felice per maggiore, gatto triste per minore, scoiattolo spaventato per diminuito, polpo mistico per aumentato. Clicca sulla civetta per iniziare la sfida, in cui senti degli accordi e li abbin ai loro personaggi-carattere.</string>
+    <string name="help_magical_forest">Modalità libera: Prova gli oggetti sparsi nella foresta per sentire diversi accordi. Clicca sul fiore al centro per iniziare la sfida, in cui senti un accordo e poi lo abbin all\'elemento giusto nella foresta magica.</string>
+ 
+    <!-- Melodies & Pitches -->
+    <string name="play_melody" comment="Fallback">Riproduci melodia</string>
+    <string name="high_or_low">Acuto o Grave</string>
+    <string name="match_sounds">Su o Giù</string>
+    <string name="does_it_sound_right">Suona giusto?</string>
+    <string name="memory_game">Gioco di Memoria</string>
+    <string name="draw_melody">Disegna una melodia</string>
+    
+    <!-- Success & Error Messages -->
+    <string name="success_message">Molto bene! È giusto!</string>
+    <string name="error_message">Non era giusto. Riprova!</string>
+    <string name="next_level_message">Sei salito al livello successivo!</string>
+    <string name="completion_message">Congratulazioni! Hai completato tutti i livelli!</string>
+    <string name="try_again_message">Proviamo ancora una volta!</string>
+    <string name="melody_level_up">Super! Ora prova melodie più lunghe con %d note!</string>
+    <string name="melody_mastered">Fantastico! Hai padroneggiato tutte le melodie!</string>
+    <string name="melody_almost_there">Quasi! Riprova.</string>
+    <string name="melody_follow_closely">Cerca di seguire la melodia più precisamente.</string>
+    <string name="clear_drawing">Cancella disegno</string>
+    <string name="clear_a11y">Cancella</string>
+    <string name="clear_drawing_a11y">Cancella disegno</string>
+    <string name="challenge_mode_tooltip">Passa tra modalità sfida melodia e modalità disegno libero</string>
+    <string name="melodies_activity">Melodie</string>
+    <string name="replay_melody">Clicca per riprodurre la melodia</string>
+    <string name="challenge_mode_a11y">Modalità sfida</string>
+    <string name="new_melody_a11y">Nuova melodia</string>
+    <string name="generate_melody">Genera nuova melodia</string>
+    <string name="help_audio_on">Annunci di aiuto attivi</string>
+    <string name="help_audio_off">Annunci di aiuto disattivati</string>
+    
+    <!-- Chords - Main Menu -->
+    <string name="chord_color_matching">Accordi nella Foresta Magica</string>
+    <string name="chords_stable_unstable">Fantasmatico o Amichevole</string>
+    <string name="chord_building">Costruire Accordi</string>
+    <string name="missing_note">Indovina la nota mancante</string>
+    <string name="chord_characters">Personaggi degli Accordi</string>
+    <string name="one_or_many">Una Nota o Tante</string>
+    
+    <!-- Chords - Chord Characters Activity -->
+    <string name="chord_character_major_happy">Felice</string>
+    <string name="chord_character_minor_sad">Triste</string>
+    <string name="chord_character_augmented_surprised">Sorpreso</string>
+    <string name="chord_character_diminished_mysterious">Misterioso</string>
+    
+    <!-- Chords - Magical Forest Activity -->
+    <string name="chord_color_matching_title">Abbin i colori agli accordi</string>
+    <string name="chord_color_matching_intro">Ascolta l\'accordo e scegli il colore che si adatta meglio.</string>
+    
+    <!-- Chord Element Tooltips -->
+    <string name="chord_element_fruit_major">Maggiore</string>
+    <string name="chord_element_mushroom_minor">Minore</string>
+    <string name="chord_element_crystal_diminished">Diminuito</string>
+    <string name="chord_element_flower_augmented">Aumentato</string>
+    <string name="chord_element_flame_dominant7">Accordo di settima dominante</string>
+    <string name="chord_element_feather_major7">Accordo di settima maggiore</string>
+    <string name="chord_element_acorn_sus2">Sus2</string>
+    <string name="chord_element_lantern_sus4">Sus4</string>
+    <string name="play_chord">Suona accordo</string>
+
+    <!-- Chords - Spooky or Friendly Activity -->
+    <string name="chords_stable_unstable_intro">Alcuni accordi suonano armonici e tranquilli, mentre altri suonano disarmonici e inquieti.</string>
+    <string name="stable">Amichevole</string>
+    <string name="unstable">Fantasmatico</string>
+    
+    <!-- Chords - Chord Building Activity -->
+    <string name="chord_building_title">Costruisci i tuoi accordi</string>
+    <string name="chord_building_intro">Impila i blocchi per costruire diversi accordi. Aggiungi ogni nota per sentire come cambia l\'accordo!</string>
+    
+    <!-- Chords - Missing Note Activity -->
+    <string name="missing_note_title">Trova la nota mancante</string>
+    <string name="missing_note_intro">Ascolta l\'accordo incompleto e scegli quale nota manca.</string>
+    <string name="missing_note_help">Ascolta l\'accordo incompleto e scegli quale nota manca.</string>
+    <string name="missing_note_level1">Riesci a riconoscere quale nota manca nell\'accordo? Solo accordi maggiori e minori!</string>
+    <string name="missing_note_level2">Ben fatto! Ora proviamo gli accordi diminuiti! 🎵</string>
+    <string name="missing_note_level3">Livello 3: Accordi aumentati sbloccati! ✨</string>
+    <string name="missing_note_level4">Livello 4: Accordi di settima dominante! 🎼</string>
+    <string name="missing_note_level5">Livello 5: Accordi di settima maggiore! 🎶</string>
+    <string name="missing_note_level6">Livello 6: Accordi Sus2! 🎸</string>
+    <string name="missing_note_level7">Livello 7: Accordi Sus4! 🎹</string>
+    <string name="missing_note_master">Sei un maestro delle note mancanti! 🎉</string>
+    <string name="minor_third">Terza minore</string>
+    <string name="major_third">Terza maggiore</string>
+    <string name="perfect_fifth">Quinta giusta</string>
+    <string name="diminished_fifth">Quinta diminuita</string>
+    <string name="augmented_fifth">Quinta aumentata</string>
+    <string name="tooltip_long_press">Tieni premuto per il tooltip</string>
+    <string name="up_pattern">Schema ascendente</string>
+    <string name="down_pattern">Schema discendente</string>
+    <string name="sounds_good">Suona bene</string>
+    <string name="sounds_wrong">Suona sbagliato</string>
+    <string name="one_note">Una nota</string>
+    <string name="many_notes">Tante note</string>
+    <string name="replay_sound">Ripeti suono</string>
+    <string name="one_or_many_level1">Riesci a sentire se è una nota o tante note?</string>
+    <string name="one_or_many_level2">Accordi base (3 note) contro singole note! 🎵</string>
+    <string name="one_or_many_level3">Suoni dissonanti aperti (seconda minore, tritono) contro singole note! 🎶</string>
+    <string name="one_or_many_level4">Suoni dissonanti sottili (seconda maggiore, settime) contro singole note! 🎶</string>
+    <string name="one_or_many_level5">Quarte giuste contro singole note! 🎼</string>
+    <string name="one_or_many_level6">Suoni consonanti ravvicinati (terze) contro singole note! 🎼</string>
+    <string name="one_or_many_level7">Quinte giuste contro singole note! 🎵</string>
+    <string name="one_or_many_level8">Due note a distanza di ottava contro singole note! 🎵</string>
+    <string name="one_or_many_master">Sei un maestro di Una-o-Tante! 🎉</string>
+    <string name="play_incomplete_chord">Suona accordo incompleto</string>
+    <string name="root">Fondamentale</string>
+    <string name="third">Terza</string>
+    <string name="fifth">Quinta</string>
+    <string name="seventh">Settima</string>
+    <string name="major_second">Seconda maggiore</string>
+    <string name="perfect_fourth">Quarta giusta</string>
+    <string name="minor_seventh">Settima minore</string>
+    <string name="major_seventh">Settima maggiore</string>
+    <string name="play_complete_chord">Suona accordo completo</string>
+    
+    <!-- Chords - 2_6 Ein Ton oder Viele Activity -->
+    <string name="one_or_many_title">Una Nota o Tante</string>
+    <string name="one_or_many_intro">Ascolta bene e decidi se senti una nota o un accordo!</string>
+    <string name="play_sequence">Riproduci sequenza</string>
+    
+    <!-- Progressive Difficulty Messages -->
+    <string name="correct_answers_count">Risposte corrette: {0}</string>
+    <string name="unlock_wave_message">Ottieni 10 risposte corrette per le melodie a onde! 🌊</string>
+    <string name="unlock_jump_message">Ottieni 20 risposte corrette per le melodie casuali! 🐸</string>
+    <string name="all_patterns_unlocked">Tutti gli schemi sbloccati! 🎉</string>
+    
+    <!-- Chord Animals Unlocks -->
+    <string name="unlock_squirrel_message">Raggiungi 10 risposte corrette per sbloccare lo scoiattolo! 🐿️</string>
+    <string name="unlock_octopus_message">Raggiungi 20 risposte corrette per sbloccare il polpo! 🐙</string>
+    <string name="all_animals_unlocked">Tutti gli animali sbloccati! 🎉</string>
+    <string name="transpose_challenge">Ascolta bene! Gli accordi cambiano ora la loro altezza! 🎵</string>
+    <string name="squirrel_returns">Lo scoiattolo è tornato! Il polpo sta ancora dormendo. 🐿️</string>
+    <string name="all_friends_return">Tutti gli amici sono tornati! 🐶🐱🐿️🐙</string>
+    
+    <!-- Stable/Unstable Chord Progression Messages -->
+    <string name="stable_unstable_level1">Riesci a sentire la differenza tra accordi fantasma e accordi amichevoli?</string>
+    <string name="stable_unstable_level2">Ben fatto! Ora senti accordi di settima e dominanti alterate! 🎵</string>
+    <string name="stable_unstable_level3">Livello 3: Armonie estese contro accordi politonali! 🎼</string>
+    <string name="stable_unstable_level4">Livello 4: Voicing jazz contro cluster atonali! 🎹</string>
+    <string name="stable_unstable_level5">Livello 5: Armonie impressioniste contro variazioni microtonali! 🎶</string>
+    <string name="stable_unstable_level6">Livello maestro: Armonie estese complesse e dissonanze raffinate! 🏆</string>
+    <string name="chords_2_5_master">Sei un maestro degli accordi! 🎉</string>
+    
+    <!-- Help Messages for Unlocks -->
+    <string name="feedback_wave_unlocked">Bene! Hai sbloccato le melodie a onde! 🌊</string>
+    <string name="feedback_jump_unlocked">Fantastico! Hai sbloccato le melodie con salti casuali! 🐸</string>
+    <string name="feedback_all_unlocked">Ottimo! Tutti gli schemi melodici sono ora disponibili! 🎉</string>
+    
+    <!-- Referrals Page Strings -->
+    <string name="unlock_chords">Sblocca altre attività</string>
+    <string name="unlock_special_activities">Sblocca altre attività</string>
+    <string name="repeat_announcement">Ripeti annuncio</string>
+    <string name="referral_instruction">Condividi Lalumo con i tuoi amici per sbloccare più attività: disegnare melodie, personaggi degli accordi e accordi della Foresta Magica!</string>
+    <string name="referrals_premium">raccomandazioni riuscite: Sblocca più attività</string>
+    <string name="referrals_future">raccomandazioni riuscite: Ricevi aggiornamenti futuri gratuitamente</string>
+    <string name="register_username">Registra il tuo nome utente</string>
+    <string name="activities_unlocked">Tutte le attività sbloccate!</string>
+    <string name="username_lock_warning">Dopo la registrazione non potrai più cambiare il tuo nome utente.</string>
+    <string name="referred_by_username">Sei stato raccomandato da:</string>
+    <string name="referrer_reward_message">Se ti registri, questa persona riceve una ricompensa!</string>
+    <string name="current_username">Nome utente attuale:</string>
+    <string name="no_username_set">Nessun nome utente impostato</string>
+    <string name="register_button">Registra nome utente</string>
+    <string name="set_username_first">Per favore imposta prima un nome utente nelle impostazioni.</string>
+    <string name="your_referral_code">Il tuo codice di raccomandazione</string>
+    <string name="create_referral_code_hint">Puoi creare un codice di raccomandazione nella schermata Condividi</string>
+    <string name="referred_by">Raccomandato da:</string>
+    <string name="username_created">Il tuo nome è {username}. Puoi cambiarlo nelle impostazioni.</string>
+    <string name="username_updated">Il tuo nome è {username}. Puoi cambiarlo nelle impostazioni.</string>
+    <string name="referral_info">Connessione tra amici</string>
+    <string name="registered_as">Registrato come:</string>
+    <string name="copy_referral_code">Copia codice</string>
+    <string name="shareable_link">Link condivisibile:</string>
+    <string name="copy_link">Copia link</string>
+    <string name="link_explanation">Condividi questo link con gli amici - ricevi punti per i clic e ottieni un credito quando si registrano!</string>
+    <string name="registrations">Registrazioni</string>
+    <string name="chords_unlocked">Accordi sbloccati!</string>
+    <string name="link_clicks">Clic sul link</string>
+    <string name="referral_hint">Chiedi ai tuoi amici di usare il tuo codice durante la registrazione!</string>
+    <string name="share_app">Condividi app</string>
+    <string name="friend_code">Hai un codice amico?</string>
+    <string name="enter_friend_code">Inserisci qui il codice amico</string>
+    <string name="redeem_code">Riscatta codice</string>
+    
+    <!-- Referral System Operation Messages -->
+    <string name="invalid_code">Formato del codice di raccomandazione non valido. Per favore controlla e riprova.</string>
+    <string name="own_code_error">Non puoi riscattare il tuo stesso codice di raccomandazione!</string>
+    <string name="code_redeemed">Codice amico riscattato con successo!</string>
+    <string name="username_required">È necessario un nome utente per riscattare un codice.</string>
+    <string name="username_exists">Questo nome utente è già preso. Scegline un altro.</string>
+    <string name="user_creation_failed">Creazione dell\'account utente fallita. Riprova.</string>
+    <string name="database_error">Si è verificato un errore del database. Riprova più tardi.</string>
+    <string name="invalid_parameters">Parametri di richiesta non validi.</string>
+    <string name="method_not_allowed">Questo metodo di richiesta non è consentito.</string>
+    <string name="unknown_error">Si è verificato un errore sconosciuto.</string>
+    <string name="redeem_error">Errore durante il riscatto del codice. Riprova.</string>
+    <string name="code_not_found">Questo codice di raccomandazione non è stato trovato.</string>
+    <string name="already_redeemed">Hai già riscattato questo codice.</string>
+    <string name="registration_success">Nome utente registrato con successo!</string>
+    <string name="registration_error">Si è verificato un errore. Riprova più tardi.</string>
+    
+    <!-- Copy Operations -->
+    <string name="copied">Copiato!</string>
+    <string name="copy_failed">Copia fallita</string>
+    <string name="copy_manually">Impossibile copiare automaticamente. Seleziona manualmente il testo e copialo.</string>
+    <string name="no_data">Nessun dato da copiare.</string>
+    
+    <!-- Progress Import/Export -->
+    <string name="progress_reset">I progressi sono stati resettati con successo</string>
+    <string name="export_error">Errore durante l\'esportazione dei progressi</string>
+    <string name="export_empty">Errore durante l\'esportazione dei progressi: la stringa codificata è vuota</string>
+    <string name="import_error">Errore durante l\'importazione dei progressi. La stringa fornita potrebbe non essere valida.</string>
+    <string name="invalid_save_code">Codice di salvataggio non valido. Controlla la tua stringa di progressi.</string>
+    <string name="enter_progress_code">Per favore inserisci prima un codice di progressi!</string>
+    <string name="progress_imported">Progressi importati con successo per %1$s!</string>
+    
+    <!-- Share Functionality -->
+    <string name="share_text">Guarda qui, questa fantastica app per imparare la musica per bambini - Lalumo! Usa il mio codice di raccomandazione</string>
+    <string name="share_title">Codice di raccomandazione Lalumo</string>
+    <string name="share_fallback">Il codice di raccomandazione è stato copiato negli appunti. Condividilo con i tuoi amici!</string>
+    
+    <!-- Help Messages Settings -->
+    <string name="player_settings">Impostazioni giocatore</string>
+    <string name="your_profile">Il tuo profilo</string>
+    <string name="language_preference">Preferenza lingua</string>
+    <string name="select_language">Scegli la tua lingua preferita:</string>
+    <string name="game_progress">Progressi di gioco</string>
+    <string name="export_progress">Esporta i tuoi progressi per salvarli o trasferirli su un altro dispositivo:</string>
+    <string name="copy_code">Copia questo codice per salvare i tuoi progressi:</string>
+    <string name="import_progress">Importa i tuoi progressi da un altro dispositivo:</string>
+    <string name="paste_progress">Incolla qui i tuoi dati di progresso...</string>
+    <string name="reset_progress">Resetta progressi</string>
+    <string name="reset_progress_desc">Resetta tutti i tuoi progressi di gioco e ricomincia da capo:</string>
+    <string name="reset_confirm">Sei sicuro? Questa operazione non può essere annullata.</string>
+    <string name="username_reset">Il nome utente è stato resettato con successo!</string>
+    <string name="help_messages">Messaggi di aiuto</string>
+    <string name="help_messages_desc">Controlla quando appaiono i messaggi di aiuto:</string>
+    <string name="help_messages_off">Messaggi di aiuto disattivati</string>
+    <string name="help_messages_on">Mostra messaggi di aiuto</string>
+    
+    <!-- Feedback Messages (from pitches.js) -->
+    <string name="memory_correct">Buona memoria! Hai indovinato!</string>
+    <string name="memory_incorrect">Riproviamo. Ascolta bene!</string>
+    <string name="puzzle_completed">Ben fatto! Puzzle completato.</string>
+    <string name="level_finished">Livello superato!</string>
+    <string name="keep_practicing">Continua a esercitarti!</string>
+    
+    <!-- Reset Confirmations -->
+    <string name="reset_activity_confirm">Resettare i progressi per \"%1$s\"?</string>
+    <string name="reset_generic_confirm">Nessuna attività corrispondente trovata. Resettare comunque?</string>
+    <string name="reset_success">I progressi sono stati resettati!</string>
+    
+    <!-- Draw Melody UI Elements -->
+    <string name="challenge_mode_activate">Avvia modalità sfida melodia</string>
+    <string name="challenge_mode">Modalità sfida</string>
+    <string name="challenge_mode_deactivate">Passa tra modalità sfida melodia e modalità disegno libero</string>
+    <string name="new_melody">Nuova melodia</string>
+    <string name="clear">Cancella</string>
+
+    <!-- Alert and Toast Messages -->
+    <string name="copied_to_clipboard">Copiato negli appunti!</string>
+    <string name="copy_manual">Impossibile copiare automaticamente. Seleziona manualmente il testo e copialo.</string>
+    <string name="export_error_dynamic">Errore durante l\'esportazione dei progressi: %1$s</string>
+    <string name="export_error_empty">Errore durante l\'esportazione dei progressi: la stringa codificata è vuota</string>
+    <string name="import_error_invalid">Errore durante l\'importazione dei progressi. La stringa fornita potrebbe non essere valida.</string>
+    <string name="copy_failed_manual">Copia fallita. Seleziona manualmente il testo e copialo.</string>
+    <string name="no_copy_data">Nessun dato da copiare.</string>
+    <string name="progress_reset_success">I progressi sono stati resettati con successo</string>
+    
+    <!-- Legal Pages Headers -->
+    <string name="datenschutz_header">Privacy</string>
+    
+    <!-- Credits Content -->
+    <string name="version_label">Versione</string>
+    <string name="app_development_label">Sviluppo app</string>
+    <string name="graphics_label">Grafiche &amp; Illustrazioni</string>
+    <string name="graphics_content_line1">Immagini create con ChatGPT</string>
+    <string name="graphics_content_line2">- Prompt curati con attenzione e amore</string>
+    <string name="technologies_label">Tecnologie</string>
+    
+    <!-- Impressum Content -->
+    <string name="impressum_app_description">App Lalumo - Imparare la musica per bambini</string>
+    <string name="impressum_responsible">Responsabile dei contenuti:</string>
+    <string name="impressum_contact">Ruben Barkow-Kuder&lt;br&gt;Knickweg 16&lt;br&gt;24114 Kiel</string>
+    
+    <!-- Datenschutz Content -->
+    <string name="privacy_intro">Informativa sulla privacy per l\'app Lalumo</string>
+    <string name="privacy_statement">Prendiamo molto sul serio la protezione dei tuoi dati personali. Tutti i dati sono salvati localmente sul tuo dispositivo e non vengono trasmessi a server.</string>
+    <string name="privacy_local_storage_header">Memorizzazione locale</string>
+    <string name="privacy_local_storage_desc">L\'app salva quanto segue localmente sul tuo dispositivo:</string>
+    <string name="privacy_username_item">Nome utente</string>
+    <string name="privacy_progress_item">Progressi di apprendimento</string>
+    
+    <!-- Back Button Messages -->
+    <string name="back_button_confirm_exit">Vuoi davvero lasciare la pagina? I tuoi progressi di questa sessione potrebbero andare persi.</string>
+
+    <!-- High or Low Activity -->
+    <string name="high_choice">Acuto</string>
+    <string name="low_choice">Grave</string>
+    <string name="high_choice_a11y">Suono acuto</string>
+    <string name="low_choice_a11y">Suono grave</string>
+    <string name="second_tone_higher_a11y">Il secondo suono è più acuto</string>
+    <string name="second_tone_lower_a11y">Il secondo suono è più grave</string>
+    <string name="play_tone_a11y">Riproduci suono</string>
+    
+    <!-- High or Low Feedback Messages -->
+    <string name="high_or_low_wrong_single">Riprova. Il suono era {0}.</string>
+    <string name="high_or_low_wrong_comparison">Riprova. Il secondo suono era {0}.</string>
+    
+    <!-- High or Low Stage Messages -->
+    <string name="high_low_stage1">Ottieni 10 risposte corrette per avvicinare i suoni!</string>
+    <string name="high_low_stage2">Ottieni 20 risposte corrette per due suoni!</string>
+    <string name="high_low_stage3">Ottieni 30 risposte corrette per aumentare la difficoltà!</string>
+    <string name="high_low_stage4">Ottieni 40 risposte corrette per la sfida finale!</string>
+    <string name="high_low_master">Livello maestro raggiunto! 🎉</string>
+    
+    <!-- High or Low Stage Progression Messages -->
+    <string name="high_low_stage2_unlocked">🎉 Livello 2 raggiunto! I suoni ora sono più vicini!</string>
+    <string name="high_low_stage3_unlocked">🎵 Livello 3 raggiunto! Ora senti due suoni di seguito!</string>
+    <string name="high_low_stage4_unlocked">🚀 Livello 4 raggiunto! I suoni ora sono ancora più vicini!</string>
+    <string name="high_low_stage5_unlocked">🏆 Livello maestro raggiunto! Sfida finale sbloccata!</string>
+    
+    <!-- High or Low Introduction Messages -->
+    <string name="high_or_low_intro_stage1">Ascolta il suono! È acuto o grave?</string>
+    <string name="high_or_low_intro_stage2">Ascolta il suono! È acuto o grave?</string>
+    <string name="high_or_low_intro_stage3">Ascolta entrambi i suoni! Il secondo è più acuto o più grave?</string>
+    <string name="high_or_low_intro_stage4">Ascolta entrambi i suoni! Il secondo è più acuto o più grave?</string>
+    <string name="high_or_low_intro_stage5">Ascolta entrambi i suoni! Il secondo è più acuto o più grave?</string>
+
+    <!-- Activity Introduction Messages -->
+    <!-- Pitch Activities -->
+    <string name="intro_1_1_pitches_high_or_low">Ascolta la nota e scegli se è acuta o grave!</string>
+    <string name="intro_1_2_pitches_match_sounds">Ascolta la melodia e scegli se è ascendente o discendente!</string>
+    <string name="intro_1_3_pitches_draw">Disegna e ascolta – la tua linea diventa musica!</string>
+    <string name="intro_1_4_pitches_does_it_sound_right">Ascolta la melodia! Suona giusta? Oppure c\'è una nota sbagliata?</string>
+    <string name="intro_1_5_pitches_memory">Ascolta bene e memorizza la melodia! Riesci a riprodurla?</string>
+    
+    <!-- Chord Activities -->
+    <string name="intro_2_1_chords_color_matching">Abbina gli elementi magici della foresta agli accordi che senti! 🌲✨</string>
+    <string name="intro_2_4_missing_note">Ascolta l\'accordo incompleto e scegli quale nota manca.</string>
+    <string name="intro_2_2_chords_stable_unstable">Ascolta l\'accordo, suona fantasmatico o amichevole? Clicca sul lato corrispondente nella foresta</string>
+    <string name="intro_2_3_chords_chord_building">Costruisci l\'accordo! Ascolta e suona le note giuste!</string>
+    <string name="intro_2_5_chords_characters">Ascolta il tipo di accordo e scegli l\'animale corrispondente!</string>
+    <string name="intro_2_6_chords_one_or_many">Riesci a sentire se è una nota o più note?</string>
+    
+    <!-- Context-specific messages (TODO: wird momentan noch statt intro_message abgespielt) -->
+    <string name="match_sounds_practice">Clicca sulle immagini per esercitarti. Tocca l\'uccello per iniziare il gioco!</string>
+    <string name="match_sounds_game">Ascolta e scegli l\'immagine giusta!</string>
+    <string name="memory_practice">Premi liberamente i tasti per esercitarti. Tocca l\'uccello per iniziare il gioco!</string>
+    <string name="memory_game_intro">Ascolta la melodia e poi tocca i pulsanti colorati nello stesso ordine!</string>
+    
+    <!-- Piano Key Labels -->
+    <string name="piano_key_b">H</string>
+    
+    <!-- Instruments -->
+    <string name="violin">Violino</string>
+    <string name="flute">Flauto</string>
+    <string name="doublebass">Contrabbasso</string>
+    <string name="start_game">Inizia gioco</string>
+    
+    <!-- Chord Feedback Messages -->
+    <string name="feedback_correct_stable">Corretto! Era un accordo amichevole.</string>
+    <string name="feedback_correct_unstable">Corretto! Era un accordo fantasma.</string>
+    <string name="feedback_incorrect_stable">Sbagliato. Era un accordo amichevole.</string>
+    <string name="feedback_incorrect_unstable">Sbagliato. Era un accordo fantasma.</string>
+    <string name="stable_chord">accordo amichevole</string>
+    <string name="unstable_chord">accordo fantasma</string>
+    
+    <!-- UI Messages -->
+    <string name="welcome_message">Benvenuto su Lalumo!</string>
+    <string name="create_name_message">Creiamo un nome speciale tutto per te!</string>
+    <string name="reset_activity">Resetta attività</string>
+    <string name="reset_current_activity">Resetta attività</string>
+    <string name="progress_saved_message">I tuoi progressi vengono salvati automaticamente</string>
+    
+    <!-- 1_2 Activity Feedback Messages (Italian) -->
+    <string name="feedback_1_2_generic">Ascolta più attentamente</string>
+    <string name="feedback_1_2_up">Ascolta più attentamente - la melodia saliva</string>
+    <string name="feedback_1_2_down">Ascolta più attentamente - la melodia scendeva</string>
+    <string name="feedback_1_2_wave">Ascolta più attentamente - la melodia era ondulata</string>
+    <string name="feedback_1_2_jumpy">Ascolta più attentamente - la melodia saltellava</string>
+    
+    <!-- Sound Judgment Level Descriptions (Italian) -->
+    <string name="sound_judgment_level_1">Livello 1: 2 note sbagliate, nessuna pausa</string>
+    <string name="sound_judgment_level_2">Livello 2: 2 note sbagliate, con pause</string>
+    <string name="sound_judgment_level_3">Livello 3: 1 nota sbagliata, nessuna pausa</string>
+    <string name="sound_judgment_level_4">Livello 4: 1 nota sbagliata, con pause</string>
+    <string name="sound_judgment_level_5">Livello 5: 1 nota sbagliata, max. 3 semitoni di distanza</string>
+    <string name="sound_judgment_level_6">Livello 6: 1 nota sbagliata, max. 2 semitoni di distanza</string>
+    <string name="sound_judgment_level_7">Livello 7: 1 nota sbagliata, max. 1 semitono di distanza</string>
+    
+    <!-- 2_6 One or Many Activity Feedback Messages (Italian) -->
+    <string name="correct_one_note">Corretto! Era una nota!</string>
+    <string name="correct_many_notes">Corretto! Erano diverse note!</string>
+    <string name="incorrect_was_one">No, era una nota!</string>
+    <string name="incorrect_was_many">No, erano diverse note!</string>
+</resources>

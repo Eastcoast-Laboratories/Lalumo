@@ -91,7 +91,7 @@ yarn-error.log*
 /android/app/src/main/*
 !/android/app/src/main/res/
 /android/app/src/main/res/*
-!/android/app/src/main/res/values-de/
+!/android/app/src/main/res/values-*/
 !/android/app/src/main/res/values/
 /android/app/build/
 /android/build/
