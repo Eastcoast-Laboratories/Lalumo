@@ -1860,9 +1860,8 @@ export function pitches() {
      * @used-by activities with complex context logic
      */
     showContextMessage(forceShow = false) {
-      const language = getLanguageCode();
       let message = '';
-      
+
       // Handle activities with complex context-dependent logic
       if (this.mode === '1_1_pitches_high_or_low') {
         // For 1_1, use the central intro message function like all other activities
@@ -1875,20 +1874,12 @@ export function pitches() {
         let audioStringKey = '';
         if (!this.gameMode) {
           audioStringKey = 'match_sounds_practice';
-          const fallbacks = {
-            de: 'Klicke auf die Bilder zum Üben. Berühre den Vogel um das Spiel zu starten!',
-            en: 'Click on pictures to practice. Touch the bird to start the game!',
-            it: 'Clicca sulle immagini per esercitarti. Tocca l\'uccello per iniziare il gioco!'
-          };
-          message = stringsStore?.[audioStringKey] || fallbacks[language] || fallbacks['en'];
         } else {
           audioStringKey = 'match_sounds_game';
-          const fallbacks = {
-            de: 'Höre zu und wähle das richtige Bild!',
-            en: 'Listen and choose the right picture!',
-            it: 'Ascolta e scegli l\'immagine giusta!'
-          };
-          message = stringsStore?.[audioStringKey] || fallbacks[language] || fallbacks['en'];
+        }
+        message = stringsStore?.[audioStringKey];
+        if (!message) {
+          debugLog(['PITCHES', 'LOG_CONTEXT_MESSAGE', 'ERROR'], 'No intro message found for 1_2, key:', audioStringKey);
         }
 
         if (message) {
@@ -1899,7 +1890,7 @@ export function pitches() {
             debugLog('INTRO_AUDIO_CALL', 'showContextMessage calling playIntroAudio for mode:', this.mode, 'gameMode:', this.gameMode, 'message:', message);
             playIntroAudio(message, audioStringKey);
           }
-          
+
           window.showFeedbackMessage(message, {
             forceShow,
             activityId: this.mode + '_' + (this.gameMode ? 'game' : 'practice'),
@@ -1914,20 +1905,12 @@ export function pitches() {
         let audioStringKey = '';
         if (this.memoryFreePlay) {
           audioStringKey = 'memory_practice';
-          const fallbacks = {
-            de: 'Drücke frei auf die Tasten zum Üben. Berühre den Vogel um das Spiel zu starten!',
-            en: 'Press keys freely to practice. Touch the bird to start the game!',
-            it: 'Premi liberamente i tasti per esercitarti. Tocca l\'uccello per iniziare il gioco!'
-          };
-          message = stringsStore?.[audioStringKey] || fallbacks[language] || fallbacks['en'];
         } else {
           audioStringKey = 'memory_game_intro';
-          const fallbacks = {
-            de: 'Höre dir die Melodie an und tippe dann auf die Tasten in der gleichen Reihenfolge!',
-            en: 'Listen to the melody, then tap the keys in the same order!',
-            it: 'Ascolta la melodia e poi tocca i tasti nello stesso ordine!'
-          };
-          message = stringsStore?.[audioStringKey] || fallbacks[language] || fallbacks['en'];
+        }
+        message = stringsStore?.[audioStringKey];
+        if (!message) {
+          debugLog(['PITCHES', 'LOG_CONTEXT_MESSAGE', 'ERROR'], 'No intro message found for 1_5, key:', audioStringKey);
         }
 
         if (message) {

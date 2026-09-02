@@ -36,6 +36,25 @@ let pendingAudioMessage = null;
 let pendingAudioStringKey = null;
 
 /**
+ * Wait for the Alpine strings store to be populated with string data
+ * The store is initialized empty and filled asynchronously by app.js initStrings()
+ * @param {number} timeoutMs - Maximum time to wait
+ * @returns {Promise<Object|null>} - The strings store object, or null if timeout
+ */
+async function waitForStringsStore(timeoutMs = 5000) {
+  const startTime = Date.now();
+  while (Date.now() - startTime < timeoutMs) {
+    const strings = window.Alpine?.store ? window.Alpine.store('strings') : null;
+    if (strings && Object.keys(strings).length > 0) {
+      return strings;
+    }
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+  debugLog(['LOG_INTRO_MESSAGE', 'ERROR'], 'Timed out waiting for strings store to be populated');
+  return null;
+}
+
+/**
  * Get the current activity mode from the URL hash
  * @returns {string|null} The activity mode string or null if no valid hash
  */
@@ -216,7 +235,7 @@ export function clearFeedbackTimer() {
  * @activity common
  * @used_by 2_1_chords_color-matching, 2_5_chords_characters, 2_2_chords_stable_unstable, 1_1_pitches_high_or_low, 1_2_pitches_match-sounds, 1_3_pitches_draw, 1_4_pitches_does-it-sound-right, 1_5_pitches_memory
  */
-export function showActivityIntroMessage(activityMode, component = null, delaySeconds = 10, force = true /* TODO: should be false before release */, forceShow = false) {
+export async function showActivityIntroMessage(activityMode, component = null, delaySeconds = 10, force = true /* TODO: should be false before release */, forceShow = false) {
   // TODO: in 1_1 wird stattdessen noch showContextMessage aufgerufen
   debugLog('AUDIO_SYSTEM', 'showActivityIntroMessage called:', { activityMode, delaySeconds, force, forceShow, shortcutScreenClosed });
   
@@ -243,203 +262,69 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
     debugLog('LOG_INTRO_MESSAGE', 'Skipping - already shown in this session: ' + activityMode);
     return;
   }
-  
-  // Get the current language
-  const language = getLanguageCode();
+
   let message = '';
   let messageStringKey = '';
-  
-  // Try to get message from Alpine store first
-  const store = window.Alpine?.store;
-  if (store && store.strings) {
-    // Special handling for 1_1: use stage-specific intro messages
-    if (activityMode === '1_1_pitches_high_or_low') {
-      // Get progress from localStorage to determine current stage
-      let progress = 0;
-      try {
-        const progressData = localStorage.getItem('lalumo_progress');
-        if (progressData) {
-          const parsed = JSON.parse(progressData);
-          progress = parsed['1_1'] || 0;
-        }
-      } catch (e) {
-        debugLog(['LOG_INTRO_MESSAGE', 'ERROR'], 'Error reading progress for 1_1:', e);
-      }
-      
-      // Determine stage based on progress (same logic as get_1_1_level)
-      let stage = 1;
-      if (progress >= 40) stage = 5;
-      else if (progress >= 30) stage = 4;
-      else if (progress >= 20) stage = 3;
-      else if (progress >= 10) stage = 2;
-      
-      const stageStringKey = `high_or_low_intro_stage${stage}`;
-      if (store.strings[stageStringKey]) {
-        message = store.strings[stageStringKey];
-        messageStringKey = stageStringKey;
-        debugLog('LOG_INTRO_MESSAGE', `Loaded stage-specific intro for 1_1 (stage ${stage}, progress ${progress}):`, message);
-      }
-    }
 
-    // Standard string key mapping for other activities
-    if (!message) {
-      const stringKeyMap = {
-        '1_1_pitches_high_or_low': 'intro_1_1_pitches_high_or_low',
-        '1_2_pitches_match-sounds': 'intro_1_2_pitches_match_sounds',
-        '1_3_pitches_draw': 'intro_1_3_pitches_draw',
-        '1_3_pitches_draw-melody': 'intro_1_3_pitches_draw',
-        '1_4_pitches_does-it-sound-right': 'intro_1_4_pitches_does_it_sound_right',
-        '1_5_pitches_memory': 'intro_1_5_pitches_memory',
-        '2_1_chords_color-matching': 'intro_2_1_chords_color_matching',
-        '2_2_chords_stable_unstable': 'intro_2_2_chords_stable_unstable',
-        '2_5_chords_characters': 'intro_2_5_chords_characters',
-        '2_6_chords_one_or_many': 'intro_2_6_chords_one_or_many'
-      };
-      
-      const stringKey = stringKeyMap[activityMode];
-      if (stringKey && store.strings[stringKey]) {
-        message = store.strings[stringKey];
-        messageStringKey = stringKey;
-        debugLog('LOG_INTRO_MESSAGE', 'Loaded from Alpine store:' + stringKey + '=', message);
-      }
-    }
-  }else{
-    debugLog(['LOG_INTRO_MESSAGE', 'ERROR'], 'No Alpine store available');
+  // Wait for the strings store to be populated (it loads asynchronously from XML)
+  const strings = await waitForStringsStore();
+  if (!strings) {
+    debugLog(['LOG_INTRO_MESSAGE', 'ERROR'], 'Strings store not available after waiting, cannot show intro for:', activityMode);
+    return;
   }
 
-  // Try to load from global strings object if Alpine store not available
-  if (!message && window.strings) {
-    // Special handling for 1_1: use stage-specific intro messages
-    if (activityMode === '1_1_pitches_high_or_low') {
-      let progress = 0;
-      try {
-        const progressData = localStorage.getItem('lalumo_progress');
-        if (progressData) {
-          const parsed = JSON.parse(progressData);
-          progress = parsed['1_1'] || 0;
-        }
-      } catch (e) {
-        debugLog(['LOG_INTRO_MESSAGE', 'ERROR'], 'Error reading progress for 1_1:', e);
+  // Special handling for 1_1: use stage-specific intro messages
+  if (activityMode === '1_1_pitches_high_or_low') {
+    let progress = 0;
+    try {
+      const progressData = localStorage.getItem('lalumo_progress');
+      if (progressData) {
+        const parsed = JSON.parse(progressData);
+        progress = parsed['1_1'] || 0;
       }
-      
-      let stage = 1;
-      if (progress >= 40) stage = 5;
-      else if (progress >= 30) stage = 4;
-      else if (progress >= 20) stage = 3;
-      else if (progress >= 10) stage = 2;
-      
-      const stageStringKey = `high_or_low_intro_stage${stage}`;
-      if (window.strings[stageStringKey]) {
-        message = window.strings[stageStringKey];
-        messageStringKey = stageStringKey;
-        debugLog('LOG_INTRO_MESSAGE', `Loaded stage-specific intro from global strings for 1_1 (stage ${stage}):`, message);
-      }
+    } catch (e) {
+      debugLog(['LOG_INTRO_MESSAGE', 'ERROR'], 'Error reading progress for 1_1:', e);
     }
-    
-    if (!message) {
-      const stringKeyMap = {
-        '1_1_pitches_high_or_low': 'intro_1_1_pitches_high_or_low',
-        '1_2_pitches_match-sounds': 'intro_1_2_pitches_match_sounds',
-        '1_3_pitches_draw': 'intro_1_3_pitches_draw',
-        '1_3_pitches_draw-melody': 'intro_1_3_pitches_draw',
-        '1_4_pitches_does-it-sound-right': 'intro_1_4_pitches_does_it_sound_right',
-        '1_5_pitches_memory': 'intro_1_5_pitches_memory',
-        '2_1_chords_color-matching': 'intro_2_1_chords_color_matching',
-        '2_2_chords_stable_unstable': 'intro_2_2_chords_stable_unstable',
-        '2_5_chords_characters': 'intro_2_5_chords_characters',
-        '2_6_chords_one_or_many': 'intro_2_6_chords_one_or_many'
-      };
-      
-      const stringKey = stringKeyMap[activityMode];
-      if (stringKey && window.strings[stringKey]) {
-        message = window.strings[stringKey];
-        messageStringKey = stringKey;
-        debugLog('LOG_INTRO_MESSAGE', 'Loaded from global strings:' + stringKey + '=', message);
-      }
+
+    let stage = 1;
+    if (progress >= 40) stage = 5;
+    else if (progress >= 30) stage = 4;
+    else if (progress >= 20) stage = 3;
+    else if (progress >= 10) stage = 2;
+
+    const stageStringKey = `high_or_low_intro_stage${stage}`;
+    if (strings[stageStringKey]) {
+      message = strings[stageStringKey];
+      messageStringKey = stageStringKey;
+      debugLog('LOG_INTRO_MESSAGE', `Loaded stage-specific intro for 1_1 (stage ${stage}, progress ${progress}):`, message);
     }
   }
-  
+
+  // Standard string key mapping for all activities
   if (!message) {
-    debugLog('LOG_INTRO_MESSAGE', 'Using direct strings.xml messages for:', activityMode);
-    
-    // Special handling for 1_1: use stage-specific fallback messages
-    if (activityMode === '1_1_pitches_high_or_low') {
-      let progress = 0;
-      try {
-        const progressData = localStorage.getItem('lalumo_progress');
-        if (progressData) {
-          const parsed = JSON.parse(progressData);
-          progress = parsed['1_1'] || 0;
-        }
-      } catch (e) { /* ignore */ }
-      
-      let stage = 1;
-      if (progress >= 40) stage = 5;
-      else if (progress >= 30) stage = 4;
-      else if (progress >= 20) stage = 3;
-      else if (progress >= 10) stage = 2;
-      
-      // Stage 1-2: single tone, Stage 3-5: two tones
-      if (stage >= 3) {
-        const stage3Messages = {
-          'de': 'Höre beide Töne! Ist der zweite höher oder tiefer?',
-          'en': 'Listen to both tones! Is the second one higher or lower?',
-          'it': 'Ascolta entrambi i suoni! Il secondo è più acuto o più grave?'
-        };
-        message = stage3Messages[language] || stage3Messages['en'];
-        messageStringKey = `high_or_low_intro_stage${stage}`;
-      } else {
-        const stage1Messages = {
-          'de': 'Höre den Ton! Ist er hoch oder tief?',
-          'en': 'Listen to the tone! Is it high or low?',
-          'it': 'Ascolta il suono! È acuto o grave?'
-        };
-        message = stage1Messages[language] || stage1Messages['en'];
-        messageStringKey = `high_or_low_intro_stage${stage}`;
-      }
-      debugLog('LOG_INTRO_MESSAGE', `Using fallback stage-specific message for 1_1 (stage ${stage}):`, message);
-    }
+    const stringKeyMap = {
+      '1_1_pitches_high_or_low': 'intro_1_1_pitches_high_or_low',
+      '1_2_pitches_match-sounds': 'intro_1_2_pitches_match_sounds',
+      '1_3_pitches_draw': 'intro_1_3_pitches_draw',
+      '1_3_pitches_draw-melody': 'intro_1_3_pitches_draw',
+      '1_4_pitches_does-it-sound-right': 'intro_1_4_pitches_does_it_sound_right',
+      '1_5_pitches_memory': 'intro_1_5_pitches_memory',
+      '2_1_chords_color-matching': 'intro_2_1_chords_color_matching',
+      '2_2_chords_stable_unstable': 'intro_2_2_chords_stable_unstable',
+      '2_5_chords_characters': 'intro_2_5_chords_characters',
+      '2_6_chords_one_or_many': 'intro_2_6_chords_one_or_many'
+    };
 
-    if (!message) {
-      const messages = {
-        '1_1_pitches_high_or_low': {
-          'de': 'Höre den Ton! Ist er hoch oder tief?',
-          'en': 'Listen to the tone! Is it high or low?',
-          'it': 'Ascolta il suono! È acuto o grave?'
-        },
-        // 1_2, 1_5: call playIntroAudio(message) directly
-        '1_3_pitches_draw-melody': {
-          'de': 'Male und höre zu! Deine Linie wird zur Musik!',
-          'en': 'Draw and listen! Your line becomes music!',
-          'it': 'Disegna e ascolta – la tua linea diventa musica!'
-        },
-        '1_4_pitches_does-it-sound-right': {
-          'de': 'Hoer dir die Melodie an! Klingt sie richtig, oder ist da ein falscher Ton?',
-          'en': 'Listen to the melody! Does it sound right? Or is there a wrong note?',
-          'it': 'Ascolta la melodia! Suona giusta? Oppure c\'è una nota sbagliata?'
-        },
-        '2_6_chords_one_or_many': {
-          'de': 'Kannst du hören, ob es eine Note ist oder viele Noten sind?',
-          'en': 'Can you hear if it is one note or many notes?',
-          'it': 'Riesci a sentire se è una nota o più note?'
-        }
-      };
-
-      const activityMessages = messages[activityMode];
-      if (activityMessages) {
-        message = activityMessages[language] || activityMessages['en'];
-        // Map activity mode to string key for audio fallback
-        const fallbackKeyMap = {
-          '1_1_pitches_high_or_low': 'intro_1_1_pitches_high_or_low',
-          '1_3_pitches_draw-melody': 'intro_1_3_pitches_draw',
-          '1_4_pitches_does-it-sound-right': 'intro_1_4_pitches_does_it_sound_right',
-          '2_6_chords_one_or_many': 'intro_2_6_chords_one_or_many'
-        };
-        messageStringKey = fallbackKeyMap[activityMode] || '';
-      } else {
-        debugLog(['LOG_INTRO_MESSAGE', 'ERROR'], 'No intro message defined for activity:', activityMode);
-      }
+    const stringKey = stringKeyMap[activityMode];
+    if (stringKey && strings[stringKey]) {
+      message = strings[stringKey];
+      messageStringKey = stringKey;
+      debugLog('LOG_INTRO_MESSAGE', 'Loaded from strings store:' + stringKey + '=', message);
     }
+  }
+
+  if (!message) {
+    debugLog(['LOG_INTRO_MESSAGE', 'ERROR'], 'No intro message found in store for activity:', activityMode);
   }
   
   // Show the message using the existing showFeedbackMessage function

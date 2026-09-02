@@ -403,6 +403,7 @@
     
     <!-- Chord Activities -->
     <string name="intro_2_2_chords_stable_unstable">Listen to the chord, does it sound spooky or friendly? Click on the matching part of the forest</string>
+    <string name="intro_2_3_chords_chord_building">Build the chord! Listen and play the right notes!</string>
     <string name="intro_2_5_chords_characters">Listen to the chord and match it to the right character!</string>
     <string name="intro_2_4_missing_note">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
     <string name="intro_2_1_chords_color_matching">Match the magical forest elements to the chords you hear! 🌲✨</string>
