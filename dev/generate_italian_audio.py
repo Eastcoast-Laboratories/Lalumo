@@ -7,7 +7,9 @@ from pathlib import Path
 
 voice_id = 'IVxwm9rCsOWlqz6D2vB3'
 key_path = Path.home() / '.config/devin/elevenlabs-api-key'
-strings_path = Path('/var/www/Musici/android/app/src/main/res/values-it/strings.xml')
+strings_path = Path(
+    '/var/www/Musici/android/app/src/main/res/values-it/strings.xml'
+)
 output_dir = Path('/var/www/Musici/public/sounds/info-messages')
 recordings = {
     '1_1_firststage_it.mp3': 'high_or_low_intro_stage1',
@@ -24,8 +26,14 @@ recordings = {
     '2_6_intro_it.mp3': 'intro_2_6_chords_one_or_many',
 }
 api_key = key_path.read_text().strip()
-strings = {node.attrib['name']: (node.text or '').replace("\\'", "'") for node in ET.parse(strings_path).getroot()}
-url = f'https://api.elevenlabs.io/v1/text-to-speech/{voice_id}?' + urllib.parse.urlencode({'output_format': 'mp3_44100_128'})
+strings = {
+    node.attrib['name']: (node.text or '').replace("\\'", "'")
+    for node in ET.parse(strings_path).getroot()
+}
+url = (
+    f'https://api.elevenlabs.io/v1/text-to-speech/{voice_id}?'
+    + urllib.parse.urlencode({'output_format': 'mp3_44100_128'})
+)
 created = 0
 characters = 0
 for filename, string_key in recordings.items():
@@ -51,12 +59,21 @@ for filename, string_key in recordings.items():
         try:
             detail = json.loads(error.read().decode()).get('detail', {})
             if isinstance(detail, dict):
-                detail = detail.get('message') or detail.get('status') or 'unknown'
+                detail = (
+                    detail.get('message')
+                    or detail.get('status')
+                    or 'unknown'
+                )
         except Exception:
             detail = 'unavailable'
-        raise SystemExit(f'generation_failed={filename} status={error.code} detail={detail}')
+        raise SystemExit(
+            f'generation_failed={filename} status={error.code} '
+            f'detail={detail}'
+        )
     if not audio.startswith(b'ID3') and not audio.startswith(b'\xff'):
-        raise SystemExit(f'generation_failed={filename} reason=unexpected_response')
+        raise SystemExit(
+            f'generation_failed={filename} reason=unexpected_response'
+        )
     destination.write_bytes(audio)
     created += 1
     characters += len(text)
