@@ -43,12 +43,14 @@ check_length() {
 
 # German Changelog
 DE_CHANGES=$(cat << EOF
+- Italienische Übersetzung hinzugefügt
 - Bugfixes und allgemeine Verbesserungen der UI
 EOF
 )
 
 # English Changelog
 EN_CHANGES=$(cat << EOF
+- Italian translation added
 - Bug fixes and general UI improvements
 EOF
 )

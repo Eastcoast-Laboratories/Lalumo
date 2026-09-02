@@ -4,6 +4,7 @@
 
 // Importiere Debug-Utilities
 import { debugLog } from '../../utils/debug.js';
+import { getLanguageCode } from '../shared/feedback.js';
 
 // Import all reset functions
 import { reset_1_1_HighOrLow_Progress } from './1_1_high_or_low.js';
@@ -27,23 +28,28 @@ export function testCommonModuleImport() {
 
 /**
  * Get user-friendly activity names for different languages
- * @param {boolean} isGerman - Whether to return German names
+ * @param {string} lang - Language code ('de', 'it', 'en')
  * @returns {Object} Object mapping activity modes to user-friendly names
  */
-function getActivityNames(isGerman) {
-  return {
-    '1_1_pitches_high_or_low': isGerman ? 'Hoch oder Tief' : 'High or Low',
-    '1_2_pitches_match-sounds': isGerman ? 'Hoch oder Runter' : 'Up or Down',
-    '1_3_pitches_draw-melody': isGerman ? 'Melodie zeichnen' : 'Draw Melody',
-    '1_4_pitches_does-it-sound-right': isGerman ? 'Klingt das richtig?' : 'Does It Sound Right?',
-    '1_5_pitches_memory-game': isGerman ? 'Memory-Spiel' : 'Memory Game',
-    '2_1_chords_color-matching': isGerman ? 'Akkord-Farb Zuordnung' : 'Chord Magical Forest',
-    '2_2_chords_stable_unstable': isGerman ? 'Geisterhaft oder Freundlich' : 'Spooky or Friendly Chords',
-    '2_3_chords_chord-building': isGerman ? 'Akkord-Bau' : 'Chord Building',
-    '2_4_chords_missing-note': isGerman ? 'Fehlende Noten' : 'Missing Note',
-    '2_5_chords_characters': isGerman ? 'Akkord-Charaktere' : 'Chord Characters',
-    '2_6_chords_one_or_many': isGerman ? 'Harmonie Garten' : 'Harmony Gardens'
+function getActivityNames(lang) {
+  const names = {
+    '1_1_pitches_high_or_low': { de: 'Hoch oder Tief', en: 'High or Low', it: 'Acuto o Grave' },
+    '1_2_pitches_match-sounds': { de: 'Hoch oder Runter', en: 'Up or Down', it: 'Su o Giù' },
+    '1_3_pitches_draw-melody': { de: 'Melodie zeichnen', en: 'Draw Melody', it: 'Disegna Melodia' },
+    '1_4_pitches_does-it-sound-right': { de: 'Klingt das richtig?', en: 'Does It Sound Right?', it: 'Suona giusto?' },
+    '1_5_pitches_memory-game': { de: 'Memory-Spiel', en: 'Memory Game', it: 'Gioco di Memoria' },
+    '2_1_chords_color-matching': { de: 'Akkord-Farb Zuordnung', en: 'Chord Magical Forest', it: 'Foresta Magica degli Accordi' },
+    '2_2_chords_stable_unstable': { de: 'Geisterhaft oder Freundlich', en: 'Spooky or Friendly Chords', it: 'Fantasmatico o Amichevole' },
+    '2_3_chords_chord-building': { de: 'Akkord-Bau', en: 'Chord Building', it: 'Costruzione Accordi' },
+    '2_4_chords_missing-note': { de: 'Fehlende Noten', en: 'Missing Note', it: 'Nota Mancante' },
+    '2_5_chords_characters': { de: 'Akkord-Charaktere', en: 'Chord Characters', it: 'Personaggi degli Accordi' },
+    '2_6_chords_one_or_many': { de: 'Harmonie Garten', en: 'Harmony Gardens', it: 'Giardino dell\'Armonia' }
   };
+  const result = {};
+  for (const key in names) {
+    result[key] = names[key][lang] || names[key]['en'];
+  }
+  return result;
 }
 
 /**
@@ -101,11 +107,11 @@ export function resetCurrentActivity(currentMode) {
     debugLog('PITCHES', 'RESET_CURRENT: Component progress before reset:', window.pitchesComponent.progress);
   }
   
-  const isGerman = document.documentElement.lang === 'de';
-  
+  const lang = getLanguageCode();
+
   // Use shared function to get activity names
-  const activityNames = getActivityNames(isGerman);
-  
+  const activityNames = getActivityNames(lang);
+
   debugLog('PITCHES', 'RESET_CURRENT: Available activity names:', Object.keys(activityNames));
   debugLog('PITCHES', 'RESET_CURRENT: Mode match found for activity ' + currentMode + ':', activityNames[currentMode] ? 'YES' : 'NO');
   
@@ -185,15 +191,18 @@ export function resetCurrentActivity(currentMode) {
  * @param {string} activityMode - The activity mode that was reset
  */
 export function showResetFeedback(activityMode) {
-  const isGerman = document.documentElement.lang === 'de';
-  
+  const lang = getLanguageCode();
+
   // Use shared function to get activity names
-  const activityNames = getActivityNames(isGerman);
-  
+  const activityNames = getActivityNames(lang);
+
   const activityName = activityNames[activityMode] || activityMode;
-  const message = isGerman ? 
-    `${activityName} Fortschritt zurückgesetzt! Starte neu in 3 Sekunden ...` : 
-    `${activityName} progress reset! Reloading to apply ...`;
+  const resetMsgs = {
+    de: `${activityName} Fortschritt zurückgesetzt! Starte neu in 3 Sekunden ...`,
+    en: `${activityName} progress reset! Reloading to apply ...`,
+    it: `${activityName} progressi resettati! Ricarica tra 3 secondi ...`
+  };
+  const message = resetMsgs[lang] || resetMsgs['en'];
   
   // Create or update feedback element
   let feedbackElement = document.querySelector('.reset-feedback');
@@ -233,10 +242,13 @@ export function resetAllProgress(component) {
   debugLog('PITCHES', 'RESET_ALL: Starting global reset of all activities');
   
   // Show confirmation dialog
-  const isGerman = document.documentElement.lang === 'de';
-  const confirmMessage = isGerman ? 
-    'ALLE Fortschritte in allen Aktivitäten zurücksetzen? Dies kann nicht rückgängig gemacht werden!' : 
-    'Reset ALL progress in all activities? This cannot be undone!';
+  const lang = getLanguageCode();
+  const confirmMsgs = {
+    de: 'ALLE Fortschritte in allen Aktivitäten zurücksetzen? Dies kann nicht rückgängig gemacht werden!',
+    en: 'Reset ALL progress in all activities? This cannot be undone!',
+    it: 'Resettare TUTTI i progressi in tutte le attività? Questa operazione non può essere annullata!'
+  };
+  const confirmMessage = confirmMsgs[lang] || confirmMsgs['en'];
     
   if (!confirm(confirmMessage)) {
     debugLog('PITCHES', 'RESET_ALL: User cancelled global reset');

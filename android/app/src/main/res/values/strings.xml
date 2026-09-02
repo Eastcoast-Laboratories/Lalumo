@@ -51,6 +51,7 @@
     <!-- Language Selection -->
     <string name="language_english">English</string>
     <string name="language_german">Deutsch</string>
+    <string name="language_italian">Italiano</string>
     
     <!-- Help Guide -->
     <string name="help_header">Help &amp; Activity Guide</string>

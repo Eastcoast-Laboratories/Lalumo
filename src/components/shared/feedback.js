@@ -7,12 +7,33 @@
 
 import { debugLog } from "../../utils/debug";
 
+/**
+ * Map language preference strings to ISO language codes
+ * Used by getLanguageCode() to convert localStorage values to short codes
+ */
+const LANGUAGE_CODE_MAP = {
+  'german': 'de',
+  'italian': 'it',
+  'english': 'en'
+};
+
+/**
+ * Get the current language code from localStorage
+ * Reads 'lalumo_language' and converts to a short code ('de', 'it', 'en')
+ * @returns {string} Language code: 'de', 'it', or 'en' (default)
+ */
+export function getLanguageCode() {
+  const langPref = localStorage.getItem('lalumo_language') || 'english';
+  return LANGUAGE_CODE_MAP[langPref] || 'en';
+}
+
 // Audio announcement system state
 let currentActivityMode = null;
 let shortcutScreenClosed = false;
 let lastIntroMessage = null;
 let userHasInteracted = false;
 let pendingAudioMessage = null;
+let pendingAudioStringKey = null;
 
 /**
  * Get the current activity mode from the URL hash
@@ -224,8 +245,9 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
   }
   
   // Get the current language
-  const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+  const language = getLanguageCode();
   let message = '';
+  let messageStringKey = '';
   
   // Try to get message from Alpine store first
   const store = window.Alpine?.store;
@@ -254,10 +276,11 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       const stageStringKey = `high_or_low_intro_stage${stage}`;
       if (store.strings[stageStringKey]) {
         message = store.strings[stageStringKey];
+        messageStringKey = stageStringKey;
         debugLog('LOG_INTRO_MESSAGE', `Loaded stage-specific intro for 1_1 (stage ${stage}, progress ${progress}):`, message);
       }
     }
-    
+
     // Standard string key mapping for other activities
     if (!message) {
       const stringKeyMap = {
@@ -276,6 +299,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       const stringKey = stringKeyMap[activityMode];
       if (stringKey && store.strings[stringKey]) {
         message = store.strings[stringKey];
+        messageStringKey = stringKey;
         debugLog('LOG_INTRO_MESSAGE', 'Loaded from Alpine store:' + stringKey + '=', message);
       }
     }
@@ -307,6 +331,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       const stageStringKey = `high_or_low_intro_stage${stage}`;
       if (window.strings[stageStringKey]) {
         message = window.strings[stageStringKey];
+        messageStringKey = stageStringKey;
         debugLog('LOG_INTRO_MESSAGE', `Loaded stage-specific intro from global strings for 1_1 (stage ${stage}):`, message);
       }
     }
@@ -328,6 +353,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       const stringKey = stringKeyMap[activityMode];
       if (stringKey && window.strings[stringKey]) {
         message = window.strings[stringKey];
+        messageStringKey = stringKey;
         debugLog('LOG_INTRO_MESSAGE', 'Loaded from global strings:' + stringKey + '=', message);
       }
     }
@@ -355,36 +381,58 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
       
       // Stage 1-2: single tone, Stage 3-5: two tones
       if (stage >= 3) {
-        message = language === 'de' 
-          ? 'Höre beide Töne! Ist der zweite höher oder tiefer?'
-          : 'Listen to both tones! Is the second one higher or lower?';
+        const stage3Messages = {
+          'de': 'Höre beide Töne! Ist der zweite höher oder tiefer?',
+          'en': 'Listen to both tones! Is the second one higher or lower?',
+          'it': 'Ascolta entrambi i suoni! Il secondo è più acuto o più grave?'
+        };
+        message = stage3Messages[language] || stage3Messages['en'];
+        messageStringKey = `high_or_low_intro_stage${stage}`;
       } else {
-        message = language === 'de'
-          ? 'Höre den Ton! Ist er hoch oder tief?'
-          : 'Listen to the tone! Is it high or low?';
+        const stage1Messages = {
+          'de': 'Höre den Ton! Ist er hoch oder tief?',
+          'en': 'Listen to the tone! Is it high or low?',
+          'it': 'Ascolta il suono! È acuto o grave?'
+        };
+        message = stage1Messages[language] || stage1Messages['en'];
+        messageStringKey = `high_or_low_intro_stage${stage}`;
       }
       debugLog('LOG_INTRO_MESSAGE', `Using fallback stage-specific message for 1_1 (stage ${stage}):`, message);
     }
-    
+
     if (!message) {
       const messages = {
         '1_1_pitches_high_or_low': {
           'de': 'Höre den Ton! Ist er hoch oder tief?',
-          'en': 'Listen to the tone! Is it high or low?'
+          'en': 'Listen to the tone! Is it high or low?',
+          'it': 'Ascolta il suono! È acuto o grave?'
         },
         // 1_2, 1_5: call playIntroAudio(message) directly
         '1_3_pitches_draw-melody': {
           'de': 'Male und höre zu! Deine Linie wird zur Musik!',
-          'en': 'Draw and listen! Your line becomes music!'
+          'en': 'Draw and listen! Your line becomes music!',
+          'it': 'Disegna e ascolta – la tua linea diventa musica!'
         },
         '1_4_pitches_does-it-sound-right': {
           'de': 'Hoer dir die Melodie an! Klingt sie richtig, oder ist da ein falscher Ton?',
-          'en': 'Listen to the melody! Does it sound right? Or is there a wrong note?'
+          'en': 'Listen to the melody! Does it sound right? Or is there a wrong note?',
+          'it': 'Ascolta la melodia! Suona giusta? Oppure c\'è una nota sbagliata?'
         }
       };
-      
-      const activityMessages = messages[activityMode] || 'no such mode ' + activityMode;
-      message = activityMessages[language] || activityMessages['en'];
+
+      const activityMessages = messages[activityMode];
+      if (activityMessages) {
+        message = activityMessages[language] || activityMessages['en'];
+        // Map activity mode to string key for audio fallback
+        const fallbackKeyMap = {
+          '1_1_pitches_high_or_low': 'intro_1_1_pitches_high_or_low',
+          '1_3_pitches_draw-melody': 'intro_1_3_pitches_draw',
+          '1_4_pitches_does-it-sound-right': 'intro_1_4_pitches_does_it_sound_right'
+        };
+        messageStringKey = fallbackKeyMap[activityMode] || '';
+      } else {
+        message = 'no such mode ' + activityMode;
+      }
     }
   }
   
@@ -400,7 +448,7 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
     const helpSettingsStore = window.Alpine?.store ? window.Alpine.store('helpSettings') : null;
     if (helpSettingsStore?.playHelpAudio || forceShow) {
       debugLog('INTRO_AUDIO_CALL', 'showActivityIntroMessage calling playIntroAudio for:', activityMode, 'forceShow:', forceShow);
-      playIntroAudio(message);
+      playIntroAudio(message, messageStringKey);
     }
     
     showFeedbackMessage(message, {
@@ -417,49 +465,59 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
 
 // Debouncing mechanism to prevent duplicate audio playback
 let lastAudioMessage = null;
+let lastAudioStringKey = null;
 let lastAudioTime = 0;
 const AUDIO_DEBOUNCE_MS = 2000;
 
 // Track current playing intro audio
 let currentIntroAudio = null;
 
+// Cached German strings for Italian audio fallback (Italian has no MP3s, fall back to German)
+let cachedGermanStrings = null;
+
 /**
- * Play intro audio for specific activities
- * @param {string} activityMode - The activity mode identifier
+ * Load and cache German strings from strings-de.xml for audio fallback
+ * Used when preferred language is Italian, since only German info-message MP3s exist
+ * @returns {Promise<Object>} - Map of string key -> German text
  */
-export function playIntroAudio(message) {  
-  const now = Date.now();
-  debugLog(['INTRO_AUDIO', 'FUNCTION_CALL'], 'playIntroAudio() called with message ' + message);
-  
-  // CRITICAL: Re-verify activity from hash before playing audio
-  // This prevents playing wrong audio when hash changes during initialization
-  const correctActivityMode = getActivityModeFromHash();
-  if (correctActivityMode && currentActivityMode && correctActivityMode !== currentActivityMode) {
-    debugLog('INTRO_AUDIO', 'HASH_MISMATCH: Skipping audio - currentActivityMode is', currentActivityMode, 'but hash shows', correctActivityMode);
-    return; // Don't play audio if activity has changed
+async function getGermanStringsForAudioFallback() {
+  if (cachedGermanStrings) {
+    return cachedGermanStrings;
   }
-  
-  // Check if user has interacted with the page (required for autoplay policy)
-  if (!userHasInteracted) {
-    debugLog('INTRO_AUDIO', 'Skipping audio - no user interaction yet (autoplay policy), storing for later');
-    pendingAudioMessage = message;
-    return;
+  try {
+    const response = await fetch('strings-de.xml');
+    if (!response.ok) {
+      debugLog(['INTRO_AUDIO', 'FALLBACK'], 'Failed to load German strings for fallback:', response.status);
+      return null;
+    }
+    const xmlText = await response.text();
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+    const stringElements = xmlDoc.querySelectorAll('string');
+    cachedGermanStrings = {};
+    stringElements.forEach(element => {
+      const name = element.getAttribute('name');
+      const value = element.textContent;
+      if (name && value) {
+        cachedGermanStrings[name] = value.replace(/\\/g, '');
+      }
+    });
+    debugLog('INTRO_AUDIO_FALLBACK', `Cached ${Object.keys(cachedGermanStrings).length} German strings for Italian audio fallback`);
+    return cachedGermanStrings;
+  } catch (e) {
+    debugLog(['INTRO_AUDIO', 'FALLBACK', 'ERROR'], 'Error loading German strings for fallback:', e);
+    return null;
   }
-  
-  // Store reference to previous audio to stop it later
-  const previousAudio = currentIntroAudio;
-  
-  // Check if this is a duplicate call within the debounce window
-  if (lastAudioMessage === message && (now - lastAudioTime) < AUDIO_DEBOUNCE_MS) {
-    debugLog('INTRO_AUDIO', 'Skipping duplicate audio call for:', message, 'within', AUDIO_DEBOUNCE_MS, 'ms');
-    return;
-  }
-  
-  // Immediately set debounce to prevent rapid duplicate calls
-  lastAudioMessage = message;
-  lastAudioTime = now;
-  
-  let filename = message.replace(/ö/g, 'oe')         // Replace ö,ä,ü with ae, ue, ...
+}
+
+/**
+ * Build the audio filename from a message text
+ * Replaces German umlauts, capitalizes first letter of each word, removes special chars
+ * @param {string} message - The message text to convert
+ * @returns {string} - The audio filename (without extension)
+ */
+function buildAudioFilename(message) {
+  return message.replace(/ö/g, 'oe')         // Replace ö,ä,ü with ae, ue, ...
   .replace(/ä/g, 'ae')         // Replace ö,ä,ü with ae, ue, ...
   .replace(/ü/g, 'ue')         // Replace ö,ä,ü with ae, ue, ...
   .replace(/ß/g, 'ss')         // Replace ö,ä,ü with ae, ue, ...
@@ -467,17 +525,72 @@ export function playIntroAudio(message) {
   .replace(/Ö/g, 'Oe')         // Replace ÄÖÜ
   .replace(/Ü/g, 'Ue')         // Replace ÄÖÜ
   .replace(/\b\w/g, c => c.toUpperCase()) // Make first letter of each word uppercase
-  .replace(/[^a-zA-Z0-9]/g, '')         // Remove all other characters
+  .replace(/[^a-zA-Z0-9]/g, '');         // Remove all other characters
+}
 
-  const audioFile = filename + '.mp3';
-  if (!audioFile) {
-    debugLog('INTRO_AUDIO', 'No audio file for message:', message);
+/**
+ * Play intro audio for specific activities
+ * @param {string} message - The intro message text (in the current display language)
+ * @param {string} [stringKey] - Optional string key for audio language fallback
+ */
+export async function playIntroAudio(message, stringKey) {
+  const now = Date.now();
+  debugLog(['INTRO_AUDIO', 'FUNCTION_CALL'], 'playIntroAudio() called with message ' + message + ', stringKey:', stringKey);
+
+  // CRITICAL: Re-verify activity from hash before playing audio
+  // This prevents playing wrong audio when hash changes during initialization
+  const correctActivityMode = getActivityModeFromHash();
+  if (correctActivityMode && currentActivityMode && correctActivityMode !== currentActivityMode) {
+    debugLog('INTRO_AUDIO', 'HASH_MISMATCH: Skipping audio - currentActivityMode is', currentActivityMode, 'but hash shows', correctActivityMode);
+    return; // Don't play audio if activity has changed
+  }
+
+  // Check if user has interacted with the page (required for autoplay policy)
+  if (!userHasInteracted) {
+    debugLog('INTRO_AUDIO', 'Skipping audio - no user interaction yet (autoplay policy), storing for later');
+    pendingAudioMessage = message;
+    pendingAudioStringKey = stringKey || null;
     return;
   }
-  
+
+  // Store reference to previous audio to stop it later
+  const previousAudio = currentIntroAudio;
+
+  // Check if this is a duplicate call within the debounce window
+  if (lastAudioMessage === message && (now - lastAudioTime) < AUDIO_DEBOUNCE_MS) {
+    debugLog('INTRO_AUDIO', 'Skipping duplicate audio call for:', message, 'within', AUDIO_DEBOUNCE_MS, 'ms');
+    return;
+  }
+
+  // Immediately set debounce to prevent rapid duplicate calls
+  lastAudioMessage = message;
+  lastAudioStringKey = stringKey || null;
+  lastAudioTime = now;
+
+  // Determine the audio message: when preferred language is Italian, fall back to German
+  // since only German info-message MP3s exist in /sounds/info-messages/
+  let audioMessage = message;
+  const language = getLanguageCode();
+  if (language === 'it' && stringKey) {
+    const germanStrings = await getGermanStringsForAudioFallback();
+    if (germanStrings && germanStrings[stringKey]) {
+      audioMessage = germanStrings[stringKey];
+      debugLog('INTRO_AUDIO_FALLBACK', `Italian language detected, using German audio fallback for key "${stringKey}":`, audioMessage);
+    } else {
+      debugLog(['INTRO_AUDIO', 'FALLBACK'], `No German fallback found for key "${stringKey}", using original message`);
+    }
+  }
+
+  const filename = buildAudioFilename(audioMessage);
+  const audioFile = filename + '.mp3';
+  if (!audioFile) {
+    debugLog('INTRO_AUDIO', 'No audio file for message:', audioMessage);
+    return;
+  }
+
   const audioPath = `/sounds/info-messages/${audioFile}`;
-  debugLog('INTRO_AUDIO', 'Attempting to play audio via Tone.js:', message, 'file:', audioPath);
-  
+  debugLog('INTRO_AUDIO', 'Attempting to play audio via Tone.js:', audioMessage, 'file:', audioPath);
+
   // USE TONE.JS INSTEAD OF HTML5 AUDIO!
   // This allows audioEngine.stopAll() to stop intro messages too
   if (window.audioEngine && typeof window.audioEngine.playIntroMessage === 'function') {
@@ -496,7 +609,7 @@ export function playIntroAudio(message) {
 export function replayCurrentIntroAudio() {
   if (lastAudioMessage) {
     debugLog('INTRO_AUDIO_REPLAY', 'Replaying last intro message:', lastAudioMessage);
-    playIntroAudio(lastAudioMessage);
+    playIntroAudio(lastAudioMessage, lastAudioStringKey);
   } else {
     debugLog('INTRO_AUDIO_REPLAY', 'No previous intro message to replay');
   }
@@ -825,21 +938,19 @@ export function showActivityProgressBar(options) {
 
   // Create progress text only if not barOnly mode
   if (!barOnly) {
-    const isGerman = document.documentElement.lang === 'de';
+    const lang = getLanguageCode();
     const progressText = document.createElement('div');
     progressText.style.fontSize = '14px';
     progressText.style.marginBottom = '5px';
-    
+
     // Build text content
     let textContent = '';
+    const notesLabel = { de: 'Töne', en: 'notes', it: 'note' };
+    const notesWord = notesLabel[lang] || notesLabel['en'];
     if (notesCount) {
-      textContent = isGerman 
-        ? `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName} (${notesCount} Töne)`
-        : `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName} (${notesCount} notes)`;
+      textContent = `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName} (${notesCount} ${notesWord})`;
     } else {
-      textContent = isGerman 
-        ? `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName}`
-        : `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName}`;
+      textContent = `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName}`;
     }
     progressText.textContent = textContent;
 
@@ -1026,10 +1137,12 @@ if (typeof window !== 'undefined') {
       if (pendingAudioMessage) {
         debugLog('AUDIO_SYSTEM', 'Playing pending audio message:', pendingAudioMessage);
         const messageToPlay = pendingAudioMessage;
+        const keyToPlay = pendingAudioStringKey;
         pendingAudioMessage = null;
+        pendingAudioStringKey = null;
         // Delay slightly to ensure the interaction event is fully processed
         setTimeout(() => {
-          playIntroAudio(messageToPlay);
+          playIntroAudio(messageToPlay, keyToPlay);
         }, 100);
       }
     }

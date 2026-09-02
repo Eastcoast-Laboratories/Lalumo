@@ -97,10 +97,13 @@ export function app() {
      */
     async loadStringsFromXML() {
       // Determine which language file to load
-      const language = this.preferredLanguage === 'german' ? 'de' : 'en';
-      const xmlPath = language === 'de' 
-        ? 'strings-de.xml'
-        : 'strings-en.xml';
+      const languageMap = {
+        'german': 'de',
+        'italian': 'it',
+        'english': 'en'
+      };
+      const language = languageMap[this.preferredLanguage] || 'en';
+      const xmlPath = `strings-${language}.xml`;
       
       debugLog('STRING_LOADER', `Loading strings from: ${xmlPath}`);
       debugLog('STRING_LOAD_DEBUG', `Fetching XML from path: ${xmlPath}`);
@@ -926,15 +929,19 @@ export function app() {
           if (browserLanguage.startsWith('de')) {
             this.preferredLanguage = 'german';
             debugLog('APP', 'Browser language detected as German, setting as default');
+          } else if (browserLanguage.startsWith('it')) {
+            this.preferredLanguage = 'italian';
+            debugLog('APP', 'Browser language detected as Italian, setting as default');
           } else {
             this.preferredLanguage = 'english'; // Default to English for other languages
-            debugLog('APP', 'Browser language not German, defaulting to English');
+            debugLog('APP', 'Browser language not German or Italian, defaulting to English');
           }
           // Save the detected language preference
           localStorage.setItem('lalumo_language', this.preferredLanguage);
         }
         // Update the HTML lang attribute
-        document.documentElement.lang = this.preferredLanguage === 'german' ? 'de' : 'en';
+        const langCodeMap = { 'german': 'de', 'italian': 'it', 'english': 'en' };
+        document.documentElement.lang = langCodeMap[this.preferredLanguage] || 'en';
         
         // Load referral system data from localStorage
         const savedReferralData = localStorage.getItem('lalumo_referral');
@@ -1075,7 +1082,8 @@ export function app() {
         this.unlockProgress = 0;
         document.documentElement.style.setProperty('--unlock-progress', 0);
         // Also update the <html lang> attribute
-        document.documentElement.lang = this.preferredLanguage === "german" ? "de" : "en";
+        const langCodeMap2 = { 'german': 'de', 'italian': 'it', 'english': 'en' };
+        document.documentElement.lang = langCodeMap2[this.preferredLanguage] || 'en';
         debugLog('APP', 'Unlock canceled');
       }
     },
@@ -1087,7 +1095,11 @@ export function app() {
       this.preferredLanguage = language;
       localStorage.setItem('lalumo_language', language);
       debugLog('LANGUAGE', `Language set to: ${language}`);
-      
+
+      // Update the HTML lang attribute
+      const langCodeMap = { 'german': 'de', 'italian': 'it', 'english': 'en' };
+      document.documentElement.lang = langCodeMap[language] || 'en';
+
       // Reload strings with new language
       await this.initStrings();
     },

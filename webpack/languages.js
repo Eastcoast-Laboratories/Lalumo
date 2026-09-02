@@ -7,5 +7,9 @@ module.exports = [
   {
     code: 'de',
     name: 'Deutsch'
+  },
+  {
+    code: 'it',
+    name: 'Italiano'
   }
 ];

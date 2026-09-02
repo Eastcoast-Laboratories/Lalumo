@@ -251,6 +251,11 @@ module.exports = (env, argv) => {
             to: 'app/strings-de.xml',
             transform: minifyXML
           },
+          {
+            from: 'android/app/src/main/res/values-it/strings.xml',
+            to: 'app/strings-it.xml',
+            transform: minifyXML
+          },
           
           // XML-files for Homepage only for Web-Build
           ...(isMobileBuild ? [] : [
@@ -282,6 +287,21 @@ module.exports = (env, argv) => {
             {
               from: 'android/app/src/main/res/values-de/strings.xml',
               to: 'public/strings-de.xml',
+              transform: minifyXML
+            },
+            {
+              from: 'android/app/src/main/res/values-it/strings.xml',
+              to: 'strings-it.xml',
+              transform: minifyXML
+            },
+            {
+              from: 'android/app/src/main/res/values-it/strings.xml',
+              to: '../public/strings-it.xml',
+              transform: minifyXML
+            },
+            {
+              from: 'android/app/src/main/res/values-it/strings.xml',
+              to: 'public/strings-it.xml',
               transform: minifyXML
             },
           ]),

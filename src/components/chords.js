@@ -24,7 +24,8 @@ import {
   showBigRainbowSuccess, 
   showCompleteSuccess, 
   highlightCorrectButton,
-  playIntroAudio
+  playIntroAudio,
+  getLanguageCode
 } from '../components/shared/feedback.js';
 
 // Import shared UI helpers
@@ -788,46 +789,71 @@ export function chords() {
      * @used-by all activities
      */
     showContextMessage(forceShow = false) {
-      const language = localStorage.getItem('lalumo_language') || 'english';
+      const language = getLanguageCode();
+      const stringsStore = window.Alpine?.store ? window.Alpine.store('strings') : null;
       let message = '';
-      
+      let audioStringKey = '';
+
       // Handle different chord activities with appropriate intro messages
       if (this.mode === '2_1_chords_color-matching') {
-        message = language === 'german' ? 
-          'Berühre die Blume im magischen Wald und wähle das passende Element!' : 
-          'Touch the flower in the magical forest and choose the matching item!';
+        audioStringKey = 'intro_2_1_chords_color_matching';
+        const fallbacks = {
+          de: 'Berühre die Blume im magischen Wald und wähle das passende Element!',
+          en: 'Touch the flower in the magical forest and choose the matching item!',
+          it: 'Tocca il fiore nella foresta magica e scegli l\'elemento corrispondente!'
+        };
+        message = stringsStore?.[audioStringKey] || fallbacks[language] || fallbacks['en'];
       } else if (this.mode === '2_2_chords_stable_unstable') {
-        message = language === 'german' ? 
-          'Höre den Akkord! Klingt er geisterhaft oder freundlich?' : 
-          'Listen to the chord! Does it sound spooky or friendly?';
+        audioStringKey = 'intro_2_2_chords_stable_unstable';
+        const fallbacks = {
+          de: 'Höre den Akkord! Klingt er geisterhaft oder freundlich?',
+          en: 'Listen to the chord! Does it sound spooky or friendly?',
+          it: 'Ascolta l\'accordo! Suona fantasmatico o amichevole?'
+        };
+        message = stringsStore?.[audioStringKey] || fallbacks[language] || fallbacks['en'];
       } else if (this.mode === '2_3_chords_chord-building') {
-        message = language === 'german' ? 
-          'Baue den Akkord nach! Höre zu und spiele die richtigen Noten!' : 
-          'Build the chord! Listen and play the right notes!';
+        const fallbacks = {
+          de: 'Baue den Akkord nach! Höre zu und spiele die richtigen Noten!',
+          en: 'Build the chord! Listen and play the right notes!',
+          it: 'Costruisci l\'accordo! Ascolta e suona le note giuste!'
+        };
+        message = fallbacks[language] || fallbacks['en'];
       } else if (this.mode === '2_4_chords_missing-note') {
-        message = language === 'german' ? 
-          'Höre den Akkord und finde die fehlende Note!' : 
-          'Listen to the chord and find the missing note!';
+        audioStringKey = 'intro_2_4_missing_note';
+        const fallbacks = {
+          de: 'Höre den Akkord und finde die fehlende Note!',
+          en: 'Listen to the chord and find the missing note!',
+          it: 'Ascolta l\'accordo e trova la nota mancante!'
+        };
+        message = stringsStore?.[audioStringKey] || fallbacks[language] || fallbacks['en'];
       } else if (this.mode === '2_5_chords_characters') {
-        message = language === 'german' ? 
-          'Höre dir die Akkord-Art an und wähle das passende Tier!' : 
-          'Listen to the chord and choose the matching character!';
+        audioStringKey = 'intro_2_5_chords_characters';
+        const fallbacks = {
+          de: 'Höre dir die Akkord-Art an und wähle das passende Tier!',
+          en: 'Listen to the chord and choose the matching character!',
+          it: 'Ascolta il tipo di accordo e scegli l\'animale corrispondente!'
+        };
+        message = stringsStore?.[audioStringKey] || fallbacks[language] || fallbacks['en'];
       } else if (this.mode === '2_6_chords_one_or_many') {
-        message = language === 'german' ? 
-          'Kannst du hören, ob es eine Note ist oder viele Noten sind?' : 
-          'Can you hear if it is one note or many notes?';
+        audioStringKey = 'intro_2_6_chords_one_or_many';
+        const fallbacks = {
+          de: 'Kannst du hören, ob es eine Note ist oder viele Noten sind?',
+          en: 'Can you hear if it is one note or many notes?',
+          it: 'Riesci a sentire se è una nota o più note?'
+        };
+        message = stringsStore?.[audioStringKey] || fallbacks[language] || fallbacks['en'];
       }
-      
+
       // Show the intro message using the feedback system
       if (message) {
         debugLog('CHORDS', 'LOG_CONTEXT_MESSAGE: Showing intro message for activity:', this.mode);
-        
+
         // Play audio if enabled and available for this activity
         // forceShow overrides the playHelpAudio setting (e.g. when user clicks repeat button)
         const helpSettingsStore = window.Alpine?.store ? window.Alpine.store('helpSettings') : null;
         if (helpSettingsStore?.playHelpAudio || forceShow) {
           debugLog('INTRO_AUDIO_CALL', 'chords.js showContextMessage calling playIntroAudio for mode:', this.mode, 'message:', message, 'forceShow:', forceShow);
-          playIntroAudio(message);
+          playIntroAudio(message, audioStringKey || null);
         }
         
         window.showFeedbackMessage(message, {

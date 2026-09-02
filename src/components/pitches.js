@@ -29,7 +29,8 @@ import {
   hideActivityProgressBar,
   highlightCorrectButton,
   showErrorWithCorrectHint,
-  playIntroAudio
+  playIntroAudio,
+  getLanguageCode
 } from '../components/shared/feedback.js';
 
 // Import shared UI helpers
@@ -200,6 +201,7 @@ export function pitches() {
       'twinkle': {
         en: 'Twinkle, Twinkle, Little Star',
         de: 'Funkel, funkel, kleiner Stern',
+        it: 'Brilla, brilla, stellina',
         quarterNoteDuration: 500, // Standardlänge für eine Viertelnote in ms
         notes: [
           'C', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4:h', // h = halbe Note (doppelte Länge)
@@ -209,12 +211,14 @@ export function pitches() {
       'jingle': {
         en: 'Jingle Bells',
         de: 'Jingle Bells',
+        it: 'Jingle Bells',
         quarterNoteDuration: 450, // Etwas schneller für Jingle Bells
         notes: ['E', 'E4', 'E4:h', 'E4', 'E4', 'E4:h', 'E4', 'G4', 'C4', 'D4', 'E4:h']
       },
       'happy-birthday': {
         en: 'Happy Birthday To You',
         de: 'Zum Geburtstag viel Glück',
+        it: 'Tanti auguri a te',
         quarterNoteDuration: 600,
         notes: [
           'G3:e', 'G3:e', 'A3:q', 'G3:q', 'C4:q', 'B3:h', 'G3:e', 'G3:e', 'A3:q', 'G3:q', 'D4:q', 'C4:h'
@@ -223,6 +227,7 @@ export function pitches() {
       'frere-jacques': {
         en: 'Brother John (Frère Jacques)',
         de: 'Bruder Jakob',
+        it: 'Fra Martino (Frère Jacques)',
         quarterNoteDuration: 500,
         notes: [
           'C', 'D4', 'E4', 'C4', // Frère Jacques, Frère Jacques
@@ -234,6 +239,7 @@ export function pitches() {
       'are-you-sleeping': {
         en: 'Are You Sleeping?',
         de: 'Schlaf, Kindlein, schlaf',
+        it: 'Dormi, dormi?',
         quarterNoteDuration: 550,
         notes: [
           'E:h', 'D4', 'D4', 'C4:H',
@@ -243,6 +249,7 @@ export function pitches() {
       'little-hans': { // Hänschen klein
         en: 'Little Hans',
         de: 'Hänschen klein',
+        it: 'Ninnananna',
         quarterNoteDuration: 550,
         notes: [
           'G', 'E4', 'E4:h', 'F4', 'D4', 'D4:h',
@@ -252,6 +259,7 @@ export function pitches() {
       'all-my-little-ducklings': {
         en: 'All My Little Ducklings',
         de: 'Alle meine Entchen',
+        it: 'Tutte le mie paperelle',
         quarterNoteDuration: 550,
         notes: [
           'C', 'D4', 'E4', 'F4', 'G4:h', 'G4:h', 'A', 'A', 'A', 'A', 'G:h'
@@ -260,6 +268,7 @@ export function pitches() {
       'haeschen-huepf': {
         en: 'Bunny Hop',
         de: 'Häschen Hüpf',
+        it: 'Salta, coniglietto',
         quarterNoteDuration: 333,
         notes: [
           'D', 'E', 'F#', 'G', 'A4:h','A4:h', // Häschen in der Grube
@@ -273,6 +282,7 @@ export function pitches() {
       'hey-ho': {
         en: 'Hey Ho, Pull the Wagon',
         de: 'Hey Ho, Spann den Wagen an',
+        it: 'Ehi oh, tira il carro',
         quarterNoteDuration: 333,
         notes: [
           'A4:w', 'G4:w', 'A4', 'A4', 'A4', 'A4', 'E4:w', // Hey ho, spann den Wagen an,
@@ -284,6 +294,7 @@ export function pitches() {
       'old-mcdonald': {
         en: 'Old McDonald Had a Farm',
         de: 'Old MacDonald hat ne Farm',
+        it: 'Nella vecchia fattoria',
         quarterNoteDuration: 500,
         notes: [
           'F', 'F4', 'C4', 'C4', 'D4', 'D4', 'C4:h', 'A4', 'A4', 'G4', 'G4', 'F4:h'
@@ -504,22 +515,22 @@ export function pitches() {
       this.longPressTimer = setTimeout(() => {
         // Get the appropriate help text based on pattern and language
         const languageSetting = localStorage.getItem('lalumo_language') || 'english';
-        const language = languageSetting === 'german' ? 'de' : 'en';
+        const language = getLanguageCode();
         
         // Define fallback text if no pattern text is found
         let helpText = '';
         
         // Define help texts for all patterns
         const helpTexts = {
-          up: { en: 'Up', de: 'Hoch' },
-          down: { en: 'Down', de: 'Runter' },
-          wave: { en: 'Wavy', de: 'Wellen' },
-          jump: { en: 'Random', de: 'Zufall' }
+          up: { en: 'Up', de: 'Hoch', it: 'Su' },
+          down: { en: 'Down', de: 'Runter', it: 'Giù' },
+          wave: { en: 'Wavy', de: 'Wellen', it: 'Onde' },
+          jump: { en: 'Random', de: 'Zufall', it: 'Casuale' }
         };
-        
+
         // Normalize pattern name (lowercase, remove spaces)
         const normalizedPattern = String(pattern).toLowerCase().trim();
-        
+
         // Check if the pattern exists
         if (helpTexts[normalizedPattern]) {
           // If yes, get the corresponding text in the desired language or English as fallback
@@ -559,31 +570,32 @@ export function pitches() {
         // Get the appropriate help text based on pattern and language
         const languageSetting = localStorage.getItem('lalumo_language') || 'english';
         debugLog('PITCHES', 'Current language setting:', languageSetting);
-        
+
         // Convert the language setting to language codes for the help texts
-        const language = languageSetting === 'german' ? 'de' : 'en';
+        const language = getLanguageCode();
         
         // Define a fallback text if no pattern text is found
         let helpText = '';
         
         // Define help texts for all patterns
         const helpTexts = {
-          up: { en: 'Up', de: 'Hoch' },
-          down: { en: 'Down', de: 'Runter' },
-          wave: { en: 'Wavy', de: 'Wellen' },
-          jump: { en: 'Random', de: 'Zufall' }
+          up: { en: 'Up', de: 'Hoch', it: 'Su' },
+          down: { en: 'Down', de: 'Runter', it: 'Giù' },
+          wave: { en: 'Wavy', de: 'Wellen', it: 'Onde' },
+          jump: { en: 'Random', de: 'Zufall', it: 'Casuale' }
         };
-        
+
         // Normalize pattern names (lowercase, remove spaces)
         const normalizedPattern = String(pattern).toLowerCase().trim();
-        
+
         // Check if the pattern exists
         if (helpTexts[normalizedPattern]) {
           // If yes, get the corresponding text in the desired language or English as fallback
           helpText = helpTexts[normalizedPattern][language] || helpTexts[normalizedPattern]['en'];
         } else {
           // Fallback if the pattern was not found
-          helpText = language === 'de' ? 'Klick' : 'Click';
+          const fallbackClick = { de: 'Klick', en: 'Click', it: 'Clic' };
+          helpText = fallbackClick[language] || fallbackClick['en'];
           debugLog(['PITCHES', 'WARN'], `Pattern '${pattern}' not defined in helpTexts. Using fallback text.`);
         }
         
@@ -1848,7 +1860,7 @@ export function pitches() {
      * @used-by activities with complex context logic
      */
     showContextMessage(forceShow = false) {
-      const language = localStorage.getItem('lalumo_language') || 'english';
+      const language = getLanguageCode();
       let message = '';
       
       // Handle activities with complex context-dependent logic
@@ -1859,23 +1871,33 @@ export function pitches() {
         window.showActivityIntroMessage(this.mode, this, 10, true, forceShow);
       } else if (this.mode === '1_2_pitches_match-sounds') {
         // Context-dependent message based on game mode
+        const stringsStore = window.Alpine?.store ? window.Alpine.store('strings') : null;
+        let audioStringKey = '';
         if (!this.gameMode) {
-          message = language === 'german' ? 
-            'Klicke auf die Bilder zum Üben. Berühre den Vogel um das Spiel zu starten!' : 
-            'Click on pictures to practice. Touch the bird to start the game!';
+          audioStringKey = 'match_sounds_practice';
+          const fallbacks = {
+            de: 'Klicke auf die Bilder zum Üben. Berühre den Vogel um das Spiel zu starten!',
+            en: 'Click on pictures to practice. Touch the bird to start the game!',
+            it: 'Clicca sulle immagini per esercitarti. Tocca l\'uccello per iniziare il gioco!'
+          };
+          message = stringsStore?.[audioStringKey] || fallbacks[language] || fallbacks['en'];
         } else {
-          message = language === 'german' ? 
-            'Höre zu und wähle das richtige Bild!' : 
-            'Listen and choose the right picture!';
+          audioStringKey = 'match_sounds_game';
+          const fallbacks = {
+            de: 'Höre zu und wähle das richtige Bild!',
+            en: 'Listen and choose the right picture!',
+            it: 'Ascolta e scegli l\'immagine giusta!'
+          };
+          message = stringsStore?.[audioStringKey] || fallbacks[language] || fallbacks['en'];
         }
-        
+
         if (message) {
           // Play audio if enabled and available for this activity
           const helpSettingsStore = window.Alpine?.store ? window.Alpine.store('helpSettings') : null;
           if (helpSettingsStore?.playHelpAudio || forceShow) {
             const activityId = this.mode + '_' + (this.gameMode ? 'game' : 'practice');
             debugLog('INTRO_AUDIO_CALL', 'showContextMessage calling playIntroAudio for mode:', this.mode, 'gameMode:', this.gameMode, 'message:', message);
-            playIntroAudio(message);
+            playIntroAudio(message, audioStringKey);
           }
           
           window.showFeedbackMessage(message, {
@@ -1888,23 +1910,33 @@ export function pitches() {
         }
       } else if (this.mode === '1_5_pitches_memory-game') {
         // Context-dependent message based on free play mode
+        const stringsStore = window.Alpine?.store ? window.Alpine.store('strings') : null;
+        let audioStringKey = '';
         if (this.memoryFreePlay) {
-          message = language === 'german' ? 
-            'Drücke frei auf die Tasten zum Üben. Berühre den Vogel um das Spiel zu starten!' : 
-            'Press keys freely to practice. Touch the bird to start the game!';
+          audioStringKey = 'memory_practice';
+          const fallbacks = {
+            de: 'Drücke frei auf die Tasten zum Üben. Berühre den Vogel um das Spiel zu starten!',
+            en: 'Press keys freely to practice. Touch the bird to start the game!',
+            it: 'Premi liberamente i tasti per esercitarti. Tocca l\'uccello per iniziare il gioco!'
+          };
+          message = stringsStore?.[audioStringKey] || fallbacks[language] || fallbacks['en'];
         } else {
-          message = language === 'german' ? 
-            'Höre dir die Melodie an und tippe dann auf die Tasten in der gleichen Reihenfolge!' : 
-            'Listen to the melody, then tap the keys in the same order!';
+          audioStringKey = 'memory_game_intro';
+          const fallbacks = {
+            de: 'Höre dir die Melodie an und tippe dann auf die Tasten in der gleichen Reihenfolge!',
+            en: 'Listen to the melody, then tap the keys in the same order!',
+            it: 'Ascolta la melodia e poi tocca i tasti nello stesso ordine!'
+          };
+          message = stringsStore?.[audioStringKey] || fallbacks[language] || fallbacks['en'];
         }
-        
+
         if (message) {
           // Play audio if enabled and available for this activity
           const helpSettingsStore = window.Alpine?.store ? window.Alpine.store('helpSettings') : null;
           if (helpSettingsStore?.playHelpAudio || forceShow) {
             const activityId = this.mode + '_' + (this.memoryFreePlay ? 'freeplay' : 'game');
             debugLog('INTRO_AUDIO_CALL', 'showContextMessage calling playIntroAudio for mode:', this.mode, 'memoryFreePlay:', this.memoryFreePlay, 'message:', message);
-            playIntroAudio(message);
+            playIntroAudio(message, audioStringKey);
           }
           
           window.showFeedbackMessage(message, {
@@ -4283,7 +4315,7 @@ export function pitches() {
       this.selectRandomAnimalImages();
       
       // Get the current language
-      const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+      const language = getLanguageCode();
       
       // Track activity usage and initialize progress if needed
       if (!this.progress['1_4']) {
@@ -4313,7 +4345,7 @@ export function pitches() {
       debugLog('PITCHES', `SOUND JUDGMENT: Starting game mode from practice mode with instrument: ${instrument || 'default'}`);
       
       // Get the current language
-      const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+      const language = getLanguageCode();
 
       if (instrument) {
         // Practice mode with specific instrument - don't transition to game mode yet
@@ -4545,7 +4577,7 @@ export function pitches() {
       this.currentMelodyId = randomMelodyKey;
       
       // Get the current language
-      const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+      const language = getLanguageCode();
       
       // Set the melody name in the appropriate language
       this.currentMelodyName = selectedMelody[language] || selectedMelody.en;
@@ -4767,7 +4799,7 @@ export function pitches() {
       const finalSelectedMelody = this.knownMelodies[this.currentMelodyId];
       
       // Get the current language
-      const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+      const language = getLanguageCode();
       
       // Set the melody name in the appropriate language
       this.currentMelodyName = finalSelectedMelody[language] || finalSelectedMelody.en;
@@ -5304,7 +5336,7 @@ export function pitches() {
       this.stopCurrentSound();
       
       // Get the current language
-      const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+      const language = getLanguageCode();
       
       // Check if the user's answer is correct
       // User says "Sounds Good" (true) and the melody has no wrong note (!this.melodyHasWrongNote) OR
@@ -5314,12 +5346,27 @@ export function pitches() {
       // Prepare feedback messages based on language and result
       let feedbackMessage;
       if (isCorrect) {
-        feedbackMessage = language === 'de' ? 'Toll gemacht! Du hast richtig gehört!' : 'Well done! You heard correctly!';
+        const correctMsg = {
+          de: 'Toll gemacht! Du hast richtig gehört!',
+          en: 'Well done! You heard correctly!',
+          it: 'Ben fatto! Hai ascoltato correttamente!'
+        };
+        feedbackMessage = correctMsg[language] || correctMsg['en'];
       } else {
         if (this.melodyHasWrongNote) {
-          feedbackMessage = language === 'de' ? 'Hör noch mal hin! Da war ein falscher Ton.' : 'Listen again! There was a wrong note.';
+          const wrongNoteMsg = {
+            de: 'Hör noch mal hin! Da war ein falscher Ton.',
+            en: 'Listen again! There was a wrong note.',
+            it: 'Ascolta ancora! C\'era una nota sbagliata.'
+          };
+          feedbackMessage = wrongNoteMsg[language] || wrongNoteMsg['en'];
         } else {
-          feedbackMessage = language === 'de' ? 'Die Melodie war richtig. Versuche es noch einmal!' : 'The melody was correct. Try again!';
+          const correctMelodyMsg = {
+            de: 'Die Melodie war richtig. Versuche es noch einmal!',
+            en: 'The melody was correct. Try again!',
+            it: 'La melodia era corretta. Riprova!'
+          };
+          feedbackMessage = correctMelodyMsg[language] || correctMelodyMsg['en'];
         }
         
         // Highlight the correct button
@@ -5394,11 +5441,12 @@ export function pitches() {
           
           // Show level-up message
           let levelUpMessage;
-          if (language === 'de') {
-            levelUpMessage = `Super! Du hast Level ${newLevel} erreicht!`;
-          } else {
-            levelUpMessage = `Great! You've reached level ${newLevel}!`;
-          }
+          const levelUpTemplates = {
+            de: `Super! Du hast Level ${newLevel} erreicht!`,
+            en: `Great! You've reached level ${newLevel}!`,
+            it: `Super! Hai raggiunto il livello ${newLevel}!`
+          };
+          levelUpMessage = levelUpTemplates[language] || levelUpTemplates['en'];
           
           // Show intro message for level up
           window.showFeedbackMessage(levelUpMessage, {

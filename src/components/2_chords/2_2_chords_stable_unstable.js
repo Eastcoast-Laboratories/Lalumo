@@ -20,7 +20,8 @@ import {
   showCompleteSuccess, 
   showCompleteError,
   highlightCorrectButton,
-  showErrorWithCorrectHint
+  showErrorWithCorrectHint,
+  getLanguageCode
 } from '../shared/feedback.js';
 
 // Initialize global Alpine.js feedback variables
@@ -611,7 +612,7 @@ export function checkStableUnstableMatch(selectedType, component) {
         const chordTypeKey = currentChordType === 'stable' ? 'stable' : 'unstable';
         
         // Debug language and string store for success feedback
-        const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+        const language = getLanguageCode();
         debugLog(['CHORDS_2_2_DEBUG', 'LANGUAGE'], `Success feedback - Language detection: localStorage='${localStorage.getItem('lalumo_language')}', resolved='${language}'`);
         debugLog(['CHORDS_2_2_DEBUG', 'STRINGS_STORE'], `Success feedback - Alpine.store('strings') available: ${!!Alpine.store('strings')}`);
         
@@ -735,7 +736,7 @@ export function checkStableUnstableMatch(selectedType, component) {
         const chordTypeKey = currentChordType === 'stable' ? 'stable' : 'unstable';
         
         // Get current language for proper fallback
-        const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+        const language = getLanguageCode();
         debugLog(['CHORDS_2_2_DEBUG', 'LANGUAGE'], `Language detection: localStorage='${localStorage.getItem('lalumo_language')}', resolved='${language}'`);
         debugLog(['CHORDS_2_2_DEBUG', 'STRINGS_STORE'], `Alpine.store('strings') available: ${!!Alpine.store('strings')}`);
         if (Alpine.store('strings')) {
