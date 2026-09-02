@@ -1809,8 +1809,17 @@ section h2 {
 }
 
 /* wenn alles unlocked, der frosch etwas grösser */
+.match-sounds-container.all-unlocked {
+  --right-card-lower-offset: min(30px, 6vw);
+}
+
+.match-sounds-container.all-unlocked .pitch-card.down-card {
+  height: calc(min(200px, 39vw) + var(--right-card-lower-offset));
+}
+
 .match-sounds-container.all-unlocked .pitch-card.jump-card {
   height: min(250px, 49vw);
+  top: calc(var(--right-card-lower-offset) - min(10px, 6vw));
 }
 
 /* Spezifische Positionierung der Cards */
