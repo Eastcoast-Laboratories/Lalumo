@@ -30,7 +30,8 @@ import {
   highlightCorrectButton,
   showErrorWithCorrectHint,
   playIntroAudio,
-  getLanguageCode
+  getLanguageCode,
+  updateActivityHash
 } from '../components/shared/feedback.js';
 
 // Import shared UI helpers
@@ -405,9 +406,7 @@ export function pitches() {
           }
           
           // Update URL hash for bookmarking
-          if (window.Alpine?.data?.app?.updateUrlHash) {
-            window.Alpine.data.app.updateUrlHash(mode);
-          }
+          updateActivityHash(mode);
         }
       });
         

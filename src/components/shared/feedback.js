@@ -90,6 +90,14 @@ export function getActivityModeFromHash() {
   return activityModeMap[activityId] || null;
 }
 
+export function updateActivityHash(activityMode) {
+  const activityId = activityMode?.match(/^(\d+_\d+)/)?.[1];
+  if (activityId && window.location.hash !== `#${activityId}`) {
+    window.history.replaceState(null, null, `#${activityId}`);
+    debugLog('HASH_NAV', `Updated URL hash to: #${activityId}`);
+  }
+}
+
 /**
  * Unified feedback message system for both help messages and game feedback
  * @param {string} message - The message to display
@@ -308,7 +316,7 @@ export async function showActivityIntroMessage(activityMode, component = null, d
       '1_3_pitches_draw': 'intro_1_3_pitches_draw',
       '1_3_pitches_draw-melody': 'intro_1_3_pitches_draw',
       '1_4_pitches_does-it-sound-right': 'intro_1_4_pitches_does_it_sound_right',
-      '1_5_pitches_memory': 'intro_1_5_pitches_memory',
+      '1_5_pitches_memory-game': 'memory_practice',
       '2_1_chords_color-matching': 'intro_2_1_chords_color_matching',
       '2_2_chords_stable_unstable': 'intro_2_2_chords_stable_unstable',
       '2_5_chords_characters': 'intro_2_5_chords_characters',
@@ -366,7 +374,7 @@ let currentIntroAudio = null;
 /**
  * Map string keys to audio file keys for /sounds/info-messages/
  * Audio files are named: {activityKey}_{function}_{lang}.mp3 (e.g. 1_3_intro_de.mp3)
- * English is the default: languages without own MP3s fall back to _en.mp3
+ * Each language uses only its own recordings.
  */
 const AUDIO_KEY_MAP = {
   'high_or_low_intro_stage1': '1_1_firststage',
@@ -435,10 +443,19 @@ export async function playIntroAudio(message, stringKey) {
     return;
   }
 
-  // Build audio path: {key}_{lang}.mp3 — English is default for languages without own MP3s
+  // Build audio path: {key}_{lang}.mp3
   const language = getLanguageCode();
-  const audioLang = (language === 'de') ? 'de' : 'en';
-  const audioPath = `/sounds/info-messages/${audioKey}_${audioLang}.mp3`;
+  const audioPath = `/sounds/info-messages/${audioKey}_${language}.mp3`;
+  try {
+    const response = await fetch(audioPath, { method: 'HEAD' });
+    if (!response.ok) {
+      debugLog(['INTRO_AUDIO', 'WARN', 'MISSING_LOCALIZED_AUDIO'], 'Localized intro audio is missing; skipping playback:', audioPath);
+      return;
+    }
+  } catch (error) {
+    debugLog(['INTRO_AUDIO', 'WARN', 'MISSING_LOCALIZED_AUDIO'], 'Could not verify localized intro audio; skipping playback:', audioPath, error);
+    return;
+  }
   debugLog('INTRO_AUDIO', 'Attempting to play audio via Tone.js:', message, 'file:', audioPath);
 
   // USE TONE.JS INSTEAD OF HTML5 AUDIO!

@@ -24,7 +24,8 @@ import {
   showBigRainbowSuccess, 
   showCompleteSuccess,
   highlightCorrectButton,
-  playIntroAudio
+  playIntroAudio,
+  updateActivityHash
 } from '../components/shared/feedback.js';
 
 // Import shared UI helpers
@@ -248,9 +249,7 @@ export function chords() {
           this.mode = mode || 'main';
           
           // Update URL hash for bookmarking
-          if (window.Alpine?.data?.app?.updateUrlHash) {
-            window.Alpine.data.app.updateUrlHash(mode);
-          }
+          updateActivityHash(mode);
           
           // Update the unified activity mode in the Alpine store
           if (window.Alpine?.store) {

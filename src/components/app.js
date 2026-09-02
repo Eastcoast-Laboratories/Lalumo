@@ -1,6 +1,7 @@
 import { debugLog } from '../utils/debug';
 import config from '../config.js';
 import { initMultiTouchHandler } from '../utils/touch-handler.js';
+import { updateActivityHash } from './shared/feedback.js';
 
 const MENU_LOCK_MAX_AGE_MS = 20 * 60 * 1000;
 
@@ -627,13 +628,7 @@ export function app() {
 
     // Update URL hash when activity mode changes
     updateUrlHash(activityId) {
-      if (activityId && activityId.match(/^\d+_\d+/)) {
-        const hashValue = activityId.match(/^(\d+_\d+)/)[1];
-        if (window.location.hash !== `#${hashValue}`) {
-          window.history.replaceState(null, null, `#${hashValue}`);
-          debugLog('HASH_NAV', `Updated URL hash to: #${hashValue}`);
-        }
-      }
+      updateActivityHash(activityId);
     },
 
     // Helper function to map activity IDs to their mode suffixes
