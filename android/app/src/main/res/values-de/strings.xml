@@ -411,12 +411,12 @@
     <string name="intro_2_4_missing_note">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
     <string name="intro_2_2_chords_stable_unstable">Höre dir den Akkord an, klingt er geisterhaft oder freundlich? Klicke auf die passende Seite im Wald</string>
     <string name="intro_2_5_chords_characters">Höre dir die Akkord-Art an und wähle das passende Tier!</string>
-    <string name="intro_2_6_chords_one_or_many">Kannst du hören, ob es eine Note ist oder mehrere Noten sind?</string>
+    <string name="intro_2_6_chords_one_or_many">Kannst du hören, ob es eine Note ist oder viele Noten sind?</string>
     
     <!-- Context-specific messages (TODO: wird momentan noch statt intro_message abgespielt) -->
-    <string name="match_sounds_practice">Klicke auf die Bilder zum Üben. Berühre den Vogel für das Spiel!</string>
+    <string name="match_sounds_practice">Klicke auf die Bilder zum Üben. Berühre den Vogel um das Spiel zu starten!</string>
     <string name="match_sounds_game">Höre zu und wähle das richtige Bild!</string>
-    <string name="memory_practice">Drücke frei auf die Tasten zum Üben. Berühre den Vogel für das Spiel!</string>
+    <string name="memory_practice">Drücke frei auf die Tasten zum Üben. Berühre den Vogel um das Spiel zu starten!</string>
     <string name="memory_game_intro">Höre dir die Melodie an und tippe dann auf die farbigen Knöpfe in der gleichen Reihenfolge!</string>
     
     <!-- Piano Key Labels -->

@@ -292,8 +292,8 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
         '1_5_pitches_memory': 'intro_1_5_pitches_memory',
         '2_1_chords_color-matching': 'intro_2_1_chords_color_matching',
         '2_2_chords_stable_unstable': 'intro_2_2_chords_stable_unstable',
-        '2_4_chords_missing-note': 'intro_2_4_missing_note',
-        '2_5_chords_characters': 'intro_2_5_chords_characters'
+        '2_5_chords_characters': 'intro_2_5_chords_characters',
+        '2_6_chords_one_or_many': 'intro_2_6_chords_one_or_many'
       };
       
       const stringKey = stringKeyMap[activityMode];
@@ -346,8 +346,8 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
         '1_5_pitches_memory': 'intro_1_5_pitches_memory',
         '2_1_chords_color-matching': 'intro_2_1_chords_color_matching',
         '2_2_chords_stable_unstable': 'intro_2_2_chords_stable_unstable',
-        '2_4_chords_missing-note': 'intro_2_4_missing_note',
-        '2_5_chords_characters': 'intro_2_5_chords_characters'
+        '2_5_chords_characters': 'intro_2_5_chords_characters',
+        '2_6_chords_one_or_many': 'intro_2_6_chords_one_or_many'
       };
       
       const stringKey = stringKeyMap[activityMode];
@@ -417,6 +417,11 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
           'de': 'Hoer dir die Melodie an! Klingt sie richtig, oder ist da ein falscher Ton?',
           'en': 'Listen to the melody! Does it sound right? Or is there a wrong note?',
           'it': 'Ascolta la melodia! Suona giusta? Oppure c\'è una nota sbagliata?'
+        },
+        '2_6_chords_one_or_many': {
+          'de': 'Kannst du hören, ob es eine Note ist oder viele Noten sind?',
+          'en': 'Can you hear if it is one note or many notes?',
+          'it': 'Riesci a sentire se è una nota o più note?'
         }
       };
 
@@ -427,11 +432,12 @@ export function showActivityIntroMessage(activityMode, component = null, delaySe
         const fallbackKeyMap = {
           '1_1_pitches_high_or_low': 'intro_1_1_pitches_high_or_low',
           '1_3_pitches_draw-melody': 'intro_1_3_pitches_draw',
-          '1_4_pitches_does-it-sound-right': 'intro_1_4_pitches_does_it_sound_right'
+          '1_4_pitches_does-it-sound-right': 'intro_1_4_pitches_does_it_sound_right',
+          '2_6_chords_one_or_many': 'intro_2_6_chords_one_or_many'
         };
         messageStringKey = fallbackKeyMap[activityMode] || '';
       } else {
-        message = 'no such mode ' + activityMode;
+        debugLog(['LOG_INTRO_MESSAGE', 'ERROR'], 'No intro message defined for activity:', activityMode);
       }
     }
   }
@@ -472,70 +478,40 @@ const AUDIO_DEBOUNCE_MS = 2000;
 // Track current playing intro audio
 let currentIntroAudio = null;
 
-// Cached German strings for Italian audio fallback (Italian has no MP3s, fall back to German)
-let cachedGermanStrings = null;
-
 /**
- * Load and cache German strings from strings-de.xml for audio fallback
- * Used when preferred language is Italian, since only German info-message MP3s exist
- * @returns {Promise<Object>} - Map of string key -> German text
+ * Map string keys to audio file keys for /sounds/info-messages/
+ * Audio files are named: {activityKey}_{function}_{lang}.mp3 (e.g. 1_3_intro_de.mp3)
+ * English is the default: languages without own MP3s fall back to _en.mp3
  */
-async function getGermanStringsForAudioFallback() {
-  if (cachedGermanStrings) {
-    return cachedGermanStrings;
-  }
-  try {
-    const response = await fetch('strings-de.xml');
-    if (!response.ok) {
-      debugLog(['INTRO_AUDIO', 'FALLBACK'], 'Failed to load German strings for fallback:', response.status);
-      return null;
-    }
-    const xmlText = await response.text();
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-    const stringElements = xmlDoc.querySelectorAll('string');
-    cachedGermanStrings = {};
-    stringElements.forEach(element => {
-      const name = element.getAttribute('name');
-      const value = element.textContent;
-      if (name && value) {
-        cachedGermanStrings[name] = value.replace(/\\/g, '');
-      }
-    });
-    debugLog('INTRO_AUDIO_FALLBACK', `Cached ${Object.keys(cachedGermanStrings).length} German strings for Italian audio fallback`);
-    return cachedGermanStrings;
-  } catch (e) {
-    debugLog(['INTRO_AUDIO', 'FALLBACK', 'ERROR'], 'Error loading German strings for fallback:', e);
-    return null;
-  }
-}
-
-/**
- * Build the audio filename from a message text
- * Replaces German umlauts, capitalizes first letter of each word, removes special chars
- * @param {string} message - The message text to convert
- * @returns {string} - The audio filename (without extension)
- */
-function buildAudioFilename(message) {
-  return message.replace(/ö/g, 'oe')         // Replace ö,ä,ü with ae, ue, ...
-  .replace(/ä/g, 'ae')         // Replace ö,ä,ü with ae, ue, ...
-  .replace(/ü/g, 'ue')         // Replace ö,ä,ü with ae, ue, ...
-  .replace(/ß/g, 'ss')         // Replace ö,ä,ü with ae, ue, ...
-  .replace(/Ä/g, 'Ae')         // Replace ÄÖÜ
-  .replace(/Ö/g, 'Oe')         // Replace ÄÖÜ
-  .replace(/Ü/g, 'Ue')         // Replace ÄÖÜ
-  .replace(/\b\w/g, c => c.toUpperCase()) // Make first letter of each word uppercase
-  .replace(/[^a-zA-Z0-9]/g, '');         // Remove all other characters
-}
+const AUDIO_KEY_MAP = {
+  'high_or_low_intro_stage1': '1_1_firststage',
+  'high_or_low_intro_stage2': '1_1_firststage',
+  'high_or_low_intro_stage3': '1_1_secondstage',
+  'high_or_low_intro_stage4': '1_1_secondstage',
+  'high_or_low_intro_stage5': '1_1_secondstage',
+  'intro_1_1_pitches_high_or_low': '1_1_intro',
+  'intro_1_2_pitches_match_sounds': '1_2_intro',
+  'match_sounds_practice': '1_2_practice',
+  'match_sounds_game': '1_2_game',
+  'intro_1_3_pitches_draw': '1_3_intro',
+  'intro_1_4_pitches_does_it_sound_right': '1_4_intro',
+  'intro_1_5_pitches_memory': '1_5_intro',
+  'memory_practice': '1_5_practice',
+  'memory_game_intro': '1_5_game',
+  'intro_2_1_chords_color_matching': '2_1_intro',
+  'intro_2_2_chords_stable_unstable': '2_2_intro',
+  'intro_2_5_chords_characters': '2_5_intro',
+  'intro_2_6_chords_one_or_many': '2_6_intro'
+};
 
 /**
  * Play intro audio for specific activities
  * @param {string} message - The intro message text (in the current display language)
- * @param {string} [stringKey] - Optional string key for audio language fallback
+ * @param {string} [stringKey] - String key to look up the audio file
  */
 export async function playIntroAudio(message, stringKey) {
   const now = Date.now();
-  debugLog(['INTRO_AUDIO', 'FUNCTION_CALL'], 'playIntroAudio() called with message ' + message + ', stringKey:', stringKey);
+  debugLog(['INTRO_AUDIO', 'FUNCTION_CALL'], 'playIntroAudio() called with message:', message, 'stringKey:', stringKey);
 
   // CRITICAL: Re-verify activity from hash before playing audio
   // This prevents playing wrong audio when hash changes during initialization
@@ -567,29 +543,18 @@ export async function playIntroAudio(message, stringKey) {
   lastAudioStringKey = stringKey || null;
   lastAudioTime = now;
 
-  // Determine the audio message: when preferred language is Italian, fall back to German
-  // since only German info-message MP3s exist in /sounds/info-messages/
-  let audioMessage = message;
-  const language = getLanguageCode();
-  if (language === 'it' && stringKey) {
-    const germanStrings = await getGermanStringsForAudioFallback();
-    if (germanStrings && germanStrings[stringKey]) {
-      audioMessage = germanStrings[stringKey];
-      debugLog('INTRO_AUDIO_FALLBACK', `Italian language detected, using German audio fallback for key "${stringKey}":`, audioMessage);
-    } else {
-      debugLog(['INTRO_AUDIO', 'FALLBACK'], `No German fallback found for key "${stringKey}", using original message`);
-    }
-  }
-
-  const filename = buildAudioFilename(audioMessage);
-  const audioFile = filename + '.mp3';
-  if (!audioFile) {
-    debugLog('INTRO_AUDIO', 'No audio file for message:', audioMessage);
+  // Look up audio file key from string key
+  const audioKey = AUDIO_KEY_MAP[stringKey];
+  if (!audioKey) {
+    debugLog(['INTRO_AUDIO', 'ERROR'], 'No audio file mapped for stringKey:', stringKey);
     return;
   }
 
-  const audioPath = `/sounds/info-messages/${audioFile}`;
-  debugLog('INTRO_AUDIO', 'Attempting to play audio via Tone.js:', audioMessage, 'file:', audioPath);
+  // Build audio path: {key}_{lang}.mp3 — English is default for languages without own MP3s
+  const language = getLanguageCode();
+  const audioLang = (language === 'de') ? 'de' : 'en';
+  const audioPath = `/sounds/info-messages/${audioKey}_${audioLang}.mp3`;
+  debugLog('INTRO_AUDIO', 'Attempting to play audio via Tone.js:', message, 'file:', audioPath);
 
   // USE TONE.JS INSTEAD OF HTML5 AUDIO!
   // This allows audioEngine.stopAll() to stop intro messages too
