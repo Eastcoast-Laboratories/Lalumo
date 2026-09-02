@@ -25,7 +25,8 @@ import {
   showCompleteSuccess,
   highlightCorrectButton,
   playIntroAudio,
-  updateActivityHash
+  updateActivityHash,
+  waitForStringsStore
 } from '../components/shared/feedback.js';
 
 // Import shared UI helpers
@@ -240,16 +241,15 @@ export function chords() {
         // Only handle the event if it's for the chords component
         if (component === 'chords') {
           debugLog('CHORDS', `Received unified activity mode event: ${mode}`);
-          
-          
+
+          // Update URL hash before setMode() resolves the current intro message
+          updateActivityHash(mode);
+
           // Call our own setMode method to ensure proper initialization
           this.setMode(mode || 'main');
           
           // CRITICAL: Force Alpine.js to update the mode property
           this.mode = mode || 'main';
-          
-          // Update URL hash for bookmarking
-          updateActivityHash(mode);
           
           // Update the unified activity mode in the Alpine store
           if (window.Alpine?.store) {
@@ -786,8 +786,14 @@ export function chords() {
      * @activity common
      * @used-by all activities
      */
-    showContextMessage(forceShow = false) {
-      const stringsStore = window.Alpine?.store ? window.Alpine.store('strings') : null;
+    async showContextMessage(forceShow = false) {
+      const requestedMode = this.mode;
+      const stringsStore = await waitForStringsStore();
+      if (!stringsStore || this.mode !== requestedMode) {
+        debugLog('INTRO_CONTEXT_CALL', 'Skipping stale context message request:', { requestedMode, currentMode: this.mode });
+        return;
+      }
+
       let message = '';
       let audioStringKey = '';
 

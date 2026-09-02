@@ -31,7 +31,8 @@ import {
   showErrorWithCorrectHint,
   playIntroAudio,
   getLanguageCode,
-  updateActivityHash
+  updateActivityHash,
+  waitForStringsStore
 } from '../components/shared/feedback.js';
 
 // Import shared UI helpers
@@ -398,15 +399,15 @@ export function pitches() {
         // Only handle the event if it's for the pitches component
         if (component === 'pitches') {
           debugLog('PITCHES', 'Received unified activity mode event for pitches:', mode);
+
+          // Update URL hash before setMode() resolves the current intro message
+          updateActivityHash(mode);
           this.setMode(mode);
           
           // Update the unified activity mode in the Alpine store
           if (window.Alpine?.store) {
             window.Alpine.store('currentActivityMode', { component: 'pitches', mode });
           }
-          
-          // Update URL hash for bookmarking
-          updateActivityHash(mode);
         }
       });
         
@@ -423,11 +424,6 @@ export function pitches() {
         debugLog('PITCHES', 'Home button pressed via custom event');
         this.setMode('main');
       });
-      
-      // Show help message based on language preference
-      setTimeout(() => {
-        this.showContextMessage();
-      }, 1000);
     },
     
     /**
@@ -1563,7 +1559,6 @@ export function pitches() {
      */
     setup_1_2(playSound = false, generateNew = true) {
       this.animationInProgress = false;
-      window.showActivityIntroMessage('match', this);
       this.updateMatchingBackground(); // Update background based on progress
       this.updateMatchSoundsPitchCardLayout(); // Aktualisiere Pitch-Card-Layout basierend auf Freischaltungsstatus
       
@@ -1858,7 +1853,14 @@ export function pitches() {
      * @activity common
      * @used-by activities with complex context logic
      */
-    showContextMessage(forceShow = false) {
+    async showContextMessage(forceShow = false) {
+      const requestedMode = this.mode;
+      const stringsStore = await waitForStringsStore();
+      if (!stringsStore || this.mode !== requestedMode) {
+        debugLog('INTRO_CONTEXT_CALL', 'Skipping stale context message request:', { requestedMode, currentMode: this.mode });
+        return;
+      }
+
       let message = '';
 
       // Handle activities with complex context-dependent logic
@@ -1869,7 +1871,6 @@ export function pitches() {
         window.showActivityIntroMessage(this.mode, this, 10, true, forceShow);
       } else if (this.mode === '1_2_pitches_match-sounds') {
         // Context-dependent message based on game mode
-        const stringsStore = window.Alpine?.store ? window.Alpine.store('strings') : null;
         let audioStringKey = '';
         if (!this.gameMode) {
           audioStringKey = 'match_sounds_practice';
@@ -1900,7 +1901,6 @@ export function pitches() {
         }
       } else if (this.mode === '1_5_pitches_memory-game') {
         // Context-dependent message based on free play mode
-        const stringsStore = window.Alpine?.store ? window.Alpine.store('strings') : null;
         let audioStringKey = '';
         if (this.memoryFreePlay) {
           audioStringKey = 'memory_practice';
@@ -2623,9 +2623,6 @@ export function pitches() {
       // Not in challenge mode by default
       this.melodyChallengeMode = false;
       this.stopReferencePlayback(); this.referenceSequence = null;
-      
-      // Show intro message when entering the activity
-      window.showActivityIntroMessage('draw', this);
       
       // Clear any existing drawing when switching to this mode
       this.clearDrawing();

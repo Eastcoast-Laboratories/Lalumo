@@ -756,7 +756,7 @@
     
   </script>
   <!-- app.js -->
-  <main id="app" x-data="app()" x-init="init(); initLazyLoading(); updateEnvironmentClasses(); checkPortraitNoticeOnInit();" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
+  <main id="app" x-data="app()" x-init="initLazyLoading(); updateEnvironmentClasses(); checkPortraitNoticeOnInit();" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
     
     <!-- Username Prompt Modal -->
     <div class="modal-overlay" x-show="showUsernamePrompt" x-transition style="display: none;">
@@ -1104,7 +1104,7 @@
 
     <!-- Chapter: Pitch Chapters View -->
     <section class="chapters-view" x-show="active === 'pitches'" x-transition>
-      <div class="chapters-container" x-data="pitches()" x-init="init()">
+      <div class="chapters-container" x-data="pitches()">
         
         <!-- High or Low Activity -->
         <div id="1_1_pitches" x-show="mode === '1_1_pitches_high_or_low'" class="activity-container lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_1_sloth_mouse.jpg" style="background-size: cover; background-position: top left;
@@ -1354,7 +1354,7 @@
     
     <!-- Chapter: Chords -->
     <section class="chapters-view" x-show="active === 'chords'" x-transition class="chord-chapters-view lazyload-bg" data-background-image="./x.gif" style="background-size: cover; background-position: top center; border-radius: 0;">
-      <div class="chapters-container" x-data="chords()" x-init="init()">
+      <div class="chapters-container" x-data="chords()">
         
         <!-- Main chord activity selection screen -->
         <div x-show="!mode || mode === 'main'" class="chord-landing">

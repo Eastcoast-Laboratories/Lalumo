@@ -41,7 +41,7 @@ let pendingAudioStringKey = null;
  * @param {number} timeoutMs - Maximum time to wait
  * @returns {Promise<Object|null>} - The strings store object, or null if timeout
  */
-async function waitForStringsStore(timeoutMs = 5000) {
+export async function waitForStringsStore(timeoutMs = 5000) {
   const startTime = Date.now();
   while (Date.now() - startTime < timeoutMs) {
     const strings = window.Alpine?.store ? window.Alpine.store('strings') : null;
@@ -448,8 +448,9 @@ export async function playIntroAudio(message, stringKey) {
   const audioPath = `/sounds/info-messages/${audioKey}_${language}.mp3`;
   try {
     const response = await fetch(audioPath, { method: 'HEAD' });
-    if (!response.ok) {
-      debugLog(['INTRO_AUDIO', 'WARN', 'MISSING_LOCALIZED_AUDIO'], 'Localized intro audio is missing; skipping playback:', audioPath);
+    const contentType = response.headers.get('content-type') || '';
+    if (!response.ok || !contentType.startsWith('audio/')) {
+      debugLog(['INTRO_AUDIO', 'WARN', 'MISSING_LOCALIZED_AUDIO'], 'Localized intro audio is missing or invalid; skipping playback:', audioPath, 'contentType:', contentType);
       return;
     }
   } catch (error) {
@@ -868,6 +869,41 @@ export function hideActivityProgressBar(progressClass = 'activity-progress') {
   }
 }
 
+function showContextMessageForActivity(activityMode = null, forceShow = false) {
+  let activeMode = activityMode || currentActivityMode;
+  let targetComponent = null;
+
+  try {
+    const alpineStore = window.Alpine?.store ? window.Alpine.store('currentActivityMode') : null;
+    if (!activityMode && alpineStore?.mode) {
+      activeMode = alpineStore.mode;
+      debugLog('AUDIO_SYSTEM', 'Got activity mode from Alpine store:', activeMode);
+    }
+
+    if (activeMode?.includes('_pitches_')) {
+      targetComponent = window.pitchesComponent;
+    } else if (activeMode?.includes('_chords_')) {
+      targetComponent = window.chordsComponent;
+    }
+  } catch (error) {
+    debugLog('AUDIO_SYSTEM', 'Error accessing Alpine store:', error);
+  }
+
+  if (!targetComponent || typeof targetComponent.showContextMessage !== 'function') {
+    debugLog(['AUDIO_SYSTEM', 'ERROR'], 'No context message component found for activity:', activeMode);
+    return false;
+  }
+
+  if (targetComponent.mode !== activeMode) {
+    debugLog(['AUDIO_SYSTEM', 'ERROR'], 'Context message component mode mismatch:', { activeMode, componentMode: targetComponent.mode });
+    return false;
+  }
+
+  debugLog('INTRO_CONTEXT_CALL', 'Calling component showContextMessage for:', activeMode, 'forceShow:', forceShow);
+  targetComponent.showContextMessage(forceShow);
+  return true;
+}
+
 /**
  * Repeat the last intro message for the current activity
  */
@@ -880,46 +916,8 @@ export function repeatLastIntroMessage() {
     window.audioEngine.stopAll();
     debugLog('AUDIO_SYSTEM', 'Stopped all sounds via audioEngine.stopAll()');
   }
-  
-  // Get current activity mode from Alpine store (like reset button does)
-  let activeMode = currentActivityMode; // fallback
-  let targetComponent = null;
-  
-  try {
-    const alpineStore = window.Alpine?.store ? window.Alpine.store('currentActivityMode') : null;
-    if (alpineStore && alpineStore.mode) {
-      activeMode = alpineStore.mode;
-      debugLog('AUDIO_SYSTEM', 'Got activity mode from Alpine store:', activeMode);
-      
-      if (alpineStore.component === 'pitches') {
-        targetComponent = window.pitchesComponent;
-      } else if (alpineStore.component === 'chords') {
-        targetComponent = window.chordsComponent;
-      }
-    } else {
-      // Fallback: determine from currentActivityMode string
-      if (currentActivityMode) {
-        if (currentActivityMode.includes('_pitches_')) {
-          targetComponent = window.pitchesComponent;
-          activeMode = currentActivityMode;
-        } else if (currentActivityMode.includes('_chords_')) {
-          targetComponent = window.chordsComponent;
-          activeMode = currentActivityMode;
-        }
-      }
-    }
-  } catch (error) {
-    debugLog('AUDIO_SYSTEM', 'Error accessing Alpine store:', error);
-  }
-  
-  // Call the appropriate component's showContextMessage function
-  // Pass forceShow: true to override help messages disabled setting
-  if (targetComponent && targetComponent.showContextMessage) {
-    debugLog('REPEAT_BUTTON', 'Calling showContextMessage for:', activeMode, 'with forceShow: true, targetComponent:', targetComponent ? 'found' : 'null');
-    targetComponent.showContextMessage(true); // forceShow = true
-  } else {
-    debugLog('REPEAT_BUTTON', 'No active component found for repeat, activeMode:', activeMode, 'currentActivityMode:', currentActivityMode, 'targetComponent:', targetComponent);
-  }
+
+  showContextMessageForActivity(null, true);
 }
 
 /**
@@ -944,29 +942,15 @@ export function getCurrentActivityIcon() {
 export function onShortcutScreenClosed() {
   debugLog('AUDIO_SYSTEM', 'Shortcut screen closed, checking for delayed intro message');
   shortcutScreenClosed = true;
-  
-  // Check if we have a hash navigation (e.g., #1_4) that should determine the activity
-  const activityMode = getActivityModeFromHash();
-  if (activityMode) {
-    debugLog('AUDIO_SYSTEM', 'Hash navigation detected -> playing intro for:', activityMode);
-    // Update the current activity mode and play its intro message
-    currentActivityMode = activityMode;
-    lastIntroMessage = { activityMode, component: null, delaySeconds: 10 };
-    
-    // Play the intro message for this activity
-    showActivityIntroMessage(activityMode, null, 10, true);
+
+  const activityMode = getActivityModeFromHash() || lastIntroMessage?.activityMode || currentActivityMode;
+  if (!activityMode) {
+    debugLog('AUDIO_SYSTEM', 'No active activity found after shortcut screen closed');
     return;
   }
-  
-  // Fallback: Play delayed intro message if there is one
-  if (lastIntroMessage) {
-    showActivityIntroMessage(
-      lastIntroMessage.activityMode,
-      lastIntroMessage.component,
-      lastIntroMessage.delaySeconds,
-      true // force play now
-    );
-  }
+
+  currentActivityMode = activityMode;
+  showContextMessageForActivity(activityMode);
 }
 
 /**
