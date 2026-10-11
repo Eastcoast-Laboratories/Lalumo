@@ -1,4 +1,16 @@
 #!/bin/bash
+# Generates all changelog files for a release from the DE_CHANGES /
+# EN_CHANGES blocks below:
+# - fastlane/metadata/android/{de,en-US}/changelogs/<versionCode>.txt
+# - fastlane/metadata/android/playstore/changelog_<versionCode>.txt
+# - prepends an entry to CHANGELOG.md (EN) and CHANGELOG_de.md (DE)
+# - warns when a Play Store entry exceeds the 500-char limit
+#
+# Do NOT bump VERSION_NAME here: versions are managed centrally by
+# mobile-build.sh (--update-version), which syncs package.json,
+# android/app/build.gradle, this file's VERSION_NAME, the F-Droid
+# metadata and the iOS project.pbxproj (MARKETING_VERSION +
+# CURRENT_PROJECT_VERSION). This script only reads the result.
 
 cd /var/www/Musici
 
@@ -10,7 +22,7 @@ CHANGELOG_DE_MD="CHANGELOG_de.md"
 PLAYSTORE_DIR="fastlane/metadata/android/playstore"
 
 # Must be the same as version from build.gradle
-VERSION_NAME=7.2
+VERSION_NAME=7.3
 # Extract versionCode from build.gradle (exclude comment lines)
 VERSION_CODE=$(grep "versionCode" "$BUILD_GRADLE" | grep -v "//" | awk '{print $2}')
 # Get current date

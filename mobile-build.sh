@@ -14,8 +14,9 @@ show_help() {
   echo "Options:"
   echo "  -h, --help                Show this help message"
   echo "  -u, --update-version      Update version: extract current version from 'package."
-  echo "                            json' and increment minor version, then update 'build.gradle'"
-  echo "                            and 'dev/add_changelog.sh'"
+  echo "                            json' and increment minor version, then update 'build.gradle',"
+  echo "                            'dev/add_changelog.sh', F-Droid metadata and the iOS"
+  echo "                            'project.pbxproj' (MARKETING_VERSION + CURRENT_PROJECT_VERSION)"
   echo ""
   echo "Platforms:"
   echo "  android    Build and open Android project"
@@ -159,6 +160,21 @@ update_version() {
     sed -i "s/CurrentVersionCode: [0-9]\+/CurrentVersionCode: $NEW_CODE/" "$FDROID_METADATA_FILE"
   else
     echo "F-Droid metadata file not found at $FDROID_METADATA_FILE"
+  fi
+
+  # Update version in iOS project. MARKETING_VERSION is the user-facing
+  # version (CFBundleShortVersionString, shown as "1.0"/"7.3" in App Store
+  # Connect and TestFlight); CURRENT_PROJECT_VERSION is the build number
+  # (CFBundleVersion) and must be unique per marketing version — the
+  # Android versionCode is reused as the shared counter.
+  echo "###### 2.4 Updating version in iOS project.pbxproj"
+  PBXPROJ_FILE="ios/App/App.xcodeproj/project.pbxproj"
+  if [ -f "$PBXPROJ_FILE" ]; then
+    echo "New iOS MARKETING_VERSION: $ANDROID_VERSION, CURRENT_PROJECT_VERSION: $NEW_CODE"
+    sed -i "s/MARKETING_VERSION = [0-9.]\+/MARKETING_VERSION = $ANDROID_VERSION/" "$PBXPROJ_FILE"
+    sed -i "s/CURRENT_PROJECT_VERSION = [0-9]\+/CURRENT_PROJECT_VERSION = $NEW_CODE/" "$PBXPROJ_FILE"
+  else
+    echo "iOS project file not found at $PBXPROJ_FILE"
   fi
 }
 
