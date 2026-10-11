@@ -107,8 +107,8 @@
 .mute-warning-notice {
   display: none;
   position: fixed !important;
-  top: 20px !important;
-  right: 20px !important;
+  top: calc(20px + env(safe-area-inset-top, 0px)) !important;
+  right: calc(20px + env(safe-area-inset-right, 0px)) !important;
   width: auto !important;
   max-width: 350px !important;
   background-color: rgba(255, 87, 34, 0.95) !important;
@@ -224,8 +224,8 @@
 
 .portrait-notice-close {
   position: absolute !important;
-  top: 20px !important;
-  right: 20px !important;
+  top: calc(20px + env(safe-area-inset-top, 0px)) !important;
+  right: calc(20px + env(safe-area-inset-right, 0px)) !important;
   background: rgba(255, 255, 255, 0.2) !important;
   border: 2px solid rgba(255, 255, 255, 0.6) !important;
   color: white !important;
@@ -821,15 +821,17 @@ body {
 }
 
 .hamburger-button {
-  margin-left: 4vh;
-  margin-top: 3.3vh;
+  /* safe-area keeps the button clear of notch/Dynamic Island (top) and
+     of the side island zone in landscape (left) — env() is 0 elsewhere */
+  margin-left: calc(4vh + env(safe-area-inset-left, 0px));
+  margin-top: calc(3.3vh + env(safe-area-inset-top, 0px));
 }
 
 /* Audio Repeat Button */
 .repeat-button {
   position: absolute;
-  top: min(2vw,1vh);
-  left: min(11vw,7vh);
+  top: calc(min(2vw,1vh) + env(safe-area-inset-top, 0px));
+  left: calc(min(11vw,7vh) + env(safe-area-inset-left, 0px));
   padding: 0;
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -1003,6 +1005,9 @@ body {
   position: fixed;
   top: 0;
   left: 0;
+  /* keep the drawer's top entries clear of notch/Dynamic Island */
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
   width: 85%;
   max-width: 40vh;
   height: 100%;
@@ -1857,7 +1862,8 @@ section h2 {
 /* Progress Display Box */
 .progress-display {
   position: fixed;
-  bottom: -5px;
+  /* sit above the iPhone home-indicator area */
+  bottom: calc(-5px + env(safe-area-inset-bottom, 0px));
   left: 50%;
   transform: translateX(-50%);
   background-color: rgba(255, 255, 255, 0.5);
@@ -1951,7 +1957,8 @@ section h2 {
 /* Sound Judgment Level Display - Spezialisierte Anzeige für Sound Judgment Level und Streak */
 .sound-judgment-level {
   position: fixed;
-  bottom: 1.7rem; /* Am oberen Rand statt am unteren */
+  /* 1.7rem plus iPhone home-indicator area */
+  bottom: calc(1.7rem + env(safe-area-inset-bottom, 0px)); /* Am oberen Rand statt am unteren */
   left: 50%;
   background-color: rgba(255, 255, 255, 0.5); /* Blauer Hintergrund für bessere Sichtbarkeit */
   color: rgb(0, 0, 0);

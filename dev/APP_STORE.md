@@ -268,11 +268,13 @@ referral feature on iOS (would need a code change + rebuild).
 - Deployment target raised to iOS 15.0 (pbxproj + Podfile) — takes
   effect from the next build; Apple requires ≥15.0 for uploads starting
   April 2027 (ITMS-90068 warning on build 7.3 (44) is non-blocking).
-- Uploaded: **7.3 (45)** — same release as 7.3 (44) plus the real bird
-  app icon (`AppIcon-512@2x.png` was the Capacitor stub before; composed
-  from `mipmap-xxxhdpi/ic_launcher_foreground.png` on opaque white,
-  matching the Android launcher icon pixel-proportionally). Build 45
-  also contains the iPad badge fix and iOS 15.0 deployment target.
+- Uploaded: **7.3 (46)** — same release as 7.3 (44) plus: real bird
+  app icon (since 45), iPad badge fix (since 44), iOS 15.0 deployment
+  target (since 45), and since 46: status bar fully hidden on iOS
+  (`UIStatusBarHidden`) + `viewport-fit=cover` and `env(safe-area-*)`
+  offsets so the hamburger, drawer, repeat and mute buttons clear the
+  Dynamic Island / home-indicator zones (verified in the iPhone 17 Pro
+  Max simulator).
 - ⚠ **Uploaded build 1.0 (1) still contains the iPad badge bug:** on
   iPadOS the WKWebView reports a desktop ("Macintosh") user agent, so the
   UA-based `isIOSApp()` returned false and the Google Play / F-Droid
