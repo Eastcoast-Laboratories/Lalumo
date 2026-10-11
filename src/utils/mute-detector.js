@@ -4,7 +4,6 @@
  */
 import { debugLog } from './debug';
 import { Capacitor } from '@capacitor/core';
-import * as Tone from 'tone';
 
 let muteCheckInterval = null;
 let lastMuteStatus = false;
@@ -28,150 +27,29 @@ export async function detectDeviceMute() {
   }
   
   // Try native iOS mute detection via Capacitor plugin
+  // Bridged plugins are exposed on Capacitor.Plugins, not on window
   if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'ios') {
     try {
-      const { MuteDetector } = window;
+      const MuteDetector = Capacitor.Plugins?.MuteDetector;
       if (MuteDetector && typeof MuteDetector.isDeviceMuted === 'function') {
         const result = await MuteDetector.isDeviceMuted();
-        debugLog('MUTE_DETECTOR', `Native iOS mute detection: ${result.isMuted} (volume=${result.volumeLevel})`);
+        debugLog('MUTE_DETECTOR', `Native iOS mute detection: ${result.isMuted} (volume=${result.volumeLevel}, silenceHint=${result.silenceHint})`);
         return result.isMuted;
       }
+      debugLog(['MUTE_DETECTOR', 'WARN'], 'MuteDetector plugin not registered on Capacitor.Plugins');
     } catch (e) {
-      debugLog(['MUTE_DETECTOR', 'WARN'], 'Native iOS mute detection failed, falling back to Web Audio API:', e);
+      debugLog(['MUTE_DETECTOR', 'WARN'], 'Native iOS mute detection failed:', e);
     }
+    return false;
   }
   
-  // Fallback to Web Audio API for non-native or if native fails
-  return new Promise((resolve) => {
-    let oscillator = null;
-    let gainNode = null;
-    let analyser = null;
-    let resolved = false;
-    
-    const cleanup = () => {
-      try {
-        if (oscillator) {
-          try {
-            oscillator.stop();
-          } catch (e) {
-            // Already stopped
-          }
-          try {
-            oscillator.disconnect();
-          } catch (e) {
-            // Already disconnected
-          }
-          oscillator = null;
-        }
-        if (gainNode) {
-          try {
-            gainNode.disconnect();
-          } catch (e) {}
-          gainNode = null;
-        }
-        if (analyser) {
-          try {
-            analyser.disconnect();
-          } catch (e) {}
-          analyser = null;
-        }
-      } catch (e) {
-        debugLog(['MUTE_DETECTOR', 'WARN'], 'Cleanup error:', e);
-      }
-    };
-    
-    try {
-      // Create a very short oscillator (10ms)
-      const audioContext = Tone.context._context || Tone.context;
-      
-      // Ensure context is running
-      if (audioContext.state !== 'running') {
-        debugLog('MUTE_DETECTOR', 'AudioContext not running, assuming not muted');
-        resolve(false);
-        return;
-      }
-      
-      oscillator = audioContext.createOscillator();
-      gainNode = audioContext.createGain();
-      analyser = audioContext.createAnalyser();
-      
-      // Quiet tone (audible to analyzer but very quiet for user)
-      oscillator.frequency.value = 1000;
-      gainNode.gain.value = 0.1; // Increased to 10% - needs to be loud enough for analyzer
-      analyser.fftSize = 2048; // Larger FFT for better detection
-      analyser.smoothingTimeConstant = 0;
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(analyser);
-      analyser.connect(audioContext.destination);
-      
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
-      
-      // Start the tone - longer duration for better detection
-      const startTime = audioContext.currentTime;
-      oscillator.start(startTime);
-      oscillator.stop(startTime + 0.2); // 200ms tone
-      
-      // Take multiple measurements and use the maximum
-      let maxLevel = 0;
-      let measurementCount = 0;
-      const maxMeasurements = 8;
-      
-      const measureAudio = () => {
-        if (resolved) return;
-        
-        try {
-          analyser.getByteFrequencyData(dataArray);
-          const sum = dataArray.reduce((a, b) => a + b, 0);
-          const average = sum / dataArray.length;
-          
-          if (average > maxLevel) {
-            maxLevel = average;
-          }
-          
-          measurementCount++;
-          
-          if (measurementCount < maxMeasurements) {
-            // Take another measurement
-            setTimeout(measureAudio, 20);
-          } else {
-            // Done measuring, evaluate result
-            const isMuted = maxLevel <= 1;
-            
-            resolved = true;
-            debugLog('MUTE_DETECTOR', `Device muted: ${isMuted} (max audio level: ${maxLevel.toFixed(2)}, measurements: ${measurementCount}, threshold: 1)`);
-            
-            cleanup();
-            resolve(isMuted);
-          }
-        } catch (e) {
-          resolved = true;
-          debugLog(['MUTE_DETECTOR', 'ERROR'], 'Check audio error:', e);
-          cleanup();
-          resolve(false);
-        }
-      };
-      
-      // Start measuring after 30ms (give oscillator time to start)
-      setTimeout(measureAudio, 30);
-      
-      // Fallback timeout
-      setTimeout(() => {
-        if (!resolved) {
-          resolved = true;
-          debugLog('MUTE_DETECTOR', 'Mute detection timeout, assuming not muted');
-          cleanup();
-          resolve(false);
-        }
-      }, 500);
-      
-    } catch (error) {
-      resolved = true;
-      debugLog(['MUTE_DETECTOR', 'ERROR'], 'Mute detection failed:', error);
-      cleanup();
-      resolve(false);
-    }
-  });
+  // Web fallback: there is no reliable way to detect hardware mute from
+  // Web Audio — an analyser reads the generated signal before the output
+  // path, so device volume and the silent switch are invisible to it.
+  // A test tone would only be audible to the user without detecting
+  // anything, so report "not muted" instead.
+  debugLog('MUTE_DETECTOR', 'No native mute detection on this platform, assuming not muted');
+  return false;
 }
 
 /**

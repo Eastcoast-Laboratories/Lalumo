@@ -2,6 +2,7 @@ import { debugLog } from '../utils/debug';
 import config from '../config.js';
 import { initMultiTouchHandler } from '../utils/touch-handler.js';
 import { updateActivityHash } from './shared/feedback.js';
+import * as Tone from 'tone';
 
 const MENU_LOCK_MAX_AGE_MS = 20 * 60 * 1000;
 
@@ -673,6 +674,10 @@ export function app() {
       
       // Initialize multi-touch handler for Android Chrome
       initMultiTouchHandler();
+
+      // Restore audio contexts whenever the app returns from the
+      // background (iOS suspends them into the "interrupted" state)
+      this.setupAudioResumeOnForeground();
       
       // Load user data (including language) from localStorage
       this.loadUserData();
@@ -1371,6 +1376,53 @@ export function app() {
     },
     
     /**
+     * Register listeners that resume the audio contexts when the app
+     * returns from the background. iOS moves AudioContexts into the
+     * "interrupted" state while backgrounded; without an explicit resume
+     * every sound stays silent until the app is restarted.
+     */
+    setupAudioResumeOnForeground() {
+      const resumeAudio = async () => {
+        if (document.hidden) return;
+        try {
+          // Replay the silent <audio> element to re-activate the
+          // AVAudioSession before touching the Web Audio contexts
+          const silentAudio = document.getElementById('silentAudio');
+          await silentAudio?.play().catch(() => {});
+
+          if (this.audioContext && this.audioContext.state !== 'running') {
+            const prevState = this.audioContext.state;
+            await this.audioContext.resume();
+            debugLog('APP', `AudioContext resumed from "${prevState}" after returning to foreground`);
+          }
+
+          // Tone.context.resume() only handles "suspended"; resume the
+          // underlying AudioContext so the iOS "interrupted" state is
+          // covered as well (same pattern as audio-engine.js)
+          if (Tone.context && Tone.context.state !== 'running') {
+            const prevState = Tone.context.state;
+            await Tone.context._context.resume();
+            debugLog('APP', `Tone.js context resumed from "${prevState}" after returning to foreground`);
+          }
+        } catch (e) {
+          debugLog(['APP', 'WARN'], 'Audio resume after foreground failed:', e);
+        }
+      };
+
+      // WKWebView fires visibilitychange when the app backgrounds/foregrounds
+      document.addEventListener('visibilitychange', resumeAudio);
+      // The Capacitor bridge dispatches a legacy cordova "resume" event
+      document.addEventListener('resume', resumeAudio);
+      // Core App plugin: precise lifecycle signal, no extra npm package needed
+      if (window.Capacitor?.Plugins?.App?.addListener) {
+        window.Capacitor.Plugins.App.addListener('appStateChange', ({ isActive }) => {
+          if (isActive) resumeAudio();
+        });
+      }
+      debugLog('APP', 'Foreground audio resume listeners registered');
+    },
+
+    /**
      * Unlock audio on mobile devices
      * This addresses both iOS and Android requirements for user interaction to enable audio
      */
@@ -1426,15 +1478,6 @@ export function app() {
         
         if (isAndroid && isChrome) {
           debugLog('APP', 'Android Chrome detected, applying special audio handling');
-          // Additional audio setup specifically for Android Chrome
-          document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && this.audioContext && this.audioContext.state === 'suspended') {
-              this.audioContext.resume().then(() => {
-                debugLog('APP', 'AudioContext resumed after visibility change');
-              });
-            }
-          });
-          
           // Apply Android-specific optimizations
           this.initAndroidAudio();
         }
