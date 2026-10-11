@@ -1686,6 +1686,10 @@ export function app() {
      * @returns {boolean} True if iOS app
      */
     isIOSApp() {
+      // iPadOS reports a desktop ("Macintosh") user agent in WKWebView, so
+      // the UA check alone fails on iPads — the Capacitor platform is reliable.
+      const platform = window.Capacitor?.getPlatform?.();
+      if (platform === 'ios') return true;
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
       // Zusätzliche Prüfung für iOS App vs. Safari Browser
       // In der App ist typischerweise window.isNativeApp gesetzt
