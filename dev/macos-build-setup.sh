@@ -27,6 +27,12 @@
 
 # ---------------------------------------------------------------
 # 1. rsync sources laptop -> Mac
+#    CAUTION with --delete: it removes every file on the Mac that is not
+#    present locally — including generated Xcode files that are not in
+#    git. ios/App/App.xcworkspace/contents.xcworkspacedata and the shared
+#    App.xcscheme (xcshareddata/) are committed, so they survive; but
+#    Podfile.lock, xcuserdata/ (user schemes) and other generated files
+#    get wiped and must be regenerated with pod install afterwards.
 # ---------------------------------------------------------------
 rsync -avz --delete \
   --exclude .git/ --exclude node_modules/ --exclude dist/ \
@@ -61,8 +67,15 @@ pod --version   # => 1.15.2
 export PATH=$HOME/devtools/node/bin:$HOME/.gem/ruby/2.6.0/bin:$PATH
 cd $MAC_REPO
 npm ci
-npm run build        # sync-strings + webpack --mode production -> dist/
-npx cap sync ios     # copies dist -> ios/App/App/public, runs pod install
+# mobile-build.sh, NOT `npm run build` + `npx cap sync`: the plain build
+# leaves the marketing homepage as dist/index.html, so the native app
+# would start on the homepage. mobile-build.sh builds with
+# --env mobile=true, copies dist/app/* over the root and runs cap sync.
+# Run it here on the Mac: step 1 excludes ios/App/App/public/, so a
+# laptop-side build does not reach the Mac with that rsync.
+bash mobile-build.sh update
+# verify the start page is the game, not the homepage:
+grep -o '<title>[^<]*</title>' ios/App/App/public/index.html   # => <title>Lalumo</title>
 cd ios/App && pod install --repo-update   # 3 pods: Capacitor, Cordova, SplashScreen
 
 # ---------------------------------------------------------------
