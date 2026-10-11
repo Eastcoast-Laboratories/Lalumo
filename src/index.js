@@ -194,7 +194,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   debugLog('APP', `Lalumo app running on platform: ${capacitor.getPlatform()}`);
-  
+
+  // WKWebView defaults to audioSession type "auto", which lets iOS treat
+  // Web Audio as ambient — silenced by the hardware silent switch and
+  // interrupted more aggressively. "playback" matches a music app's intent.
+  if ('audioSession' in navigator) {
+    try {
+      navigator.audioSession.type = 'playback';
+      debugLog('APP', `AudioSession type set to "${navigator.audioSession.type}"`);
+    } catch (e) {
+      debugLog(['APP', 'WARN'], 'Could not set audioSession type:', e);
+    }
+  }
+
   // Start continuous mute monitoring
   // Will check every 10 seconds and show warning when device becomes muted
   startMuteMonitoring();

@@ -27,6 +27,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+
+        // App-local plugins are not part of capacitor.config.json's
+        // packageClassList (cap sync regenerates it from npm packages), so
+        // they are registered on the bridge once it exists.
+        if let bridge = (window?.rootViewController as? CAPBridgeViewController)?.bridge,
+           bridge.plugin(withName: "MuteDetector") == nil {
+            bridge.registerPluginInstance(MuteDetectorPlugin())
+        }
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

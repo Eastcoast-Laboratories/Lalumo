@@ -33,7 +33,7 @@ export async function detectDeviceMute() {
       const MuteDetector = Capacitor.Plugins?.MuteDetector;
       if (MuteDetector && typeof MuteDetector.isDeviceMuted === 'function') {
         const result = await MuteDetector.isDeviceMuted();
-        debugLog('MUTE_DETECTOR', `Native iOS mute detection: ${result.isMuted} (volume=${result.volumeLevel}, silenceHint=${result.silenceHint})`);
+        debugLog('MUTE_DETECTOR', `Native iOS mute detection: ${result.isMuted} (volume=${result.volumeLevel})`);
         return result.isMuted;
       }
       debugLog(['MUTE_DETECTOR', 'WARN'], 'MuteDetector plugin not registered on Capacitor.Plugins');
