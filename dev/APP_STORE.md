@@ -190,7 +190,9 @@ works:
 - Upload the `de` shots under the German localization, `en` under
   English. Apple requires screenshots per localization.
 - App icon for the listing comes from the binary (1024 px marketing icon
-  is auto-extracted — verify it looks right on the store page).
+  is auto-extracted). Since build 45 it is the Android bird artwork
+  (`ic_launcher_foreground` on white — the Capacitor stub was replaced);
+  verify it looks right on the store page.
 
 **[TODO]** Review each shot before upload — intro toasts may overlap
 the Dynamic Island on some.
@@ -266,6 +268,11 @@ referral feature on iOS (would need a code change + rebuild).
 - Deployment target raised to iOS 15.0 (pbxproj + Podfile) — takes
   effect from the next build; Apple requires ≥15.0 for uploads starting
   April 2027 (ITMS-90068 warning on build 7.3 (44) is non-blocking).
+- Uploaded: **7.3 (45)** — same release as 7.3 (44) plus the real bird
+  app icon (`AppIcon-512@2x.png` was the Capacitor stub before; composed
+  from `mipmap-xxxhdpi/ic_launcher_foreground.png` on opaque white,
+  matching the Android launcher icon pixel-proportionally). Build 45
+  also contains the iPad badge fix and iOS 15.0 deployment target.
 - ⚠ **Uploaded build 1.0 (1) still contains the iPad badge bug:** on
   iPadOS the WKWebView reports a desktop ("Macintosh") user agent, so the
   UA-based `isIOSApp()` returned false and the Google Play / F-Droid
