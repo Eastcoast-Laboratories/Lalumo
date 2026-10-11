@@ -263,8 +263,9 @@ referral feature on iOS (would need a code change + rebuild).
 - `MARKETING_VERSION`/`CURRENT_PROJECT_VERSION` live in
   `ios/App/App.xcodeproj/project.pbxproj` — bump `CURRENT_PROJECT_VERSION`
   before each new upload (`manageAppVersionAndBuildNumber` is false)
-- Known warning: deployment target iOS 14.0 must become ≥15.0 before
-  April 2027 uploads.
+- Deployment target raised to iOS 15.0 (pbxproj + Podfile) — takes
+  effect from the next build; Apple requires ≥15.0 for uploads starting
+  April 2027 (ITMS-90068 warning on build 7.3 (44) is non-blocking).
 - ⚠ **Uploaded build 1.0 (1) still contains the iPad badge bug:** on
   iPadOS the WKWebView reports a desktop ("Macintosh") user agent, so the
   UA-based `isIOSApp()` returned false and the Google Play / F-Droid
