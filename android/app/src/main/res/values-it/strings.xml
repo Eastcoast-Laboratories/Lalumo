@@ -222,6 +222,7 @@
     <string name="unlock_special_activities">Sblocca altre attività</string>
     <string name="repeat_announcement">Ripeti annuncio</string>
     <string name="referral_instruction">Condividi Lalumo con i tuoi amici per sbloccare più attività: disegnare melodie, personaggi degli accordi e accordi della Foresta Magica!</string>
+    <string name="referral_instruction_unlocked">Condividi Lalumo con i tuoi amici!</string>
     <string name="referrals_premium">raccomandazioni riuscite: Sblocca più attività</string>
     <string name="referrals_future">raccomandazioni riuscite: Ricevi aggiornamenti futuri gratuitamente</string>
     <string name="register_username">Registra il tuo nome utente</string>

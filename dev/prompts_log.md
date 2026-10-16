@@ -29,3 +29,7 @@ SVFZHJF78U secret? or fine" (answered: fine, must stay literal)
 screenshots, description, privacy-policy URL, age rating, app privacy
 questionnaire — gather the already existing data from the other store
 listings" (dev/APP_STORE.md + iOS screenshots via Mac simulators)
+
+26-10-11 12:00 "it starts correctly, but the mute detection still does not work and when the app loses focus and comes back to the front there is no sound at all, FATAL for a sound app! wait when building on the mac until the roboyard agent is finished in devin" (MuteDetector plugin registration + audioSession playback + build 49)
+
+26-10-15 10:00 "in the ios app all activities should be unlocked right away, but only in the app, not in safari or other browsers on the iphone, since i want to sell the app in the app store. the referral mechanism can stay, but the 3-referral threshold must then work differently. first make a plan" + "both are correct. for testing we need some kind of flag in the code that we can set briefly to see how it looks on ios. are there other texts that should not be shown, e.g. in the referral screen?" (iOS unlock + SIMULATE_IOS_APP flag + referral screen cleanup)

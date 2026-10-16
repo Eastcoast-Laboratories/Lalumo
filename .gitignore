@@ -117,3 +117,5 @@ yarn-error.log*
 
 # Apple signing material (mobileprovision, p12, keys) - never commit
 /dev/xcode/
+dev/prompts_log.md
+

@@ -3,11 +3,11 @@
        x-data="{
          referrerUsername: localStorage.getItem('lalumo_referral') ? JSON.parse(localStorage.getItem('lalumo_referral'))?.referrerUsername || '' : ''
        }">
-  <h2 x-text="$store.strings?.unlock_special_activities || 'Unlock more Activities'"></h2>
+  <h2 x-text="areAllActivitiesUnlocked ? ($store.strings?.menu_share || 'Share') : ($store.strings?.unlock_special_activities || 'Unlock more Activities')"></h2>
   <div class="partial-content">
     <div class="referral-section">
-      <p x-text="$store.strings?.referral_instruction || 'Share Lalumo with your friends to unlock more activities!'"></p>
-      <div class="referral-info">
+      <p x-text="areAllActivitiesUnlocked ? ($store.strings?.referral_instruction_unlocked || 'Share Lalumo with your friends!') : ($store.strings?.referral_instruction || 'Share Lalumo with your friends to unlock more activities!')"></p>
+      <div class="referral-info" x-show="!areAllActivitiesUnlocked">
         <p><span class="referral-highlight">3</span> <span x-text="$store.strings?.referrals_premium || 'successful referrals: Unlock more activities'"></span></p>
         <p><span class="referral-highlight">5</span> <span x-text="$store.strings?.referrals_future || 'successful referrals: Get future updates for free'"></span></p>
       </div>
@@ -60,8 +60,8 @@
             <div class="referral-stats">
               <p class="referral-status">
                 <strong><span x-text="$store.strings?.registrations || 'Registrations'"></span>:</strong>
-                <span x-text="referralCount || '0'"></span>/3
-                <template x-if="referralCount >= 3">
+                <span x-text="referralCount || '0'"></span><span x-show="!areAllActivitiesUnlocked">/3</span>
+                <template x-if="areAllActivitiesUnlocked">
                   <span class="referral-unlocked" style="color: green;">✓ <span x-text="$store.strings?.activities_unlocked || 'All activities unlocked!'"></span></span>
                 </template>
               </p>
@@ -69,9 +69,7 @@
                 <strong><span x-text="$store.strings?.link_clicks || 'Link clicks'"></span>:</strong>
                 <span x-text="referralClickCount || '0'"></span>
               </p>
-              <template x-if="referralCount < 3">
-                <p class="referral-hint" x-text="$store.strings?.referral_hint || 'Ask your friends to use your code when registering!'"></p>
-              </template>
+              <p class="referral-hint" x-text="$store.strings?.referral_hint || 'Ask your friends to use your code when registering!'"></p>
             </div>
             <button class="primary-button" @click="shareReferralCode()" x-text="$store.strings?.share_app || 'Share App'"></button>
           </div>

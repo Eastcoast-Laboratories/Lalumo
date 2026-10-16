@@ -6,6 +6,13 @@ import * as Tone from 'tone';
 
 const MENU_LOCK_MAX_AGE_MS = 20 * 60 * 1000;
 
+// Debug flag: preview the paid iOS build on web/Android — either set this
+// constant to true or append ?simulate_ios=1 to the URL. The URL parameter
+// is restricted to localhost so the live site cannot be unlocked with it.
+const SIMULATE_IOS_APP = false ||
+  (['localhost', '127.0.0.1'].includes(window.location.hostname) &&
+   new URLSearchParams(window.location.search).has('simulate_ios'));
+
 /**
  * Main application component
  */
@@ -999,7 +1006,16 @@ export function app() {
             debugLog(['APP', 'ERROR'], `Error parsing referral data: ${e.message || e}`);
           }
         }
-        
+
+        // The iOS app is a paid download, so all activities are included
+        // from the start; the 3-referral unlock only applies to the free
+        // web and Android builds. The referral system itself still runs.
+        if (this.isIOSApp() && !this.areAllActivitiesUnlocked) {
+          debugLog('REFERRAL', 'iOS app detected, unlocking all activities');
+          this.areAllActivitiesUnlocked = true;
+          this.saveReferralData();
+        }
+
       } catch (error) {
         debugLog(['APP', 'ERROR'], `Error loading user data: ${error.message || error}`);
       }
@@ -1729,6 +1745,7 @@ export function app() {
      * @returns {boolean} True if iOS app
      */
     isIOSApp() {
+      if (SIMULATE_IOS_APP) return true;
       // iPadOS reports a desktop ("Macintosh") user agent in WKWebView, so
       // the UA check alone fails on iPads — the Capacitor platform is reliable.
       const platform = window.Capacitor?.getPlatform?.();
